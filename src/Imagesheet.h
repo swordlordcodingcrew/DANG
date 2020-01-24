@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "32blit.hpp"
+#include "../../../../../32blit/32blit.hpp"
 
 namespace dang
 {

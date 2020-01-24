@@ -8,7 +8,7 @@
 #pragma once
 
 #include <cstdint>
-#include <32blit.hpp>
+#include "../../../../../../32blit/32blit.hpp"
 #include "Ease.h"
 
 namespace dang
