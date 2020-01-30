@@ -55,7 +55,7 @@ namespace dang
             ind = uint16_t(_indices.size() - 1);
         }
 
-        spr->_img_index = ind;
+        spr->_img_index = _indices[ind];
     }
 
 }
