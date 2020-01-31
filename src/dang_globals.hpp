@@ -34,9 +34,9 @@ namespace dang {
     struct tileset
     {
         std::string name; // this name is the reference to the image
-        u_short tileCount;
-        u_short tileWidth;
-        u_short tileHeight;
+        uint16_t tileCount;
+        uint16_t tileWidth;
+        uint16_t tileHeight;
 
         /*
         TODO: to be considered
@@ -50,13 +50,13 @@ namespace dang {
     // TODO: move to globals
     struct tile
     {
-        u_short id;
-        u_short tileset;
+        uint16_t id;
+        uint16_t tileset;
 
         // actually values from the cell...
-        u_short isFlippedHorizontally : 1;
-        u_short isFlippedVertically : 1;
-        u_short isFlippedAntiDiagonally : 1;
+        uint8_t isFlippedHorizontally : 1;
+        uint8_t isFlippedVertically : 1;
+        uint8_t isFlippedAntiDiagonally : 1;
     };
 
     // TODO: add properties
@@ -64,7 +64,7 @@ namespace dang {
     // TODO: move to globals
     struct spriteobject
     {
-        u_short id; // global
+        uint16_t id; // global
         //std::string name; // not needed, the reference contains the name
         std::string type;
         //std::string shape;
@@ -73,8 +73,8 @@ namespace dang {
         int32_t width;
         int32_t height;
         bool visible;
-        u_short tileset;
-        u_short tile;
+        uint16_t tileset;
+        uint16_t tile;
 
 
         uint16_t    _img_index{0};
@@ -95,14 +95,14 @@ namespace dang {
 
     struct sprite : spriteobject
     {
-        short   velX = 0;
-        short   velY = 0;
+        int8_t   velX = 0;
+        int8_t   velY = 0;
         bool    isHit = false;
     protected:
         std::forward_list<std::shared_ptr<Tweenable>> _tweens;
 
     public:
-        sprite(u_short id, std::string type, u_short x, u_short y, u_short width, u_short height, bool visible, u_short tileset, u_short tile)
+        sprite(uint16_t id, std::string type, uint16_t x, uint16_t y, uint16_t width, uint16_t height, bool visible, uint16_t tileset, uint16_t tile)
         {
             this->id = id;
             this->type = type;
@@ -115,7 +115,7 @@ namespace dang {
             this->tile = tile;
         }
 
-        ushort wantToCollideWith(std::shared_ptr<sprite> other)
+        uint16_t wantToCollideWith(std::shared_ptr<sprite> other)
         {
             if(this->type == "coin")
             {

@@ -84,7 +84,7 @@ namespace dang_collision {
 
         float_t fR = 0.0f;
 
-        for (ushort side = 1; side <= 4; ++side)
+        for (uint8_t side = 1; side <= 4; ++side)
         {
             if (side == 1) // left
             {
@@ -400,7 +400,7 @@ namespace dang_collision {
                 visitedSprites.insert(other);
 
                 // ask other item if it wants to collide
-                u_short collisionResponse = other->wantToCollideWith(me);
+                u_int8_t collisionResponse = other->wantToCollideWith(me);
                 if(collisionResponse > 0)
                 {
                     collision col = {};
@@ -465,7 +465,7 @@ namespace dang_collision {
 
         std::vector<dang_collision::collision> pc;
 
-        std::cout << " - SLIDE " << col->touch.x << "," << col->touch.y << " - ";
+        //std::cout << " - SLIDE " << col->touch.x << "," << col->touch.y << " - ";
 
         projectCollisions(lvl, me, &r, goal, &pc);
     }
