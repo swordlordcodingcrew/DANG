@@ -13,31 +13,36 @@ namespace dang
     public:
         Ease();
         virtual ~Ease();
-        virtual float calc(float x);
+        virtual float calc(float x) = 0;
+        virtual Ease* clone() const = 0;
     };
 
     class EaseLinear : public Ease
     {
     public:
-        float calc(float x);
+        virtual float calc(float x);
+        virtual EaseLinear* clone() const override;
     };
 
     class EaseInQuad : public Ease
     {
     public:
         float calc(float x);
+        virtual EaseInQuad* clone() const override;
     };
 
     class EaseOutQuad : public Ease
     {
     public:
         float calc(float x);
+        virtual EaseOutQuad* clone() const override;
     };
 
     class EaseInOutQuad : public Ease
     {
     public:
         float calc(float x);
+        virtual EaseInOutQuad* clone() const override;
     };
 }
 

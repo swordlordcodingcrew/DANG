@@ -10,16 +10,25 @@
 
 namespace dang
 {
-    Tweenable::Tweenable() : _the_object(nullptr), _loops(1), _alternating(false), _duration(100), _delay(0), _ease(EaseLinear())
+    Tweenable::Tweenable()
     {
+    }
+
+    Tweenable::Tweenable(const Tweenable &tw) : _the_object(tw._the_object), _duration(tw._duration), _loops(tw._loops), _alternating(tw._alternating),
+                                                _delay(tw._delay), _finishedCB(tw._finishedCB), _start_time(tw._start_time), _pause_time(tw._pause_time),
+                                                _loop(tw._loop), _state(tw._state)
+    {
+        _ease = std::unique_ptr<Ease>((*(tw._ease)).clone());
     }
 
     Tweenable::~Tweenable()
     {
     }
 
-    Tweenable::Tweenable(std::shared_ptr<void> the_object, uint32_t duration, Ease ease, int32_t loops, bool alternating, uint32_t delay) : _the_object(the_object), _duration(duration), _ease(ease), _loops(loops), _alternating(alternating), _delay(delay)
+    Tweenable::Tweenable(std::shared_ptr<void> the_object, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops, bool alternating, uint32_t delay) : _the_object(the_object), _duration(duration), _loops(loops), _alternating(alternating), _delay(delay)
     {
+        _ease = std::move(ease);
+//        if (_ease.get() == nullptr) _ease = std::make_unique<Ease>(EaseLinear());
     }
 
     void Tweenable::pause_tw(uint32_t time)
@@ -73,9 +82,11 @@ namespace dang
 
     float Tweenable::calc(uint32_t time)
     {
+        assert(_ease != nullptr);
+
         if (_state == TW_FINISHED)
         {
-            return _ease.calc(_alternating && _loop % 2 == 1 ? 0 : 1);
+            return _ease->calc(_alternating && _loop % 2 == 1 ? 0 : 1);
         }
 
         if (_state == TW_READY)
@@ -93,7 +104,7 @@ namespace dang
         // during delay
         if (time < st + _delay)
         {
-            return _ease.calc(_alternating && _loop % 2 == 1 ? 1 : 0);
+            return _ease->calc(_alternating && _loop % 2 == 1 ? 1 : 0);
         }
 
         // during ease
@@ -103,7 +114,7 @@ namespace dang
 //            std::cout << "x=" << x << " , _start_time=" << st << " , time=" << time << std::endl;
             assert(x >= 0 || x <= 1);
 
-            return _ease.calc(_alternating && _loop % 2 == 1 ? 1 - x : x);
+            return _ease->calc(_alternating && _loop % 2 == 1 ? 1 - x : x);
 
         }
         else    // ease finished
@@ -119,7 +130,7 @@ namespace dang
                 {
                     _loop++;
                     _start_time = time;
-                    return _ease.calc(_alternating && _loop % 2 == 1 ? 1 : 0);
+                    return _ease->calc(_alternating && _loop % 2 == 1 ? 1 : 0);
                 }
                 else    // tween finished
                 {
@@ -128,7 +139,7 @@ namespace dang
                     {
                         _finishedCB();
                     }
-                    return _ease.calc(_alternating && _loop % 2 == 1 ? 0 : 1);
+                    return _ease->calc(_alternating && _loop % 2 == 1 ? 0 : 1);
                 }
             }
         }
@@ -140,7 +151,5 @@ namespace dang
     {
         _finishedCB = finishedCB;
     }
-
-
 
 }

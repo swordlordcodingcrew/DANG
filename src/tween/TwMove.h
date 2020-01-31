@@ -14,7 +14,7 @@ namespace dang
     {
     public:
         TwMove();
-        TwMove(std::shared_ptr<void> the_object, const blit::point& move_to, uint32_t duration, Ease ease = EaseLinear(), int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        TwMove(std::shared_ptr<void> the_object, const blit::point& move_to, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         void        update(uint32_t time);
 
 

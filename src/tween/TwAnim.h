@@ -14,7 +14,7 @@ namespace dang
     {
     public:
         TwAnim();
-        TwAnim(std::shared_ptr<void> the_object, const std::vector<uint16_t>& indices, uint32_t duration, Ease ease = EaseLinear(), int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        TwAnim(std::shared_ptr<void> the_object, const std::vector<uint16_t>& indices, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         void        update(uint32_t time);
 
     protected:

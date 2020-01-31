@@ -13,7 +13,7 @@ namespace dang
     /**
      * default constructor
      */
-    TwMove::TwMove() : Tweenable(nullptr, 100, EaseLinear(), 1, false, 0)
+    TwMove::TwMove() : Tweenable()
     {
 
     }
@@ -28,9 +28,9 @@ namespace dang
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwMove::TwMove(std::shared_ptr<void> the_object, const point& move_to, uint32_t duration, Ease ease,
+    TwMove::TwMove(std::shared_ptr<void> the_object, const point& move_to, uint32_t duration, std::unique_ptr<Ease> ease,
                    int32_t loops, bool alternating, uint32_t delay)
-            : _move_to(move_to), Tweenable(the_object, duration, ease, loops, alternating, delay)
+            : _move_to(move_to), Tweenable(the_object, duration, std::move(ease), loops, alternating, delay)
     {
         if (_the_object != nullptr)
         {

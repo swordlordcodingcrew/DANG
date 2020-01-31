@@ -17,7 +17,8 @@ namespace dang
     {
     public:
         Tweenable();
-        Tweenable(std::shared_ptr<void> the_object, uint32_t duration, Ease ease = EaseLinear(), int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        Tweenable(const Tweenable& tw);
+        Tweenable(std::shared_ptr<void> the_object, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         virtual ~Tweenable();
 
         void            start_tw(uint32_t start_time);
@@ -42,8 +43,9 @@ namespace dang
         // ugly hack with void*. Should be narrowed with a base class or template class
         std::shared_ptr<void>       _the_object{nullptr};
 
+        std::unique_ptr<Ease>       _ease{new EaseLinear()};
+
         uint32_t                    _duration{100};
-        Ease                        _ease;
         int32_t                     _loops{1};
         bool                        _alternating{false};
         uint32_t                    _delay{0};

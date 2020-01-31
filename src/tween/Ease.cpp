@@ -5,6 +5,7 @@
 //
 
 #include <cmath>
+#include <bits/unique_ptr.h>
 #include "Ease.h"
 
 namespace dang
@@ -39,6 +40,11 @@ namespace dang
         return Ease::calc(x);
     }
 
+    EaseLinear* EaseLinear::clone() const
+    {
+        return new EaseLinear(*this);
+    }
+
     /**
      * Accelerating from zero with x*x
      * @param x input value between 0 and 1
@@ -47,6 +53,11 @@ namespace dang
     float EaseInQuad::calc(float x)
     {
         return x*x;
+    }
+
+    EaseInQuad* EaseInQuad::clone() const
+    {
+        return new EaseInQuad(*this);
     }
 
     /**
@@ -59,6 +70,11 @@ namespace dang
         return x * (2 - x);
     }
 
+    EaseOutQuad* EaseOutQuad::clone() const
+    {
+        return nullptr;
+    }
+
     /**
      * acceleration until halfway, then deceleration with x*x
      * @param x input value between 0 and 1
@@ -67,6 +83,11 @@ namespace dang
     float EaseInOutQuad::calc(float x)
     {
         return x < 0.5 ? (2 * x * x) : (-1 + (4 - 2 * x) * x);
+    }
+
+    EaseInOutQuad* EaseInOutQuad::clone() const
+    {
+        return new EaseInOutQuad(*this);
     }
 }
 
