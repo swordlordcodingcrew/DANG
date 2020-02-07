@@ -18,6 +18,7 @@ namespace dang
                                                 _delay(tw._delay), _finishedCB(tw._finishedCB), _start_time(tw._start_time), _pause_time(tw._pause_time),
                                                 _loop(tw._loop), _state(tw._state)
     {
+        // TODO: check if tw._ease is not empty
         _ease = std::unique_ptr<Ease>((*(tw._ease)).clone());
     }
 
@@ -28,6 +29,7 @@ namespace dang
     Tweenable::Tweenable(std::shared_ptr<void> the_object, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops, bool alternating, uint32_t delay) : _the_object(the_object), _duration(duration), _loops(loops), _alternating(alternating), _delay(delay)
     {
         _ease = std::move(ease);
+        // TODO: check if tw._ease is not empty
 //        if (_ease.get() == nullptr) _ease = std::make_unique<Ease>(EaseLinear());
     }
 

@@ -4,8 +4,6 @@
 // Created by LordFilu on 25.12.19.
 //
 
-#include <cmath>
-#include <bits/unique_ptr.h>
 #include "Ease.h"
 
 namespace dang
@@ -40,6 +38,10 @@ namespace dang
         return Ease::calc(x);
     }
 
+    /**
+     * clone pattern for polymorphic copies
+     * @return new instance of EaseLinear
+     */
     EaseLinear* EaseLinear::clone() const
     {
         return new EaseLinear(*this);
@@ -55,6 +57,10 @@ namespace dang
         return x*x;
     }
 
+    /**
+     * clone pattern for polymorphic copies
+     * @return new instance of EaseInQuad
+     */
     EaseInQuad* EaseInQuad::clone() const
     {
         return new EaseInQuad(*this);
@@ -70,6 +76,10 @@ namespace dang
         return x * (2 - x);
     }
 
+    /**
+     * clone pattern for polymorphic copies
+     * @return new instance of EaseOutQuad
+     */
     EaseOutQuad* EaseOutQuad::clone() const
     {
         return nullptr;
@@ -85,6 +95,10 @@ namespace dang
         return x < 0.5 ? (2 * x * x) : (-1 + (4 - 2 * x) * x);
     }
 
+    /**
+     * clone pattern for polymorphic copies
+     * @return new instance of EaseInOutQuad
+     */
     EaseInOutQuad* EaseInOutQuad::clone() const
     {
         return new EaseInOutQuad(*this);
