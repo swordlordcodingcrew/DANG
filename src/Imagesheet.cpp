@@ -21,7 +21,7 @@ namespace dang
      * @param cols number of columns. Must be 1 or higher. 0 will be interpreted as 1. Default value is 1 if no value is given.
      * @param rows number of rows. Must be 1 or higher. 0 will be interpreted as 1. Default value is 1 if no value is given.
      */
-    Imagesheet::Imagesheet(uint8_t *data, blit::pixel_format format, const blit::packed_image *image, const uint16_t cols, const uint16_t rows) : spritesheet(data, format, image), _cols(cols), _rows(rows)
+    Imagesheet::Imagesheet(uint8_t *data, blit::PixelFormat format, const blit::packed_image *image, const uint16_t cols, const uint16_t rows) : SpriteSheet(data, format, image), _cols(cols), _rows(rows)
     {
         assert (cols < UINT16_MAX);
         assert (rows < UINT16_MAX);
@@ -95,7 +95,7 @@ namespace dang
      * @param row row index (beginning with 0)
      * @return true if success
      */
-    bool Imagesheet::getRect(blit::rect &r, const uint16_t col, const uint16_t row)
+    bool Imagesheet::getRect(blit::Rect &r, const uint16_t col, const uint16_t row)
     {
         if (col >= _cols || row >= _rows) return false;
 
@@ -114,7 +114,7 @@ namespace dang
      * @param index of image. Beginning with zero, counting up to the right (cols) and down (rows)
      * @return true if success
      */
-    bool Imagesheet::getRect(blit::rect &r, uint16_t index)
+    bool Imagesheet::getRect(blit::Rect &r, uint16_t index)
     {
         return getRect(r, index % _cols, index / _cols);
     }
@@ -125,9 +125,9 @@ namespace dang
      * @param index of image. Beginning with zero, counting up to the right (cols) and down (rows)
      * @return source rect of image with index index
      */
-    blit::rect Imagesheet::getRect(const uint16_t &index)
+    blit::Rect Imagesheet::getRect(const uint16_t &index)
     {
-        blit::rect sr{0, 0, 1, 1};
+        blit::Rect sr{0, 0, 1, 1};
         getRect(sr, index);
         return sr;
     }
@@ -137,12 +137,12 @@ namespace dang
      * @param p
      * @return
      */
-    blit::rect Imagesheet::getRect(const blit::point &p)
+    blit::Rect Imagesheet::getRect(const blit::Point &p)
     {
         assert (p.x < UINT16_MAX);
         assert (p.y < UINT16_MAX);
 
-        blit::rect sr{0, 0, 1, 1};
+        blit::Rect sr{0, 0, 1, 1};
         getRect(sr, (uint16_t)p.x, (uint16_t)p.y);
         return sr;
     }
@@ -152,12 +152,12 @@ namespace dang
      * @param r
      * @return
      */
-    blit::rect Imagesheet::getRect(const blit::rect &r)
+    blit::Rect Imagesheet::getRect(const blit::Rect &r)
     {
         assert (r.x < UINT16_MAX);
         assert (r.y < UINT16_MAX);
 
-        blit::rect sr{0, 0, 1, 1};
+        blit::Rect sr{0, 0, 1, 1};
         getRect(sr, (uint16_t)r.x, (uint16_t)r.y);
         return sr;
     }
@@ -192,7 +192,7 @@ namespace dang
             buffer = new uint8_t[blit::pixel_format_stride[image->format] * image->width * image->height];
         }
 
-        return new Imagesheet(buffer, (blit::pixel_format)image->format, image, cols, rows);
+        return new Imagesheet(buffer, (blit::PixelFormat)image->format, image, cols, rows);
     }
 
     std::shared_ptr<Imagesheet> Imagesheet::load_sp(const uint8_t *data, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
@@ -207,7 +207,7 @@ namespace dang
             buffer = new uint8_t[blit::pixel_format_stride[image->format] * image->width * image->height];
         }
 
-        return std::make_shared<Imagesheet>(buffer, (blit::pixel_format)image->format, image, cols, rows);
+        return std::make_shared<Imagesheet>(buffer, (blit::PixelFormat)image->format, image, cols, rows);
     }
 
     void Imagesheet::setBits(const uint16_t bits, const uint16_t index)

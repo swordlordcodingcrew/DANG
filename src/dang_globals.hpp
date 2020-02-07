@@ -24,8 +24,8 @@ namespace dang {
     class Imagesheet;
 //    class TwAnim;
 
-    typedef blit::point point;
-    typedef blit::rect  rect;
+    typedef blit::Point point;
+    typedef blit::Rect  rect;
 
     enum collisionResponse{none, touch_me, cross_me, slide_over_me, bounce_off_me};
 
