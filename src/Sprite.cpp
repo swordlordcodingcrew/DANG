@@ -5,3 +5,17 @@
 //
 
 #include "Sprite.h"
+
+namespace dang
+{
+    Sprite::Sprite()
+    {
+
+    }
+
+    Sprite::~Sprite()
+    {
+
+    }
+
+}

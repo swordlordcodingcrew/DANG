@@ -6,8 +6,32 @@
 
 #pragma once
 
-class Sprite
-{
+#include "dang_globals.hpp"
 
-};
+namespace dang
+{
+    class Sprite
+    {
+    public:
+        Sprite();
+        virtual ~Sprite();
+
+        // public variables
+        uint16_t _id; // global
+        //std::string name; // not needed, the reference contains the name
+        std::string _type;
+
+        point _pos{0,0};
+        int32_t width;
+        int32_t height;
+        bool visible;
+        uint16_t tileset;
+        uint16_t tile;
+
+
+        uint16_t    _img_index{0};
+
+    };
+
+}
 
