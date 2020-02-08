@@ -76,6 +76,8 @@ namespace dang {
         uint16_t tileset;
         uint16_t tile;
 
+        uint16_t    _img_index{0};
+
         /*
         // TODO: to be considered
          rotation : number 	Rotation of the object in degrees clockwise.
@@ -95,7 +97,7 @@ namespace dang {
         int8_t   velX = 0;
         int8_t   velY = 0;
         bool    isHit = false;
-        uint16_t    _img_index{0};
+
     protected:
         std::forward_list<std::shared_ptr<Tweenable>> _tweens;
 
