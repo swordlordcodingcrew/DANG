@@ -18,10 +18,15 @@ namespace dang
         Sprite(const Sprite& sp);
         Sprite(const spriteobject& so);
         virtual ~Sprite();
-        uint16_t wantToCollideWith(std::shared_ptr<sprite> other);
         void addTween(std::shared_ptr<Tweenable> tw);
         void updateTweens(uint32_t time);
         void removeTween(std::shared_ptr<Tweenable> tw, bool suppressCB);
+
+        void coreUpdate(uint32_t time);
+        virtual void update(uint32_t time);
+
+        // to be moved to collisionsprite subclass on a later stage
+        uint16_t wantToCollideWith(std::shared_ptr<sprite> other);
 
     public: // variables
         bool        _visible;
@@ -35,6 +40,7 @@ namespace dang
         uint16_t    _id; // global
         std::string _type;
         point       _pos{0,0};
+        point       _last_pos{0,0};     // could be used for collision detection
         Size        _size{0,0};
 
         // tween depot

@@ -84,4 +84,10 @@ namespace dang
 
     }
 
+    void Sprite::coreUpdate(uint32_t time)
+    {
+        _last_pos = _pos;
+        updateTweens(time);
+    }
+
 }
