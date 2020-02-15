@@ -22,10 +22,10 @@
 namespace dang {
 
     class Imagesheet;
-//    class TwAnim;
 
     typedef blit::Point point;
     typedef blit::Rect  rect;
+    typedef blit::Size  Size;
 
     enum collisionResponse{none, touch_me, cross_me, slide_over_me, bounce_off_me};
 
@@ -76,7 +76,6 @@ namespace dang {
         uint16_t tileset;
         uint16_t tile;
 
-
         uint16_t    _img_index{0};
 
         /*
@@ -98,6 +97,7 @@ namespace dang {
         int8_t   velX = 0;
         int8_t   velY = 0;
         bool    isHit = false;
+
     protected:
         std::forward_list<std::shared_ptr<Tweenable>> _tweens;
 
