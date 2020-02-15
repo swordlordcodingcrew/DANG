@@ -155,6 +155,19 @@ namespace dang {
                 }
 */            }
         }
+        /*
+        bool hasIntersectionWith(sprite* other)
+        {
+            return dang_collision::hasIntersection(this->getHotrect(), other->getHotrect());
+        }
+        */
+
+        rect* getHotrect()
+        {
+            rect r = {this->x, this->y, this->width, this->height};
+
+            return &r;
+        }
     };
 
     enum layerType{ltTile, ltObjects};

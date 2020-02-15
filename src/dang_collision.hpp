@@ -114,152 +114,192 @@ namespace dang_collision {
         return true;
     }
 
-    /*
-     * SDL_bool
-  316 SDL_IntersectRectAndLine(const SDL_Rect * rect, int *X1, int *Y1, int *X2,
-  317                          int *Y2)
-  318 {
-  319     int x = 0;
-  320     int y = 0;
-  321     int x1, y1;
-  322     int x2, y2;
-  323     int rectx1;
-  324     int recty1;
-  325     int rectx2;
-  326     int recty2;
-  327     int outcode1, outcode2;
-  328
-  329     if (!rect) {
-  330         SDL_InvalidParamError("rect");
-  331         return SDL_FALSE;
-  332     }
-  333
-  334     if (!X1) {
-  335         SDL_InvalidParamError("X1");
-  336         return SDL_FALSE;
-  337     }
-  338
-  339     if (!Y1) {
-  340         SDL_InvalidParamError("Y1");
-  341         return SDL_FALSE;
-  342     }
-  343
-  344     if (!X2) {
-  345         SDL_InvalidParamError("X2");
-  346         return SDL_FALSE;
-  347     }
-  348
-  349     if (!Y2) {
-  350         SDL_InvalidParamError("Y2");
-  351         return SDL_FALSE;
-  352     }
-  353
-  354     // Special case for empty rect
-    355     if (SDL_RectEmpty(rect)) {
-    356         return SDL_FALSE;
-    357     }
-358
-359     x1 = *X1;
-360     y1 = *Y1;
-361     x2 = *X2;
-362     y2 = *Y2;
-363     rectx1 = rect->x;
-364     recty1 = rect->y;
-365     rectx2 = rect->x + rect->w - 1;
-366     recty2 = rect->y + rect->h - 1;
-367
-368     // Check to see if entire line is inside rect
-369     if (x1 >= rectx1 && x1 <= rectx2 && x2 >= rectx1 && x2 <= rectx2 &&
-370         y1 >= recty1 && y1 <= recty2 && y2 >= recty1 && y2 <= recty2) {
-371         return SDL_TRUE;
-372     }
-373
-374     // Check to see if entire line is to one side of rect
-375     if ((x1 < rectx1 && x2 < rectx1) || (x1 > rectx2 && x2 > rectx2) ||
-376         (y1 < recty1 && y2 < recty1) || (y1 > recty2 && y2 > recty2)) {
-377         return SDL_FALSE;
-378     }
-379
-380     if (y1 == y2) {
-381         // Horizontal line, easy to clip
-382         if (x1 < rectx1) {
-383             *X1 = rectx1;
-384         } else if (x1 > rectx2) {
-385             *X1 = rectx2;
-386         }
-387         if (x2 < rectx1) {
-388             *X2 = rectx1;
-389         } else if (x2 > rectx2) {
-390             *X2 = rectx2;
-391         }
-392         return SDL_TRUE;
-393     }
-394
-395     if (x1 == x2) {
-396         // Vertical line, easy to clip
-397         if (y1 < recty1) {
-398             *Y1 = recty1;
-399         } else if (y1 > recty2) {
-400             *Y1 = recty2;
-401         }
-402         if (y2 < recty1) {
-403             *Y2 = recty1;
-404         } else if (y2 > recty2) {
-405             *Y2 = recty2;
-406         }
-407         return SDL_TRUE;
-408     }
-409
-410     // More complicated Cohen-Sutherland algorithm
-411     outcode1 = ComputeOutCode(rect, x1, y1);
-412     outcode2 = ComputeOutCode(rect, x2, y2);
-413     while (outcode1 || outcode2) {
-414         if (outcode1 & outcode2) {
-415             return SDL_FALSE;
-416         }
-417
-418         if (outcode1) {
-419             if (outcode1 & CODE_TOP) {
-420                 y = recty1;
-421                 x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
-422             } else if (outcode1 & CODE_BOTTOM) {
-423                 y = recty2;
-424                 x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
-425             } else if (outcode1 & CODE_LEFT) {
-426                 x = rectx1;
-427                 y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
-428             } else if (outcode1 & CODE_RIGHT) {
-429                 x = rectx2;
-430                 y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
-431             }
-432             x1 = x;
-433             y1 = y;
-434             outcode1 = ComputeOutCode(rect, x, y);
-435         } else {
-436             if (outcode2 & CODE_TOP) {
-437                 y = recty1;
-438                 x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
-439             } else if (outcode2 & CODE_BOTTOM) {
-440                 y = recty2;
-441                 x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
-442             } else if (outcode2 & CODE_LEFT) {
-443                 x = rectx1;
-444                 y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
-445             } else if (outcode2 & CODE_RIGHT) {
-446                 x = rectx2;
-447                 y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
-448             }
-449             x2 = x;
-450             y2 = y;
-451             outcode2 = ComputeOutCode(rect, x, y);
-452         }
-453     }
-454     *X1 = x1;
-455     *Y1 = y1;
-456     *X2 = x2;
-457     *Y2 = y2;
-458     return SDL_TRUE;
-459 }*/
+    /* Use the Cohen-Sutherland algorithm for line clipping */
+    #define CODE_BOTTOM 1
+    #define CODE_TOP    2
+    #define CODE_LEFT   4
+    #define CODE_RIGHT  8
+
+    static int ComputeOutCode(rect* rect, int x, int y)
+    {
+        int code = 0;
+        if (y < 0)
+        {
+            code |= CODE_TOP;
+        } else if (y >= rect->y + rect->h)
+        {
+            code |= CODE_BOTTOM;
+        }
+        if (x < 0)
+        {
+            code |= CODE_LEFT;
+        } else if (x >= rect->x + rect->w)
+        {
+            code |= CODE_RIGHT;
+        }
+
+        return code;
+    }
+
+    bool intersectRectAndLine(rect* rect, int* X1, int* Y1, int* X2, int* Y2)
+    {
+       int x = 0;
+       int y = 0;
+       int x1, y1;
+       int x2, y2;
+       int rectx1;
+       int recty1;
+       int rectx2;
+       int recty2;
+       int outcode1, outcode2;
+
+       if (!rect) {
+           //SDL_InvalidParamError("rect");
+           return false;
+       }
+
+       if (!X1) {
+           //SDL_InvalidParamError("X1");
+           return false;
+       }
+
+       if (!Y1) {
+           //SDL_InvalidParamError("Y1");
+           return false;
+       }
+
+       if (!X2) {
+           //SDL_InvalidParamError("X2");
+           return false;
+       }
+
+       if (!Y2) {
+           //SDL_InvalidParamError("Y2");
+           return false;
+       }
+
+       // Special case for empty rect
+       //if (SDL_RectEmpty(rect)) {
+       //    return SDL_FALSE;
+       //}
+
+        x1 = *X1;
+        y1 = *Y1;
+        x2 = *X2;
+        y2 = *Y2;
+        rectx1 = rect->x;
+        recty1 = rect->y;
+        rectx2 = rect->x + rect->w - 1;
+        recty2 = rect->y + rect->h - 1;
+
+         // Check to see if entire line is inside rect
+         if (x1 >= rectx1 && x1 <= rectx2 && x2 >= rectx1 && x2 <= rectx2 &&
+             y1 >= recty1 && y1 <= recty2 && y2 >= recty1 && y2 <= recty2) {
+             return true;
+         }
+
+         // Check to see if entire line is to one side of rect
+         if ((x1 < rectx1 && x2 < rectx1) || (x1 > rectx2 && x2 > rectx2) ||
+             (y1 < recty1 && y2 < recty1) || (y1 > recty2 && y2 > recty2)) {
+             return false;
+         }
+
+         if (y1 == y2)
+         {
+             // Horizontal line, easy to clip
+             if (x1 < rectx1)
+             {
+                 *X1 = rectx1;
+             } else if (x1 > rectx2)
+             {
+                 *X1 = rectx2;
+             }
+
+             if (x2 < rectx1)
+             {
+                 *X2 = rectx1;
+             } else if (x2 > rectx2)
+             {
+                 *X2 = rectx2;
+             }
+             return true;
+         }
+
+         if (x1 == x2)
+         {
+             // Vertical line, easy to clip
+             if (y1 < recty1)
+             {
+                 *Y1 = recty1;
+             } else if (y1 > recty2)
+             {
+                 *Y1 = recty2;
+             }
+
+             if (y2 < recty1)
+             {
+                 *Y2 = recty1;
+             } else if (y2 > recty2)
+             {
+                 *Y2 = recty2;
+             }
+             return true;
+         }
+
+         // More complicated Cohen-Sutherland algorithm
+         outcode1 = ComputeOutCode(rect, x1, y1);
+         outcode2 = ComputeOutCode(rect, x2, y2);
+         while (outcode1 || outcode2)
+         {
+             if (outcode1 & outcode2)
+             {
+                 return false;
+             }
+
+             if (outcode1)
+             {
+                 if (outcode1 & CODE_TOP) {
+                     y = recty1;
+                     x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
+                 } else if (outcode1 & CODE_BOTTOM) {
+                     y = recty2;
+                     x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
+                 } else if (outcode1 & CODE_LEFT) {
+                     x = rectx1;
+                     y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
+                 } else if (outcode1 & CODE_RIGHT) {
+                     x = rectx2;
+                     y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
+                 }
+                 x1 = x;
+                 y1 = y;
+                 outcode1 = ComputeOutCode(rect, x, y);
+             } else {
+                 if (outcode2 & CODE_TOP) {
+                     y = recty1;
+                     x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
+                 } else if (outcode2 & CODE_BOTTOM) {
+                     y = recty2;
+                     x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
+                 } else if (outcode2 & CODE_LEFT) {
+                     x = rectx1;
+                     y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
+                 } else if (outcode2 & CODE_RIGHT) {
+                     x = rectx2;
+                     y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
+                 }
+                 x2 = x;
+                 y2 = y;
+                 outcode2 = ComputeOutCode(rect, x, y);
+             }
+         }
+
+         *X1 = x1;
+         *Y1 = y1;
+         *X2 = x2;
+         *Y2 = y2;
+         return true;
+     }
 
     // This is a generalized implementation of the liang-barsky algorithm, which also returns
     // the normals of the sides where the segment intersects.
@@ -456,11 +496,11 @@ namespace dang_collision {
         // todo unsure if int8 is better
         point normal = {0,0};
 
-        rect ra = {other->x, other->y, other->width, other->height};
-        rect rb = {goal->x, goal->y, r->w, r->h};
+        rect ro = {other->x, other->y, other->width, other->height};
+        rect rm = {goal->x, goal->y, r->w, r->h};
 
         // is me intersecting with other?
-        if(hasIntersection(&ra, &rb))
+        if(hasIntersection(&ro, &rm))
         {
         //if(rectContainsPoint(&rMnkwsk, 0, 0))
         //{
@@ -483,6 +523,29 @@ namespace dang_collision {
 
             // bool getSegmentIntersectionIndices(rect* r, point* p1, point* p2, float_t ti1, float_t ti2, indices* indOut)
             // TODO replace by SDL IntersectRectAndLine -> currentxy -> goalxy as line, other as rect
+
+            int x1 = r->x;
+            int y1 = r->y;
+
+            int x2 = goal->x;
+            int y2 = goal->y;
+
+            // does item tunnel through other?
+            bool doesIntersect = intersectRectAndLine(&ro, &x1, &y1, &x2, &y2);
+            if(doesIntersect)
+            {
+                // find out where it hits
+                // handle (depending on strategy, move back, kill, ?)
+                std::cout << " tunneling!" << std::endl;
+
+            }
+            else
+            {
+                return false; // no collision whatsoever..
+            }
+
+            /*
+             * Was:
             bool hasResult = getSegmentIntersectionIndices(&rMnkwsk, &p1, &p2, -FLT_MAX, FLT_MAX, &indOut);
             if(hasResult)
             {
@@ -496,9 +559,9 @@ namespace dang_collision {
                     overlaps = false;
                 }
             } else {
-                // TODO check: not sure, but probably what is needed
                 return false; // no collision whatsoever.. could be handled differently?
             }
+             */
         }
 
         // todo: unsure, no movement? -> probably not needed since hasResult = false results in return as well
