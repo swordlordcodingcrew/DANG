@@ -121,6 +121,10 @@ namespace dang {
             {
                 return cross_me;
             }
+            /*else if(this->type == "hotrect")
+            {
+                return slide_over_me;
+            }*/
             else if(other->type == "hero")
             {
                 return slide_over_me;
