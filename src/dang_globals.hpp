@@ -121,6 +121,10 @@ namespace dang {
             {
                 return cross_me;
             }
+            /*else if(this->type == "hotrect")
+            {
+                return slide_over_me;
+            }*/
             else if(other->type == "hero")
             {
                 return slide_over_me;
@@ -150,6 +154,19 @@ namespace dang {
                     _tweens.remove(tw);
                 }
 */            }
+        }
+        /*
+        bool hasIntersectionWith(sprite* other)
+        {
+            return dang_collision::hasIntersection(this->getHotrect(), other->getHotrect());
+        }
+        */
+
+        rect* getHotrect()
+        {
+            rect r = {this->x, this->y, this->width, this->height};
+
+            return &r;
         }
     };
 

@@ -62,6 +62,245 @@ namespace dang_collision {
         }
     };
 
+    bool hasIntersection(rect* A, rect* B)
+    {
+        int Amin, Amax, Bmin, Bmax;
+
+        if (!A) {
+            // SDL_InvalidParamError("A");
+            return false;
+        }
+
+        if (!B) {
+            //SDL_InvalidParamError("B");
+            return false;
+        }
+
+        /* Special cases for empty rects */
+        //if (SDL_RectEmpty(A) || SDL_RectEmpty(B)) {
+        //    return SDL_FALSE;
+        //}
+
+        /* Horizontal intersection */
+        Amin = A->x;
+        Amax = Amin + A->w;
+        Bmin = B->x;
+        Bmax = Bmin + B->w;
+        if (Bmin > Amin){
+            Amin = Bmin;
+        }
+        if (Bmax < Amax){
+            Amax = Bmax;
+        }
+        if (Amax <= Amin){
+            return false;
+        }
+        /* Vertical intersection */
+        Amin = A->y;
+        Amax = Amin + A->h;
+        Bmin = B->y;
+        Bmax = Bmin + B->h;
+        if (Bmin > Amin) {
+            Amin = Bmin;
+        }
+        if (Bmax < Amax) {
+            Amax = Bmax;
+        }
+
+        if (Amax <= Amin){
+            return false;
+        }
+
+        return true;
+    }
+
+    /* Use the Cohen-Sutherland algorithm for line clipping */
+    #define CODE_BOTTOM 1
+    #define CODE_TOP    2
+    #define CODE_LEFT   4
+    #define CODE_RIGHT  8
+
+    static int ComputeOutCode(rect* rect, int x, int y)
+    {
+        int code = 0;
+        if (y < 0)
+        {
+            code |= CODE_TOP;
+        } else if (y >= rect->y + rect->h)
+        {
+            code |= CODE_BOTTOM;
+        }
+        if (x < 0)
+        {
+            code |= CODE_LEFT;
+        } else if (x >= rect->x + rect->w)
+        {
+            code |= CODE_RIGHT;
+        }
+
+        return code;
+    }
+
+    bool intersectRectAndLine(rect* rect, int* X1, int* Y1, int* X2, int* Y2)
+    {
+       int x = 0;
+       int y = 0;
+       int x1, y1;
+       int x2, y2;
+       int rectx1;
+       int recty1;
+       int rectx2;
+       int recty2;
+       int outcode1, outcode2;
+
+       if (!rect) {
+           //SDL_InvalidParamError("rect");
+           return false;
+       }
+
+       if (!X1) {
+           //SDL_InvalidParamError("X1");
+           return false;
+       }
+
+       if (!Y1) {
+           //SDL_InvalidParamError("Y1");
+           return false;
+       }
+
+       if (!X2) {
+           //SDL_InvalidParamError("X2");
+           return false;
+       }
+
+       if (!Y2) {
+           //SDL_InvalidParamError("Y2");
+           return false;
+       }
+
+       // Special case for empty rect
+       //if (SDL_RectEmpty(rect)) {
+       //    return SDL_FALSE;
+       //}
+
+        x1 = *X1;
+        y1 = *Y1;
+        x2 = *X2;
+        y2 = *Y2;
+        rectx1 = rect->x;
+        recty1 = rect->y;
+        rectx2 = rect->x + rect->w - 1;
+        recty2 = rect->y + rect->h - 1;
+
+         // Check to see if entire line is inside rect
+         if (x1 >= rectx1 && x1 <= rectx2 && x2 >= rectx1 && x2 <= rectx2 &&
+             y1 >= recty1 && y1 <= recty2 && y2 >= recty1 && y2 <= recty2) {
+             return true;
+         }
+
+         // Check to see if entire line is to one side of rect
+         if ((x1 < rectx1 && x2 < rectx1) || (x1 > rectx2 && x2 > rectx2) ||
+             (y1 < recty1 && y2 < recty1) || (y1 > recty2 && y2 > recty2)) {
+             return false;
+         }
+
+         if (y1 == y2)
+         {
+             // Horizontal line, easy to clip
+             if (x1 < rectx1)
+             {
+                 *X1 = rectx1;
+             } else if (x1 > rectx2)
+             {
+                 *X1 = rectx2;
+             }
+
+             if (x2 < rectx1)
+             {
+                 *X2 = rectx1;
+             } else if (x2 > rectx2)
+             {
+                 *X2 = rectx2;
+             }
+             return true;
+         }
+
+         if (x1 == x2)
+         {
+             // Vertical line, easy to clip
+             if (y1 < recty1)
+             {
+                 *Y1 = recty1;
+             } else if (y1 > recty2)
+             {
+                 *Y1 = recty2;
+             }
+
+             if (y2 < recty1)
+             {
+                 *Y2 = recty1;
+             } else if (y2 > recty2)
+             {
+                 *Y2 = recty2;
+             }
+             return true;
+         }
+
+         // More complicated Cohen-Sutherland algorithm
+         outcode1 = ComputeOutCode(rect, x1, y1);
+         outcode2 = ComputeOutCode(rect, x2, y2);
+         while (outcode1 || outcode2)
+         {
+             if (outcode1 & outcode2)
+             {
+                 return false;
+             }
+
+             if (outcode1)
+             {
+                 if (outcode1 & CODE_TOP) {
+                     y = recty1;
+                     x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
+                 } else if (outcode1 & CODE_BOTTOM) {
+                     y = recty2;
+                     x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
+                 } else if (outcode1 & CODE_LEFT) {
+                     x = rectx1;
+                     y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
+                 } else if (outcode1 & CODE_RIGHT) {
+                     x = rectx2;
+                     y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
+                 }
+                 x1 = x;
+                 y1 = y;
+                 outcode1 = ComputeOutCode(rect, x, y);
+             } else {
+                 if (outcode2 & CODE_TOP) {
+                     y = recty1;
+                     x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
+                 } else if (outcode2 & CODE_BOTTOM) {
+                     y = recty2;
+                     x = x1 + ((x2 - x1) * (y - y1)) / (y2 - y1);
+                 } else if (outcode2 & CODE_LEFT) {
+                     x = rectx1;
+                     y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
+                 } else if (outcode2 & CODE_RIGHT) {
+                     x = rectx2;
+                     y = y1 + ((y2 - y1) * (x - x1)) / (x2 - x1);
+                 }
+                 x2 = x;
+                 y2 = y;
+                 outcode2 = ComputeOutCode(rect, x, y);
+             }
+         }
+
+         *X1 = x1;
+         *Y1 = y1;
+         *X2 = x2;
+         *Y2 = y2;
+         return true;
+     }
+
     // This is a generalized implementation of the liang-barsky algorithm, which also returns
     // the normals of the sides where the segment intersects.
     // Returns false if the segment never touches the rect
@@ -185,6 +424,7 @@ namespace dang_collision {
 
     bool rectContainsPoint(int32_t x, int32_t y, int32_t w, int32_t h, int32_t px, int32_t py)
     {
+        /*
         // TODO DELTA?
         int32_t dx = (px-x) > DELTA;
         int32_t dy = (py-y) > DELTA;
@@ -192,6 +432,9 @@ namespace dang_collision {
         int32_t dh = (y+h-py) > DELTA;
 
         return dx && dy && dw && dh;
+         */
+
+        return ( (px >= x) && (px < (x + w)) && (py >= y) && (py < (y + h)) ) ? true : false;
     }
 
     bool rectContainsPoint(rect* r, int32_t px, int32_t py)
@@ -242,7 +485,10 @@ namespace dang_collision {
         // Calculate the minkowski difference between 2 elements (me and other)
         //x, y, w, h := GetDiffByItems(item, other) -> original, but wrong IMHO
         //x, y, w, h := GetDiff(goalX, goalY, item.W, item.H, other.X, other.Y, other.W, other.H)
+        //rect rm = {goal->x, goal->y, r->w, r->h};
         rect rMnkwsk = getDiff(r, other);
+
+        //std::cout << " mnk:" << rMnkwsk.x << "-" << rMnkwsk.y << "-" << rMnkwsk.y << "-" << rMnkwsk.h ;
 
         bool overlaps = false;
         float_t ti = 0.0f;
@@ -250,9 +496,14 @@ namespace dang_collision {
         // todo unsure if int8 is better
         point normal = {0,0};
 
+        rect ro = {other->x, other->y, other->width, other->height};
+        rect rm = {goal->x, goal->y, r->w, r->h};
+
         // is me intersecting with other?
-        if(rectContainsPoint(&rMnkwsk, 0, 0))
+        if(hasIntersection(&ro, &rm))
         {
+        //if(rectContainsPoint(&rMnkwsk, 0, 0))
+        //{
             point p = rectGetNearestCorner(&rMnkwsk, 0, 0);
 
             // area of intersection
@@ -271,6 +522,30 @@ namespace dang_collision {
             point p2 = {difference.x, difference.y};
 
             // bool getSegmentIntersectionIndices(rect* r, point* p1, point* p2, float_t ti1, float_t ti2, indices* indOut)
+            // TODO replace by SDL IntersectRectAndLine -> currentxy -> goalxy as line, other as rect
+
+            int x1 = r->x;
+            int y1 = r->y;
+
+            int x2 = goal->x;
+            int y2 = goal->y;
+
+            // does item tunnel through other?
+            bool doesIntersect = intersectRectAndLine(&ro, &x1, &y1, &x2, &y2);
+            if(doesIntersect)
+            {
+                // find out where it hits
+                // handle (depending on strategy, move back, kill, ?)
+                std::cout << " tunneling!" << std::endl;
+
+            }
+            else
+            {
+                return false; // no collision whatsoever..
+            }
+
+            /*
+             * Was:
             bool hasResult = getSegmentIntersectionIndices(&rMnkwsk, &p1, &p2, -FLT_MAX, FLT_MAX, &indOut);
             if(hasResult)
             {
@@ -284,9 +559,9 @@ namespace dang_collision {
                     overlaps = false;
                 }
             } else {
-                // TODO check: not sure, but probably what is needed
-                return false;
+                return false; // no collision whatsoever.. could be handled differently?
             }
+             */
         }
 
         // todo: unsure, no movement? -> probably not needed since hasResult = false results in return as well
@@ -363,6 +638,13 @@ namespace dang_collision {
         col->normal = normal;
         col->touch = touch;
 
+        if(col->overlaps){
+            std::cout << "ti: " << col->ti;
+            std::cout << " | mv: " << col->move.x << "," << col->move.y;
+            std::cout << " | n: " << col->normal.x << "," << col->normal.y;
+            std::cout << " | t: " << col->touch.x << "," << col->touch.y << std::endl;
+        }
+
         //return true;
         return overlaps;
     }
@@ -396,7 +678,8 @@ namespace dang_collision {
 
             // only handle the ones we did not already handle
             bool exists = (visitedSprites.find(other) != visitedSprites.end());
-            if(!exists){
+            if(!exists)
+            {
                 visitedSprites.insert(other);
 
                 // ask other item if it wants to collide
@@ -461,13 +744,12 @@ namespace dang_collision {
         col->slide.x = goal->x;
         col->slide.y = goal->y;
 
-        rect r = {col->touch.x, col->touch.y, me->width, me->height};
+        //rect r = {col->touch.x, col->touch.y, me->width, me->height};
+        rect r = {goal->x, goal->y, me->width, me->height};
 
-        std::vector<dang_collision::collision> pc;
+        std::cout << " - SLIDE " << col->touch.x << "," << col->touch.y << " ";
 
-        //std::cout << " - SLIDE " << col->touch.x << "," << col->touch.y << " - ";
-
-        projectCollisions(lvl, me, &r, goal, &pc);
+        projectCollisions(lvl, me, &r, goal, projectedCollisions);
     }
 
     // TODO has some edge case where it bounces too much
@@ -518,7 +800,7 @@ namespace dang_collision {
         //moveto->x = goal->x;
         //moveto->y = goal->y;
 
-        //std::cout << "check id: " << me->id << " goal.x " << goal->x << " goal.y " << goal->y;
+        std::cout << "check id: " << me->id << " is: " << me->x << "," << me->y << " goal:" << goal->x << "," << goal->y;
 
         // check projected colls if they really collide, generate a new list and return that one
         for (auto i =projectedCollisions.begin(); i!=projectedCollisions.end(); ++i)
@@ -529,6 +811,8 @@ namespace dang_collision {
 
             col.me->isHit = true;
             col.other->isHit = true;
+
+            std::cout << "check id: " << me->id << " is: " << me->x << "," << me->y << " her:" << col.other->x << "+" << col.other->width << " - ";
 
             std::vector<collision> lC;
 
@@ -555,7 +839,7 @@ namespace dang_collision {
             }
         }
 
-        //std::cout << " - after processing goal.x " << goal->x << " goal.y " << goal->y << std::endl;
+        std::cout << " - after processing goal.x " << goal->x << " goal.y " << goal->y << std::endl;
 
     }
 
@@ -577,6 +861,8 @@ namespace dang_collision {
         {
             me->y = moveto->y;
         }
+
+        std::cout << "id: " << me->id << " pos: " << me->x << "," << me->y << std::endl;
     }
 
     // called on every move of every sprite
