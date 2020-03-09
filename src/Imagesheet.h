@@ -14,6 +14,7 @@ namespace dang
     {
     public:
         Imagesheet(uint8_t *data, blit::PixelFormat format, const blit::packed_image *image, const uint16_t cols = 1, const uint16_t rows = 1);
+        ~Imagesheet();
         void setCols(uint16_t const cols);
         void setRows(uint16_t const rows);
         void setColsAndRows(uint16_t const cols, uint16_t const rows);
@@ -30,16 +31,13 @@ namespace dang
         blit::Rect getRect(const blit::Point &p);
         blit::Rect getRect(const blit::Rect &r);
 
-        void setBits(const uint16_t bits, const uint16_t col, const uint16_t row);
-        void setBits(const uint16_t bits, const uint16_t index = 0);
+        std::string _name{};
 
     protected:
         uint16_t    _cols{1};
         uint16_t    _rows{1};
         blit::Size  _img_size{0,0};
 
-        // TODO: should be BitField
-        std::vector<uint16_t>  _bits{0};
 
         void        update_image_size();
     };

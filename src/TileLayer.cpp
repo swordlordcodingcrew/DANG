@@ -1,5 +1,122 @@
+// (c) 2019-20 by SwordLord - the coding crew
+// This file is part of the DANG game framework
 //
-// Created by fm on 2/21/20.
+// Created by LordFilu on 21.2.20.
 //
 
+#include "dang_globals.hpp"
 #include "TileLayer.h"
+#include "Layer.h"
+#include "Gear.h"
+
+namespace dang
+{
+
+    TileLayer::TileLayer() : Layer(Layer::LT_TILELAYER)
+    {
+
+    }
+
+    TileLayer::~TileLayer()
+    {
+
+    }
+
+    TileLayer::TileLayer(const blit::Size &tilesize_px, const blit::Point &layerpos_px, const blit::Size &layersize_px,
+                         const std::vector<tile> &tiles, blit::Size &wordlsize_tu, std::shared_ptr<Imagesheet> is)
+            : Layer(Layer::LT_TILELAYER), _tilesize(tilesize_px), _tiles(tiles), _worldsize_tu(wordlsize_tu),
+              _imagesheet(is)
+    {
+        _size.x = layerpos_px.x;
+        _size.y = layerpos_px.y;
+        _size.w = layersize_px.w;
+        _size.h = layersize_px.h;
+    }
+
+    TileLayer::TileLayer(const blit::Point& layerpos_px, const tileset &tileset, const tilelayer &tilelayer, std::shared_ptr<Imagesheet> is) : Layer(Layer::LT_TILELAYER)
+    {
+        _tilesize.w = tileset.tileWidth;
+        _tilesize.h = tileset.tileHeight;
+        _tiles = tilelayer.tiles;
+        _worldsize_tu.w = tilelayer.width;
+        _worldsize_tu.h = tilelayer.height;
+        _imagesheet = is;
+
+        _size.x = layerpos_px.x;
+        _size.y = layerpos_px.y;
+        _size.w = _worldsize_tu.w * _tilesize.w;
+        _size.h = _worldsize_tu.h * _tilesize.h;
+
+    }
+
+    void TileLayer::update(uint32_t time, const Gear& gear)
+    {
+
+    }
+
+    void TileLayer::render(const Gear& gear)
+    {
+        blit::Rect vp = gear.getViewport();
+        blit::Rect vp_tu{0,0,0,0};
+        vp_tu.x = vp.x / _tilesize.w;
+        vp_tu.w = vp.w / _tilesize.w;
+        vp_tu.y = vp.y / _tilesize.h;
+        vp_tu.h = vp.h / _tilesize.h;
+        int32_t offset_x = vp.x % _tilesize.w;
+        int32_t offset_y = vp.y % _tilesize.h;
+
+        if (vp_tu.x + vp_tu.w > _worldsize_tu.w)
+        {
+            vp_tu.x = _worldsize_tu.w - vp_tu.w;
+        }
+
+        if (vp_tu.y + vp_tu.h > _worldsize_tu.h)
+        {
+            vp_tu.y = _worldsize_tu.h - vp_tu.h;
+        }
+
+        for (int32_t x = vp_tu.x; x < vp_tu.x + vp_tu.w; x++)
+        {
+            for (int32_t y = vp_tu.y; y < vp_tu.y + vp_tu.h; y++)
+            {
+                dang::tile t = _tiles[x + (y * _worldsize_tu.w)];
+
+                uint8_t transform = (t.isFlippedHorizontally ? blit::SpriteTransform::HORIZONTAL : uint8_t(0)) |
+                                    (t.isFlippedVertically ? blit::SpriteTransform::VERTICAL : uint8_t(0)) |
+                                    (t.isFlippedAntiDiagonally ? blit::SpriteTransform::XYSWAP : uint8_t(0));
+
+                blit::Point p(x * _tilesize.w + offset_x, y * _tilesize.h + offset_y);
+                gear.renderImage(_imagesheet, t.id, p, transform);
+
+            }
+        }
+
+/*        int32_t camX = _size.w / _tilesize.w;
+        int32_t modX = _size.w % _tilesize.w;
+        int32_t camY = _size.h / _tilesize.h;
+        int32_t modY = _size.h % _tilesize.h;
+
+        int32_t sizeX = _size.w / _tilesize.w;
+        int32_t sizeY = _size.h / _tilesize.h;
+
+        for (int32_t x = camX; x < camX + sizeX; x++)
+        {
+            for (int32_t y = camY; y < camY + sizeY; y++)
+            {
+                dang::tile t = _tiles[x + (y * _worldsize_tu.w)];
+
+                uint8_t transform = (t.isFlippedHorizontally ? blit::SpriteTransform::HORIZONTAL : uint8_t(0)) |
+                        (t.isFlippedVertically ? blit::SpriteTransform::VERTICAL : uint8_t(0)) |
+                        (t.isFlippedAntiDiagonally ? blit::SpriteTransform::XYSWAP : uint8_t(0));
+
+                // TODO: viewport and layer-position to be implemented
+                blit::Point p(((x - camX) * _tilesize.w) - modX, ((y - camY) * _tilesize.h) - modY);
+                gear.renderImage(_imagesheet, t.id, p, transform);
+//                blit::screen.sprite(rect(tx, ty, 2, 2), point(((x - camX) * tsWidth) - modX, ((y - camY) * tsHeight) - modY), transform);
+            }
+        }
+*/
+    }
+
+
+}

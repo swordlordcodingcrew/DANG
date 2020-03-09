@@ -32,6 +32,11 @@ namespace dang
         update_image_size();
     }
 
+    Imagesheet::~Imagesheet()
+    {
+        // TODO: should we delete some data?
+    }
+
     /**
      * Set the number of columns of imagesheet
      *
@@ -83,8 +88,6 @@ namespace dang
     {
         _img_size.h = bounds.h / _rows;
         _img_size.w = bounds.w / _cols;
-
-        _bits.resize(_cols * _rows);
     }
 
     /**
@@ -209,18 +212,5 @@ namespace dang
 
         return std::make_shared<Imagesheet>(buffer, (blit::PixelFormat)image->format, image, cols, rows);
     }
-
-    void Imagesheet::setBits(const uint16_t bits, const uint16_t index)
-    {
-        assert(index < _bits.size());
-
-        _bits[index] = bits;
-    }
-
-    void Imagesheet::setBits(const uint16_t bits, const uint16_t col, const uint16_t row)
-    {
-        setBits(bits, col + _cols * row);
-    }
-
 
 }

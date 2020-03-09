@@ -7,6 +7,7 @@
 #include "dang_globals.hpp"
 #include <float.h>
 #include <set>
+#include <iostream>
 
 using namespace dang;
 

@@ -10,7 +10,6 @@ namespace dang
 {
     Sprite::Sprite()
     {
-
     }
 
     Sprite::~Sprite()
@@ -18,12 +17,12 @@ namespace dang
 
     }
 
-    Sprite::Sprite(const Sprite &sp)
+/*    Sprite::Sprite(const Sprite &sp)
     {
 
     }
-
-    Sprite::Sprite(const spriteobject &so)
+*/
+    Sprite::Sprite(const spriteobject &so, std::shared_ptr<Imagesheet> is)
     {
         _id = so.id; // global
         _type = so.type;
@@ -33,9 +32,8 @@ namespace dang
         _size.h = so.height;
         _visible = so.visible;
         _img_index = so.tile;
-        //_tileset = so.tileset;
+        _imagesheet = is;
     }
-
 
     uint16_t Sprite::wantToCollideWith(std::shared_ptr<sprite> other)
     {
@@ -87,7 +85,18 @@ namespace dang
     void Sprite::coreUpdate(uint32_t time)
     {
         _last_pos = _pos;
+        _is_hit = false;
         updateTweens(time);
+    }
+
+    void Sprite::update(uint32_t time)
+    {
+
+    }
+
+    blit::Rect Sprite::getSizeRect()
+    {
+        return blit::Rect(_pos.x, _pos.y, _size.w, _size.h);
     }
 
 }

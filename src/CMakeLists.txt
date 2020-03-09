@@ -11,8 +11,18 @@ list(APPEND SOURCES
     tween/TwMove.h
     Imagesheet.cpp
     Imagesheet.h
+        Sprite.cpp
+        Sprite.h
+        Gear.cpp
+        Gear.h
+        Layer.cpp
+        Layer.h
+        TileLayer.cpp
+        TileLayer.h
+        SpriteLayer.cpp
+        SpriteLayer.h
 )
 
-add_library(DANG STATIC ${SOURCES} Sprite.cpp Sprite.h)
+add_library(DANG STATIC ${SOURCES} )
 
 target_include_directories(DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -11,6 +11,9 @@
 
 #pragma once
 
+#define __GEAR
+#define __GEAR_DEBUG
+
 #include <unordered_map>
 #include <forward_list>
 #include <vector>
@@ -162,13 +165,13 @@ namespace dang {
         }
         */
 
-        rect* getHotrect()
+/*        rect* getHotrect()
         {
             rect r = {this->x, this->y, this->width, this->height};
 
             return &r;
         }
-    };
+*/    };
 
     enum layerType{ltTile, ltObjects};
 
