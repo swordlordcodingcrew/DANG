@@ -20,7 +20,6 @@ namespace dang
     protected:
         std::vector<uint16_t>   _indices{0};
 
-
     };
 
 }

@@ -26,8 +26,6 @@ namespace dang
 
     void Gear::initLevel(level &lvl, blit::Rect& viewport)
     {
-//        _lvl = lvl;
-
         _viewport = viewport;
 
         _world.w = lvl.w.getWidthInPixel();
@@ -45,26 +43,6 @@ namespace dang
         addImagesheet("background", bg_is);
         std::shared_ptr<Imagesheet> pl_is = std::shared_ptr<Imagesheet>(lvl.imagesheets["players"]);
         addImagesheet("players", pl_is);
-
-
-        // TODO: ugly hack, test and clean up
-/*        for (std::shared_ptr<layer>& l : lvl.layers)
-        {
-            if (l->type == ltObjects)
-            {
-                std::shared_ptr<dang::objectlayer>& ol = std::static_pointer_cast<dang::objectlayer>(&l);
-                for (spriteobject& so : ol->so)
-                {
-                    if (_viewport.contains(blit::Point(so.x, so.y)))
-                    {
-                        std::shared_ptr<Sprite> spr = std::make_shared(Sprite(so));
-                        _sprites.push_front(spr);
-                    }
-                }
-            }
-
-        }
-*/
 
     }
 
@@ -126,7 +104,7 @@ namespace dang
         _imagesheets.erase(key);
     }
 
-    void Gear::renderImage(const std::shared_ptr<Imagesheet> is, const uint16_t im_id, const blit::Point &dest, const uint8_t transform) const
+/*    void Gear::renderImage(const std::shared_ptr<Imagesheet> is, const uint16_t im_id, const blit::Point &dest, const uint8_t transform) const
     {
         if (is == nullptr) return;
 
@@ -134,11 +112,10 @@ namespace dang
         {
             blit::screen.sprites = is.get();
         }
-//        - s->height
-//        blit::screen.blit_sprite(is->getRect(im_id), blit::Point(dest.x - _viewport.x, dest.y - _viewport.y), transform);
+
         blit::screen.blit_sprite(is->getRect(im_id), dest, transform);
     }
-
+*/
     void Gear::addLayer(std::shared_ptr<Layer> layer)
     {
         _layers.push_front(layer);
@@ -153,6 +130,16 @@ namespace dang
     {
         _layers.remove(layer);
     }
+
+    std::shared_ptr<Layer> Gear::getLayerByName(std::string &name)
+    {
+        std::forward_list<std::shared_ptr<Layer>>::iterator layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
+        {
+            return (val->_name == name);
+        });
+        return (*layer_it);
+    }
+
 
     blit::Rect Gear::getActiveWorld() const
     {
@@ -169,6 +156,7 @@ namespace dang
         _viewport.x = pos.x;
         _viewport.y = pos.y;
     }
+
 
 
 }

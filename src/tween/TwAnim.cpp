@@ -5,6 +5,7 @@
 //
 
 #include <iostream>
+#include <Sprite.h>
 #include "TwAnim.h"
 #include "../dang_globals.hpp"
 
@@ -44,7 +45,7 @@ namespace dang
     {
         if (_the_object == nullptr) return;
 
-        std::shared_ptr<sprite> spr = std::static_pointer_cast<sprite>(_the_object);
+        std::shared_ptr<Sprite> spr = std::static_pointer_cast<Sprite>(_the_object);
 
         float fx = calc(time);
         uint16_t ind = uint16_t(fx * (_indices.size()));

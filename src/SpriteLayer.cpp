@@ -4,10 +4,12 @@
 // Created by LordFilu on 02.03.20.
 //
 
+#include <iostream>
 #include "Gear.h"
 #include "SpriteLayer.h"
 #include "Sprite.h"
 #include "Layer.h"
+#include "Imagesheet.h"
 
 namespace dang
 {
@@ -53,15 +55,25 @@ namespace dang
 
     void SpriteLayer::render(const Gear &gear)
     {
+        blit::Rect vp = gear.getViewport();
+
         for (std::shared_ptr<Sprite>& spr : _sprites)
         {
-            if (spr->_visible)
+            if (spr->_visible && spr->_imagesheet != nullptr)
             {
-                blit::Rect dr = gear.getViewport().intersection(spr->getSizeRect());
+                blit::Rect dr = vp.intersection(spr->getSizeRect());
                 if (!dr.empty())
                 {
-                    gear.renderImage(spr->_imagesheet, spr->_img_index, spr->getPos(), spr->_transform);
+                    if (blit::screen.sprites != spr->_imagesheet.get())
+                    {
+                        blit::screen.sprites = spr->_imagesheet.get();
+                    }
+
+                    blit::Rect sr = spr->_imagesheet->getRect(spr->_img_index);
+                    blit::screen.blit_sprite(sr, spr->getPos() - vp.tl(), spr->_transform);
+
                 }
+
             }
 #ifdef __GEAR_DEBUG
 
@@ -75,14 +87,17 @@ namespace dang
                 blit::screen.pen(blit::RGBA(0, 0, 255, 255));
             }
 
-            blit::Rect dr = gear.getViewport().intersection(spr->getSizeRect());
-            blit::screen.line(dr.tl(), dr.bl()); // left -> bottom
-            blit::screen.line(dr.bl(), dr.br()); // bottom -> right
-            blit::screen.line(dr.br(), dr.tr()); // right -> top
-            blit::screen.line(dr.tr(), dr.tl()); // top -> left
-
+            blit::Rect ddr = gear.getViewport().intersection(spr->getSizeRect());
+            if (!ddr.empty())
+            {
+                ddr.x -= gear.getViewport().x;
+                ddr.y -= gear.getViewport().y;
+                blit::screen.line(ddr.tl(), ddr.bl()); // left -> bottom
+                blit::screen.line(ddr.bl(), ddr.br()); // bottom -> right
+                blit::screen.line(ddr.br(), ddr.tr()); // right -> top
+                blit::screen.line(ddr.tr(), ddr.tl()); // top -> left
+            }
             blit::screen.pen(blit::RGBA(0, 0, 0, 255));
-
 #endif
 
         }

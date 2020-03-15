@@ -24,7 +24,7 @@ namespace dang
 
         void    update(uint32_t time);
         void    render(uint32_t time);
-        void    renderImage(const std::shared_ptr<Imagesheet> is, const uint16_t im_id, const blit::Point& dest, const uint8_t transform) const;
+//        void    renderImage(const std::shared_ptr<Imagesheet> is, const uint16_t im_id, const blit::Point& dest, const uint8_t transform) const;
 
         std::shared_ptr<Imagesheet> getImagesheetByName(std::string& name);
         void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
@@ -32,6 +32,7 @@ namespace dang
 
         void        addLayer(std::shared_ptr<Layer> layer);
         void        removeLayer(std::shared_ptr<Layer> layer);
+        std::shared_ptr<Layer>  getLayerByName(std::string& name);
 
         blit::Rect  getActiveWorld() const;
         blit::Rect  getViewport() const { return _viewport; }

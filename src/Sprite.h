@@ -45,11 +45,11 @@ namespace dang
         std::shared_ptr<Imagesheet>     _imagesheet{nullptr};
         uint8_t                         _transform{blit::SpriteTransform::NONE};      // transform for blitting
         int32_t                         _z_order{0};
+        std::string                     _type{""};
 
     protected:  // variables
         //std::string name; // not needed, the reference contains the name
         uint16_t        _id; // global
-        std::string     _type;
         blit::Size      _size{0,0};
 
 

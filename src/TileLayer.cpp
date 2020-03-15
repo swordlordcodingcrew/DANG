@@ -4,10 +4,12 @@
 // Created by LordFilu on 21.2.20.
 //
 
+#include <iostream>
 #include "dang_globals.hpp"
 #include "TileLayer.h"
 #include "Layer.h"
 #include "Gear.h"
+#include "Imagesheet.h"
 
 namespace dang
 {
@@ -56,6 +58,16 @@ namespace dang
 
     void TileLayer::render(const Gear& gear)
     {
+        if (_imagesheet == nullptr)
+        {
+            return;
+        }
+
+        if (blit::screen.sprites != _imagesheet.get())
+        {
+            blit::screen.sprites = _imagesheet.get();
+        }
+
         blit::Rect vp = gear.getViewport();
         blit::Rect vp_tu{0,0,0,0};
         vp_tu.x = vp.x / _tilesize.w;
@@ -85,9 +97,9 @@ namespace dang
                                     (t.isFlippedVertically ? blit::SpriteTransform::VERTICAL : uint8_t(0)) |
                                     (t.isFlippedAntiDiagonally ? blit::SpriteTransform::XYSWAP : uint8_t(0));
 
-                blit::Point p(x * _tilesize.w + offset_x, y * _tilesize.h + offset_y);
-                gear.renderImage(_imagesheet, t.id, p, transform);
-
+//                blit::Point p(x * _tilesize.w - offset_x, y * _tilesize.h - offset_y);
+                blit::Point p(x * _tilesize.w - vp.x, y * _tilesize.h - vp.y);
+                blit::screen.blit_sprite(_imagesheet->getRect(t.id), p, transform);
             }
         }
 
