@@ -1,10 +1,10 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-//
-// Created by LordFilu on 31.1.20.
-//
+// (c) 2019-20 by SwordLord - the coding crew
 
 #include "Sprite.h"
+#include "tmx_def.h"
+#include "tween/Tweenable.h"
 
 namespace dang
 {
@@ -22,7 +22,7 @@ namespace dang
 
     }
 */
-    Sprite::Sprite(const spriteobject &so, std::shared_ptr<Imagesheet> is)
+    Sprite::Sprite(const tmx_spriteobject &so, std::shared_ptr<Imagesheet> is)
     {
         _id = so.id; // global
         _type = so.type;
@@ -35,13 +35,13 @@ namespace dang
         _imagesheet = is;
     }
 
-    uint16_t Sprite::wantToCollideWith(std::shared_ptr<sprite> other)
+    uint16_t Sprite::wantToCollideWith(std::shared_ptr<Sprite> other)
     {
-        if (_type == "coin")
+/*        if (_type == "coin")
         {
             return cross_me;
         }
-        else if (other->type == "hero")
+        else if (other->_type == "hero")
         {
             return slide_over_me;
         }
@@ -49,7 +49,7 @@ namespace dang
         {
             return touch_me;
         }
-
+*/
         return 0;
     }
 

@@ -1,18 +1,20 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-//
-// Created by LordFilu on 16.2.20.
-//
+// (c) 2019-20 by SwordLord - the coding crew
 
 #pragma once
 
 #include "dang_globals.hpp"
+#include <unordered_map>
+#include <forward_list>
 
 namespace dang
 {
+    struct tmx_level;
+
     class Sprite;
-//    class level;
     class Layer;
+    class Imagesheet;
 
     class Gear
     {
@@ -20,7 +22,7 @@ namespace dang
         Gear();
         virtual ~Gear();
 
-        void    initLevel(level& lvl, blit::Rect& viewport);
+        void    initLevel(tmx_level& lvl, blit::Rect& viewport);
 
         void    update(uint32_t time);
         void    render(uint32_t time);

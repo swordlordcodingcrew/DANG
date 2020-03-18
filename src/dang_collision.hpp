@@ -9,6 +9,7 @@
 #include <set>
 #include <iostream>
 
+#ifndef __GEAR
 using namespace dang;
 
 namespace dang_collision {
@@ -876,3 +877,5 @@ namespace dang_collision {
         update(me, goal);
     }
 } // End Of Namespace DANG_COLLISION
+
+#endif

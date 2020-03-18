@@ -14,13 +14,17 @@
 #define __GEAR
 #define __GEAR_DEBUG
 
-#include <unordered_map>
-#include <forward_list>
-#include <vector>
-#include <memory>
+#include "../../../../../32blit/32blit.hpp"
+
+//#include <unordered_map>
+//#include <forward_list>
+//#include <vector>
+//#include <memory>
 //#include <32blit.hpp>
 //#include "Imagesheet.h"
-#include "tween/TwAnim.h"
+//#include "tween/TwAnim.h"
+
+#ifndef __GEAR
 
 namespace dang {
 
@@ -34,7 +38,7 @@ namespace dang {
 
     // #include <globals>.h
     // TODO: move to globals
-    struct tileset
+    struct tmx_tileset
     {
         std::string name; // this name is the reference to the image
         uint16_t tileCount;
@@ -43,18 +47,18 @@ namespace dang {
 
         /*
         TODO: to be considered
-        backgroundColor : color 	Background color for this tileset in the Tilesets view.
-        tileSpacing : int [read‑only] 	Spacing between tiles in this tileset in pixels.
-        margin : int [read‑only] 	Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
-        tileOffset : point 	Offset in pixels that is applied when tiles from this tileset are rendered.
+        backgroundColor : color 	Background color for this tmx_tileset in the Tilesets view.
+        tileSpacing : int [read‑only] 	Spacing between tiles in this tmx_tileset in pixels.
+        margin : int [read‑only] 	Margin around the tmx_tileset in pixels (only used at the top and left sides of the tmx_tileset image).
+        tileOffset : point 	Offset in pixels that is applied when tiles from this tmx_tileset are rendered.
         */
     };
 
     // TODO: move to globals
-    struct tile
+    struct tmx_tile
     {
         uint16_t id;
-        uint16_t tileset;
+        uint16_t tmx_tileset;
 
         // actually values from the cell...
         uint8_t isFlippedHorizontally : 1;
@@ -65,7 +69,7 @@ namespace dang {
     // TODO: add properties
     // Object.properties() : object
     // TODO: move to globals
-    struct spriteobject
+    struct tmx_spriteobject
     {
         uint16_t id; // global
         //std::string name; // not needed, the reference contains the name
@@ -76,8 +80,8 @@ namespace dang {
         int32_t width;
         int32_t height;
         bool visible;
-        uint16_t tileset;
-        uint16_t tile;
+        uint16_t tmx_tileset;
+        uint16_t tmx_tile;
 
         uint16_t    _img_index{0};
 
@@ -90,12 +94,12 @@ namespace dang {
         textAlignment : Alignment 	The alignment of a text object.
         wordWrap : bool 	Whether the text of a text object wraps based on the width of the object.
         textColor : color 	Color of a text object.
-        tileFlippedHorizontally : bool 	Whether the tile is flipped horizontally.
-        tileFlippedVertically : bool 	Whether the tile is flipped vertically.
+        tileFlippedHorizontally : bool 	Whether the tmx_tile is flipped horizontally.
+        tileFlippedVertically : bool 	Whether the tmx_tile is flipped vertically.
         */
     };
 
-    struct sprite : spriteobject
+    struct sprite : tmx_spriteobject
     {
         int8_t   velX = 0;
         int8_t   velY = 0;
@@ -105,7 +109,7 @@ namespace dang {
         std::forward_list<std::shared_ptr<Tweenable>> _tweens;
 
     public:
-        sprite(uint16_t id, std::string type, uint16_t x, uint16_t y, uint16_t width, uint16_t height, bool visible, uint16_t tileset, uint16_t tile)
+        sprite(uint16_t id, std::string type, uint16_t x, uint16_t y, uint16_t width, uint16_t height, bool visible, uint16_t tmx_tileset, uint16_t tmx_tile)
         {
             this->id = id;
             this->type = type;
@@ -114,8 +118,8 @@ namespace dang {
             this->width = width;
             this->height = height;
             this->visible = visible;
-            this->tileset = tileset;
-            this->tile = tile;
+            this->tmx_tileset = tmx_tileset;
+            this->tmx_tile = tmx_tile;
         }
 
         uint16_t wantToCollideWith(std::shared_ptr<sprite> other)
@@ -173,25 +177,25 @@ namespace dang {
         }
 */    };
 
-    enum layerType{ltTile, ltObjects};
+    enum tmx_layerType{ltTile, ltObjects};
 
-    struct layer
+    struct tmx_layer
     {
         std::string name;
         float opacity;
         bool visible;
-        uint8_t type; // 0 = tile, 1 = objects
+        uint8_t type; // 0 = tmx_tile, 1 = objects
         // TODO: to be considered
-        //offset : point 	Offset in pixels that is applied when this layer is rendered.
-        //map : TileMap 	Map that this layer is part of (or null in case of a standalone layer).
+        //offset : point 	Offset in pixels that is applied when this tmx_layer is rendered.
+        //map : TileMap 	Map that this tmx_layer is part of (or null in case of a standalone tmx_layer).
     };
 
-    struct tilelayer : layer {
+    struct tmx_tilelayer : tmx_layer {
         uint8_t width;
         uint8_t height;
-        std::vector<tile> tiles;
+        std::vector<tmx_tile> tiles;
 
-        tilelayer(std::string n, uint32_t size, tile _tiles[], uint8_t w, uint8_t h) : layer() {
+        tmx_tilelayer(std::string n, uint32_t size, tmx_tile _tiles[], uint8_t w, uint8_t h) : tmx_layer() {
             name = n;
             width = w;
             height = h;
@@ -200,16 +204,16 @@ namespace dang {
         };
     };
 
-    struct objectlayer : layer {
-        std::vector<spriteobject> so;
+    struct tmx_objectlayer : tmx_layer {
+        std::vector<tmx_spriteobject> so;
 
-        objectlayer(std::string n, uint16_t size, spriteobject _so[]) : layer() {
+        tmx_objectlayer(std::string n, uint16_t size, tmx_spriteobject _so[]) : tmx_layer() {
             name = n;
             type = 1;
             so.assign(_so, _so + size);
         };
 
-        objectlayer(spriteobject _so) : layer() {
+        tmx_objectlayer(tmx_spriteobject _so) : tmx_layer() {
             type = 1;
             so.push_back(_so);
         };
@@ -299,13 +303,13 @@ namespace dang {
     {
         // array of layers with all layers in them so that we can iterate over them
         //  to have them drawn to the screen.
-        std::vector<std::shared_ptr<layer>> layers;
-        std::unordered_map<uint8_t, tileset> tilesets;
+        std::vector<std::shared_ptr<tmx_layer>> layers;
+        std::unordered_map<uint8_t, tmx_tileset> tilesets;
 //        std::unordered_map<std::string, blit::spritesheet*> spritesheets;
         std::unordered_map<std::string, Imagesheet*> imagesheets;
 //        std::unordered_map<std::string, std::shared_ptr<Imagesheet>> imagesheets;
 
-        // TODO: sprites should know on which layer they belong...
+        // TODO: sprites should know on which tmx_layer they belong...
         std::forward_list<std::shared_ptr<sprite>> sprites;
 
         std::shared_ptr<sprite> hero;
@@ -327,3 +331,5 @@ namespace dang {
         }
     };
 } // end of namespace DANG
+
+#endif

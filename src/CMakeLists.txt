@@ -23,6 +23,6 @@ list(APPEND SOURCES
         SpriteLayer.h
 )
 
-add_library(DANG STATIC ${SOURCES} )
+add_library(DANG STATIC ${SOURCES} tmx_def.h)
 
 target_include_directories(DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

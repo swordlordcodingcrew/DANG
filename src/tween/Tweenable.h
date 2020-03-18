@@ -7,8 +7,8 @@
 
 #pragma once
 
+#include "dang_globals.hpp"
 #include <cstdint>
-#include "../../../../../../32blit/32blit.hpp"
 #include "Ease.h"
 
 namespace dang

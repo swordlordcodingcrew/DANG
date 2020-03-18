@@ -1,15 +1,13 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-//
-// Created by LordFilu on 16.2.20.
-//
+// (c) 2019-20 by SwordLord - the coding crew
 
 #include "dang_globals.hpp"
 #include "Gear.h"
 #include "Layer.h"
-#include "TileLayer.h"
 #include "Sprite.h"
 #include "Imagesheet.h"
+#include "tmx_def.h"
 #include "SpriteLayer.h"
 //#include "dang_collision.hpp"
 
@@ -24,7 +22,7 @@ namespace dang
     {
     }
 
-    void Gear::initLevel(level &lvl, blit::Rect& viewport)
+    void Gear::initLevel(tmx_level &lvl, blit::Rect& viewport)
     {
         _viewport = viewport;
 
