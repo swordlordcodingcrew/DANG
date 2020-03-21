@@ -210,6 +210,17 @@ function export32Blit(map, fileName) {
         file.writeLine("    lvl.imagesheets[\"" + key + "\"] = dang::Imagesheet::load(" + key + ");");
     })
 
+//    for (var i = 0; i < tilesets.length; ++i)
+//    {
+//        ts = tilesets[i];
+//
+//       mTS.set(ts.name, i);
+//        file.writeLine("    // Tileset: " + ts.name + " has ID: " + i);
+//        //file.writeLine("// #include \"tileset_name.hpp\"");
+//        //file.writeLine("tileset ts_" + ts.name + " = {\"" + ts.name + "\"," + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight + "};");
+//        file.writeLine("    lvl.tilesets[" + i + "] = {\"" + ts.name + "\"," + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight + "};");
+//    }
+
     //file.writeLine("");
     mTS.forEach(function(value, key) {
         //file.writeLine("    tilesets[" + value + "] = &ts_" + key + ";");
