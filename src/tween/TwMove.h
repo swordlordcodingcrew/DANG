@@ -14,13 +14,13 @@ namespace dang
     {
     public:
         TwMove();
-        TwMove(std::shared_ptr<void> the_object, const blit::Point& move_to, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        TwMove(std::shared_ptr<void> the_object, const Vec2& move_to, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         void        update(uint32_t time);
 
 
     protected:
-        blit::Point   _move_to{0, 0};
-        blit::Point   _start_from{0, 0};
+        Vec2   _move_to{0, 0};
+        Vec2   _start_from{0, 0};
 
     };
 

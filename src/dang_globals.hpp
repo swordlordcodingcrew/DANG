@@ -16,6 +16,8 @@
 
 #include "../../../../../32blit/32blit.hpp"
 
+#define spSprite std::shared_ptr<dang::Sprite>
+
 //#include <unordered_map>
 //#include <forward_list>
 //#include <vector>

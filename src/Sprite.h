@@ -29,12 +29,12 @@ namespace dang
         virtual void update(uint32_t time);
 
         // pos, vel, acc
-        blit::Point getPos() { return _pos; }
-        blit::Point getVel() { return _vel; }
-        blit::Point getAcc() { return _acc; }
-        void        setPos(const blit::Point& pos) { _pos = pos; }
-        void        setVel(const blit::Point& vel) { _vel = vel; }
-        void        setAcc(const blit::Point& acc) { _acc = acc; }
+        Vec2        getPos() { return _pos; }
+        Vec2        getVel() { return _vel; }
+        Vec2        getAcc() { return _acc; }
+        void        setPos(const Vec2& pos) { _pos = pos; }
+        void        setVel(const Vec2& vel) { _vel = vel; }
+        void        setAcc(const Vec2& acc) { _acc = acc; }
 
         uint8_t getTransform() { return _transform; }
         blit::Rect  getSizeRect();      // return size of sprite
@@ -55,13 +55,13 @@ namespace dang
         uint16_t        _id;    // global
         blit::Size      _size{0,0};
 
-        blit::Point     _pos{0,0};
-        blit::Point     _vel{0,0};
-        blit::Point     _acc{0,0};
+        Vec2     _pos{0,0};
+        Vec2     _vel{0,0};
+        Vec2     _acc{0,0};
 
         blit::Rect      _hotrect{0,0,0,0};
 
-        blit::Point           _last_pos{0,0};     // could be used for collision detection
+        Vec2           _last_pos{0,0};     // could be used for collision detection
 
         // tween depot
         std::list<std::shared_ptr<Tweenable>> _tweens;

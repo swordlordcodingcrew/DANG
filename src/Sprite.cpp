@@ -91,6 +91,8 @@ namespace dang
 
     void Sprite::update(uint32_t time)
     {
+        _vel += _acc;
+        _pos += _vel;
 
     }
 

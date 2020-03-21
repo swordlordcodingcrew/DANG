@@ -27,7 +27,7 @@ namespace dang
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwMove::TwMove(std::shared_ptr<void> the_object, const blit::Point& move_to, uint32_t duration, std::unique_ptr<Ease> ease,
+    TwMove::TwMove(std::shared_ptr<void> the_object, const Vec2& move_to, uint32_t duration, std::unique_ptr<Ease> ease,
                    int32_t loops, bool alternating, uint32_t delay)
             : _move_to(move_to), Tweenable(the_object, duration, std::move(ease), loops, alternating, delay)
     {
@@ -51,7 +51,7 @@ namespace dang
         std::shared_ptr<Sprite> spr = std::static_pointer_cast<Sprite>(_the_object);
 
         float fx = calc(time);
-        spr->setPos(blit::Point(int32_t(_start_from.x + (_move_to.x - _start_from.x) * fx), int32_t(_start_from.y + (_move_to.y - _start_from.y) * fx)));
+        spr->setPos(Vec2(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx));
 
     }
 
