@@ -4,6 +4,8 @@
 // Created by LordFilu on 25.12.19.
 //
 
+#include <vector>
+#include <cstdint>
 #include "Ease.h"
 
 namespace dang
@@ -102,6 +104,50 @@ namespace dang
     EaseInOutQuad* EaseInOutQuad::clone() const
     {
         return new EaseInOutQuad(*this);
+    }
+
+    /**
+     * custom ease for the tmx-format
+     * @param steps_ms
+     */
+    EaseStep::EaseStep(const std::vector<uint32_t>& steps_ms)
+    {
+        _steps.reserve(steps_ms.size());
+        _values.reserve(steps_ms.size());
+
+        uint32_t sum = 0;
+        for (uint32_t step : steps_ms)
+        {
+            sum += step;
+        }
+
+        for (size_t i = 0; i < steps_ms.size(); i++)
+        {
+            _steps[i] = steps_ms[i] / sum;
+            _values[i] = i / steps_ms.size();
+        }
+
+    }
+
+    float EaseStep::calc(float x)
+    {
+        uint32_t i = 0;
+        while (x < _steps[i] && i < _steps.size())
+        {
+            i++;
+        }
+
+        return _values[i];
+
+    }
+
+    /**
+     * clone pattern for polymorphic copies
+     * @return new instance of EaseStep
+     */
+    EaseStep *EaseStep::clone() const
+    {
+        return new EaseStep(*this);
     }
 }
 

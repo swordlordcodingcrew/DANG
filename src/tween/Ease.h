@@ -44,6 +44,18 @@ namespace dang
         float calc(float x);
         virtual EaseInOutQuad* clone() const override;
     };
+
+    class EaseStep : public Ease
+    {
+    public:
+        EaseStep(const std::vector<uint32_t>& steps_ms);
+        float calc(float x);
+        virtual EaseStep* clone() const override;
+    protected:
+        std::vector<float> _steps;
+        std::vector<float> _values;
+        uint32_t _pos{0};
+    };
 }
 
 /*
