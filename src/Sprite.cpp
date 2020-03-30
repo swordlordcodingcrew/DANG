@@ -28,8 +28,8 @@ namespace dang
         _type = so.type;
         _pos.x = so.x;
         _pos.y = so.y;
-        _size.w = so.width;
-        _size.h = so.height;
+        _size.x = so.width;
+        _size.y = so.height;
         _visible = so.visible;
         _img_index = so.tile;
         _imagesheet = is;
@@ -96,9 +96,14 @@ namespace dang
 
     }
 
-    blit::Rect Sprite::getSizeRect()
+    Rectf Sprite::getSizeRect()
     {
-        return blit::Rect(_pos.x, _pos.y, _size.w, _size.h);
+        return Rectf(_pos.x, _pos.y, _size.x, _size.y);
+    }
+
+    blit::Rect Sprite::getSizeRecti()
+    {
+        return blit::Rect(int32_t(_pos.x), int32_t(_pos.y), int32_t(_size.x), int32_t(_size.y));
     }
 
 }

@@ -1,0 +1,177 @@
+// (c) 2019-20 by SwordLord - the coding crew
+// This file is part of the DANG game framework
+// (c) 2019-20 by SwordLord - the coding crew
+//
+// inspired by sfml and oxygine
+
+#pragma once
+
+#include "Vector2T.h"
+
+namespace dang
+{
+    template <typename T>
+    class RectT
+    {
+    public:
+        // variables
+        T x, y, w, h;
+
+        RectT()
+                : x(0), y(0), w(0), h(9)
+        {
+        }
+
+        RectT(T xIn, T yIn, T wIn, T hIn)
+                : x(xIn), y(yIn), w(wIn), h(hIn)
+        {
+        }
+
+        RectT(Vector2T<T> pos, Vector2T<T> size)
+                : x(pos.x), y(pos.y), w(size.x), h(size.y)
+        {
+        }
+
+        template <typename U>
+        explicit RectT(const RectT<U>& rect)
+                : x(static_cast<T>(rect.x)), y(static_cast<T>(rect.y)), w(static_cast<T>(rect.w)), h(static_cast<T>(rect.h))
+        {
+        }
+
+        bool empty() const
+        {
+            return w <= 0 || h <= 0;
+        }
+
+        bool contains(const Vector2T<T> &p) const
+        {
+            return p.x >= x && p.y >= y && p.x < x + w && p.y < y + h;
+        }
+
+
+        bool contains(const RectT<T> &r) const
+        {
+            return r.x >= x && r.y >= y && r.x + r.w < x + w && r.y + r.h < y + h;
+        }
+
+        bool intersects(const RectT<T> &r) const
+        {
+            return !(x > r.x + r.w || x + w < r.x || y > r.y + r.h || y + h < r.y);
+        }
+
+
+        RectT<T> intersection(const RectT<T> &r) const
+        {
+            return RectT<T>(
+                    std::max(x, r.x),
+                    std::max(y, r.y),
+                    std::min(x + w, r.x + r.w) - std::max(x, r.x),
+                    std::min(y + h, r.y + r.h) - std::max(y, r.y));
+        }
+
+        // calculates the minkowsky difference between 2 rects, which is another rect
+        RectT<T> minkowskiDiff(const RectT<T> &r)
+        {
+            RectT<T> ret = {r.x - x - w, r.y - y - h, w + r.w, h + r.h};
+            return ret;
+        }
+
+        void deflate(T v)
+        {
+            x += v;
+            y += v;
+            w -= 2 * v;
+            h -= 2 * v;
+        }
+
+
+        void inflate(T v)
+        {
+            x -= v;
+            y -= v;
+            w += 2 * v;
+            h += 2 * v;
+        }
+
+
+        Vector2T<T> clamp(Vector2T<T> p) const
+        {
+            return Vector2T<T>(
+                    p.x < x ? x : (p.x > x + w ? x + w : p.x),
+                    p.y < y ? y : (p.y > y + h ? y + h : p.y));
+        }
+
+
+        Vector2T<T> tl() const
+        {
+            return Vector2T<T>(x, y);
+        }
+
+
+        Vector2T<T> tr() const
+        {
+            return Vector2T<T>(x + w, y);
+        }
+
+
+        Vector2T<T> bl() const
+        {
+            return Vector2T<T>(x, y + h);
+        }
+
+
+        Vector2T<T> br() const
+        {
+            return Vector2T<T>(x + w, y + h);
+        }
+
+    };
+
+    template <typename T>
+    bool        operator ==(const RectT<T>& left, const RectT<T>& right)
+    {
+        return (left.x == right.x &&
+                left.y == right.y &&
+                left.w == right.w &&
+                left.h == right.h);
+    }
+
+    template <typename T>
+    bool        operator !=(const RectT<T>& left, const RectT<T>& right)
+    {
+        return (left.x != right.x ||
+                left.y != right.y ||
+                left.w != right.w ||
+                left.h != right.h);
+    }
+
+    template <typename T>
+    RectT<T>&    operator *=(RectT<T>& left, const T right)
+    {
+        left.x *= right;
+        left.y *= right;
+        left.w *= right;
+        left.h *= right;
+        return left;
+    }
+
+    template <typename T>
+    RectT<T>     operator *(const RectT<T>& left, T right)
+    {
+        return RectT<T>(left.x * right, left.y * right, left.w * right, left.h * right);
+    }
+
+    template <typename T>
+    RectT<T>     operator *(T left, const RectT<T>& right)
+    {
+        return RectT<T>(right.x * left, right.y * left, right.w * left, right.h * left);
+    }
+
+
+    typedef RectT<int>          Recti;
+    typedef RectT<unsigned int> Rectu;
+    typedef RectT<float>        Rectf;
+    typedef RectT<double>       Rectd;
+
+} // namespace dang
+

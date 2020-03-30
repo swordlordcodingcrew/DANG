@@ -1,16 +1,16 @@
 list(APPEND SOURCES
-    dang_globals.hpp
-    dang_collision.hpp
-    tween/Tweenable.cpp
-    tween/Tweenable.h
-    tween/Ease.cpp
-    tween/Ease.h
-    tween/TwAnim.cpp
-    tween/TwAnim.h
-    tween/TwMove.cpp
-    tween/TwMove.h
-    Imagesheet.cpp
-    Imagesheet.h
+        dang_globals.hpp
+        dang_collision.hpp
+        tween/Tweenable.cpp
+        tween/Tweenable.h
+        tween/Ease.cpp
+        tween/Ease.h
+        tween/TwAnim.cpp
+        tween/TwAnim.h
+        tween/TwMove.cpp
+        tween/TwMove.h
+        Imagesheet.cpp
+        Imagesheet.h
         Sprite.cpp
         Sprite.h
         Gear.cpp
@@ -21,8 +21,13 @@ list(APPEND SOURCES
         TileLayer.h
         SpriteLayer.cpp
         SpriteLayer.h
+        tmx_def.h
+        Collision.cpp
+        Collision.h
+        geom/Vector2T.h
+        geom/RectT.h
 )
 
-add_library(DANG STATIC ${SOURCES} tmx_def.h)
+add_library(DANG STATIC ${SOURCES} )
 
 target_include_directories(DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -18,7 +18,7 @@ namespace dang
 
     }
 
-    SpriteLayer::SpriteLayer(const blit::Rect& layer_size_px) : Layer(Layer::LT_SPRITELAYER, layer_size_px)
+    SpriteLayer::SpriteLayer(const Rectf& layer_size_px) : Layer(Layer::LT_SPRITELAYER, layer_size_px)
     {
 
     }
@@ -32,7 +32,7 @@ namespace dang
     {
        for (std::shared_ptr<Sprite>& spr : _sprites)
        {
-           blit::Rect dr = gear.getActiveWorld().intersection(spr->getSizeRect());
+           Rectf dr = gear.getActiveWorld().intersection(spr->getSizeRect());
            if (!dr.empty())
            {
                spr->coreUpdate(time);
@@ -42,7 +42,7 @@ namespace dang
 
        for (std::shared_ptr<Sprite>& spr : _sprites)
        {
-           blit::Rect dr = gear.getActiveWorld().intersection(spr->getSizeRect());
+           Rectf dr = gear.getActiveWorld().intersection(spr->getSizeRect());
            if (!dr.empty())
            {
                spr->update(time);
@@ -55,13 +55,13 @@ namespace dang
 
     void SpriteLayer::render(const Gear &gear)
     {
-        blit::Rect vp = gear.getViewport();
+        Rectf vp = gear.getViewport();
 
         for (std::shared_ptr<Sprite>& spr : _sprites)
         {
             if (spr->_visible && spr->_imagesheet != nullptr)
             {
-                blit::Rect dr = vp.intersection(spr->getSizeRect());
+                Rectf dr = vp.intersection(spr->getSizeRect());
                 if (!dr.empty())
                 {
                     if (blit::screen.sprites != spr->_imagesheet.get())
@@ -70,7 +70,8 @@ namespace dang
                     }
 
                     blit::Rect sr = spr->_imagesheet->getRect(spr->_img_index);
-                    blit::screen.blit_sprite(sr, spr->getPos() - vp.tl(), spr->_transform);
+                    Vector2f dp = spr->getPos() - vp.tl();
+                    blit::screen.blit_sprite(sr, blit::Point(int32_t(dp.x), int32_t(dp.y)), spr->_transform);
 
                 }
 
@@ -87,15 +88,21 @@ namespace dang
                 blit::screen.pen(blit::RGBA(0, 0, 255, 255));
             }
 
-            blit::Rect ddr = gear.getViewport().intersection(spr->getSizeRect());
+            Rectf ddr = gear.getViewport().intersection(spr->getSizeRect());
             if (!ddr.empty())
             {
                 ddr.x -= gear.getViewport().x;
                 ddr.y -= gear.getViewport().y;
-                blit::screen.line(ddr.tl(), ddr.bl()); // left -> bottom
-                blit::screen.line(ddr.bl(), ddr.br()); // bottom -> right
-                blit::screen.line(ddr.br(), ddr.tr()); // right -> top
-                blit::screen.line(ddr.tr(), ddr.tl()); // top -> left
+
+                blit::Point tl(int32_t(ddr.tl().x), int32_t(ddr.tl().y));
+                blit::Point bl(int32_t(ddr.bl().x), int32_t(ddr.bl().y));
+                blit::Point br(int32_t(ddr.br().x), int32_t(ddr.br().y));
+                blit::Point tr(int32_t(ddr.tr().x), int32_t(ddr.tr().y));
+
+                blit::screen.line(tl, bl); // left -> bottom
+                blit::screen.line(bl, br); // bottom -> right
+                blit::screen.line(br, tr); // right -> top
+                blit::screen.line(tr, tl); // top -> left
             }
             blit::screen.pen(blit::RGBA(0, 0, 0, 255));
 #endif

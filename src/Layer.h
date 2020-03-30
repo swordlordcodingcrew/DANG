@@ -7,7 +7,7 @@
 #pragma once
 
 #include "dang_globals.hpp"
-
+#include "geom/RectT.h"
 
 namespace dang
 {
@@ -19,7 +19,7 @@ namespace dang
     {
     public:
         Layer(int32_t type);
-        Layer(int32_t type, const blit::Rect size);
+        Layer(int32_t type, const Rectf& size);
         virtual ~Layer();
 
         virtual void    update(uint32_t time, const Gear& gear) = 0;
@@ -32,7 +32,7 @@ namespace dang
         };
 
     protected:
-        blit::Rect      _size{0, 0, 1, 1};
+        Rectf           _size{0, 0, 1, 1};
         int32_t         _type{LT_UNDEFINED};
 
     public:     // public variables

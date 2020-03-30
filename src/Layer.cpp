@@ -15,7 +15,7 @@ namespace dang
 
     }
 
-    Layer::Layer(int32_t type, const blit::Rect size) :
+    Layer::Layer(int32_t type, const Rectf& size) :
             _type(type), _size(size)
     {
 

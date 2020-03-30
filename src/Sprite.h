@@ -6,6 +6,8 @@
 
 #include "dang_globals.hpp"
 #include <list>
+#include <geom/Vector2T.h>
+#include <geom/RectT.h>
 
 namespace dang
 {
@@ -29,18 +31,20 @@ namespace dang
         virtual void update(uint32_t time);
 
         // pos, vel, acc
-        Vec2        getPos() { return _pos; }
-        Vec2        getVel() { return _vel; }
-        Vec2        getAcc() { return _acc; }
-        void        setPos(const Vec2& pos) { _pos = pos; }
-        void        setVel(const Vec2& vel) { _vel = vel; }
-        void        setAcc(const Vec2& acc) { _acc = acc; }
+        Vector2f    getPos() { return _pos; }
+        Vector2f    getLastPos() { return _last_pos; }
+        Vector2f    getVel() { return _vel; }
+        Vector2f    getAcc() { return _acc; }
+        void        setPos(const Vector2f& pos) { _pos = pos; }
+        void        setVel(const Vector2f& vel) { _vel = vel; }
+        void        setAcc(const Vector2f& acc) { _acc = acc; }
 
-        uint8_t getTransform() { return _transform; }
-        blit::Rect  getSizeRect();      // return size of sprite
+        Vector2f    getSize() { return _size; }
 
-        // to be moved to collisionsprite subclass on a later stage
-        uint16_t wantToCollideWith(std::shared_ptr<Sprite> other);
+        uint8_t     getTransform() { return _transform; }
+        Rectf       getSizeRect();      // return size of sprite
+        blit::Rect  getSizeRecti();
+
 
     public: // variables
         bool                            _visible{true};
@@ -49,25 +53,27 @@ namespace dang
         uint8_t                         _transform{blit::SpriteTransform::NONE};      // transform for blitting
         int32_t                         _z_order{0};
         std::string                     _type{""};
+        uint16_t                        _id{0};    // global
 
     protected:  // variables
         //std::string name;     // to be implemented
-        uint16_t        _id;    // global
-        blit::Size      _size{0,0};
+        Vector2f      _size{0,0};
 
-        Vec2     _pos{0,0};
-        Vec2     _vel{0,0};
-        Vec2     _acc{0,0};
+        Vector2f     _pos{0,0};
+        Vector2f     _vel{0,0};
+        Vector2f     _acc{0,0};
 
-        blit::Rect      _hotrect{0,0,0,0};
-
-        Vec2           _last_pos{0,0};     // could be used for collision detection
+        Vector2f     _last_pos{0,0};     // could be used for collision detection
 
         // tween depot
-        std::list<std::shared_ptr<Tweenable>> _tweens;
+        std::list<spTweenable> _tweens;
 
-        // less generic params. Might be subclassed at a later stage
+        // *** collision stuff ***
+        // to be moved to collisionsprite subclass on a later stage
+    public:
+        uint16_t    wantToCollideWith(std::shared_ptr<Sprite> other);
         bool        _is_hit{false};
+        Rectf       _hotrect{0,0,0,0};
 
     };
 

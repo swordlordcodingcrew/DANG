@@ -22,7 +22,7 @@ namespace dang
     {
     }
 
-    void Gear::initLevel(tmx_level &lvl, blit::Rect& viewport)
+    void Gear::initLevel(tmx_level &lvl, Rectf& viewport)
     {
         _viewport = viewport;
 
@@ -30,8 +30,8 @@ namespace dang
         _world.h = lvl.w.getHeightInPixel();
 
         // active world defaults to double width and height of world
-        _active_world.w = 2 * _world.w;
-        _active_world.h = 2 * _world.h;
+        _active_world_size.x = 2 * _world.w;
+        _active_world_size.y = 2 * _world.h;
 
         lvl.imagesheets["background"]->_name = "background";
         lvl.imagesheets["players"]->_name = "players";
@@ -139,9 +139,9 @@ namespace dang
     }
 
 
-    blit::Rect Gear::getActiveWorld() const
+    Rectf Gear::getActiveWorld() const
     {
-        return blit::Rect(_viewport.x - (_active_world.w - _viewport.w)/2, _viewport.y + ((_active_world.h - _viewport.h)/2), _active_world.w, _active_world.h);
+        return Rectf(_viewport.x - (_active_world_size.x - _viewport.w)/2, _viewport.y + ((_active_world_size.y - _viewport.h)/2), _active_world_size.x, _active_world_size.y);
     }
 
     std::shared_ptr<Imagesheet> Gear::getImagesheetByName(std::string &name)
@@ -149,7 +149,7 @@ namespace dang
         return _imagesheets[name];
     }
 
-    void Gear::setViewportPos(blit::Point& pos)
+    void Gear::setViewportPos(Vector2f& pos)
     {
         _viewport.x = pos.x;
         _viewport.y = pos.y;

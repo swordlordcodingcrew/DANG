@@ -66,14 +66,17 @@ namespace dang
             blit::screen.sprites = _imagesheet.get();
         }
 
-        blit::Rect vp = gear.getViewport();
+        blit::Rect vp(int32_t(gear.getViewport().x),
+                      int32_t(gear.getViewport().y),
+                      int32_t(gear.getViewport().w),
+                      int32_t(gear.getViewport().h));
         blit::Rect vp_tu{0,0,0,0};
-        vp_tu.x = vp.x / _tilesize.w;
-        vp_tu.w = vp.w / _tilesize.w;
-        vp_tu.y = vp.y / _tilesize.h;
-        vp_tu.h = vp.h / _tilesize.h;
-        int32_t offset_x = vp.x % _tilesize.w;
-        int32_t offset_y = vp.y % _tilesize.h;
+        vp_tu.x = int32_t(vp.x / _tilesize.w);
+        vp_tu.w = int32_t(vp.w / _tilesize.w);
+        vp_tu.y = int32_t(vp.y / _tilesize.h);
+        vp_tu.h = int32_t(vp.h / _tilesize.h);
+        int32_t offset_x = int32_t(vp.x) % _tilesize.w;
+        int32_t offset_y = int32_t(vp.y) % _tilesize.h;
 
         if (vp_tu.x + vp_tu.w > _worldsize_tu.w)
         {

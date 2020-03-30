@@ -7,6 +7,7 @@
 #include "dang_globals.hpp"
 #include <unordered_map>
 #include <forward_list>
+#include "geom/RectT.h"
 
 namespace dang
 {
@@ -22,7 +23,7 @@ namespace dang
         Gear();
         virtual ~Gear();
 
-        void    initLevel(tmx_level& lvl, blit::Rect& viewport);
+        void    initLevel(tmx_level& lvl, Rectf& viewport);
 
         void    update(uint32_t time);
         void    render(uint32_t time);
@@ -36,10 +37,10 @@ namespace dang
         void        removeLayer(std::shared_ptr<Layer> layer);
         std::shared_ptr<Layer>  getLayerByName(std::string& name);
 
-        blit::Rect  getActiveWorld() const;
-        blit::Rect  getViewport() const { return _viewport; }
-        void        setViewportPos(blit::Point& pos);
-        blit::Rect  getWorld() const { return _world;}
+        Rectf  getActiveWorld() const;
+        Rectf  getViewport() const { return _viewport; }
+        void        setViewportPos(Vector2f& pos);
+        Rectf  getWorld() const { return _world;}
 
     protected:
 //        dang::level _lvl;
@@ -47,9 +48,9 @@ namespace dang
         std::forward_list<std::shared_ptr<Layer>> _layers;
 
         // viewport handling
-        blit::Rect      _world{0,0,0,0};    // size of the world
-        blit::Rect      _viewport{0,0,0,0};     // part of world to be drawn
-        blit::Size      _active_world{0,0}; // center equals to center of viewport. sprite within active world will be updated and - if in viewport - drawnd
+        Rectf      _world{0,0,0,0};    // size of the world
+        Rectf      _viewport{0,0,0,0};     // part of world to be drawn
+        Vector2f   _active_world_size{0,0}; // center equals to center of viewport. sprite within active world will be updated and - if in viewport - drawnd
 
         void processCollisionDetection();
     };
