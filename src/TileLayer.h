@@ -17,17 +17,17 @@ namespace dang
     {
     public:
         TileLayer();
-        TileLayer(const blit::Size& tilesize_px, const blit::Point& layerpos_px, const blit::Size& layersize_px, const std::vector<tmx_tile>& tiles, blit::Size& wordlsize_tu, std::shared_ptr<Imagesheet> is);
-        TileLayer(const blit::Point& layerpos_px, const tmx_tileset& tileset, const tmx_tilelayer& tilelayer, std::shared_ptr<Imagesheet> is);
+        TileLayer(const SizeU& tilesize_px, const PointF& layerpos, const SizeF& layersize, const std::vector<tmx_tile>& tiles, const SizeU& worldsize_tu, std::shared_ptr<Imagesheet> is);
+        TileLayer(const PointF& layerpos_px, const tmx_tileset& tileset, const tmx_tilelayer& tilelayer, std::shared_ptr<Imagesheet> is);
         virtual ~TileLayer();
 
         virtual void    update(uint32_t time, const Gear& gear) override;
         virtual void    render(const Gear& gear) override;
 
     protected:
-        blit::Size                  _tilesize{1,1};
-        blit::Size                  _worldsize_tu{1,1};
-        std::vector<tmx_tile>           _tiles;
+        SizeU                       _tilesize{1,1};
+        SizeU                       _worldsize_tu{1,1};
+        std::vector<tmx_tile>       _tiles;
         std::shared_ptr<Imagesheet> _imagesheet{nullptr};
 
     };

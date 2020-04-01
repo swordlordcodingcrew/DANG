@@ -18,7 +18,7 @@ namespace dang
 
     }
 
-    SpriteLayer::SpriteLayer(const Rectf& layer_size_px) : Layer(Layer::LT_SPRITELAYER, layer_size_px)
+    SpriteLayer::SpriteLayer(const RectF& layer_size_px) : Layer(Layer::LT_SPRITELAYER, layer_size_px)
     {
 
     }
@@ -32,7 +32,7 @@ namespace dang
     {
        for (std::shared_ptr<Sprite>& spr : _sprites)
        {
-           Rectf dr = gear.getActiveWorld().intersection(spr->getSizeRect());
+           RectF dr = gear.getActiveWorld().intersection(spr->getSizeRect());
            if (!dr.empty())
            {
                spr->coreUpdate(time);
@@ -42,7 +42,7 @@ namespace dang
 
        for (std::shared_ptr<Sprite>& spr : _sprites)
        {
-           Rectf dr = gear.getActiveWorld().intersection(spr->getSizeRect());
+           RectF dr = gear.getActiveWorld().intersection(spr->getSizeRect());
            if (!dr.empty())
            {
                spr->update(time);
@@ -55,13 +55,13 @@ namespace dang
 
     void SpriteLayer::render(const Gear &gear)
     {
-        Rectf vp = gear.getViewport();
+        RectF vp = gear.getViewport();
 
         for (std::shared_ptr<Sprite>& spr : _sprites)
         {
             if (spr->_visible && spr->_imagesheet != nullptr)
             {
-                Rectf dr = vp.intersection(spr->getSizeRect());
+                RectF dr = vp.intersection(spr->getSizeRect());
                 if (!dr.empty())
                 {
                     if (blit::screen.sprites != spr->_imagesheet.get())
@@ -70,7 +70,7 @@ namespace dang
                     }
 
                     blit::Rect sr = spr->_imagesheet->getRect(spr->_img_index);
-                    Vector2f dp = spr->getPos() - vp.tl();
+                    Vector2F dp = spr->getPos() - vp.tl();
                     blit::screen.blit_sprite(sr, blit::Point(int32_t(dp.x), int32_t(dp.y)), spr->_transform);
 
                 }
@@ -88,7 +88,7 @@ namespace dang
                 blit::screen.pen(blit::RGBA(0, 0, 255, 255));
             }
 
-            Rectf ddr = gear.getViewport().intersection(spr->getSizeRect());
+            RectF ddr = gear.getViewport().intersection(spr->getSizeRect());
             if (!ddr.empty())
             {
                 ddr.x -= gear.getViewport().x;

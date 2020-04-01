@@ -22,7 +22,7 @@ namespace dang
     {
     }
 
-    void Gear::initLevel(tmx_level &lvl, Rectf& viewport)
+    void Gear::initLevel(tmx_level &lvl, RectF& viewport)
     {
         _viewport = viewport;
 
@@ -139,9 +139,9 @@ namespace dang
     }
 
 
-    Rectf Gear::getActiveWorld() const
+    RectF Gear::getActiveWorld() const
     {
-        return Rectf(_viewport.x - (_active_world_size.x - _viewport.w)/2, _viewport.y + ((_active_world_size.y - _viewport.h)/2), _active_world_size.x, _active_world_size.y);
+        return RectF(_viewport.x - (_active_world_size.x - _viewport.w)/2, _viewport.y + ((_active_world_size.y - _viewport.h)/2), _active_world_size.x, _active_world_size.y);
     }
 
     std::shared_ptr<Imagesheet> Gear::getImagesheetByName(std::string &name)
@@ -149,7 +149,7 @@ namespace dang
         return _imagesheets[name];
     }
 
-    void Gear::setViewportPos(Vector2f& pos)
+    void Gear::setViewportPos(Vector2F& pos)
     {
         _viewport.x = pos.x;
         _viewport.y = pos.y;

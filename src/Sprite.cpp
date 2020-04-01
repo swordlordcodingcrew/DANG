@@ -93,17 +93,11 @@ namespace dang
     {
         _vel += _acc;
         _pos += _vel;
-
     }
 
-    Rectf Sprite::getSizeRect()
+    RectF Sprite::getSizeRect()
     {
-        return Rectf(_pos.x, _pos.y, _size.x, _size.y);
-    }
-
-    blit::Rect Sprite::getSizeRecti()
-    {
-        return blit::Rect(int32_t(_pos.x), int32_t(_pos.y), int32_t(_size.x), int32_t(_size.y));
+        return RectF(_pos.x, _pos.y, _size.x, _size.y);
     }
 
 }

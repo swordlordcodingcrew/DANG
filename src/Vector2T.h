@@ -14,8 +14,9 @@ namespace dang
     class Vector2T
     {
     public:
-        T x, y;
-//        T& w{x}, h{y};
+        union { T x; T w;};
+        union { T y; T h;};
+//        T x, y;
 
         Vector2T()
             : x(0), y(0)
@@ -33,10 +34,10 @@ namespace dang
         {
         }
 
-/*        Vector2T<T>&    operator =(const Vector2T<T>& right);
+/*        Vector2T<T>&    operator =(const Vector2T<T>& right)
         {
-            this->x = right.x;
-            this->y = right.y;
+            x = right.x;
+            y = right.y;
             return *this;
         }
 */
@@ -159,21 +160,31 @@ namespace dang
     }
 
     template <typename T>
-    bool            operator ==(const Vector2T<T>& left, const Vector2T<T>& right)
+    bool operator ==(const Vector2T<T>& left, const Vector2T<T>& right)
     {
         return (left.x == right.x) && (left.y == right.y);
     }
 
     template <typename T>
-    bool            operator !=(const Vector2T<T>& left, const Vector2T<T>& right)
+    bool operator !=(const Vector2T<T>& left, const Vector2T<T>& right)
     {
         return (left.x != right.x) || (left.y != right.y);
     }
 
-    typedef Vector2T<int>          Vector2i;
-    typedef Vector2T<unsigned int> Vector2u;
-    typedef Vector2T<float>        Vector2f;
-    typedef Vector2T<double>       Vector2d;
+    typedef Vector2T<int>          Vector2I;
+    typedef Vector2T<unsigned int> Vector2U;
+    typedef Vector2T<float>        Vector2F;
+    typedef Vector2T<double>       Vector2D;
+
+    typedef Vector2T<int>          PointI;
+    typedef Vector2T<unsigned int> PointU;
+    typedef Vector2T<float>        PointF;
+    typedef Vector2T<double>       PointD;
+
+    typedef Vector2T<int>          SizeI;
+    typedef Vector2T<unsigned int> SizeU;
+    typedef Vector2T<float>        SizeF;
+    typedef Vector2T<double>       SizeD;
 
 }   // namespace dang
 

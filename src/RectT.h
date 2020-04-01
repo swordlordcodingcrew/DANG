@@ -168,10 +168,10 @@ namespace dang
     }
 
 
-    typedef RectT<int>          Recti;
-    typedef RectT<unsigned int> Rectu;
-    typedef RectT<float>        Rectf;
-    typedef RectT<double>       Rectd;
+    typedef RectT<int>          RectI;
+    typedef RectT<unsigned int> RectU;
+    typedef RectT<float>        RectF;
+    typedef RectT<double>       RectD;
 
 } // namespace dang
 

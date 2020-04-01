@@ -15,7 +15,7 @@ namespace dang
 
     }
 
-    Layer::Layer(int32_t type, const Rectf& size) :
+    Layer::Layer(int32_t type, const RectF& size) :
             _type(type), _size(size)
     {
 

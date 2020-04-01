@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <geom/Vector2T.h>
-#include <geom/RectT.h>
+#include <Vector2T.h>
+#include <RectT.h>
 #include "dang_globals.hpp"
 
 namespace dang
@@ -15,8 +15,8 @@ namespace dang
     struct indices {
         float t1;
         float t2;
-        Vector2f n1;
-        Vector2f n2;
+        Vector2F n1;
+        Vector2F n2;
     };
 
     static const float DELTA = 1e-10;
@@ -28,11 +28,11 @@ namespace dang
         spSprite other;
         bool overlaps;
         float ti;
-        Vector2f move;
-        Vector2f normal;
-        Vector2f touch;
-        Vector2f slide;
-        Vector2f bounce;
+        Vector2F move;
+        Vector2F normal;
+        Vector2F touch;
+        Vector2F slide;
+        Vector2F bounce;
         uint8_t type;       // used with const above: ResponseTouch, ResponseCross, etc
 
         /*
@@ -66,7 +66,7 @@ namespace dang
 */
     protected:
 //        void check(spSprite me, std::vector<collision_object> &collisions);
-//        void projectCollisions(spSprite me, Rectf* r, blit::Point* goal, std::vector<collision_object>* projectedCollisions);
+//        void projectCollisions(spSprite me, RectF* r, blit::Point* goal, std::vector<collision_object>* projectedCollisions);
 
 
     };

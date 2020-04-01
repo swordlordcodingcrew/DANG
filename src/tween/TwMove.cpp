@@ -51,7 +51,7 @@ namespace dang
         std::shared_ptr<Sprite> spr = std::static_pointer_cast<Sprite>(_the_object);
 
         float fx = calc(time);
-        spr->setPos(Vector2f(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx));
+        spr->setPos(Vector2F(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx));
 
     }
 

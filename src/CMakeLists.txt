@@ -24,8 +24,8 @@ list(APPEND SOURCES
         tmx_def.h
         Collision.cpp
         Collision.h
-        geom/Vector2T.h
-        geom/RectT.h
+        Vector2T.h
+        RectT.h
 )
 
 add_library(DANG STATIC ${SOURCES} )

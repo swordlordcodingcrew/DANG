@@ -14,7 +14,7 @@ namespace dang
     {
     public:
         SpriteLayer();
-        SpriteLayer(const Rectf& layer_size_px);
+        SpriteLayer(const RectF& layer_size_px);
         virtual ~SpriteLayer();
 
         virtual void    update(uint32_t time, const Gear& gear) override;

@@ -22,18 +22,37 @@ namespace dang
 
     }
 
-    TileLayer::TileLayer(const blit::Size &tilesize_px, const blit::Point &layerpos_px, const blit::Size &layersize_px,
-                         const std::vector<tmx_tile> &tiles, blit::Size &wordlsize_tu, std::shared_ptr<Imagesheet> is)
-            : Layer(Layer::LT_TILELAYER), _tilesize(tilesize_px), _tiles(tiles), _worldsize_tu(wordlsize_tu),
+    /**
+     *
+     * @param tilesize in pixels
+     * @param layerpos in world coordinates
+     * @param layersize size of layer
+     * @param tiles list of tiles
+     * @param worldsize in tile units
+     * @param is imagesheet containing all tile images. Multiple imagesheets is not supported
+     */
+    TileLayer::TileLayer(const SizeU& tilesize_px, const PointF& layerpos, const SizeF& layersize, const std::vector<tmx_tile>& tiles, const SizeU& worldsize_tu, std::shared_ptr<Imagesheet> is)
+//  TileLayer::TileLayer(const blit::Size &tilesize_px, const blit::Point &layerpos_px, const blit::Size &layersize_px,
+//                         const std::vector<tmx_tile> &tiles, blit::Size &wordlsize_tu, std::shared_ptr<Imagesheet> is)
+            : Layer(Layer::LT_TILELAYER), _tilesize(tilesize_px), _tiles(tiles), _worldsize_tu(worldsize_tu),
               _imagesheet(is)
     {
-        _size.x = layerpos_px.x;
-        _size.y = layerpos_px.y;
-        _size.w = layersize_px.w;
-        _size.h = layersize_px.h;
+        _size.x = layerpos.x;
+        _size.y = layerpos.y;
+        _size.w = layersize.w;
+        _size.h = layersize.h;
     }
 
-    TileLayer::TileLayer(const blit::Point& layerpos_px, const tmx_tileset &tileset, const tmx_tilelayer &tilelayer, std::shared_ptr<Imagesheet> is) : Layer(Layer::LT_TILELAYER)
+    /**
+     *
+     * @param layerpos in world coordinates
+     * @param tileset from the tmx level
+     * @param tilelayer from the tmx level
+     * @param is imagesheet containing all tile images. Multiple imagesheets is not supported
+     */
+    TileLayer::TileLayer(const PointF& layerpos, const tmx_tileset& tileset, const tmx_tilelayer& tilelayer, std::shared_ptr<Imagesheet> is)
+//    TileLayer::TileLayer(const blit::Point& layerpos_px, const tmx_tileset &tileset, const tmx_tilelayer &tilelayer, std::shared_ptr<Imagesheet> is)
+            : Layer(Layer::LT_TILELAYER)
     {
         _tilesize.w = tileset.tileWidth;
         _tilesize.h = tileset.tileHeight;
@@ -42,8 +61,8 @@ namespace dang
         _worldsize_tu.h = tilelayer.height;
         _imagesheet = is;
 
-        _size.x = layerpos_px.x;
-        _size.y = layerpos_px.y;
+        _size.x = layerpos.x;
+        _size.y = layerpos.y;
         _size.w = _worldsize_tu.w * _tilesize.w;
         _size.h = _worldsize_tu.h * _tilesize.h;
 

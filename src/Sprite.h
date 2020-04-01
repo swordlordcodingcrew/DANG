@@ -6,8 +6,8 @@
 
 #include "dang_globals.hpp"
 #include <list>
-#include <geom/Vector2T.h>
-#include <geom/RectT.h>
+#include <Vector2T.h>
+#include <RectT.h>
 
 namespace dang
 {
@@ -31,19 +31,18 @@ namespace dang
         virtual void update(uint32_t time);
 
         // pos, vel, acc
-        Vector2f    getPos() { return _pos; }
-        Vector2f    getLastPos() { return _last_pos; }
-        Vector2f    getVel() { return _vel; }
-        Vector2f    getAcc() { return _acc; }
-        void        setPos(const Vector2f& pos) { _pos = pos; }
-        void        setVel(const Vector2f& vel) { _vel = vel; }
-        void        setAcc(const Vector2f& acc) { _acc = acc; }
+        Vector2F    getPos() { return _pos; }
+        Vector2F    getLastPos() { return _last_pos; }
+        Vector2F    getVel() { return _vel; }
+        Vector2F    getAcc() { return _acc; }
+        void        setPos(const Vector2F& pos) { _pos = pos; }
+        void        setVel(const Vector2F& vel) { _vel = vel; }
+        void        setAcc(const Vector2F& acc) { _acc = acc; }
 
-        Vector2f    getSize() { return _size; }
+        Vector2F    getSize() { return _size; }
 
         uint8_t     getTransform() { return _transform; }
-        Rectf       getSizeRect();      // return size of sprite
-        blit::Rect  getSizeRecti();
+        RectF       getSizeRect();      // return size of sprite
 
 
     public: // variables
@@ -57,13 +56,13 @@ namespace dang
 
     protected:  // variables
         //std::string name;     // to be implemented
-        Vector2f      _size{0,0};
+        Vector2F      _size{0,0};
 
-        Vector2f     _pos{0,0};
-        Vector2f     _vel{0,0};
-        Vector2f     _acc{0,0};
+        Vector2F     _pos{0,0};
+        Vector2F     _vel{0,0};
+        Vector2F     _acc{0,0};
 
-        Vector2f     _last_pos{0,0};     // could be used for collision detection
+        Vector2F     _last_pos{0,0};     // could be used for collision detection
 
         // tween depot
         std::list<spTweenable> _tweens;
@@ -73,7 +72,7 @@ namespace dang
     public:
         uint16_t    wantToCollideWith(std::shared_ptr<Sprite> other);
         bool        _is_hit{false};
-        Rectf       _hotrect{0,0,0,0};
+        RectF       _hotrect{0,0,0,0};
 
     };
 
