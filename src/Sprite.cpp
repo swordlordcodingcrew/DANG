@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "tmx_def.h"
 #include "tween/Tweenable.h"
+#include "SweptAABBCollision.h"
 
 namespace dang
 {
@@ -28,15 +29,19 @@ namespace dang
         _type = so.type;
         _pos.x = so.x;
         _pos.y = so.y;
-        _size.x = so.width;
-        _size.y = so.height;
+        _size.w = so.width;
+        _size.h = so.height;
         _visible = so.visible;
         _img_index = so.tile;
         _imagesheet = is;
+        _hotrect = {0, 0, float(so.width), float(so.height)};
+        _last_pos = _pos;
     }
 
-    uint16_t Sprite::wantToCollideWith(std::shared_ptr<Sprite> other)
+/*    uint16_t Sprite::collisionResponse(std::shared_ptr<Sprite> other)
     {
+        if (_type == "hotrect" && other->_type == "hotrect") return SweptAABBCollision::CR_NONE;
+
 /*        if (_type == "coin")
         {
             return cross_me;
@@ -49,10 +54,10 @@ namespace dang
         {
             return touch_me;
         }
-*/
-        return 0;
+*//*
+        return SweptAABBCollision::CR_SLIDE;
     }
-
+*/
     void Sprite::addTween(std::shared_ptr<Tweenable> tw)
     {
         _tweens.push_front(tw);
@@ -91,13 +96,21 @@ namespace dang
 
     void Sprite::update(uint32_t time)
     {
-        _vel += _acc;
-        _pos += _vel;
+        // dt in seconds
+        float dt = float(time - (_last_update_time == 0 ? time : _last_update_time));
+        _last_update_time = time;
+        _vel += _acc * dt;
+        _pos += _vel * dt;
     }
 
     RectF Sprite::getSizeRect()
     {
         return RectF(_pos.x, _pos.y, _size.x, _size.y);
+    }
+
+    RectF Sprite::getHotrectAbs()
+    {
+        return RectF(_hotrect.x + _pos.x, _hotrect.y + _pos.y, _hotrect.w, _hotrect.h);
     }
 
 }

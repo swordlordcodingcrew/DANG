@@ -52,7 +52,6 @@ namespace dang
         RectF      _viewport{0,0,0,0};     // part of world to be drawn
         Vector2F   _active_world_size{0,0}; // center equals to center of viewport. sprite within active world will be updated and - if in viewport - drawnd
 
-        void processCollisionDetection();
     };
 }
 

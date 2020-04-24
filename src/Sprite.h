@@ -5,6 +5,7 @@
 #pragma once
 
 #include "dang_globals.hpp"
+#include "SweptAABBCollision.h"
 #include <list>
 #include <Vector2T.h>
 #include <RectT.h>
@@ -55,6 +56,8 @@ namespace dang
         uint16_t                        _id{0};    // global
 
     protected:  // variables
+        friend class SweptAABBCollision;
+
         //std::string name;     // to be implemented
         Vector2F      _size{0,0};
 
@@ -63,6 +66,7 @@ namespace dang
         Vector2F     _acc{0,0};
 
         Vector2F     _last_pos{0,0};     // could be used for collision detection
+        uint32_t    _last_update_time{0};
 
         // tween depot
         std::list<spTweenable> _tweens;
@@ -70,9 +74,12 @@ namespace dang
         // *** collision stuff ***
         // to be moved to collisionsprite subclass on a later stage
     public:
-        uint16_t    wantToCollideWith(std::shared_ptr<Sprite> other);
+        uint16_t    _coll_response{SweptAABBCollision::CR_SLIDE};
+        uint16_t    _coll_object_type{SweptAABBCollision::COT_DYNAMIC};
         bool        _is_hit{false};
         RectF       _hotrect{0,0,0,0};
+        RectF       getHotrect() { return _hotrect; };
+        RectF       getHotrectAbs();
 
     };
 

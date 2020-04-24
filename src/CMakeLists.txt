@@ -22,8 +22,8 @@ list(APPEND SOURCES
         SpriteLayer.cpp
         SpriteLayer.h
         tmx_def.h
-        Collision.cpp
-        Collision.h
+        SweptAABBCollision.cpp
+        SweptAABBCollision.h
         Vector2T.h
         RectT.h
 )

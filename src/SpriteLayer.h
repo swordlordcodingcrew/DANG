@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Layer.h"
+#include "SweptAABBCollision.h"
 
 namespace dang
 {
@@ -25,6 +26,7 @@ namespace dang
 
     protected:
         std::forward_list<std::shared_ptr<Sprite>> _sprites;
+        SweptAABBCollision _sac;
 
     };
 

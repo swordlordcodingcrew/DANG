@@ -30,26 +30,22 @@ namespace dang
 
     void SpriteLayer::update(uint32_t time, const Gear &gear)
     {
-       for (std::shared_ptr<Sprite>& spr : _sprites)
+       for (spSprite& spr : _sprites)
        {
            RectF dr = gear.getActiveWorld().intersection(spr->getSizeRect());
-           if (!dr.empty())
+           if (dr.area() != 0)
            {
                spr->coreUpdate(time);
-           }
 
-       }
-
-       for (std::shared_ptr<Sprite>& spr : _sprites)
-       {
-           RectF dr = gear.getActiveWorld().intersection(spr->getSizeRect());
-           if (!dr.empty())
-           {
                spr->update(time);
+
+                // collisiosn detection
+                if (spr->_coll_object_type == SweptAABBCollision::COT_DYNAMIC)
+                {
+                    _sac.handleSprite(spr, _sprites);
+                }
            }
        }
-
-//       processCollisionDetection();
 
     }
 
@@ -62,7 +58,7 @@ namespace dang
             if (spr->_visible && spr->_imagesheet != nullptr)
             {
                 RectF dr = vp.intersection(spr->getSizeRect());
-                if (!dr.empty())
+                if (dr.area() != 0)
                 {
                     if (blit::screen.sprites != spr->_imagesheet.get())
                     {
@@ -89,7 +85,7 @@ namespace dang
             }
 
             RectF ddr = gear.getViewport().intersection(spr->getSizeRect());
-            if (!ddr.empty())
+            if (ddr.area() != 0)
             {
                 ddr.x -= gear.getViewport().x;
                 ddr.y -= gear.getViewport().y;

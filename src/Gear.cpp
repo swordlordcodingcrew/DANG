@@ -63,34 +63,6 @@ namespace dang
         }
     }
 
-    void Gear::processCollisionDetection()
-    {
-        // collision tests
-/*        for(auto i = _lvl.sprites.begin(); i != _lvl.sprites.end(); i++) {
-
-            std::shared_ptr<sprite> s = *i;
-
-            if(s->velX == 0 && s->velY == 0){
-                continue;
-            }
-
-            point goal = {s->x + s->velX, s->y + s->velY};
-
-            std::vector<dang_collision::collision> collisions;
-
-            // void move(sprite* me, point* goal, point* moveto, std::vector<collision>* collisions)
-            dang_collision::move(&_lvl, s, &goal, &collisions);
-
-            //std::cout << "number of collisions: " << collisions.size() << std::endl;
-
-            for(auto j = collisions.begin(); j != collisions.end(); j++)
-            {
-                dang_collision::collision clsn = *j;
-            }
-        }
-*/
-    }
-
     void Gear::addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is)
     {
         _imagesheets[key] = is;
@@ -141,7 +113,7 @@ namespace dang
 
     RectF Gear::getActiveWorld() const
     {
-        return RectF(_viewport.x - (_active_world_size.x - _viewport.w)/2, _viewport.y + ((_active_world_size.y - _viewport.h)/2), _active_world_size.x, _active_world_size.y);
+        return RectF(_viewport.x - (_active_world_size.x - _viewport.w)/2, _viewport.y - ((_active_world_size.y - _viewport.h)/2), _active_world_size.x, _active_world_size.y);
     }
 
     std::shared_ptr<Imagesheet> Gear::getImagesheetByName(std::string &name)

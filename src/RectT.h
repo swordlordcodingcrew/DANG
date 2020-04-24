@@ -38,20 +38,22 @@ namespace dang
         {
         }
 
-        bool empty() const
+        T area() const
         {
-            return w <= 0 || h <= 0;
+            return w * h;
         }
 
         bool contains(const Vector2T<T> &p) const
         {
             return p.x >= x && p.y >= y && p.x < x + w && p.y < y + h;
+//            return p.x > x && p.y > y && p.x < x + w && p.y < y + h;
         }
 
 
         bool contains(const RectT<T> &r) const
         {
             return r.x >= x && r.y >= y && r.x + r.w < x + w && r.y + r.h < y + h;
+//            return r.x > x && r.y > y && r.x + r.w < x + w && r.y + r.h < y + h;
         }
 
         bool intersects(const RectT<T> &r) const
@@ -70,10 +72,17 @@ namespace dang
         }
 
         // calculates the minkowsky difference between 2 rects, which is another rect
-        RectT<T> minkowskiDiff(const RectT<T> &r)
+        RectT<T> minkowskiDiff(const RectT<T> &r) const
         {
-            RectT<T> ret = {r.x - x - w, r.y - y - h, w + r.w, h + r.h};
+            RectT<T> ret = {x - r.x - r.w, r.y - y - h, w + r.w, h + r.h};
+//            RectT<T> ret = {x - r.x - r.w, y - r.y - r.h, w + r.w, h + r.h};
+//            RectT<T> ret = {r.x - x - w, r.y - y - h, w + r.w, h + r.h};
             return ret;
+        }
+
+        Vector2T<T> getNearestCorner(const Vector2T<T> p)
+        {
+            return Vector2T<T>(std::abs(x - p.x) < std::abs(x + w - p.x) ? x : x + w, std::abs(y - p.y < std::abs(y + h - p.y)) ? y : y + h);
         }
 
         void deflate(T v)

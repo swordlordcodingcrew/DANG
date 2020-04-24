@@ -45,14 +45,23 @@ namespace dang
 
         void normalize()
         {
-            this /= this->length();
-/*        T d = this->length();
-        x /= d;
-        y /= d;
-*/      }
+            T d = this->length();
+            if (d > 0)
+            {
+                x /= d;
+                y /= d;
+            }
+        }
+
+        bool empty()
+        {
+            return x == 0 && y == 0;
+        }
 
         T length()
         {
+            if (x == 0) return y;
+            if (y == 0) return x;
             return std::sqrt(x * x + y * y);
         }
 
@@ -114,7 +123,7 @@ namespace dang
     template <typename T>
     Vector2T<T>     operator *(T left, const Vector2T<T>& right)
     {
-        return Vector2T<T>(left.x * right, left.y * right);
+        return Vector2T<T>(left * right.x, left * right.y);
     }
 
     template <typename T>
