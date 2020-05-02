@@ -38,14 +38,10 @@ namespace dang
                spr->coreUpdate(time);
 
                spr->update(time);
-
-                // collisiosn detection
-                if (spr->_coll_object_type == SweptAABBCollision::COT_DYNAMIC)
-                {
-                    _sac.handleSprite(spr, _sprites);
-                }
            }
        }
+
+       _sac.handleCollisionDetection(_sprites);
 
     }
 
@@ -67,7 +63,7 @@ namespace dang
 
                     blit::Rect sr = spr->_imagesheet->getRect(spr->_img_index);
                     Vector2F dp = spr->getPos() - vp.tl();
-                    blit::screen.blit_sprite(sr, blit::Point(int32_t(dp.x), int32_t(dp.y)), spr->_transform);
+                    blit::screen.blit_sprite(sr, blit::Point(int32_t(std::floor(dp.x)), int32_t(std::floor(dp.y))), spr->_transform);
 
                 }
 

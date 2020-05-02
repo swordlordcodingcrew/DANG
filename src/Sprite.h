@@ -34,6 +34,7 @@ namespace dang
         // pos, vel, acc
         Vector2F    getPos() { return _pos; }
         Vector2F    getLastPos() { return _last_pos; }
+        Vector2F    getPosDelta() { return _pos - _last_pos; }
         Vector2F    getVel() { return _vel; }
         Vector2F    getAcc() { return _acc; }
         void        setPos(const Vector2F& pos) { _pos = pos; }
@@ -74,12 +75,13 @@ namespace dang
         // *** collision stuff ***
         // to be moved to collisionsprite subclass on a later stage
     public:
-        uint16_t    _coll_response{SweptAABBCollision::CR_SLIDE};
+        uint16_t    _coll_response{SweptAABBCollision::CR_BOUNCE};
         uint16_t    _coll_object_type{SweptAABBCollision::COT_DYNAMIC};
         bool        _is_hit{false};
         RectF       _hotrect{0,0,0,0};
         RectF       getHotrect() { return _hotrect; };
         RectF       getHotrectAbs();
+        virtual void collide(const manifold &mf);
 
     };
 

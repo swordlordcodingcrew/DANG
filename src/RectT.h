@@ -43,12 +43,15 @@ namespace dang
             return w * h;
         }
 
+        bool containsWOBounds(const Vector2T<T> &p) const
+        {
+            return p.x > x && p.y > y && p.x < x + w && p.y < y + h;
+        }
+
         bool contains(const Vector2T<T> &p) const
         {
             return p.x >= x && p.y >= y && p.x < x + w && p.y < y + h;
-//            return p.x > x && p.y > y && p.x < x + w && p.y < y + h;
         }
-
 
         bool contains(const RectT<T> &r) const
         {
@@ -74,8 +77,8 @@ namespace dang
         // calculates the minkowsky difference between 2 rects, which is another rect
         RectT<T> minkowskiDiff(const RectT<T> &r) const
         {
-            RectT<T> ret = {x - r.x - r.w, r.y - y - h, w + r.w, h + r.h};
-//            RectT<T> ret = {x - r.x - r.w, y - r.y - r.h, w + r.w, h + r.h};
+//            RectT<T> ret = {x - r.x - r.w, r.y - y - h, w + r.w, h + r.h};
+            RectT<T> ret = {x - r.x - r.w, y - r.y - r.h, w + r.w, h + r.h};
 //            RectT<T> ret = {r.x - x - w, r.y - y - h, w + r.w, h + r.h};
             return ret;
         }

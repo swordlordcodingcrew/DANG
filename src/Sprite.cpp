@@ -96,8 +96,8 @@ namespace dang
 
     void Sprite::update(uint32_t time)
     {
-        // dt in seconds
-        float dt = float(time - (_last_update_time == 0 ? time : _last_update_time));
+        // dt in ?
+        float dt = float(time - (_last_update_time == 0 ? time : _last_update_time)) / 100;
         _last_update_time = time;
         _vel += _acc * dt;
         _pos += _vel * dt;
@@ -111,6 +111,21 @@ namespace dang
     RectF Sprite::getHotrectAbs()
     {
         return RectF(_hotrect.x + _pos.x, _hotrect.y + _pos.y, _hotrect.w, _hotrect.h);
+    }
+
+    void Sprite::collide(const manifold &mf)
+    {
+        if (_coll_response == SweptAABBCollision::CR_BOUNCE)
+        {
+            if (mf.normalMe.x != 0)
+            {
+                _vel.x = -_vel.x;
+            }
+            else
+            {
+                _vel.y = -_vel.y;
+            }
+        }
     }
 
 }
