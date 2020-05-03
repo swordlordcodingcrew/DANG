@@ -28,30 +28,31 @@ namespace dang
             while (!projected_mfs.empty())
             {
                 manifold mf = projected_mfs.front();
-                //            std::cout << me->_type << " has collision. ti=" << coll_o.ti << std::endl;
-                //            std::cout << "pos me=" << me->getPos().x << ", " << me->getPos().y << std::endl;
-                //            std::cout << "pos other=" << coll_o.other->getPos().x << ", " << coll_o.other->getPos().y << std::endl;
+                bool call_callback{false};
 
                 if (mf.overlaps)
                 {
                     me->setPos(mf.touchMe);
-                    //                std::cout << "collision: overlaps" << std::endl;
+                    call_callback = true;
                 }
                 else
                 {
                     if (me->_coll_response == CR_TOUCH || mf.other->_coll_response == CR_TOUCH)
                     {
-                        Vector2F deltaMe = me->getPosDelta();
-                        Vector2F deltaOther = mf.other->getPosDelta();
-
-                        me->setPos(me->getLastPos() + deltaMe * mf.ti);
-                        if (mf.other->_coll_object_type != COT_RIGID)
+                        if ((mf.normalMe.x > 0 && me->getPosDelta().x > 0) || (mf.normalMe.x < 0 && me->getPosDelta().x < 0)
+                         || (mf.normalMe.y > 0 && me->getPosDelta().y > 0) || (mf.normalMe.y < 0 && me->getPosDelta().y < 0))
                         {
-                            mf.other->setPos(me->getLastPos() + deltaOther * mf.ti);
+                            me->setPos(mf.touchMe);
+                            if (mf.other->_coll_object_type != COT_RIGID)
+                            {
+                                mf.other->setPos(mf.touchOther);
+                            }
+                            call_callback = true;
                         }
                     }
                     else if (me->_coll_response == CR_CROSS || mf.other->_coll_response == CR_CROSS)
                     {
+                        call_callback = true;
                         // do nothing, pos already set
                     }
                     else if (me->_coll_response == CR_SLIDE && mf.other->_coll_response == CR_SLIDE)
@@ -63,6 +64,7 @@ namespace dang
                             {
                                 mf.other->_pos.x = mf.touchOther.x;
                             }
+                            call_callback = true;
                         }
                         else if ((mf.normalMe.y > 0 && me->getPosDelta().y > 0) || (mf.normalMe.y < 0 && me->getPosDelta().y < 0))
                         {
@@ -71,12 +73,13 @@ namespace dang
                             {
                                 mf.other->_pos.y = mf.touchOther.y;
                             }
+                            call_callback = true;
                         }
 
                     }
                     else if (me->_coll_response == CR_BOUNCE && mf.other->_coll_response == CR_BOUNCE)
                     {
-                        // TODO: clean bouncing
+                        std::cout << "bounce - bounce; ti=" << mf.ti << std::endl;
                         if ((mf.normalMe.x > 0 && me->getPosDelta().x > 0) || (mf.normalMe.x < 0 && me->getPosDelta().x < 0))
                         {
                             me->_pos.x -= (me->_pos.x - mf.touchMe.x);
@@ -84,23 +87,35 @@ namespace dang
                             {
                                 mf.other->_pos.x -= (mf.other->_pos.x - mf.touchOther.x);
                             }
+                            call_callback = true;
                         }
                         else if ((mf.normalMe.y > 0 && me->getPosDelta().y > 0) || (mf.normalMe.y < 0 && me->getPosDelta().y < 0))
                         {
-                            me->_pos.y -= (me->_pos.y - mf.touchMe.y);
+                            float dy = mf.deltaMe.y;
+                            float rest = (me->_last_pos.y - me->_pos.y) - dy;
+                            me->_pos.y = me->_pos.y + rest;
+//                            me->_pos.y -= (me->_pos.y - mf.touchMe.y);
                             if (mf.other->_coll_object_type != COT_RIGID)
                             {
-                                mf.other->_pos.y -= (mf.other->_pos.y - mf.touchOther.y);
+                                float doy = mf.deltaOther.y;
+                                float rest_o = (mf.other->_last_pos.y - mf.other->_pos.y) - doy;
+                                mf.other->_pos.y = mf.other->_pos.y + rest_o;
+//                                mf.other->_pos.y -= (mf.other->_pos.y - mf.touchOther.y);
                             }
+                            call_callback = true;
                         }
 
                     }
                 }
 
-                //            std::cout << "pos me=" << me->getPos().x << ", " << me->getPos().y << std::endl;
-                //            std::cout << "pos other=" << coll_o.other->getPos().x << ", " << coll_o.other->getPos().y << std::endl;
+                if (call_callback)
+                {
+                    me->collide(mf);
+                    spSprite other = mf.other;
+                    mf.other = me;
+                    other->collide(mf);
+                }
 
-                me->collide(mf);
                 projected_mfs.pop_front();
 
             }
