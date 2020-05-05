@@ -115,16 +115,31 @@ namespace dang
 
     void Sprite::collide(const manifold &mf)
     {
-        if (_coll_response == SweptAABBCollision::CR_BOUNCE)
+        switch (_coll_response)
         {
-            if (mf.normalMe.x != 0)
-            {
-                _vel.x = -_vel.x;
-            }
-            else
-            {
-                _vel.y = -_vel.y;
-            }
+            case SweptAABBCollision::CR_BOUNCE:
+                if (mf.normalMe.x != 0)
+                {
+                    _vel.x = -_vel.x;
+                }
+                else
+                {
+                    _vel.y = -_vel.y;
+                }
+                break;
+            case SweptAABBCollision::CR_SLIDE:
+                if (mf.normalMe.x != 0)
+                {
+                    _vel.y = 0;
+                }
+                else
+                {
+                    _vel.x = 0;
+                }
+                break;
+            case SweptAABBCollision::CR_TOUCH:
+                _vel = {0,0};
+                break;
         }
     }
 

@@ -28,93 +28,34 @@ namespace dang
             while (!projected_mfs.empty())
             {
                 manifold mf = projected_mfs.front();
-                bool call_callback{false};
 
                 if (mf.overlaps)
                 {
                     me->setPos(mf.touchMe);
-                    call_callback = true;
                 }
-                else
+                else if ((me->_coll_response & (CR_NONE | CR_CROSS)) == 0 && (mf.other->_coll_response & (CR_NONE | CR_CROSS)) == 0)
                 {
-                    if (me->_coll_response == CR_TOUCH || mf.other->_coll_response == CR_TOUCH)
+                    switch (me->_coll_response)
                     {
-                        if ((mf.normalMe.x > 0 && me->getPosDelta().x > 0) || (mf.normalMe.x < 0 && me->getPosDelta().x < 0)
-                         || (mf.normalMe.y > 0 && me->getPosDelta().y > 0) || (mf.normalMe.y < 0 && me->getPosDelta().y < 0))
-                        {
-                            me->setPos(mf.touchMe);
-                            if (mf.other->_coll_object_type != COT_RIGID)
-                            {
-                                mf.other->setPos(mf.touchOther);
-                            }
-                            call_callback = true;
-                        }
+                        case CR_TOUCH: touch(mf, true); break;
+                        case CR_SLIDE: slide(mf, true); break;
+                        case CR_BOUNCE: bounce(mf, true); break;
+                        default: break;
                     }
-                    else if (me->_coll_response == CR_CROSS || mf.other->_coll_response == CR_CROSS)
-                    {
-                        call_callback = true;
-                        // do nothing, pos already set
-                    }
-                    else if (me->_coll_response == CR_SLIDE && mf.other->_coll_response == CR_SLIDE)
-                    {
-                        if ((mf.normalMe.x > 0 && me->getPosDelta().x > 0) || (mf.normalMe.x < 0 && me->getPosDelta().x < 0))
-                        {
-                            me->_pos.x = mf.touchMe.x;
-                            if (mf.other->_coll_object_type != COT_RIGID)
-                            {
-                                mf.other->_pos.x = mf.touchOther.x;
-                            }
-                            call_callback = true;
-                        }
-                        else if ((mf.normalMe.y > 0 && me->getPosDelta().y > 0) || (mf.normalMe.y < 0 && me->getPosDelta().y < 0))
-                        {
-                            me->_pos.y = mf.touchMe.y;
-                            if (mf.other->_coll_object_type != COT_RIGID)
-                            {
-                                mf.other->_pos.y = mf.touchOther.y;
-                            }
-                            call_callback = true;
-                        }
 
-                    }
-                    else if (me->_coll_response == CR_BOUNCE && mf.other->_coll_response == CR_BOUNCE)
+                    switch (mf.other->_coll_response)
                     {
-                        std::cout << "bounce - bounce; ti=" << mf.ti << std::endl;
-                        if ((mf.normalMe.x > 0 && me->getPosDelta().x > 0) || (mf.normalMe.x < 0 && me->getPosDelta().x < 0))
-                        {
-                            me->_pos.x -= (me->_pos.x - mf.touchMe.x);
-                            if (mf.other->_coll_object_type != COT_RIGID)
-                            {
-                                mf.other->_pos.x -= (mf.other->_pos.x - mf.touchOther.x);
-                            }
-                            call_callback = true;
-                        }
-                        else if ((mf.normalMe.y > 0 && me->getPosDelta().y > 0) || (mf.normalMe.y < 0 && me->getPosDelta().y < 0))
-                        {
-                            float dy = mf.deltaMe.y;
-                            float rest = (me->_last_pos.y - me->_pos.y) - dy;
-                            me->_pos.y = me->_pos.y + rest;
-//                            me->_pos.y -= (me->_pos.y - mf.touchMe.y);
-                            if (mf.other->_coll_object_type != COT_RIGID)
-                            {
-                                float doy = mf.deltaOther.y;
-                                float rest_o = (mf.other->_last_pos.y - mf.other->_pos.y) - doy;
-                                mf.other->_pos.y = mf.other->_pos.y + rest_o;
-//                                mf.other->_pos.y -= (mf.other->_pos.y - mf.touchOther.y);
-                            }
-                            call_callback = true;
-                        }
-
+                        case CR_TOUCH: touch(mf, false); break;
+                        case CR_SLIDE: slide(mf, false); break;
+                        case CR_BOUNCE: bounce(mf, false); break;
+                        default: break;
                     }
                 }
 
-                if (call_callback)
-                {
-                    me->collide(mf);
-                    spSprite other = mf.other;
-                    mf.other = me;
-                    other->collide(mf);
-                }
+                me->collide(mf);
+                spSprite other = mf.other;
+                mf.other = me;
+                other->collide(mf);
 
                 projected_mfs.pop_front();
 
@@ -125,6 +66,133 @@ namespace dang
 
         }
     }
+
+    void SweptAABBCollision::slide(manifold &mf, bool for_me)
+    {
+        if (for_me)
+        {
+            if ((mf.normalMe.x > 0 && mf.me->getPosDelta().x > 0) ||
+                (mf.normalMe.x < 0 && mf.me->getPosDelta().x < 0))
+            {
+                mf.me->_pos.x = mf.touchMe.x;
+            }
+            else if ((mf.normalMe.y > 0 && mf.me->getPosDelta().y > 0) ||
+                     (mf.normalMe.y < 0 && mf.me->getPosDelta().y < 0))
+            {
+                mf.me->_pos.y = mf.touchMe.y;
+            }
+            else
+            {
+                // this case should not occur
+                std::cout << "slide me: collision anomaly!" << std::endl;
+            }
+        }
+        else    // for the other
+        {
+            if (mf.other->_coll_object_type != COT_RIGID)
+            {
+                if ((mf.normalOther.x > 0 && mf.other->getPosDelta().x > 0) ||
+                    (mf.normalOther.x < 0 && mf.other->getPosDelta().x < 0))
+                {
+                    mf.other->_pos.x = mf.touchOther.x;
+                }
+                else if ((mf.normalOther.y > 0 && mf.other->getPosDelta().y > 0) ||
+                         (mf.normalOther.y < 0 && mf.other->getPosDelta().y < 0))
+                {
+                    mf.other->_pos.y = mf.touchOther.y;
+                }
+                else
+                {
+                    // this case should not occur
+                    std::cout << "slide other: collision anomaly!" << std::endl;
+                }
+            }
+        }
+    }
+
+    void SweptAABBCollision::touch(manifold &mf, bool for_me)
+    {
+        if (for_me)
+        {
+            if ((mf.normalMe.x > 0 && mf.me->getPosDelta().x > 0) ||
+                (mf.normalMe.x < 0 && mf.me->getPosDelta().x < 0) ||
+                (mf.normalMe.y > 0 && mf.me->getPosDelta().y > 0) ||
+                (mf.normalMe.y < 0 && mf.me->getPosDelta().y < 0))
+            {
+                mf.me->setPos(mf.touchMe);
+            }
+            else
+            {
+                // this case should not occur
+                std::cout << "touch me: collision anomaly!" << std::endl;
+            }
+        }
+        else    // for the other
+        {
+            if (mf.other->_coll_object_type != COT_RIGID)
+            {
+                if ((mf.normalOther.x > 0 && mf.other->getPosDelta().x > 0) ||
+                    (mf.normalOther.x < 0 && mf.other->getPosDelta().x < 0) ||
+                    (mf.normalOther.y > 0 && mf.other->getPosDelta().y > 0) ||
+                    (mf.normalOther.y < 0 && mf.other->getPosDelta().y < 0))
+                {
+                    mf.other->setPos(mf.touchOther);
+                }
+                else
+                {
+                    // this case should not occur
+                    std::cout << "touch other: collision anomaly!" << std::endl;
+                }
+            }
+        }
+    }
+
+    void SweptAABBCollision::bounce(manifold &mf, bool for_me)
+    {
+        if (for_me)
+        {
+            if ((mf.normalMe.x > 0 && mf.me->getPosDelta().x > 0) ||
+                (mf.normalMe.x < 0 && mf.me->getPosDelta().x < 0))
+            {
+                mf.me->_pos.x = mf.me->_last_pos.x - mf.deltaMe.x;
+            }
+            else if ((mf.normalMe.y > 0 && mf.me->getPosDelta().y > 0) ||
+                     (mf.normalMe.y < 0 && mf.me->getPosDelta().y < 0))
+            {
+                mf.me->_pos.y = mf.me->_last_pos.y - mf.deltaMe.y;
+            }
+            else
+            {
+                // this case should not occur
+                std::cout << "bounce me: collision anomaly! Normal(" << mf.normalMe.x << "< " << mf.normalMe.y << ")" << std::endl;
+//                std::cout << "bounce me: collision anomaly!" << std::endl;
+            }
+        }
+        else    // for the other
+        {
+            if (mf.other->_coll_object_type != COT_RIGID)
+            {
+                if ((mf.normalOther.x > 0 && mf.other->getPosDelta().x > 0) ||
+                    (mf.normalOther.x < 0 && mf.other->getPosDelta().x < 0))
+                {
+                    mf.other->_pos.x = mf.other->_last_pos.x - mf.deltaOther.x;
+                }
+                else if ((mf.normalOther.y > 0 && mf.other->getPosDelta().y > 0) ||
+                         (mf.normalOther.y < 0 && mf.other->getPosDelta().y < 0))
+                {
+                    mf.other->_pos.y = mf.other->_last_pos.y - mf.deltaOther.y;
+                }
+                else
+                {
+                    // this case should not occur
+                    std::cout << "bounce me: collision anomaly! Normal(" << mf.normalOther.x << "< " << mf.normalOther.y << ")" << std::endl;
+//                    std::cout << "bounce other: collision anomaly!" << std::endl;
+                }
+            }
+        }
+
+    }
+
 
     void SweptAABBCollision::projectCollisions(const spSprite& me, const std::forward_list<spSprite>& sprites, std::forward_list<manifold>& mf_list)
     {
@@ -150,7 +218,6 @@ namespace dang
             Vector2F deltaOther = other->getPosDelta();
 
             RectF rMink = otherRect.minkowskiDiff(meRect);
-//            RectF rMink = meRect.minkowskiDiff(otherRect);
 
             if (rMink.containsWOBounds(Vector2F(0, 0)))    // intersection of the two rects without any velocity
             {
@@ -167,6 +234,7 @@ namespace dang
                     nearestBound.x = 0;
                 }
 
+                mf.me = me;
                 mf.other = other;
                 mf.overlaps = true;
                 mf.deltaMe = nearestBound;
@@ -186,6 +254,7 @@ namespace dang
                 Vector2F delta = deltaMe - deltaOther;
                 if (getRayIntersectionFraction(Vector2F(0,0), delta, rMink, mf.ti, mf.normalOther))
                 {
+                    mf.me = me;
                     mf.other = other;
 
                     mf.overlaps = false;
@@ -316,5 +385,6 @@ namespace dang
         return std::numeric_limits<float>::infinity();
 
     }
+
 
 }
