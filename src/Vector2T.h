@@ -60,8 +60,8 @@ namespace dang
 
         T length()
         {
-            if (x == 0) return y;
-            if (y == 0) return x;
+            if (x == 0) return std::abs(y);
+            if (y == 0) return std::abs(x);
             return std::sqrt(x * x + y * y);
         }
 

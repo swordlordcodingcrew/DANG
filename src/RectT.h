@@ -48,6 +48,12 @@ namespace dang
             return p.x > x && p.y > y && p.x < x + w && p.y < y + h;
         }
 
+        bool containsZeroPoint() const
+        {
+//            return x <= 0 && (x + w) >= 0 && y <= 0 && (y + h) >= 0;
+            return x < 0 && (x + w) > 0 && y < 0 && (y + h) > 0;
+        }
+
         bool contains(const Vector2T<T> &p) const
         {
             return p.x >= x && p.y >= y && p.x < x + w && p.y < y + h;
@@ -85,7 +91,7 @@ namespace dang
 
         Vector2T<T> getNearestCorner(const Vector2T<T> p)
         {
-            return Vector2T<T>(std::abs(x - p.x) < std::abs(x + w - p.x) ? x : x + w, std::abs(y - p.y < std::abs(y + h - p.y)) ? y : y + h);
+            return Vector2T<T>(std::abs(x - p.x) < std::abs(x + w - p.x) ? x : x + w, std::abs(y - p.y) < std::abs(y + h - p.y) ? y : y + h);
         }
 
         void deflate(T v)

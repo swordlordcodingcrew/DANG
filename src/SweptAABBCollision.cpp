@@ -13,98 +13,128 @@ namespace dang
     void SweptAABBCollision::handleCollisionDetection(std::forward_list<spSprite>& sprites)
     {
         _handled.clear();
+        _iteraton = 3;
+        _iterate = false;
 
-        for (const spSprite& me : sprites)
+        while (_iteraton > 0)
         {
-            if (me->_coll_object_type == SweptAABBCollision::COT_RIGID)
+            for (const spSprite &me : sprites)
             {
-                continue;
-            }
-
-            // possible collisions
-            std::forward_list<manifold> projected_mfs;
-            projectCollisions(me, sprites, projected_mfs);
-
-            while (!projected_mfs.empty())
-            {
-                manifold mf = projected_mfs.front();
-
-                if (mf.overlaps)
+                if (me->_coll_object_type == SweptAABBCollision::COT_RIGID || _handled.count(me) > 0)
                 {
-                    me->setPos(mf.touchMe);
-                }
-                else if ((me->_coll_response & (CR_NONE | CR_CROSS)) == 0 && (mf.other->_coll_response & (CR_NONE | CR_CROSS)) == 0)
-                {
-                    switch (me->_coll_response)
-                    {
-                        case CR_TOUCH: touch(mf, true); break;
-                        case CR_SLIDE: slide(mf, true); break;
-                        case CR_BOUNCE: bounce(mf, true); break;
-                        default: break;
-                    }
-
-                    switch (mf.other->_coll_response)
-                    {
-                        case CR_TOUCH: touch(mf, false); break;
-                        case CR_SLIDE: slide(mf, false); break;
-                        case CR_BOUNCE: bounce(mf, false); break;
-                        default: break;
-                    }
+                    continue;
                 }
 
-                me->collide(mf);
-                spSprite other = mf.other;
-                mf.other = me;
-                other->collide(mf);
+                // possible collisions
+                std::forward_list<manifold> projected_mfs;
+                projectCollisions(me, sprites, projected_mfs);
 
-                projected_mfs.pop_front();
+                while (!projected_mfs.empty())
+                {
+                    manifold mf = projected_mfs.front();
 
+                    if (mf.overlaps)
+                    {
+//                        std::cout << "overlap" << std::endl;
+                        //me->_pos = me->_last_pos + mf.deltaMe;
+                        //me->_pos += mf.deltaMe;
+                        //me->setPos(mf.touchMe);
+                    }
+
+                    eCollisionResponse cr_me = me->getCollisionResponse(mf.other);
+                    eCollisionResponse cr_other = mf.other->getCollisionResponse(me);
+                    if (cr_me != CR_NONE && cr_me != CR_CROSS && cr_other != CR_NONE && cr_other != CR_CROSS)
+                    {
+                        switch (cr_me)
+                        {
+                            case CR_TOUCH:
+                                touch(mf, true);
+                                break;
+                            case CR_SLIDE:
+                                slide(mf, true);
+                                break;
+                            case CR_BOUNCE:
+                                bounce(mf, true);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        switch (cr_other)
+                        {
+                            case CR_TOUCH:
+                                touch(mf, false);
+                                break;
+                            case CR_SLIDE:
+                                slide(mf, false);
+                                break;
+                            case CR_BOUNCE:
+                                bounce(mf, false);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    me->collide(mf);
+                    mf.other->collide(mf);
+
+                    projected_mfs.pop_front();
+                    if (projected_mfs.empty())
+                    {
+                        // no more collisions, this sprite is handled
+                        _handled.insert(me);
+                    }
+                    else
+                    {
+                        if (cr_me != CR_NONE && cr_me != CR_CROSS && cr_other != CR_NONE && cr_other != CR_CROSS)
+                        {
+                            // sprite position has changed which invalidates the remaining manifolds -> one more iteration
+                            _iterate = true;
+                            //  exit from while-loop
+                            break;
+                        }
+                    }
+                }
+            }   // for loop
+
+            if (_iterate)
+            {
+                _iterate = false;
+                _iteraton--;
             }
-
-            // this sprite is handled
-            _handled.insert(me);
-
-        }
+            else
+            {
+                _iteraton = 0;
+            }
+        } // while loop
     }
 
     void SweptAABBCollision::slide(manifold &mf, bool for_me)
     {
         if (for_me)
         {
-            if ((mf.normalMe.x > 0 && mf.me->getPosDelta().x > 0) ||
-                (mf.normalMe.x < 0 && mf.me->getPosDelta().x < 0))
+            if (mf.normalMe.x * mf.me->getPosDelta().x > 0)
             {
                 mf.me->_pos.x = mf.touchMe.x;
             }
-            else if ((mf.normalMe.y > 0 && mf.me->getPosDelta().y > 0) ||
-                     (mf.normalMe.y < 0 && mf.me->getPosDelta().y < 0))
+            else if (mf.normalMe.y * mf.me->getPosDelta().y > 0)
             {
                 mf.me->_pos.y = mf.touchMe.y;
             }
-            else
-            {
-                // this case should not occur
-                std::cout << "slide me: collision anomaly!" << std::endl;
-            }
         }
+
         else    // for the other
         {
             if (mf.other->_coll_object_type != COT_RIGID)
             {
-                if ((mf.normalOther.x > 0 && mf.other->getPosDelta().x > 0) ||
-                    (mf.normalOther.x < 0 && mf.other->getPosDelta().x < 0))
+                if (mf.normalOther.x * mf.other->getPosDelta().x > 0)
                 {
                     mf.other->_pos.x = mf.touchOther.x;
                 }
-                else if ((mf.normalOther.y > 0 && mf.other->getPosDelta().y > 0) ||
-                         (mf.normalOther.y < 0 && mf.other->getPosDelta().y < 0))
+                else if (mf.normalOther.y * mf.other->getPosDelta().y > 0)
                 {
                     mf.other->_pos.y = mf.touchOther.y;
-                }
-                else
-                {
-                    // this case should not occur
-                    std::cout << "slide other: collision anomaly!" << std::endl;
                 }
             }
         }
@@ -114,35 +144,13 @@ namespace dang
     {
         if (for_me)
         {
-            if ((mf.normalMe.x > 0 && mf.me->getPosDelta().x > 0) ||
-                (mf.normalMe.x < 0 && mf.me->getPosDelta().x < 0) ||
-                (mf.normalMe.y > 0 && mf.me->getPosDelta().y > 0) ||
-                (mf.normalMe.y < 0 && mf.me->getPosDelta().y < 0))
-            {
-                mf.me->setPos(mf.touchMe);
-            }
-            else
-            {
-                // this case should not occur
-                std::cout << "touch me: collision anomaly!" << std::endl;
-            }
+            mf.me->setPos(mf.touchMe);
         }
         else    // for the other
         {
             if (mf.other->_coll_object_type != COT_RIGID)
             {
-                if ((mf.normalOther.x > 0 && mf.other->getPosDelta().x > 0) ||
-                    (mf.normalOther.x < 0 && mf.other->getPosDelta().x < 0) ||
-                    (mf.normalOther.y > 0 && mf.other->getPosDelta().y > 0) ||
-                    (mf.normalOther.y < 0 && mf.other->getPosDelta().y < 0))
-                {
-                    mf.other->setPos(mf.touchOther);
-                }
-                else
-                {
-                    // this case should not occur
-                    std::cout << "touch other: collision anomaly!" << std::endl;
-                }
+                mf.other->setPos(mf.touchOther);
             }
         }
     }
@@ -151,46 +159,33 @@ namespace dang
     {
         if (for_me)
         {
-            if ((mf.normalMe.x > 0 && mf.me->getPosDelta().x > 0) ||
-                (mf.normalMe.x < 0 && mf.me->getPosDelta().x < 0))
+            if (mf.normalMe.x != 0)
             {
-                mf.me->_pos.x = mf.me->_last_pos.x - mf.deltaMe.x;
-            }
-            else if ((mf.normalMe.y > 0 && mf.me->getPosDelta().y > 0) ||
-                     (mf.normalMe.y < 0 && mf.me->getPosDelta().y < 0))
-            {
-                mf.me->_pos.y = mf.me->_last_pos.y - mf.deltaMe.y;
+                float d_bounce = mf.me->_pos.x - mf.me->_last_pos.x - mf.deltaMe.x;
+                mf.me->_pos.x = mf.touchMe.x - d_bounce;
             }
             else
             {
-                // this case should not occur
-                std::cout << "bounce me: collision anomaly! Normal(" << mf.normalMe.x << "< " << mf.normalMe.y << ")" << std::endl;
-//                std::cout << "bounce me: collision anomaly!" << std::endl;
+                float d_bounce = mf.me->_pos.y - mf.me->_last_pos.y - mf.deltaMe.y;
+                mf.me->_pos.y = mf.touchMe.y - d_bounce;
             }
         }
         else    // for the other
         {
             if (mf.other->_coll_object_type != COT_RIGID)
             {
-                if ((mf.normalOther.x > 0 && mf.other->getPosDelta().x > 0) ||
-                    (mf.normalOther.x < 0 && mf.other->getPosDelta().x < 0))
+                if (mf.normalOther.x != 0)
                 {
-                    mf.other->_pos.x = mf.other->_last_pos.x - mf.deltaOther.x;
-                }
-                else if ((mf.normalOther.y > 0 && mf.other->getPosDelta().y > 0) ||
-                         (mf.normalOther.y < 0 && mf.other->getPosDelta().y < 0))
-                {
-                    mf.other->_pos.y = mf.other->_last_pos.y - mf.deltaOther.y;
+                    float d_bounce = mf.other->_pos.x - mf.other->_last_pos.x - mf.deltaOther.x;
+                    mf.other->_pos.x = mf.touchOther.x - d_bounce;
                 }
                 else
                 {
-                    // this case should not occur
-                    std::cout << "bounce me: collision anomaly! Normal(" << mf.normalOther.x << "< " << mf.normalOther.y << ")" << std::endl;
-//                    std::cout << "bounce other: collision anomaly!" << std::endl;
+                    float d_bounce = mf.other->_pos.y - mf.other->_last_pos.y - mf.deltaOther.y;
+                    mf.other->_pos.y = mf.touchOther.y - d_bounce;
                 }
             }
         }
-
     }
 
 
@@ -217,10 +212,18 @@ namespace dang
             otherRect.y += other->getLastPos().y;
             Vector2F deltaOther = other->getPosDelta();
 
+            Vector2F delta = deltaMe - deltaOther;
             RectF rMink = otherRect.minkowskiDiff(meRect);
 
-            if (rMink.containsWOBounds(Vector2F(0, 0)))    // intersection of the two rects without any velocity
+            if (rMink.containsZeroPoint())    // intersection of the two rects without any velocity
             {
+//                std::cout << "overlap" << std::endl;
+
+                mf.me = me;
+                mf.other = other;
+                mf.overlaps = true;
+
+
                 // get the nearest side
                 Vector2F nearestBound = rMink.getNearestCorner(Vector2F(0,0));
 
@@ -228,30 +231,51 @@ namespace dang
                 if (std::abs(nearestBound.x) < std::abs(nearestBound.y))
                 {
                     nearestBound.y = 0;
+                    mf.deltaMe.y = 0;
+                    mf.deltaOther.y = 0;
+                    if (delta.x != 0)
+                    {
+                        mf.deltaMe.x = nearestBound.x * deltaMe.x / delta.x;
+                        mf.deltaOther.x = nearestBound.x * deltaOther.x / delta.x;
+                    }
+                    else
+                    {
+                        mf.deltaMe.x = nearestBound.x;
+                        mf.deltaOther.x = 0;
+                    }
+                    mf.normalMe = {(nearestBound.x == rMink.x ? 1.0f : -1.0f), 0};
+                    mf.normalOther = -mf.normalMe;
                 }
                 else
                 {
                     nearestBound.x = 0;
+                    mf.deltaMe.x = 0;
+                    mf.deltaOther.x = 0;
+                    if (delta.y != 0)
+                    {
+                        mf.deltaMe.y = nearestBound.y * deltaMe.y / delta.y;
+                        mf.deltaOther.y = nearestBound.y * deltaOther.y / delta.y;
+                    }
+                    else
+                    {
+                        mf.deltaMe.y = nearestBound.y;
+                        mf.deltaOther.y = 0;
+                    }
+                    mf.normalMe = {0, (nearestBound.y == rMink.y ? 1.0f : -1.0f)};
+                    mf.normalOther = -mf.normalMe;
                 }
 
-                mf.me = me;
-                mf.other = other;
-                mf.overlaps = true;
-                mf.deltaMe = nearestBound;
-                nearestBound.normalize();
-                mf.normalMe = nearestBound;
-                mf.normalOther = -nearestBound;
-                mf.touchMe = meRect.tl() + nearestBound;
-//          these variables are not valid in this context since there is no delta movement. All information is given in the *me variables
+
+                mf.touchMe = me->_last_pos + mf.deltaMe;
+                mf.touchOther = other->_last_pos + mf.deltaOther;
+
+                // ti is not valid in this context since the rect overlap already
                 mf.ti = 0;
-                mf.deltaOther = {0, 0};
-                mf.touchOther = {0, 0};
 
                 mf_list.push_front(mf);
             }
             else
             {
-                Vector2F delta = deltaMe - deltaOther;
                 if (getRayIntersectionFraction(Vector2F(0,0), delta, rMink, mf.ti, mf.normalOther))
                 {
                     mf.me = me;
@@ -259,11 +283,11 @@ namespace dang
 
                     mf.overlaps = false;
                     mf.deltaMe = deltaMe * mf.ti;
-                    mf.touchMe = meRect.tl() + mf.deltaMe;
+                    mf.touchMe = me->_last_pos + mf.deltaMe;
                     mf.normalMe = -mf.normalOther;
 
                     mf.deltaOther = deltaOther * mf.ti;
-                    mf.touchOther = otherRect.tl() + mf.deltaOther;
+                    mf.touchOther = other->_last_pos + mf.deltaOther;
 
                     mf_list.push_front(mf);
                 }
@@ -287,8 +311,16 @@ namespace dang
         // left side
         ti = getRayIntersectionFractionOfFirstRay(pos, goal, aabb.tl(), aabb.bl());
         normal = {-1,0};
+        if (ti == 0 && goal.x < 0)
+        {
+            ti = std::numeric_limits<float>::infinity();
+        }
         //bottom side
         float x = getRayIntersectionFractionOfFirstRay(pos, goal, aabb.bl(), aabb.br());
+        if (x == 0 && goal.y > 0)
+        {
+            x = std::numeric_limits<float>::infinity();
+        }
         if (x < ti)
         {
             ti = x;
@@ -296,6 +328,10 @@ namespace dang
         }
         // right side
         x = getRayIntersectionFractionOfFirstRay(pos, goal, aabb.br(), aabb.tr());
+        if (x == 0 && goal.x > 0)
+        {
+            x = std::numeric_limits<float>::infinity();
+        }
         if (x < ti)
         {
             ti = x;
@@ -303,6 +339,10 @@ namespace dang
         }
         // top side
         x = getRayIntersectionFractionOfFirstRay(pos, goal, aabb.tr(), aabb.tl());
+        if (x == 0 && goal.y < 0)
+        {
+            x = std::numeric_limits<float>::infinity();
+        }
         if (x < ti)
         {
             ti = x;
@@ -360,10 +400,18 @@ namespace dang
                 {
                     float t0 = (originB - originA).dot(r) / r_d_r;
                     float t1 = t0 + s.dot(r) / r_d_r;
-                    if ((t0 > 0 && t0 < 1) || (t1 > 0 && t1 < 1))   // co-linear and intersecting
+                    if (t0 > 0 && t0 < 1)  // co-linear and intersecting
                     {
+                        std::cout << "co-linear, ti=" << t0 << std::endl;
                         // correct?
                         return t0;
+
+                    }
+                    else if (t1 > 0 && t1 < 1)   // co-linear and intersecting
+                    {
+                        std::cout << "co-linear, ti=" << t1 << std::endl;
+                        // correct?
+                        return t1;
                     }
                 }
             }

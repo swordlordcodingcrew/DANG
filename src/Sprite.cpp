@@ -118,29 +118,50 @@ namespace dang
         switch (_coll_response)
         {
             case SweptAABBCollision::CR_BOUNCE:
-                if (mf.normalMe.x != 0)
+                if (mf.me.get() == this)
                 {
-                    _vel.x = -_vel.x;
+                    if (mf.normalMe.x * _vel.x > 0)
+                    {
+                        _vel.x = -_vel.x;
+                    }
+                    else if (mf.normalMe.y * _vel.y > 0)
+                    {
+                        _vel.y = -_vel.y;
+                    }
+
                 }
                 else
                 {
-                    _vel.y = -_vel.y;
+                    if (mf.normalOther.x * _vel.x > 0)
+                    {
+                        _vel.x = -_vel.x;
+                    }
+                    else if (mf.normalOther.y * _vel.y > 0)
+                    {
+                        _vel.y = -_vel.y;
+                    }
+
                 }
                 break;
             case SweptAABBCollision::CR_SLIDE:
                 if (mf.normalMe.x != 0)
                 {
-                    _vel.y = 0;
+//                    _vel.y = 0;
                 }
                 else
                 {
-                    _vel.x = 0;
+//                    _vel.x = 0;
                 }
                 break;
             case SweptAABBCollision::CR_TOUCH:
                 _vel = {0,0};
                 break;
         }
+    }
+
+    SweptAABBCollision::eCollisionResponse Sprite::getCollisionResponse(std::shared_ptr<dang::Sprite> other)
+    {
+        return _coll_response;
     }
 
 }

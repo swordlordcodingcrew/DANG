@@ -61,7 +61,8 @@ namespace dang
 
 
         std::unordered_set<spSprite> _handled;
-
+        uint16_t    _iteraton{3};
+        bool        _iterate{false};
     };
 
 }

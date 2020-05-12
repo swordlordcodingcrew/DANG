@@ -66,7 +66,7 @@ namespace dang
         Vector2F     _vel{0,0};
         Vector2F     _acc{0,0};
 
-        Vector2F     _last_pos{0,0};     // could be used for collision detection
+        Vector2F    _last_pos{0,0};     // could be used for collision detection
         uint32_t    _last_update_time{0};
 
         // tween depot
@@ -75,7 +75,6 @@ namespace dang
         // *** collision stuff ***
         // to be moved to collisionsprite subclass on a later stage
     public:
-        uint16_t    _coll_response{SweptAABBCollision::CR_BOUNCE};
         uint16_t    _coll_object_type{SweptAABBCollision::COT_DYNAMIC};
         bool        _is_hit{false};
         RectF       _hotrect{0,0,0,0};
@@ -83,6 +82,8 @@ namespace dang
         RectF       getHotrectAbs();
         virtual void collide(const manifold &mf);
 
+        SweptAABBCollision::eCollisionResponse    _coll_response{SweptAABBCollision::CR_SLIDE};
+        virtual SweptAABBCollision::eCollisionResponse getCollisionResponse(spSprite other);
     };
 
 }
