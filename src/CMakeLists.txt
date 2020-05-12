@@ -7,8 +7,8 @@ list(APPEND SOURCES
         tween/Ease.h
         tween/TwAnim.cpp
         tween/TwAnim.h
-        tween/TwMove.cpp
-        tween/TwMove.h
+        tween/TwPos.cpp
+        tween/TwPos.h
         Imagesheet.cpp
         Imagesheet.h
         Sprite.cpp

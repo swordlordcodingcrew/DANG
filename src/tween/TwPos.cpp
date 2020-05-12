@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <Sprite.h>
-#include "TwMove.h"
+#include "TwPos.h"
 #include "../dang_globals.hpp"
 
 namespace dang
@@ -12,7 +12,7 @@ namespace dang
     /**
      * default constructor
      */
-    TwMove::TwMove() : Tweenable()
+    TwPos::TwPos() : Tweenable()
     {
 
     }
@@ -27,8 +27,8 @@ namespace dang
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwMove::TwMove(std::shared_ptr<void> the_object, const Vec2& move_to, uint32_t duration, std::unique_ptr<Ease> ease,
-                   int32_t loops, bool alternating, uint32_t delay)
+    TwPos::TwPos(std::shared_ptr<void> the_object, const Vec2& move_to, uint32_t duration, std::unique_ptr<Ease> ease,
+                 int32_t loops, bool alternating, uint32_t delay)
             : _move_to(move_to), Tweenable(the_object, duration, std::move(ease), loops, alternating, delay)
     {
         if (_the_object != nullptr)
@@ -44,7 +44,7 @@ namespace dang
      *
      * @param time needed for updating the tween
      */
-    void TwMove::update(uint32_t time)
+    void TwPos::update(uint32_t time)
     {
         if (_the_object == nullptr) return;
 

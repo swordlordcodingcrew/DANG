@@ -10,11 +10,11 @@
 
 namespace dang
 {
-    class TwMove : public Tweenable
+    class TwPos : public Tweenable
     {
     public:
-        TwMove();
-        TwMove(std::shared_ptr<void> the_object, const Vec2& move_to, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        TwPos();
+        TwPos(std::shared_ptr<void> the_object, const Vec2& move_to, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         void        update(uint32_t time);
 
 
