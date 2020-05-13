@@ -3,14 +3,14 @@
 
 #include <iostream>
 #include <Sprite.h>
-#include "TwVel.h"
+#include "TwAcc.h"
 
 namespace dang
 {
     /**
      * default constructor
      */
-    TwVel::TwVel() : Tweenable()
+    TwAcc::TwAcc() : Tweenable()
     {
 
     }
@@ -18,17 +18,17 @@ namespace dang
     /**
      *
      * @param the_object to be manipulated. Shall be a sprite
-     * @param start_vel start velocity
-     * @param end_vel end velocity
+     * @param start_acc start acceleration
+     * @param end_acc end acceleration
      * @param duration duration of loop.
      * @param ease ease function
      * @param loops number of loops
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwVel::TwVel(std::shared_ptr<void> the_object, const Vector2F& start_vel, const Vector2F& end_vel, uint32_t duration, std::unique_ptr<Ease> ease,
+    TwAcc::TwAcc(std::shared_ptr<void> the_object, const Vector2F& start_acc, const Vector2F& end_acc, uint32_t duration, std::unique_ptr<Ease> ease,
                  int32_t loops, bool alternating, uint32_t delay)
-            : _start_vel(start_vel), _end_vel(end_vel), Tweenable(the_object, duration, std::move(ease), loops, alternating, delay)
+            : _start_acc(start_acc), _end_acc(end_acc), Tweenable(the_object, duration, std::move(ease), loops, alternating, delay)
     {
 
     }
@@ -38,20 +38,20 @@ namespace dang
      *
      * @param time needed for updating the tween
      */
-    void TwVel::update(uint32_t time)
+    void TwAcc::update(uint32_t time)
     {
         if (_the_object == nullptr) return;
 
         spSprite spr = std::static_pointer_cast<Sprite>(_the_object);
 
         float fx = calc(time);
-        spr->setVel(_start_vel + (_end_vel - _start_vel) * fx);
+        spr->setAcc(_start_acc + (_end_acc - _start_acc) * fx);
 
     }
 
-    TwVel::~TwVel()
+    TwAcc::~TwAcc()
     {
-        std::cout << "TwVel destroyed" << std::endl;
+        std::cout << "TwAcc destroyed" << std::endl;
     }
 
 }
