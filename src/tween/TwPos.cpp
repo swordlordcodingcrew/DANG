@@ -27,7 +27,7 @@ namespace dang
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwPos::TwPos(std::shared_ptr<void> the_object, const Vec2& move_to, uint32_t duration, std::unique_ptr<Ease> ease,
+    TwPos::TwPos(std::shared_ptr<void> the_object, const Vector2F& move_to, uint32_t duration, std::unique_ptr<Ease> ease,
                  int32_t loops, bool alternating, uint32_t delay)
             : _move_to(move_to), Tweenable(the_object, duration, std::move(ease), loops, alternating, delay)
     {
