@@ -14,6 +14,7 @@ namespace dang
 
     class Imagesheet;
     class Tweenable;
+    using spTweenable = std::shared_ptr<Tweenable>;
 
     class Sprite
     {

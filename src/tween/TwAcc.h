@@ -8,6 +8,9 @@
 
 namespace dang
 {
+    class Sprite;
+    using spSprite = std::shared_ptr<Sprite>;
+
     class TwAcc : public Tweenable
     {
     public:

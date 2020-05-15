@@ -4,10 +4,13 @@
 #pragma once
 
 #include "Tweenable.h"
-#include <Vector2T.h>
+#include "Vector2T.h"
 
 namespace dang
 {
+    class Sprite;
+    using spSprite = std::shared_ptr<Sprite>;
+
     class TwVel : public Tweenable
     {
     public:

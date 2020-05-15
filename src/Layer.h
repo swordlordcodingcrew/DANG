@@ -6,8 +6,9 @@
 
 #pragma once
 
-#include "dang_globals.hpp"
 #include "RectT.h"
+#include <memory>
+#include <string>
 
 namespace dang
 {

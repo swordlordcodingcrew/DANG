@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Vector2T.h"
+#include <algorithm>
 
 namespace dang
 {

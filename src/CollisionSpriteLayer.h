@@ -3,17 +3,17 @@
 
 #pragma once
 
-#include "dang_globals.hpp"
-#include <Vector2T.h>
-#include <RectT.h>
 #include <forward_list>
 #include <unordered_set>
+
+#include "Vector2T.h"
+#include "RectT.h"
 #include "SpriteLayer.h"
-//#include "CollisionSprite.h"
 
 namespace dang
 {
     class CollisionSprite;
+    using spCollisionSprite = std::shared_ptr<CollisionSprite>;
 
     class CollisionSpriteLayer : public SpriteLayer
     {

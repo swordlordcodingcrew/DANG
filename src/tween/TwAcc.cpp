@@ -2,7 +2,8 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
-#include <Sprite.h>
+
+#include "Sprite.h"
 #include "TwAcc.h"
 
 namespace dang
