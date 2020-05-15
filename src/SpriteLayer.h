@@ -7,7 +7,6 @@
 #pragma once
 
 #include "Layer.h"
-#include "SweptAABBCollision.h"
 
 namespace dang
 {
@@ -15,18 +14,20 @@ namespace dang
     {
     public:
         SpriteLayer();
-        SpriteLayer(const RectF& layer_size_px);
-        virtual ~SpriteLayer();
+        explicit SpriteLayer(const RectF& layer_size_px);
+        ~SpriteLayer() override = default;
 
-        virtual void    update(uint32_t time, const Gear& gear) override;
-        virtual void    render(const Gear& gear) override;
+        void    update(uint32_t time, const Gear& gear) override;
+        void    render(const Gear& gear) override;
 
-        void    addSprite(std::shared_ptr<Sprite> spr);
-        void    removeSprite(std::shared_ptr<Sprite> spr);
+        virtual void    addSprite(spSprite spr);
+        virtual void    removeSprite(spSprite spr);
 
     protected:
-        std::forward_list<std::shared_ptr<Sprite>> _sprites;
-        SweptAABBCollision _sac;
+        explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};
+        SpriteLayer(Layer::E_TYPE type, const RectF& layer_size_px) : Layer(type, layer_size_px) {};
+
+        std::forward_list<spSprite> _sprites;
 
     };
 

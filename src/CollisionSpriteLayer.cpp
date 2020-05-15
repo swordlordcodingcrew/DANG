@@ -1,33 +1,73 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-// (c) 2019-20 by SwordLord - the coding crew
 
 #include <iostream>
-#include "SweptAABBCollision.h"
+#include "CollisionSpriteLayer.h"
 #include "Sprite.h"
+#include "CollisionSprite.h"
 
 namespace dang
 {
+    CollisionSpriteLayer::CollisionSpriteLayer() : SpriteLayer(LT_COLLISIONSPRITELAYER)
+    {
+
+    }
+
+    CollisionSpriteLayer::CollisionSpriteLayer(const RectF &layer_size_px) : SpriteLayer(LT_COLLISIONSPRITELAYER, layer_size_px)
+    {
+
+    }
+
+    void CollisionSpriteLayer::update(uint32_t time, const Gear &gear)
+    {
+        // update the sprites
+        SpriteLayer::update(time, gear);
+
+        // collision resolution
+        handleCollisionDetection();
+    }
+
+    void CollisionSpriteLayer::render(const Gear &gear)
+    {
+        SpriteLayer::render(gear);
+    }
+
+    void CollisionSpriteLayer::addSprite(spCollisionSprite spr)
+    {
+        SpriteLayer::addSprite(std::dynamic_pointer_cast<Sprite>(spr));
+    }
+
+    void CollisionSpriteLayer::removeSprite(spCollisionSprite spr)
+    {
+        SpriteLayer::removeSprite(std::dynamic_pointer_cast<Sprite>(spr));
+    }
 
     // called on every move of every sprite
-    void SweptAABBCollision::handleCollisionDetection(std::forward_list<spSprite>& sprites)
+    void CollisionSpriteLayer::handleCollisionDetection()
     {
         _handled.clear();
-        _iteraton = 3;
+        _iteration = 3;
         _iterate = false;
 
-        while (_iteraton > 0)
+        while (_iteration > 0)
         {
-            for (const spSprite &me : sprites)
+            for (const spSprite &spr : _sprites)
             {
-                if (me->_coll_object_type == SweptAABBCollision::COT_RIGID || _handled.count(me) > 0)
+                const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>(spr);
+
+                if (me == nullptr)
                 {
                     continue;
                 }
 
-                // possible collisions
+                if (me->getCOType() == CollisionSpriteLayer::COT_RIGID || _handled.count(me) > 0)
+                {
+                    continue;
+                }
+
+                // find possible collisions
                 std::forward_list<manifold> projected_mfs;
-                projectCollisions(me, sprites, projected_mfs);
+                projectCollisions(me, _sprites, projected_mfs);
 
                 while (!projected_mfs.empty())
                 {
@@ -101,46 +141,46 @@ namespace dang
             if (_iterate)
             {
                 _iterate = false;
-                _iteraton--;
+                _iteration--;
             }
             else
             {
-                _iteraton = 0;
+                _iteration = 0;
             }
         } // while loop
     }
 
-    void SweptAABBCollision::slide(manifold &mf, bool for_me)
+    void CollisionSpriteLayer::slide(manifold &mf, bool for_me)
     {
         if (for_me)
         {
             if (mf.normalMe.x * mf.me->getPosDelta().x > 0)
             {
-                mf.me->_pos.x = mf.touchMe.x;
+                mf.me->setPosX(mf.touchMe.x);
             }
             else if (mf.normalMe.y * mf.me->getPosDelta().y > 0)
             {
-                mf.me->_pos.y = mf.touchMe.y;
+                mf.me->setPosY(mf.touchMe.y);
             }
         }
 
         else    // for the other
         {
-            if (mf.other->_coll_object_type != COT_RIGID)
+            if (mf.other->getCOType() != COT_RIGID)
             {
                 if (mf.normalOther.x * mf.other->getPosDelta().x > 0)
                 {
-                    mf.other->_pos.x = mf.touchOther.x;
+                    mf.other->setPosX(mf.touchOther.x);
                 }
                 else if (mf.normalOther.y * mf.other->getPosDelta().y > 0)
                 {
-                    mf.other->_pos.y = mf.touchOther.y;
+                    mf.other->setPosY(mf.touchOther.y);
                 }
             }
         }
     }
 
-    void SweptAABBCollision::touch(manifold &mf, bool for_me)
+    void CollisionSpriteLayer::touch(manifold &mf, bool for_me)
     {
         if (for_me)
         {
@@ -148,53 +188,60 @@ namespace dang
         }
         else    // for the other
         {
-            if (mf.other->_coll_object_type != COT_RIGID)
+            if (mf.other->getCOType() != COT_RIGID)
             {
                 mf.other->setPos(mf.touchOther);
             }
         }
     }
 
-    void SweptAABBCollision::bounce(manifold &mf, bool for_me)
+    void CollisionSpriteLayer::bounce(manifold &mf, bool for_me)
     {
         if (for_me)
         {
             if (mf.normalMe.x != 0)
             {
-                float d_bounce = mf.me->_pos.x - mf.me->_last_pos.x - mf.deltaMe.x;
-                mf.me->_pos.x = mf.touchMe.x - d_bounce;
+                float d_bounce = mf.me->getPosX() - mf.me->getLastPosX() - mf.deltaMe.x;
+                mf.me->setPosX(mf.touchMe.x - d_bounce);
             }
             else
             {
-                float d_bounce = mf.me->_pos.y - mf.me->_last_pos.y - mf.deltaMe.y;
-                mf.me->_pos.y = mf.touchMe.y - d_bounce;
+                float d_bounce = mf.me->getPosY() - mf.me->getLastPosY() - mf.deltaMe.y;
+                mf.me->setPosY(mf.touchMe.y - d_bounce);
             }
         }
         else    // for the other
         {
-            if (mf.other->_coll_object_type != COT_RIGID)
+            if (mf.other->getCOType() != COT_RIGID)
             {
                 if (mf.normalOther.x != 0)
                 {
-                    float d_bounce = mf.other->_pos.x - mf.other->_last_pos.x - mf.deltaOther.x;
-                    mf.other->_pos.x = mf.touchOther.x - d_bounce;
+                    float d_bounce = mf.other->getPosX() - mf.other->getLastPosX() - mf.deltaOther.x;
+                    mf.other->setPosX(mf.touchOther.x - d_bounce);
                 }
                 else
                 {
-                    float d_bounce = mf.other->_pos.y - mf.other->_last_pos.y - mf.deltaOther.y;
-                    mf.other->_pos.y = mf.touchOther.y - d_bounce;
+                    float d_bounce = mf.other->getPosY() - mf.other->getLastPosY() - mf.deltaOther.y;
+                    mf.other->setPosY(mf.touchOther.y - d_bounce);
                 }
             }
         }
     }
 
 
-    void SweptAABBCollision::projectCollisions(const spSprite& me, const std::forward_list<spSprite>& sprites, std::forward_list<manifold>& mf_list)
+    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, const std::forward_list<spSprite>& sprites, std::forward_list<manifold>& mf_list)
     {
-        for (const spSprite& other : sprites)
+        for (const spSprite& spr : sprites)
         {
+            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>(spr);
+
+            if (other == nullptr)
+            {
+                continue;
+            }
+
             if ((me == other)
-                || (me->_coll_response == CR_NONE || other->_coll_response == CR_NONE)
+                || (me->getCollisionResponse(other) == CR_NONE || other->getCollisionResponse(me) == CR_NONE)
                 || (_handled.count(other) != 0))
             {
                 continue;
@@ -266,8 +313,8 @@ namespace dang
                 }
 
 
-                mf.touchMe = me->_last_pos + mf.deltaMe;
-                mf.touchOther = other->_last_pos + mf.deltaOther;
+                mf.touchMe = me->getLastPos() + mf.deltaMe;
+                mf.touchOther = other->getLastPos() + mf.deltaOther;
 
                 // ti is not valid in this context since the rect overlap already
                 mf.ti = 0;
@@ -283,11 +330,11 @@ namespace dang
 
                     mf.overlaps = false;
                     mf.deltaMe = deltaMe * mf.ti;
-                    mf.touchMe = me->_last_pos + mf.deltaMe;
+                    mf.touchMe = me->getLastPos() + mf.deltaMe;
                     mf.normalMe = -mf.normalOther;
 
                     mf.deltaOther = deltaOther * mf.ti;
-                    mf.touchOther = other->_last_pos + mf.deltaOther;
+                    mf.touchOther = other->getLastPos() + mf.deltaOther;
 
                     mf_list.push_front(mf);
                 }
@@ -304,7 +351,7 @@ namespace dang
 
     }
 
-    bool SweptAABBCollision::getRayIntersectionFraction(const Vector2F& pos, const Vector2F& goal, const RectF& aabb, float& ti, Vector2F& normal)
+    bool CollisionSpriteLayer::getRayIntersectionFraction(const Vector2F& pos, const Vector2F& goal, const RectF& aabb, float& ti, Vector2F& normal)
     {
         // end = goal, origin = pos, direction = goal - pos
 
@@ -375,7 +422,7 @@ namespace dang
      * 4. Otherwise, the two line segments are not parallel but do not intersect.
      */
 
-    float SweptAABBCollision::getRayIntersectionFractionOfFirstRay(const Vector2F& originA, const Vector2F& endA, const Vector2F& originB, const Vector2F& endB)
+    float CollisionSpriteLayer::getRayIntersectionFractionOfFirstRay(const Vector2F& originA, const Vector2F& endA, const Vector2F& originB, const Vector2F& endB)
     {
         // p is originA
         // q is originB
@@ -433,6 +480,5 @@ namespace dang
         return std::numeric_limits<float>::infinity();
 
     }
-
 
 }

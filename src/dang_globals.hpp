@@ -16,9 +16,10 @@
 
 #include "../../../../../32blit/32blit.hpp"
 
-#define spSprite        std::shared_ptr<dang::Sprite>
-#define spImagesheet    std::shared_ptr<dang::Imagesheet>
-#define spTweenable     std::shared_ptr<Tweenable>
+#define spSprite                std::shared_ptr<dang::Sprite>
+#define spCollisionSprite       std::shared_ptr<dang::CollisionSprite>
+#define spImagesheet            std::shared_ptr<dang::Imagesheet>
+#define spTweenable             std::shared_ptr<Tweenable>
 
 
 //#include <unordered_map>

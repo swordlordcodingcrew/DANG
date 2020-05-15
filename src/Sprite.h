@@ -1,11 +1,9 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-// (c) 2019-20 by SwordLord - the coding crew
 
 #pragma once
 
 #include "dang_globals.hpp"
-#include "SweptAABBCollision.h"
 #include <list>
 #include <Vector2T.h>
 #include <RectT.h>
@@ -41,9 +39,17 @@ namespace dang
         void        setVel(const Vector2F& vel) { _vel = vel; }
         void        setAcc(const Vector2F& acc) { _acc = acc; }
 
+        void        setPosX(float x) {_pos.x = x; }
+        void        setPosY(float y) {_pos.y = y; }
+
+        float        getPosX() const { return _pos.x; }
+        float        getPosY() const { return _pos.y; }
+        float        getLastPosX() const { return _last_pos.x; }
+        float        getLastPosY() const { return _last_pos.y; }
+
         Vector2F    getSize() { return _size; }
 
-        uint8_t     getTransform() { return _transform; }
+        uint8_t     getTransform() const { return _transform; }
         RectF       getSizeRect();      // return size of sprite
 
 
@@ -57,7 +63,6 @@ namespace dang
         uint16_t                        _id{0};    // global
 
     protected:  // variables
-        friend class SweptAABBCollision;
 
         //std::string name;     // to be implemented
         Vector2F      _size{0,0};
@@ -72,18 +77,6 @@ namespace dang
         // tween depot
         std::list<spTweenable> _tweens;
 
-        // *** collision stuff ***
-        // to be moved to collisionsprite subclass on a later stage
-    public:
-        uint16_t    _coll_object_type{SweptAABBCollision::COT_DYNAMIC};
-        bool        _is_hit{false};
-        RectF       _hotrect{0,0,0,0};
-        RectF       getHotrect() { return _hotrect; };
-        RectF       getHotrectAbs();
-        virtual void collide(const manifold &mf);
-
-        SweptAABBCollision::eCollisionResponse    _coll_response{SweptAABBCollision::CR_SLIDE};
-        virtual SweptAABBCollision::eCollisionResponse getCollisionResponse(spSprite other);
     };
 
 }

@@ -23,26 +23,27 @@ namespace dang
 
     }
 
-    SpriteLayer::~SpriteLayer()
-    {
-
-    }
-
     void SpriteLayer::update(uint32_t time, const Gear &gear)
     {
-       for (spSprite& spr : _sprites)
-       {
+        // call internal core update
+        for (spSprite& spr : _sprites)
+        {
            RectF dr = gear.getActiveWorld().intersection(spr->getSizeRect());
            if (dr.area() != 0)
            {
                spr->coreUpdate(time);
-
-               spr->update(time);
            }
-       }
+        }
 
-       _sac.handleCollisionDetection(_sprites);
-
+        // then call update
+        for (spSprite& spr : _sprites)
+        {
+            RectF dr = gear.getActiveWorld().intersection(spr->getSizeRect());
+            if (dr.area() != 0)
+            {
+                spr->update(time);
+            }
+        }
     }
 
     void SpriteLayer::render(const Gear &gear)
@@ -106,17 +107,22 @@ namespace dang
 
     void SpriteLayer::addSprite(std::shared_ptr<Sprite> spr)
     {
-        _sprites.push_front(spr);
-        _sprites.sort([] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
-          {
-              return first->_z_order < second->_z_order;
-          });
+        if (spr != nullptr)
+        {
+            _sprites.push_front(spr);
+            _sprites.sort([] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
+                          {
+                              return first->_z_order < second->_z_order;
+                          });
+        }
     }
 
     void SpriteLayer::removeSprite(std::shared_ptr<Sprite> spr)
     {
-        _sprites.remove(spr);
+        if (spr != nullptr)
+        {
+            _sprites.remove(spr);
+        }
     }
-
 
 }

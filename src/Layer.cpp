@@ -10,19 +10,13 @@
 namespace dang
 {
 
-    Layer::Layer(int32_t type) : _type(type)
+    Layer::Layer(E_TYPE type) : _type(type)
     {
 
     }
 
-    Layer::Layer(int32_t type, const RectF& size) :
+    Layer::Layer(E_TYPE type, const RectF& size) :
             _type(type), _size(size)
-    {
-
-    }
-
-
-    Layer::~Layer()
     {
 
     }

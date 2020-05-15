@@ -1,11 +1,10 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-// (c) 2019-20 by SwordLord - the coding crew
 
 #include "Sprite.h"
 #include "tmx_def.h"
 #include "tween/Tweenable.h"
-#include "SweptAABBCollision.h"
+#include "CollisionSpriteLayer.h"
 
 namespace dang
 {
@@ -34,13 +33,12 @@ namespace dang
         _visible = so.visible;
         _img_index = so.tile;
         _imagesheet = is;
-        _hotrect = {0, 0, float(so.width), float(so.height)};
         _last_pos = _pos;
     }
 
 /*    uint16_t Sprite::collisionResponse(std::shared_ptr<Sprite> other)
     {
-        if (_type == "hotrect" && other->_type == "hotrect") return SweptAABBCollision::CR_NONE;
+        if (_type == "hotrect" && other->_type == "hotrect") return CollisionSpriteLayer::CR_NONE;
 
 /*        if (_type == "coin")
         {
@@ -55,7 +53,7 @@ namespace dang
             return touch_me;
         }
 *//*
-        return SweptAABBCollision::CR_SLIDE;
+        return CollisionSpriteLayer::CR_SLIDE;
     }
 */
     void Sprite::addTween(std::shared_ptr<Tweenable> tw)
@@ -90,7 +88,6 @@ namespace dang
     void Sprite::coreUpdate(uint32_t time)
     {
         _last_pos = _pos;
-        _is_hit = false;
         updateTweens(time);
     }
 
@@ -108,60 +105,5 @@ namespace dang
         return RectF(_pos.x, _pos.y, _size.x, _size.y);
     }
 
-    RectF Sprite::getHotrectAbs()
-    {
-        return RectF(_hotrect.x + _pos.x, _hotrect.y + _pos.y, _hotrect.w, _hotrect.h);
-    }
-
-    void Sprite::collide(const manifold &mf)
-    {
-        switch (_coll_response)
-        {
-            case SweptAABBCollision::CR_BOUNCE:
-                if (mf.me.get() == this)
-                {
-                    if (mf.normalMe.x * _vel.x > 0)
-                    {
-                        _vel.x = -_vel.x;
-                    }
-                    else if (mf.normalMe.y * _vel.y > 0)
-                    {
-                        _vel.y = -_vel.y;
-                    }
-
-                }
-                else
-                {
-                    if (mf.normalOther.x * _vel.x > 0)
-                    {
-                        _vel.x = -_vel.x;
-                    }
-                    else if (mf.normalOther.y * _vel.y > 0)
-                    {
-                        _vel.y = -_vel.y;
-                    }
-
-                }
-                break;
-            case SweptAABBCollision::CR_SLIDE:
-                if (mf.normalMe.x != 0)
-                {
-//                    _vel.y = 0;
-                }
-                else
-                {
-//                    _vel.x = 0;
-                }
-                break;
-            case SweptAABBCollision::CR_TOUCH:
-                _vel = {0,0};
-                break;
-        }
-    }
-
-    SweptAABBCollision::eCollisionResponse Sprite::getCollisionResponse(std::shared_ptr<dang::Sprite> other)
-    {
-        return _coll_response;
-    }
 
 }

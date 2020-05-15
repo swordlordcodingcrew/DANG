@@ -26,10 +26,12 @@ list(APPEND SOURCES
         SpriteLayer.cpp
         SpriteLayer.h
         tmx_def.h
-        SweptAABBCollision.cpp
-        SweptAABBCollision.h
+        CollisionSpriteLayer.cpp
+        CollisionSpriteLayer.h
         Vector2T.h
         RectT.h
+        CollisionSprite.cpp
+        CollisionSprite.h
 )
 
 add_library(DANG STATIC ${SOURCES} )

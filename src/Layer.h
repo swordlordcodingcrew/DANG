@@ -18,22 +18,24 @@ namespace dang
     class Layer
     {
     public:
-        Layer(int32_t type);
-        Layer(int32_t type, const RectF& size);
-        virtual ~Layer();
+        enum E_TYPE {
+            LT_UNDEFINED = 0,
+            LT_TILELAYER,
+            LT_SPRITELAYER,
+            LT_COLLISIONSPRITELAYER
+        };
+
+        explicit Layer(E_TYPE type);
+        Layer(E_TYPE type, const RectF& size);
+        virtual ~Layer() = default;
 
         virtual void    update(uint32_t time, const Gear& gear) = 0;
         virtual void    render(const Gear& gear) = 0;
 
-        enum TYPE {
-            LT_UNDEFINED = 0,
-            LT_TILELAYER,
-            LT_SPRITELAYER
-        };
 
     protected:
         RectF           _size{0, 0, 1, 1};
-        int32_t         _type{LT_UNDEFINED};
+        E_TYPE         _type{LT_UNDEFINED};
 
     public:     // public variables
         int32_t         _z_order{0};
