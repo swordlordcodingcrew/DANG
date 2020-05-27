@@ -67,15 +67,6 @@ namespace dang
         void    update(uint32_t time, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
-        void    addSprite(spCollisionSprite spr);
-        void    removeSprite(spCollisionSprite spr);
-
-    private:
-        // hide these functions
-        void    addSprite(spSprite spr) override {};
-        void    removeSprite(spSprite spr) override {};
-
-
     protected:
 
         void handleCollisionDetection();

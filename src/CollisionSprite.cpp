@@ -18,7 +18,7 @@ namespace dang
         std::cout << "Collision sprite destroyed" << std::endl;
     }
 
-    CollisionSprite::CollisionSprite(const tmx_spriteobject &so, const std::shared_ptr<Imagesheet>& is)
+    CollisionSprite::CollisionSprite(const tmx_spriteobject &so, const std::shared_ptr<Imagesheet> is)
     : Sprite(so, is)
     {
         _hotrect = {0, 0, float(so.width), float(so.height)};

@@ -101,7 +101,7 @@ namespace dang
         _layers.remove(layer);
     }
 
-    std::shared_ptr<Layer> Gear::getLayerByName(std::string &name)
+    std::shared_ptr<Layer> Gear::getLayerByName(const std::string &name)
     {
         std::forward_list<std::shared_ptr<Layer>>::iterator layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
         {
@@ -110,6 +110,15 @@ namespace dang
         return (*layer_it);
     }
 
+/*    std::shared_ptr<Layer> Gear::getLayerByName(const std::string name)
+    {
+        std::forward_list<std::shared_ptr<Layer>>::iterator layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
+        {
+            return (val->_name == name);
+        });
+        return (*layer_it);
+    }
+*/
 
     RectF Gear::getActiveWorld() const
     {

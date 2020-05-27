@@ -11,11 +11,15 @@
 
 namespace dang
 {
+
+    class Sprite;
+    using spSprite = std::shared_ptr<Sprite>;
+
     class TwPos : public Tweenable
     {
     public:
         TwPos();
-        TwPos(std::shared_ptr<void> the_object, const Vector2F& move_to, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        TwPos(const Vector2F& move_to, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         void        update(uint32_t time);
 
 

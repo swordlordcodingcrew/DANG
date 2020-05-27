@@ -18,15 +18,18 @@ namespace dang
     public:
         Tweenable();
         Tweenable(const Tweenable& tw);
-        Tweenable(std::shared_ptr<void> the_object, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        Tweenable(uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         virtual ~Tweenable();
 
-        void            start_tw(uint32_t start_time);
-        void            pause_tw(uint32_t start_time);
-        void            continue_tw(uint32_t start_time);
-        void            finish_tw(bool suppressCB = false);
-        void            reset_tw();
-        bool            is_tw_finished();
+        void            setObject(std::weak_ptr<void> obj) {_the_object = obj; }
+        void            clearObject() {_the_object.reset(); }
+
+        void            startTw(uint32_t start_time);
+        void            pauseTw(uint32_t start_time);
+        void            continueTw(uint32_t start_time);
+        void            finishTw(bool suppressCB = false);
+        void            resetTw();
+        bool            isTwFinished();
         uint32_t        getState() { return _state;}
         void            setFinishedCallback(std::function<void(void)> finishedCB);
 
@@ -41,7 +44,7 @@ namespace dang
 
     protected:
         // ugly hack with void*. Should be narrowed with a base class or template class
-        std::shared_ptr<void>       _the_object{nullptr};
+        std::weak_ptr<void>       _the_object;
 
         std::unique_ptr<Ease>       _ease{new EaseLinear()};
 

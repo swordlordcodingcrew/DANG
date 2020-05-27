@@ -27,16 +27,15 @@ namespace dang
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwPos::TwPos(std::shared_ptr<void> the_object, const Vector2F& move_to, uint32_t duration, std::unique_ptr<Ease> ease,
+    TwPos::TwPos(const Vector2F& move_to, uint32_t duration, std::unique_ptr<Ease> ease,
                  int32_t loops, bool alternating, uint32_t delay)
-            : _move_to(move_to), Tweenable(the_object, duration, std::move(ease), loops, alternating, delay)
+            : _move_to(move_to), Tweenable(duration, std::move(ease), loops, alternating, delay)
     {
-        if (_the_object != nullptr)
-        {
-            std::shared_ptr<Sprite> spr = std::static_pointer_cast<Sprite>(_the_object);
-            _start_from.x = spr->getPos().x;
-            _start_from.y = spr->getPos().y;
-        }
+        spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
+        if (!spr) return;
+
+        _start_from.x = spr->getPos().x;
+        _start_from.y = spr->getPos().y;
     }
 
     /**
@@ -46,9 +45,8 @@ namespace dang
      */
     void TwPos::update(uint32_t time)
     {
-        if (_the_object == nullptr) return;
-
-        std::shared_ptr<Sprite> spr = std::static_pointer_cast<Sprite>(_the_object);
+        spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
+        if (!spr) return;
 
         float fx = calc(time);
         spr->setPos(Vector2F(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx));

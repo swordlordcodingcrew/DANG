@@ -21,7 +21,6 @@ namespace dang
 
     /**
      *
-     * @param the_object to be manipulated
      * @param indices range of image-indices relating to the imagesheet
      * @param duration duration of loop.
      * @param ease ease function
@@ -29,9 +28,9 @@ namespace dang
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwAnim::TwAnim(std::shared_ptr<void> the_object, const std::vector<uint16_t> &indices, uint32_t duration, std::unique_ptr<Ease> ease,
+    TwAnim::TwAnim(const std::vector<uint16_t> &indices, uint32_t duration, std::unique_ptr<Ease> ease,
                    int32_t loops, bool alternating, uint32_t delay)
-            : Tweenable(the_object, duration, std::move(ease), loops, alternating, delay)
+            : Tweenable(duration, std::move(ease), loops, alternating, delay)
     {
         _indices = indices;
     }
@@ -43,9 +42,8 @@ namespace dang
      */
     void TwAnim::update(uint32_t time)
     {
-        if (_the_object == nullptr) return;
-
-        std::shared_ptr<Sprite> spr = std::static_pointer_cast<Sprite>(_the_object);
+        spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
+        if (!spr) return;
 
         float fx = calc(time);
         uint16_t ind = uint16_t(fx * (_indices.size()));

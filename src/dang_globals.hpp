@@ -12,7 +12,7 @@
 #pragma once
 
 #define __GEAR
-#define __GEAR_DEBUG
+//#define __GEAR_DEBUG
 
 #include "../../../../../32blit/32blit.hpp"
 

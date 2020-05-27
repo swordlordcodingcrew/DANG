@@ -18,7 +18,6 @@ namespace dang
 
     /**
      *
-     * @param the_object to be manipulated. Shall be a sprite
      * @param start_vel start velocity
      * @param end_vel end velocity
      * @param duration duration of loop.
@@ -27,9 +26,9 @@ namespace dang
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwVel::TwVel(std::shared_ptr<void> the_object, const Vector2F& start_vel, const Vector2F& end_vel, uint32_t duration, std::unique_ptr<Ease> ease,
+    TwVel::TwVel(const Vector2F& start_vel, const Vector2F& end_vel, uint32_t duration, std::unique_ptr<Ease> ease,
                  int32_t loops, bool alternating, uint32_t delay)
-            : _start_vel(start_vel), _end_vel(end_vel), Tweenable(the_object, duration, std::move(ease), loops, alternating, delay)
+            : _start_vel(start_vel), _end_vel(end_vel), Tweenable(duration, std::move(ease), loops, alternating, delay)
     {
 
     }
@@ -41,9 +40,8 @@ namespace dang
      */
     void TwVel::update(uint32_t time)
     {
-        if (_the_object == nullptr) return;
-
-        spSprite spr = std::static_pointer_cast<Sprite>(_the_object);
+        spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
+        if (!spr) return;
 
         float fx = calc(time);
         spr->setVel(_start_vel + (_end_vel - _start_vel) * fx);

@@ -7,6 +7,7 @@
 #include <list>
 #include <Vector2T.h>
 #include <RectT.h>
+//#include <memory>
 
 namespace dang
 {
@@ -14,18 +15,26 @@ namespace dang
 
     class Imagesheet;
     class Tweenable;
+    class TwAnim;
     using spTweenable = std::shared_ptr<Tweenable>;
 
-    class Sprite
+    class Sprite : public std::enable_shared_from_this<Sprite>
     {
     public: // functions
         Sprite();
 //        Sprite(const Sprite& sp);
         Sprite(const tmx_spriteobject& so, std::shared_ptr<Imagesheet> is);
         virtual ~Sprite();
+
+        // tween stuff
         void addTween(std::shared_ptr<Tweenable> tw);
         void updateTweens(uint32_t time);
         void removeTween(std::shared_ptr<Tweenable> tw, bool suppressCB);
+        bool tweenActive(const std::shared_ptr<Tweenable>& tw);
+
+        // animation stuff (special tween)
+        void setAnimation(std::shared_ptr<TwAnim> twa);
+        void removeAnimation(bool suppressCB);
 
         void coreUpdate(uint32_t time);
         virtual void update(uint32_t time);
@@ -42,6 +51,8 @@ namespace dang
 
         void        setPosX(float x) {_pos.x = x; }
         void        setPosY(float y) {_pos.y = y; }
+        void        setVelX(float x) {_vel.x = x; }
+        void        setVelY(float y) {_vel.y = y; }
 
         float        getPosX() const { return _pos.x; }
         float        getPosY() const { return _pos.y; }
@@ -77,6 +88,7 @@ namespace dang
 
         // tween depot
         std::list<spTweenable> _tweens;
+        std::shared_ptr<TwAnim> _animation;
 
     };
 

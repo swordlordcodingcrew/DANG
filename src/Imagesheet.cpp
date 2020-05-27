@@ -1,10 +1,5 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-//
-// Created by LordFilu on 30.12.19.
-//
-
-//#define NDEBUG
 
 #include "Imagesheet.h"
 #include <assert.h>
@@ -192,6 +187,10 @@ namespace dang
     {
         if (buffer == nullptr)
         {
+            uint32_t a = blit::pixel_format_stride[image->format];
+            uint32_t b = image->width;
+            uint32_t c = image->height;
+            uint32_t d = a * b * c;
             buffer = new uint8_t[blit::pixel_format_stride[image->format] * image->width * image->height];
         }
 

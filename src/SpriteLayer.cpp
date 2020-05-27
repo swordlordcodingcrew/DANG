@@ -73,12 +73,12 @@ namespace dang
 
             if(!spr->_visible)
             {
-                blit::screen.pen(blit::RGBA(0, 255, 0, 255));
+                blit::screen.pen = blit::Pen(0, 255, 0, 255);
 
             }
             else
             {
-                blit::screen.pen(blit::RGBA(0, 0, 255, 255));
+                blit::screen.pen = blit::Pen(0, 0, 255, 255);
             }
 
             RectF ddr = gear.getViewport().intersection(spr->getSizeRect());
@@ -97,7 +97,7 @@ namespace dang
                 blit::screen.line(br, tr); // right -> top
                 blit::screen.line(tr, tl); // top -> left
             }
-            blit::screen.pen(blit::RGBA(0, 0, 0, 255));
+            blit::screen.pen = blit::Pen(0, 0, 0, 255);
 #endif
 
         }

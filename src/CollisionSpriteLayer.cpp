@@ -32,16 +32,6 @@ namespace dang
         SpriteLayer::render(gear);
     }
 
-    void CollisionSpriteLayer::addSprite(spCollisionSprite spr)
-    {
-        SpriteLayer::addSprite(std::dynamic_pointer_cast<Sprite>(spr));
-    }
-
-    void CollisionSpriteLayer::removeSprite(spCollisionSprite spr)
-    {
-        SpriteLayer::removeSprite(std::dynamic_pointer_cast<Sprite>(spr));
-    }
-
     // called on every move of every sprite
     void CollisionSpriteLayer::handleCollisionDetection()
     {

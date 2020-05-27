@@ -20,14 +20,14 @@ namespace dang
     {
     public: // functions
         CollisionSprite();
-        CollisionSprite(const tmx_spriteobject &so, const std::shared_ptr<Imagesheet>& is);
+        CollisionSprite(const tmx_spriteobject &so, std::shared_ptr<Imagesheet> is);
         ~CollisionSprite() override;
 
         RectF       getHotrect() const { return _hotrect; };
         RectF       getHotrectAbs() const;
         virtual void collide(const CollisionSpriteLayer::manifold &mf);
         virtual CollisionSpriteLayer::eCollisionResponse    getCollisionResponse(spSprite other);
-        virtual void                                        setCollisionResponse(CollisionSpriteLayer::eCollisionResponse response) { _coll_response = response; };
+        void                                        setCollisionResponse(CollisionSpriteLayer::eCollisionResponse response) { _coll_response = response; };
 
         virtual CollisionSpriteLayer::eCollObjectType       getCOType() const { return _coll_object_type; }
         virtual void                                        setCOType(CollisionSpriteLayer::eCollObjectType type) { _coll_object_type = type; }

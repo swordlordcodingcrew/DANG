@@ -35,7 +35,8 @@ namespace dang
 
         void        addLayer(std::shared_ptr<Layer> layer);
         void        removeLayer(std::shared_ptr<Layer> layer);
-        std::shared_ptr<Layer>  getLayerByName(std::string& name);
+        std::shared_ptr<Layer>  getLayerByName(const std::string& name);
+//        std::shared_ptr<Layer>  getLayerByName(std::string name);
 
         RectF  getActiveWorld() const;
         RectF  getViewport() const { return _viewport; }

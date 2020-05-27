@@ -16,7 +16,7 @@ namespace dang
     public:
         TwAcc();
         ~TwAcc() override;
-        TwAcc(std::shared_ptr<void> the_object, const Vector2F& start_acc, const Vector2F& end_acc, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        TwAcc(const Vector2F& start_acc, const Vector2F& end_acc, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         void        update(uint32_t time) override;
 
     protected:
