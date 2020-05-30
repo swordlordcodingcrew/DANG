@@ -2,7 +2,7 @@
 // This file is part of the DANG game framework
 
 #include "Imagesheet.h"
-#include <assert.h>
+#include <cassert>
 
 namespace dang
 {

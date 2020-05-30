@@ -53,6 +53,8 @@ namespace dang
         void        setPosY(float y) {_pos.y = y; }
         void        setVelX(float x) {_vel.x = x; }
         void        setVelY(float y) {_vel.y = y; }
+        void        setAccX(float x) {_acc.x = x; }
+        void        setAccY(float y) {_acc.y = y; }
 
         float        getPosX() const { return _pos.x; }
         float        getPosY() const { return _pos.y; }
