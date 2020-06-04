@@ -15,7 +15,9 @@ namespace dang
 
     CollisionSprite::~CollisionSprite()
     {
+#ifdef __GEAR_DEBUG
         std::cout << "Collision sprite destroyed" << std::endl;
+#endif
     }
 
     CollisionSprite::CollisionSprite(const tmx_spriteobject &so, const std::shared_ptr<Imagesheet> is)
