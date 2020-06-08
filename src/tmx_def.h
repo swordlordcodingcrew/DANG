@@ -128,12 +128,12 @@ namespace dang
         uint16_t tileWidth = 0; // width of tiles
         uint16_t tileHeight = 0; // height of tiles
 
-        uint16_t getWidthInPixel()
+        uint16_t getWidthInPixel() const
         {
             return width * tileWidth;
         }
 
-        uint16_t getHeightInPixel()
+        uint16_t getHeightInPixel() const
         {
             return height * tileHeight;
         }

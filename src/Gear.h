@@ -12,6 +12,9 @@
 namespace dang
 {
     struct tmx_level;
+    struct tmx_tilelayer;
+    struct tmx_objectlayer;
+    struct tmx_layer;
 
     class Sprite;
     class Layer;
@@ -23,7 +26,7 @@ namespace dang
         Gear();
         virtual ~Gear();
 
-        void    initLevel(tmx_level& lvl, RectF& viewport);
+        void    initLevel(const tmx_level& lvl, RectF& viewport);
 
         void    update(uint32_t time);
         void    render(uint32_t time);
@@ -33,10 +36,14 @@ namespace dang
         void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
         void                        removeImagesheet(const std::string& key);
 
-        void        addLayer(std::shared_ptr<Layer> layer);
-        void        removeLayer(std::shared_ptr<Layer> layer);
-        std::shared_ptr<Layer>  getLayerByName(const std::string& name);
-//        std::shared_ptr<Layer>  getLayerByName(std::string name);
+        std::shared_ptr<Layer>      addTileLayer(tmx_level &lvl, const std::string &name);
+        std::shared_ptr<Layer>      addSpriteLayer(tmx_level &lvl, const std::string &name, bool collision_enabled);
+        void                        addLayer(std::shared_ptr<Layer> layer);
+        void                        removeLayer(std::shared_ptr<Layer> layer);
+        std::shared_ptr<Layer>      getLayerByName(const std::string& name);
+
+        // this function should be in some sort of TmxExtractor-class
+        const tmx_objectlayer&     getTmxObjectLayer(tmx_level &lvl, const std::string &name);
 
         RectF  getActiveWorld() const;
         RectF  getViewport() const { return _viewport; }

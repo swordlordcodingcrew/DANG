@@ -2,6 +2,8 @@
 // This file is part of the DANG game framework
 // (c) 2019-20 by SwordLord - the coding crew
 
+#include <cassert>
+//#include <memory>
 #include "dang_globals.hpp"
 #include "Gear.h"
 #include "Layer.h"
@@ -9,6 +11,8 @@
 #include "Imagesheet.h"
 #include "tmx_def.h"
 #include "SpriteLayer.h"
+#include "TileLayer.h"
+#include "CollisionSpriteLayer.h"
 //#include "dang_collision.hpp"
 
 namespace dang
@@ -22,7 +26,7 @@ namespace dang
     {
     }
 
-    void Gear::initLevel(tmx_level &lvl, RectF& viewport)
+    void Gear::initLevel(const tmx_level &lvl, RectF& viewport)
     {
         _viewport = viewport;
 
@@ -33,15 +37,16 @@ namespace dang
         _active_world_size.x = 2 * _world.w;
         _active_world_size.y = 2 * _world.h;
 
-        lvl.imagesheets["background"]->_name = "background";
-        lvl.imagesheets["players"]->_name = "players";
+        // add the imagesheets
+        // actually the copy should not be necessary
+        // TODO: js-exporter with std::shared_ptr
+        for (const auto& map : lvl.imagesheets)
+        {
+            std::shared_ptr<Imagesheet> is = std::shared_ptr<Imagesheet>(map.second);
+            is->_name = map.first;
+            addImagesheet(map.first, is);
 
-        // first add the imagesheets
-        std::shared_ptr<Imagesheet> bg_is = std::shared_ptr<Imagesheet>(lvl.imagesheets["background"]);
-        addImagesheet("background", bg_is);
-        std::shared_ptr<Imagesheet> pl_is = std::shared_ptr<Imagesheet>(lvl.imagesheets["players"]);
-        addImagesheet("players", pl_is);
-
+        }
     }
 
     void Gear::render(uint32_t time)
@@ -70,22 +75,9 @@ namespace dang
 
     void Gear::removeImagesheet(const std::string& key)
     {
-
         _imagesheets.erase(key);
     }
 
-/*    void Gear::renderImage(const std::shared_ptr<Imagesheet> is, const uint16_t im_id, const blit::Point &dest, const uint8_t transform) const
-    {
-        if (is == nullptr) return;
-
-        if (blit::screen.sprites != is.get())
-        {
-            blit::screen.sprites = is.get();
-        }
-
-        blit::screen.blit_sprite(is->getRect(im_id), dest, transform);
-    }
-*/
     void Gear::addLayer(std::shared_ptr<Layer> layer)
     {
         _layers.push_front(layer);
@@ -94,6 +86,65 @@ namespace dang
             return first->_z_order < second->_z_order;
         });
 
+    }
+
+    std::shared_ptr<Layer> Gear::addTileLayer(tmx_level &lvl, const std::string &name)
+    {
+        auto layer_it = std::find_if(lvl.layers.begin(), lvl.layers.end(), [=](const std::shared_ptr<tmx_layer>& val)
+        {
+            return (val->name == name);
+        });
+
+        assert(layer_it != lvl.layers.end());
+        assert(layer_it->get()->type == ltTile);
+
+        tmx_tilelayer* ttl = static_cast<tmx_tilelayer*>(layer_it->get());
+
+        // Fetch tmx_tileset - this is not entirely correct since we assume that all tiles are in the same imagesheet.
+        tmx_tileset& ts = lvl.tilesets[ttl->tiles[0].tileset];
+
+        std::shared_ptr<Imagesheet> is = getImagesheetByName(ttl->name);
+        std::shared_ptr<TileLayer> tl = std::make_shared<dang::TileLayer>(dang::TileLayer(dang::PointF(0,0), ts, *ttl, is));
+        tl->_name = ttl->name;
+        // TODO js-exporter: implement zOrder
+        tl->_z_order = 0;
+        // TODO js-exporter: implement visible flag
+        // tl->_visible = tilel->visible;
+        addLayer(tl);
+
+        return tl;
+    }
+
+    std::shared_ptr<Layer> Gear::addSpriteLayer(tmx_level &lvl, const std::string &name, bool collision_enabled)
+    {
+        auto layer_it = std::find_if(lvl.layers.begin(), lvl.layers.end(), [=](const std::shared_ptr<dang::tmx_layer>& val)
+        {
+            return (val->name == name);
+        });
+
+        assert(layer_it != lvl.layers.end());
+        assert(layer_it->get()->type == dang::ltObjects);
+
+        dang::tmx_objectlayer* ola = static_cast<dang::tmx_objectlayer*>(layer_it->get());
+
+        std::shared_ptr<dang::SpriteLayer> sl;
+        if (collision_enabled)
+        {
+            sl = std::make_shared<dang::CollisionSpriteLayer>(CollisionSpriteLayer(getWorld()));
+        }
+        else
+        {
+            sl = std::make_shared<dang::SpriteLayer>(SpriteLayer(getWorld()));
+        }
+        sl->_name = ola->name;
+        // TODO js-exporter: implement zOrder
+        sl->_z_order = 1;
+        // TODO js-exporter: implement visible flag
+        // csl->_visible = ola->visible;
+
+        addLayer(sl);
+
+        return sl;
     }
 
     void Gear::removeLayer(std::shared_ptr<Layer> layer)
@@ -110,15 +161,20 @@ namespace dang
         return (*layer_it);
     }
 
-/*    std::shared_ptr<Layer> Gear::getLayerByName(const std::string name)
+    const tmx_objectlayer &Gear::getTmxObjectLayer(tmx_level &lvl, const std::string &name)
     {
-        std::forward_list<std::shared_ptr<Layer>>::iterator layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
+        auto layer_it = std::find_if(lvl.layers.begin(), lvl.layers.end(), [=](const std::shared_ptr<dang::tmx_layer>& val)
         {
-            return (val->_name == name);
+            return (val->name == name);
         });
-        return (*layer_it);
+
+        assert(layer_it != lvl.layers.end());
+        assert(layer_it->get()->type == dang::ltObjects);
+
+        dang::tmx_objectlayer* ola = static_cast<dang::tmx_objectlayer*>(layer_it->get());
+
+        return *ola;
     }
-*/
 
     RectF Gear::getActiveWorld() const
     {
@@ -135,7 +191,6 @@ namespace dang
         _viewport.x = pos.x;
         _viewport.y = pos.y;
     }
-
 
 
 }
