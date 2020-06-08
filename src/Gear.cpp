@@ -80,6 +80,13 @@ namespace dang
 
     void Gear::addLayer(std::shared_ptr<Layer> layer)
     {
+        auto layer_it = std::find_if(_layers.begin(), _layers.end(), layer);
+        if (layer_it != _layers.end())
+        {
+            return;
+        }
+
+        // TODO: check if layer already added
         _layers.push_front(layer);
         _layers.sort([] (const std::shared_ptr<Layer> &first, const std::shared_ptr<Layer> &second)
         {
