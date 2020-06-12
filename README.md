@@ -13,6 +13,23 @@ While it would be cool to build a game engine for the 32blit, this is not what w
 
 We work on gluing a few existing (and new) tools and pieces together. Think of things as a set of tools in a toolbox where you (hand-) pick the tools you need for a specific job.
 
+## Documentation
+You can generate the code documentation with the help of doxygen and graphviz.
+
+```
+sudo apt-get install doxygen
+sudo apt-get install graphviz
+```
+
+and then run doxygen in the root of the DANG project folder (where you can see the Doxyfile).
+
+```
+doxygen
+```
+
+The documentation will be generated in the /docs/ folder. Check the index file in the html folder.
+
+
 ## Architecture
 Bear with us while DANG! slowly grows and we start to document and release everything. A quick overview for now:
 
