@@ -26,7 +26,7 @@ and then run doxygen in the root of the DANG project folder (where you can see t
 ```
 doxygen
 ```
-
+ 
 The documentation will be generated in the /docs/ folder. Check the index file in the html folder.
 
 ## Architecture
