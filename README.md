@@ -29,7 +29,6 @@ doxygen
 
 The documentation will be generated in the /docs/ folder. Check the index file in the html folder.
 
-
 ## Architecture
 Bear with us while DANG! slowly grows and we start to document and release everything. A quick overview for now:
 
