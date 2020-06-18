@@ -143,8 +143,10 @@ namespace dang
     {
         std::vector<std::shared_ptr<tmx_layer>> layers;
         std::unordered_map<uint8_t, tmx_tileset> tilesets;
-        std::unordered_map<std::string, Imagesheet*> imagesheets;
-//        std::unordered_map<std::string, std::shared_ptr<Imagesheet>> imagesheets;
+//        std::unordered_map<std::string, Imagesheet*> imagesheets;
+        std::unordered_map<std::string, const uint8_t*> images;
+
+        //        std::unordered_map<std::string, std::shared_ptr<Imagesheet>> imagesheets;
 
         // TODO: sprites should know on which tmx_layer they belong...
         std::forward_list<std::shared_ptr<tmx_spriteobject>> sprites;

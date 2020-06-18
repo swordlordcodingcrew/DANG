@@ -3,8 +3,9 @@
 // (c) 2019-20 by SwordLord - the coding crew
 
 #include <cassert>
+#include <algorithm>
 //#include <memory>
-#include "dang_globals.hpp"
+//#include "dang_globals.hpp"
 #include "Gear.h"
 #include "Layer.h"
 #include "Sprite.h"
@@ -37,16 +38,6 @@ namespace dang
         _active_world_size.x = 2 * _world.w;
         _active_world_size.y = 2 * _world.h;
 
-        // add the imagesheets
-        // actually the copy should not be necessary
-        // TODO: js-exporter with std::shared_ptr
-        for (const auto& map : lvl.imagesheets)
-        {
-            std::shared_ptr<Imagesheet> is = std::shared_ptr<Imagesheet>(map.second);
-            is->_name = map.first;
-            addImagesheet(map.first, is);
-
-        }
     }
 
     void Gear::render(uint32_t time)
@@ -68,9 +59,24 @@ namespace dang
         }
     }
 
-    void Gear::addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is)
+/*    void Gear::addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is)
     {
         _imagesheets[key] = is;
+    }
+*/
+    std::shared_ptr<Imagesheet> Gear::addImagesheet(const tmx_level &lvl, const std::string &name)
+    {
+        try
+        {
+            const uint8_t* image = lvl.images.at(name);
+            std::shared_ptr<Imagesheet> is = std::shared_ptr<Imagesheet>(dang::Imagesheet::load(image));
+            _imagesheets[name] = is;
+            return is;
+        }
+        catch(std::out_of_range& oor)
+        {
+            return nullptr;
+        }
     }
 
     void Gear::removeImagesheet(const std::string& key)
@@ -78,9 +84,21 @@ namespace dang
         _imagesheets.erase(key);
     }
 
+    std::shared_ptr<Imagesheet> Gear::getImagesheet(const std::string &name)
+    {
+        try
+        {
+            return _imagesheets.at(name);
+        }
+        catch(std::out_of_range& oor)
+        {
+            return nullptr;
+        }
+    }
+
     void Gear::addLayer(std::shared_ptr<Layer> layer)
     {
-        auto layer_it = std::find_if(_layers.begin(), _layers.end(), layer);
+        auto layer_it = std::find(_layers.begin(), _layers.end(), layer);
         if (layer_it != _layers.end())
         {
             return;
@@ -110,7 +128,7 @@ namespace dang
         // Fetch tmx_tileset - this is not entirely correct since we assume that all tiles are in the same imagesheet.
         tmx_tileset& ts = lvl.tilesets[ttl->tiles[0].tileset];
 
-        std::shared_ptr<Imagesheet> is = getImagesheetByName(ttl->name);
+        std::shared_ptr<Imagesheet> is = getImagesheet(ttl->name);
         std::shared_ptr<TileLayer> tl = std::make_shared<dang::TileLayer>(dang::TileLayer(dang::PointF(0,0), ts, *ttl, is));
         tl->_name = ttl->name;
         // TODO js-exporter: implement zOrder
@@ -188,16 +206,13 @@ namespace dang
         return RectF(_viewport.x - (_active_world_size.x - _viewport.w)/2, _viewport.y - ((_active_world_size.y - _viewport.h)/2), _active_world_size.x, _active_world_size.y);
     }
 
-    std::shared_ptr<Imagesheet> Gear::getImagesheetByName(std::string &name)
-    {
-        return _imagesheets[name];
-    }
 
     void Gear::setViewportPos(Vector2F& pos)
     {
         _viewport.x = pos.x;
         _viewport.y = pos.y;
     }
+
 
 
 }

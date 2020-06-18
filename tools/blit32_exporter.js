@@ -196,18 +196,24 @@ function export32Blit(map, fileName) {
 
     file.writeLine("");
 
-    file.writeLine("    // TODO: make sure to generate every file with the 32blit sprite builder script and link them.");
+    file.writeLine("    // make sure to generate every file with the 32blit-tool and link them.");
     mTS.forEach(function(value, key)
     {
-        file.writeLine("    // ./sprite-builder packed " + key + ".png");
+        file.writeLine("    // " + key + ".h");
     })
 
     file.writeLine("");
 
     // TODO     lvl.imagesheets["players"] = Imagesheet::load(players, nullptr, 8, 3); where 8 = cols and 3 = rows
+//    mTS.forEach(function(value, key)
+//    {
+//        file.writeLine("    lvl.imagesheets[\"" + key + "\"] = dang::Imagesheet::load(" + key + ");");
+//    })
+
     mTS.forEach(function(value, key)
     {
-        file.writeLine("    lvl.imagesheets[\"" + key + "\"] = dang::Imagesheet::load(" + key + ");");
+        file.writeLine("    lvl.images[\"" + key + "\"] = " + key + ";");
+
     })
 
 //    for (var i = 0; i < tilesets.length; ++i)
