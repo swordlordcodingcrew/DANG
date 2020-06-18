@@ -128,7 +128,7 @@ namespace dang
         // Fetch tmx_tileset - this is not entirely correct since we assume that all tiles are in the same imagesheet.
         tmx_tileset& ts = lvl.tilesets[ttl->tiles[0].tileset];
 
-        std::shared_ptr<Imagesheet> is = getImagesheet(ttl->name);
+        std::shared_ptr<Imagesheet> is = getImagesheet(ts.name); // ttl->name
         std::shared_ptr<TileLayer> tl = std::make_shared<dang::TileLayer>(dang::TileLayer(dang::PointF(0,0), ts, *ttl, is));
         tl->_name = ttl->name;
         // TODO js-exporter: implement zOrder
