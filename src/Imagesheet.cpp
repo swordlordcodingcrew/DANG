@@ -197,12 +197,28 @@ namespace dang
         return new Imagesheet(buffer, (blit::PixelFormat)image->format, image, cols, rows);
     }
 
-    std::shared_ptr<Imagesheet> Imagesheet::load_sp(const uint8_t *data, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
+    /**
+     * Static function to load an imagesheet. Copied from spritesheet. Return value is a shared_pointer
+     * @param data
+     * @param buffer
+     * @param cols
+     * @param rows
+     * @return
+     */
+    std::shared_ptr<Imagesheet> Imagesheet::loadShared(const uint8_t *data, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
     {
-        return load_sp((blit::packed_image *)data, buffer, cols, rows);
+        return loadShared((blit::packed_image *) data, buffer, cols, rows);
     }
 
-    std::shared_ptr<Imagesheet> Imagesheet::load_sp(const blit::packed_image *image, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
+    /**
+     * Static function to load an imagesheet. Copied from spritesheet. Return value is a shared_pointer
+     * @param image
+     * @param buffer
+     * @param cols
+     * @param rows
+     * @return
+     */
+    std::shared_ptr<Imagesheet> Imagesheet::loadShared(const blit::packed_image *image, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
     {
         if (buffer == nullptr)
         {

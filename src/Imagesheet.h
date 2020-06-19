@@ -19,8 +19,8 @@ namespace dang
         static Imagesheet *load(const uint8_t *data, uint8_t *buffer = nullptr, uint16_t cols = 1, uint16_t rows = 1);
         static Imagesheet *load(const blit::packed_image *image, uint8_t *buffer = nullptr, uint16_t cols = 1, uint16_t rows = 1);
 
-        static std::shared_ptr<Imagesheet> load_sp(const uint8_t *data, uint8_t *buffer = nullptr, uint16_t cols = 1,  uint16_t rows = 1);
-        static std::shared_ptr<Imagesheet> load_sp(const blit::packed_image *image, uint8_t *buffer = nullptr, uint16_t cols = 1, uint16_t rows = 1);
+        static std::shared_ptr<Imagesheet> loadShared(const uint8_t *data, uint8_t *buffer = nullptr, const uint16_t cols = 1, const uint16_t rows = 1);
+        static std::shared_ptr<Imagesheet> loadShared(const blit::packed_image *image, uint8_t *buffer = nullptr, const uint16_t cols = 1, const uint16_t rows = 1);
 
         bool getRect(blit::Rect &r, uint16_t col, uint16_t row);
         bool getRect(blit::Rect &r, uint16_t index = 0);

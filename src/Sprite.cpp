@@ -3,7 +3,7 @@
 
 #include <algorithm>
 #include "Sprite.h"
-#include "tmx_def.h"
+#include "TmxExtruder.h"
 #include "tween/Tweenable.h"
 #include "tween/TwAnim.h"
 #include "CollisionSpriteLayer.h"

@@ -1,20 +1,16 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-// (c) 2019-20 by SwordLord - the coding crew
 
 #include <cassert>
 #include <algorithm>
-//#include <memory>
-//#include "dang_globals.hpp"
 #include "Gear.h"
 #include "Layer.h"
 #include "Sprite.h"
 #include "Imagesheet.h"
-#include "tmx_def.h"
+#include "TmxExtruder.h"
 #include "SpriteLayer.h"
 #include "TileLayer.h"
 #include "CollisionSpriteLayer.h"
-//#include "dang_collision.hpp"
 
 namespace dang
 {
@@ -31,8 +27,8 @@ namespace dang
     {
         _viewport = viewport;
 
-        _world.w = lvl.w.getWidthInPixel();
-        _world.h = lvl.w.getHeightInPixel();
+        _world.w = lvl.w.width * lvl.w.tileWidth;
+        _world.h = lvl.w.height * lvl.w.tileHeight;
 
         // active world defaults to double width and height of world
         _active_world_size.x = 2 * _world.w;
@@ -59,25 +55,11 @@ namespace dang
         }
     }
 
-/*    void Gear::addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is)
+    void Gear::addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is)
     {
         _imagesheets[key] = is;
     }
-*/
-    std::shared_ptr<Imagesheet> Gear::addImagesheet(const tmx_level &lvl, const std::string &name)
-    {
-        try
-        {
-            const uint8_t* image = lvl.images.at(name);
-            std::shared_ptr<Imagesheet> is = std::shared_ptr<Imagesheet>(dang::Imagesheet::load(image));
-            _imagesheets[name] = is;
-            return is;
-        }
-        catch(std::out_of_range& oor)
-        {
-            return nullptr;
-        }
-    }
+
 
     void Gear::removeImagesheet(const std::string& key)
     {
@@ -98,13 +80,13 @@ namespace dang
 
     void Gear::addLayer(std::shared_ptr<Layer> layer)
     {
+        // if the layer is already added, do nothing
         auto layer_it = std::find(_layers.begin(), _layers.end(), layer);
         if (layer_it != _layers.end())
         {
             return;
         }
 
-        // TODO: check if layer already added
         _layers.push_front(layer);
         _layers.sort([] (const std::shared_ptr<Layer> &first, const std::shared_ptr<Layer> &second)
         {
@@ -115,21 +97,23 @@ namespace dang
 
     std::shared_ptr<Layer> Gear::addTileLayer(tmx_level &lvl, const std::string &name)
     {
+        // find layer in lvl-struct
         auto layer_it = std::find_if(lvl.layers.begin(), lvl.layers.end(), [=](const std::shared_ptr<tmx_layer>& val)
         {
             return (val->name == name);
         });
 
+        // assert, that layer exists and that it is a tilelayer
         assert(layer_it != lvl.layers.end());
         assert(layer_it->get()->type == ltTile);
 
         tmx_tilelayer* ttl = static_cast<tmx_tilelayer*>(layer_it->get());
 
-        // Fetch tmx_tileset - this is not entirely correct since we assume that all tiles are in the same imagesheet.
+        // Fetch one tmx_tileset - this is not entirely correct since we assume that all tiles are in the same imagesheet.
         tmx_tileset& ts = lvl.tilesets[ttl->tiles[0].tileset];
 
-        std::shared_ptr<Imagesheet> is = getImagesheet(ts.name); // ttl->name
-        std::shared_ptr<TileLayer> tl = std::make_shared<dang::TileLayer>(dang::TileLayer(dang::PointF(0,0), ts, *ttl, is));
+        std::shared_ptr<Imagesheet> is = getImagesheet(ts.name);
+        std::shared_ptr<TileLayer> tl = std::make_shared<dang::TileLayer>(dang::PointF(0,0), ts, *ttl, is);
         tl->_name = ttl->name;
         // TODO js-exporter: implement zOrder
         tl->_z_order = 0;

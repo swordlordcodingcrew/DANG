@@ -7,9 +7,6 @@
 #include <forward_list>
 #include <vector>
 #include <memory>
-//#include <32blit.hpp>
-//#include "Imagesheet.h"
-//#include "tween/TwAnim.h"
 
 namespace dang
 {
@@ -21,6 +18,11 @@ namespace dang
         uint16_t tileCount;
         uint16_t tileWidth;
         uint16_t tileHeight;
+        uint16_t imageWidth;
+        uint16_t imageHeight;
+        uint16_t cols;
+        uint16_t rows;
+
 
         /*
         TODO: to be considered
@@ -127,39 +129,31 @@ namespace dang
 
         uint16_t tileWidth = 0; // width of tiles
         uint16_t tileHeight = 0; // height of tiles
-
-        uint16_t getWidthInPixel() const
-        {
-            return width * tileWidth;
-        }
-
-        uint16_t getHeightInPixel() const
-        {
-            return height * tileHeight;
-        }
     };
 
     struct tmx_level
     {
+        tmx_world w;
+
+        /**
+         * lookup-table for the spritesheets / imagesheets.
+         * Loading the image must be done on a per level base in the game
+         */
+        std::unordered_map<std::string, const uint8_t*> images;
+
+        std::vector<tmx_layer> _layers;
+
         std::vector<std::shared_ptr<tmx_layer>> layers;
         std::unordered_map<uint8_t, tmx_tileset> tilesets;
 //        std::unordered_map<std::string, Imagesheet*> imagesheets;
-        std::unordered_map<std::string, const uint8_t*> images;
 
         //        std::unordered_map<std::string, std::shared_ptr<Imagesheet>> imagesheets;
 
         // TODO: sprites should know on which tmx_layer they belong...
         std::forward_list<std::shared_ptr<tmx_spriteobject>> sprites;
 
-//        std::shared_ptr<sprite> hero;
+//        bool debug = false;
 
-        u_int16_t camX = 0;
-        u_int16_t camY = 0;
-
-        bool debug = false;
-
-//        viewport vp;
-        tmx_world w;
 
         std::shared_ptr<tmx_spriteobject> addSprite(tmx_spriteobject* s)
         {
@@ -169,4 +163,23 @@ namespace dang
             return s_p;
         }
     };
+
+
+    class TmxExtruder
+    {
+    public:
+        TmxExtruder() = default;
+        explicit TmxExtruder(tmx_level* lvl);
+        ~TmxExtruder() = default;
+
+        std::shared_ptr<Imagesheet> extrudeImagesheet(const std::string& name);
+//        std::shared_ptr
+
+    protected:
+        tmx_level*  _level{nullptr};
+    };
+
 }
+
+
+

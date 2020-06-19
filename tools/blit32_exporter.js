@@ -53,7 +53,7 @@ function export32Blit(map, fileName) {
     file.writeLine("// (c) 2019-20 by SwordLord - the coding crew")
     file.writeLine("");
 
-    file.writeLine("#include \"libs/dang/src/Imagesheet.h\"")
+//    file.writeLine("#include \"libs/dang/src/Imagesheet.h\"")
     file.writeLine("");
 
     file.writeLine("dang::tmx_level init_" + functionName + "() {");
@@ -80,11 +80,17 @@ function export32Blit(map, fileName) {
     for (var i = 0; i < tilesets.length; ++i) {
         ts = tilesets[i];
 
+        // assuming no margin and no spacing
+        var cols = Math.floor(ts.imageWidth / ts.tileWidth);
+        var rows = Math.floor(ts.imageHeight / ts.tileHeight);
+
         mTS.set(ts.name, i);
         file.writeLine("    // Tileset: " + ts.name + " has ID: " + i);
         //file.writeLine("// #include \"tileset_name.hpp\"");
         //file.writeLine("tileset ts_" + ts.name + " = {\"" + ts.name + "\"," + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight + "};");
-        file.writeLine("    lvl.tilesets[" + i + "] = {\"" + ts.name + "\"," + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight + "};");
+//        file.writeLine("    lvl.tilesets[" + i + "] = {\"" + ts.name + "\"," + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight + "};");
+        file.writeLine("    lvl.tilesets[" + i + "] = {\"" + ts.name + "\"," + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight +
+            "," + ts.imageWidth + "," + ts.imageHeight + "," + cols + "," + rows + "};");
     }
 
     file.writeLine("");
@@ -228,9 +234,9 @@ function export32Blit(map, fileName) {
 //    }
 
     //file.writeLine("");
-    mTS.forEach(function(value, key) {
+//    mTS.forEach(function(value, key) {
         //file.writeLine("    tilesets[" + value + "] = &ts_" + key + ";");
-    })
+//    })
 
     //file.writeLine("");
     for (var i = 0; i < map.layerCount; ++i) {

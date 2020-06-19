@@ -4,7 +4,7 @@
 #include <iostream>
 #include "CollisionSprite.h"
 #include "CollisionSpriteLayer.h"
-#include "tmx_def.h"
+#include "TmxExtruder.h"
 
 namespace dang
 {

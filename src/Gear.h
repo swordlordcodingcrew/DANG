@@ -32,10 +32,9 @@ namespace dang
         void    render(uint32_t time);
 //        void    renderImage(const std::shared_ptr<Imagesheet> is, const uint16_t im_id, const blit::Point& dest, const uint8_t transform) const;
 
+        void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
         std::shared_ptr<Imagesheet> getImagesheet(const std::string& name);
-        std::shared_ptr<Imagesheet> addImagesheet(const tmx_level& lvl, const std::string& name);
         void                        removeImagesheet(const std::string& name);
-//        void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
 
         std::shared_ptr<Layer>      addTileLayer(tmx_level &lvl, const std::string &name);
         std::shared_ptr<Layer>      addSpriteLayer(tmx_level &lvl, const std::string &name, bool collision_enabled);

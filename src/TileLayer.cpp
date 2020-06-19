@@ -7,7 +7,7 @@
 #include "TileLayer.h"
 #include "Gear.h"
 #include "Imagesheet.h"
-#include "tmx_def.h"
+#include "TmxExtruder.h"
 
 namespace dang
 {
