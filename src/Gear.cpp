@@ -66,7 +66,7 @@ namespace dang
         _imagesheets.erase(key);
     }
 
-    std::shared_ptr<Imagesheet> Gear::getImagesheet(const std::string &name)
+    std::shared_ptr<Imagesheet> Gear::getImagesheet(const std::string &name) const
     {
         try
         {
@@ -95,7 +95,7 @@ namespace dang
 
     }
 
-    std::shared_ptr<Layer> Gear::addTileLayer(tmx_level &lvl, const std::string &name)
+/*    std::shared_ptr<Layer> Gear::addTileLayer(tmx_level &lvl, const std::string &name)
     {
         // find layer in lvl-struct
         auto layer_it = std::find_if(lvl.layers.begin(), lvl.layers.end(), [=](const std::shared_ptr<tmx_layer>& val)
@@ -155,7 +155,7 @@ namespace dang
 
         return sl;
     }
-
+*/
     void Gear::removeLayer(std::shared_ptr<Layer> layer)
     {
         _layers.remove(layer);

@@ -61,7 +61,6 @@ namespace dang
 
     public:
         CollisionSpriteLayer();
-        explicit CollisionSpriteLayer(const RectF& layer_size_px);
         ~CollisionSpriteLayer() override = default;
 
         void    update(uint32_t time, const Gear& gear) override;

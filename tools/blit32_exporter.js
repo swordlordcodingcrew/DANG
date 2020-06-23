@@ -86,9 +86,6 @@ function export32Blit(map, fileName) {
 
         mTS.set(ts.name, i);
         file.writeLine("    // Tileset: " + ts.name + " has ID: " + i);
-        //file.writeLine("// #include \"tileset_name.hpp\"");
-        //file.writeLine("tileset ts_" + ts.name + " = {\"" + ts.name + "\"," + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight + "};");
-//        file.writeLine("    lvl.tilesets[" + i + "] = {\"" + ts.name + "\"," + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight + "};");
         file.writeLine("    lvl.tilesets[" + i + "] = {\"" + ts.name + "\"," + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight +
             "," + ts.imageWidth + "," + ts.imageHeight + "," + cols + "," + rows + "};");
     }
@@ -143,6 +140,7 @@ function export32Blit(map, fileName) {
 
             file.writeLine("    dang::tmx_tilelayer tl" + layer.name + " = {\"" + layer.name + "\"," + size + ",t" + layer.name + "," + layer.width + "," + layer.height + "};");
             file.writeLine("    lvl.layers.push_back(std::make_shared<dang::tmx_tilelayer>(tl" + layer.name + "));");
+
         }
         else if (layer.isObjectLayer) {
 

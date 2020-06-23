@@ -13,7 +13,6 @@ namespace dang
     {
     public:
         SpriteLayer();
-        explicit SpriteLayer(const RectF& layer_size_px);
         ~SpriteLayer() override = default;
 
         void    update(uint32_t time, const Gear& gear) override;
@@ -24,7 +23,6 @@ namespace dang
 
     protected:
         explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};
-        SpriteLayer(Layer::E_TYPE type, const RectF& layer_size_px) : Layer(type, layer_size_px) {};
 
         std::forward_list<spSprite> _sprites;
 

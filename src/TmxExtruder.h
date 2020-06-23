@@ -83,6 +83,7 @@ namespace dang
         uint8_t type; // 0 = tmx_tile, 1 = objects
         // TODO: to be considered
         //offset : point 	Offset in pixels that is applied when this tmx_layer is rendered.
+        //z_order : uint    the z-order of the layers
         //map : TileMap 	Map that this tmx_layer is part of (or null in case of a standalone tmx_layer).
     };
 
@@ -138,16 +139,12 @@ namespace dang
         /**
          * lookup-table for the spritesheets / imagesheets.
          * Loading the image must be done on a per level base in the game
+         * further info such as cols and rows is stored in the tileset with the same name
          */
         std::unordered_map<std::string, const uint8_t*> images;
-
-        std::vector<tmx_layer> _layers;
+        std::unordered_map<uint8_t, tmx_tileset> tilesets;
 
         std::vector<std::shared_ptr<tmx_layer>> layers;
-        std::unordered_map<uint8_t, tmx_tileset> tilesets;
-//        std::unordered_map<std::string, Imagesheet*> imagesheets;
-
-        //        std::unordered_map<std::string, std::shared_ptr<Imagesheet>> imagesheets;
 
         // TODO: sprites should know on which tmx_layer they belong...
         std::forward_list<std::shared_ptr<tmx_spriteobject>> sprites;
@@ -164,16 +161,38 @@ namespace dang
         }
     };
 
+    // forward declarations
+    class Layer;
+    class SpriteLayer;
+    class CollisionSpriteLayer;
+    class TileLayer;
+    class Gear;
 
+    // using aliases
+    using spLayer = std::shared_ptr<Layer>;
+    using spSpriteLayer = std::shared_ptr<SpriteLayer>;
+    using spCollisionSpriteLayer = std::shared_ptr<CollisionSpriteLayer>;
+    using spTileLayer = std::shared_ptr<TileLayer>;
+    using spImagesheet = std::shared_ptr<Imagesheet>;
+
+
+    /**
+     * tmx extruder class to extrude objects from the tmx-derived include-file
+     * DANG Extruder pattern
+     */
     class TmxExtruder
     {
+
     public:
         TmxExtruder() = default;
         explicit TmxExtruder(tmx_level* lvl);
         ~TmxExtruder() = default;
 
-        std::shared_ptr<Imagesheet> extrudeImagesheet(const std::string& name);
-//        std::shared_ptr
+        spImagesheet            extrudeImagesheet(const std::string& name);
+
+        spSpriteLayer           extrudeSpriteLayer(const std::string& name);
+        spCollisionSpriteLayer  extrudeCollisionSpriteLayer(const std::string& name);
+        spTileLayer             extrudeTileLayer(const std::string& name, const Gear& gear);
 
     protected:
         tmx_level*  _level{nullptr};

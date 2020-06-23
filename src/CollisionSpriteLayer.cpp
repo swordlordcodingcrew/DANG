@@ -13,11 +13,6 @@ namespace dang
 
     }
 
-    CollisionSpriteLayer::CollisionSpriteLayer(const RectF &layer_size_px) : SpriteLayer(LT_COLLISIONSPRITELAYER, layer_size_px)
-    {
-
-    }
-
     void CollisionSpriteLayer::update(uint32_t time, const Gear &gear)
     {
         // update the sprites

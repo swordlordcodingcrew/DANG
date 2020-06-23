@@ -15,11 +15,5 @@ namespace dang
 
     }
 
-    Layer::Layer(E_TYPE type, const RectF& size) :
-            _type(type), _size(size)
-    {
-
-    }
-
 }
 

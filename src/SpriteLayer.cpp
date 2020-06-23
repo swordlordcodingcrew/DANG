@@ -18,11 +18,6 @@ namespace dang
 
     }
 
-    SpriteLayer::SpriteLayer(const RectF& layer_size_px) : Layer(Layer::LT_SPRITELAYER, layer_size_px)
-    {
-
-    }
-
     void SpriteLayer::update(uint32_t time, const Gear &gear)
     {
         // call internal core update
@@ -111,9 +106,9 @@ namespace dang
         {
             _sprites.push_front(spr);
             _sprites.sort([] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
-                          {
-                              return first->_z_order < second->_z_order;
-                          });
+                  {
+                      return first->_z_order < second->_z_order;
+                  });
         }
     }
 

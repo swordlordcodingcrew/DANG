@@ -27,7 +27,6 @@ namespace dang
         };
 
         explicit Layer(E_TYPE type);
-        Layer(E_TYPE type, const RectF& size);
         virtual ~Layer() = default;
 
         virtual void    update(uint32_t time, const Gear& gear) = 0;
@@ -35,10 +34,11 @@ namespace dang
 
 
     protected:
-        RectF           _size{0, 0, 1, 1};
-        E_TYPE         _type{LT_UNDEFINED};
+        E_TYPE  _type{LT_UNDEFINED};
+//        RectF           _size{0, 0, 1, 1};
 
     public:     // public variables
+        PointF          _position{0,0};
         int32_t         _z_order{0};
         std::string     _name{""};
         bool            _visible{true};
