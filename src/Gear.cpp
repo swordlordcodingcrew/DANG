@@ -95,67 +95,6 @@ namespace dang
 
     }
 
-/*    std::shared_ptr<Layer> Gear::addTileLayer(tmx_level &lvl, const std::string &name)
-    {
-        // find layer in lvl-struct
-        auto layer_it = std::find_if(lvl.layers.begin(), lvl.layers.end(), [=](const std::shared_ptr<tmx_layer>& val)
-        {
-            return (val->name == name);
-        });
-
-        // assert, that layer exists and that it is a tilelayer
-        assert(layer_it != lvl.layers.end());
-        assert(layer_it->get()->type == ltTile);
-
-        tmx_tilelayer* ttl = static_cast<tmx_tilelayer*>(layer_it->get());
-
-        // Fetch one tmx_tileset - this is not entirely correct since we assume that all tiles are in the same imagesheet.
-        tmx_tileset& ts = lvl.tilesets[ttl->tiles[0].tileset];
-
-        std::shared_ptr<Imagesheet> is = getImagesheet(ts.name);
-        std::shared_ptr<TileLayer> tl = std::make_shared<dang::TileLayer>(dang::PointF(0,0), ts, *ttl, is);
-        tl->_name = ttl->name;
-        // TODO js-exporter: implement zOrder
-        tl->_z_order = 0;
-        // TODO js-exporter: implement visible flag
-        // tl->_visible = tilel->visible;
-        addLayer(tl);
-
-        return tl;
-    }
-
-    std::shared_ptr<Layer> Gear::addSpriteLayer(tmx_level &lvl, const std::string &name, bool collision_enabled)
-    {
-        auto layer_it = std::find_if(lvl.layers.begin(), lvl.layers.end(), [=](const std::shared_ptr<dang::tmx_layer>& val)
-        {
-            return (val->name == name);
-        });
-
-        assert(layer_it != lvl.layers.end());
-        assert(layer_it->get()->type == dang::ltObjects);
-
-        dang::tmx_objectlayer* ola = static_cast<dang::tmx_objectlayer*>(layer_it->get());
-
-        std::shared_ptr<dang::SpriteLayer> sl;
-        if (collision_enabled)
-        {
-            sl = std::make_shared<dang::CollisionSpriteLayer>(CollisionSpriteLayer(getWorld()));
-        }
-        else
-        {
-            sl = std::make_shared<dang::SpriteLayer>(SpriteLayer(getWorld()));
-        }
-        sl->_name = ola->name;
-        // TODO js-exporter: implement zOrder
-        sl->_z_order = 1;
-        // TODO js-exporter: implement visible flag
-        // csl->_visible = ola->visible;
-
-        addLayer(sl);
-
-        return sl;
-    }
-*/
     void Gear::removeLayer(std::shared_ptr<Layer> layer)
     {
         _layers.remove(layer);
@@ -168,21 +107,6 @@ namespace dang
             return (val->_name == name);
         });
         return (*layer_it);
-    }
-
-    const tmx_objectlayer &Gear::getTmxObjectLayer(tmx_level &lvl, const std::string &name)
-    {
-        auto layer_it = std::find_if(lvl.layers.begin(), lvl.layers.end(), [=](const std::shared_ptr<dang::tmx_layer>& val)
-        {
-            return (val->name == name);
-        });
-
-        assert(layer_it != lvl.layers.end());
-        assert(layer_it->get()->type == dang::ltObjects);
-
-        dang::tmx_objectlayer* ola = static_cast<dang::tmx_objectlayer*>(layer_it->get());
-
-        return *ola;
     }
 
     RectF Gear::getActiveWorld() const

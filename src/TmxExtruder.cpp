@@ -19,8 +19,8 @@ namespace dang
     }
 
     /**
-     * Extrude imagesheet from tmx_level with name name
-     * @param name the name of the imagesheet (the corresponding tmx_tileset must have the same name
+     * Extrude imagesheet from tmx_level with given name
+     * @param name the name of the imagesheet (the corresponding tmx_tileset must have the same name)
      * @return image sheet as shared pointer
      */
     std::shared_ptr<Imagesheet> TmxExtruder::extrudeImagesheet(const std::string& name)
@@ -57,80 +57,47 @@ namespace dang
 
     spSpriteLayer TmxExtruder::extrudeSpriteLayer(const std::string &name)
     {
-        if (_level == nullptr)
+        const tmx_objectlayer* tol = getTmxObjectLayer(name);
+
+        if (tol == nullptr)
         {
             return nullptr;
         }
 
-        // find level in _level by name
-        auto l_it = std::find_if(_level->layers.begin(), _level->layers.end(), [=](const std::shared_ptr<tmx_layer>& val)
-        {
-            return (val->name == name);
-        });
+        spSpriteLayer sl = std::make_shared<SpriteLayer>();
 
-        // level found..
-        if (l_it != _level->layers.end())
-        {
-            // .. and is a sprite layer
-            if (l_it->get()->type == ltObjects)
-            {
-                tmx_objectlayer* ola = static_cast<tmx_objectlayer*>(l_it->get());
+        sl->_name = tol->name;
+        // TODO js-exporter: implement zOrder
+        sl->_z_order = 1;
+        // TODO js-exporter: implement visible flag
+        // sl->_visible = ola->visible;
+        // TODO js-exporter: implement position
+        // sl->_position = position
 
-                spSpriteLayer sl = std::make_shared<SpriteLayer>();
+        return sl;
 
-                sl->_name = ola->name;
-                // TODO js-exporter: implement zOrder
-                sl->_z_order = 1;
-                // TODO js-exporter: implement visible flag
-                // sl->_visible = ola->visible;
-                // TODO js-exporter: implement position
-                // sl->_position = position
-
-                return sl;
-
-            }
-        }
-
-        return nullptr;
     }
 
     spCollisionSpriteLayer TmxExtruder::extrudeCollisionSpriteLayer(const std::string &name)
     {
-        if (_level == nullptr)
+        const tmx_objectlayer* tol = getTmxObjectLayer(name);
+
+        if (tol == nullptr)
         {
             return nullptr;
         }
 
-        // find level in _level by name
-        auto l_it = std::find_if(_level->layers.begin(), _level->layers.end(), [=](const std::shared_ptr<tmx_layer>& val)
-        {
-            return (val->name == name);
-        });
+        spCollisionSpriteLayer sl = std::make_shared<CollisionSpriteLayer>();
 
-        // level found..
-        if (l_it != _level->layers.end())
-        {
-            // .. and is a sprite layer
-            if (l_it->get()->type == ltObjects)
-            {
-                tmx_objectlayer* ola = static_cast<tmx_objectlayer*>(l_it->get());
+        sl->_name = tol->name;
+        // TODO js-exporter: implement zOrder
+        sl->_z_order = 1;
+        // TODO js-exporter: implement visible flag
+        // csl->_visible = ola->visible;
+        // TODO js-exporter: implement position
+        // tl->_position = position
 
-                spCollisionSpriteLayer sl = std::make_shared<CollisionSpriteLayer>();
-
-                sl->_name = ola->name;
-                // TODO js-exporter: implement zOrder
-                sl->_z_order = 1;
-                // TODO js-exporter: implement visible flag
-                // csl->_visible = ola->visible;
-                // TODO js-exporter: implement position
-                // tl->_position = position
-
-                return sl;
-
-            }
-        }
-
-        return nullptr;
+        return sl;
 
     }
 
@@ -144,47 +111,83 @@ namespace dang
      */
     spTileLayer TmxExtruder::extrudeTileLayer(const std::string &name, const Gear &gear)
     {
+        const tmx_tilelayer* ttl = getTmxTileLayer(name);
+
+        if (ttl == nullptr)
+        {
+            return nullptr;
+        }
+
+        // Fetch one tmx_tileset - this is not entirely correct since we assume that all tiles are in the same imagesheet.
+        tmx_tileset& ts = _level->tilesets[ttl->tiles[0].tileset];
+
+        spImagesheet is = gear.getImagesheet(ts.name);
+        std::shared_ptr<TileLayer> tl = std::make_shared<TileLayer>(ts, *ttl, is);
+        tl->_name = ttl->name;
+
+        // TODO js-exporter: implement zOrder
+        tl->_z_order = 0;
+        // TODO js-exporter: implement visible flag
+        // tl->_visible = tilel->visible;
+        // TODO js-exporter: implement position
+        // tl->_position = position
+
+        return tl;
+
+    }
+
+    const tmx_objectlayer* TmxExtruder::getTmxObjectLayer(const std::string &name)
+    {
         if (_level == nullptr)
         {
             return nullptr;
         }
 
-        // find level in _level by name
-        auto l_it = std::find_if(_level->layers.begin(), _level->layers.end(), [=](const std::shared_ptr<tmx_layer>& val)
+        auto l_it = std::find_if(_level->layers.begin(), _level->layers.end(), [=](const std::shared_ptr<dang::tmx_layer>& val)
         {
             return (val->name == name);
         });
 
-        // level found..
+        // tmx_layer found..
         if (l_it != _level->layers.end())
         {
-            // .. and is a tile layer
-            if (l_it->get()->type == ltTile)
+            // .. and is a tmx_objectlayer
+            if (l_it->get()->type == ltObjects)
             {
-                tmx_tilelayer* ttl = static_cast<tmx_tilelayer*>(l_it->get());
-
-                // Fetch one tmx_tileset - this is not entirely correct since we assume that all tiles are in the same imagesheet.
-                tmx_tileset& ts = _level->tilesets[ttl->tiles[0].tileset];
-
-                spImagesheet is = gear.getImagesheet(ts.name);
-                std::shared_ptr<TileLayer> tl = std::make_shared<TileLayer>(ts, *ttl, is);
-                tl->_name = ttl->name;
-
-                // TODO js-exporter: implement zOrder
-                tl->_z_order = 0;
-                // TODO js-exporter: implement visible flag
-                // tl->_visible = tilel->visible;
-                // TODO js-exporter: implement position
-                // tl->_position = position
-
-                return tl;
-
+                dang::tmx_objectlayer *ola = static_cast<tmx_objectlayer*>(l_it->get());
+                return ola;
             }
+
         }
 
         return nullptr;
     }
 
+    const tmx_tilelayer* TmxExtruder::getTmxTileLayer(const std::string &name)
+    {
+        if (_level == nullptr)
+        {
+            return nullptr;
+        }
 
+        auto l_it = std::find_if(_level->layers.begin(), _level->layers.end(), [=](const std::shared_ptr<dang::tmx_layer>& val)
+        {
+            return (val->name == name);
+        });
+
+        // tmx_layer found..
+        if (l_it != _level->layers.end())
+        {
+            // .. and is a tmx_tilelayer
+            if (l_it->get()->type == ltTile)
+            {
+                dang::tmx_tilelayer *tla = static_cast<tmx_tilelayer*>(l_it->get());
+                return tla;
+            }
+
+        }
+
+        return nullptr;
+    }
 
 }

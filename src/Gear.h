@@ -42,9 +42,6 @@ namespace dang
         void                        removeLayer(std::shared_ptr<Layer> layer);
         std::shared_ptr<Layer>      getLayerByName(const std::string& name);
 
-        // this function should be in some sort of TmxExtractor-class
-        const tmx_objectlayer&     getTmxObjectLayer(tmx_level &lvl, const std::string &name);
-
         RectF  getActiveWorld() const;
         RectF  getViewport() const { return _viewport; }
         void        setViewportPos(Vector2F& pos);

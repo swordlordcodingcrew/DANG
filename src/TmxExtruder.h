@@ -177,8 +177,7 @@ namespace dang
 
 
     /**
-     * tmx extruder class to extrude objects from the tmx-derived include-file
-     * DANG Extruder pattern
+     * tmx extruder class gets or extrudes objects from the tmx-derived include-file with the DANG Extruder pattern
      */
     class TmxExtruder
     {
@@ -193,6 +192,10 @@ namespace dang
         spSpriteLayer           extrudeSpriteLayer(const std::string& name);
         spCollisionSpriteLayer  extrudeCollisionSpriteLayer(const std::string& name);
         spTileLayer             extrudeTileLayer(const std::string& name, const Gear& gear);
+
+        const tmx_objectlayer*     getTmxObjectLayer(const std::string &name);
+        const tmx_tilelayer*     getTmxTileLayer(const std::string &name);
+
 
     protected:
         tmx_level*  _level{nullptr};
