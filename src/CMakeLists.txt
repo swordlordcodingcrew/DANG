@@ -25,7 +25,6 @@ list(APPEND SOURCES
         TileLayer.h
         SpriteLayer.cpp
         SpriteLayer.h
-        tmx_def.h
         CollisionSpriteLayer.cpp
         CollisionSpriteLayer.h
         Vector2T.h
