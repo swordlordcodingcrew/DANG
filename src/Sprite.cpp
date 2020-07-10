@@ -119,6 +119,7 @@ namespace dang
         if (_animation)
         {
             _animation->finishTw(suppressCB);
+            _animation->resetTw();
             _animation->clearObject();
             _animation.reset();
         }
