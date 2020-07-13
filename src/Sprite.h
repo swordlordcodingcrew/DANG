@@ -34,7 +34,7 @@ namespace dang
 
         // animation stuff (special tween)
         void setAnimation(std::shared_ptr<TwAnim> twa);
-        void removeAnimation(bool suppressCB);
+        void removeAnimation(bool suppressCB = false);
 
         void coreUpdate(uint32_t time);
         virtual void update(uint32_t time);
