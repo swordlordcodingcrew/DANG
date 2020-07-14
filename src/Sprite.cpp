@@ -53,6 +53,7 @@ namespace dang
             if (!(*tw))
             {
                 // somehow a stale tween
+                (*tw)->clearObject();
                 tw = _tweens.erase(tw);
             }
             else
@@ -60,6 +61,7 @@ namespace dang
                 (*tw)->update(time);
                 if ((*tw)->isTwFinished())
                 {
+                    (*tw)->clearObject();
                     tw = _tweens.erase(tw);
                 }
                 else
@@ -76,6 +78,7 @@ namespace dang
             _animation->update(time);
             if (_animation->isTwFinished())
             {
+                _animation->clearObject();
                 _animation.reset();
             }
         }
