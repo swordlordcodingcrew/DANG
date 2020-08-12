@@ -33,6 +33,10 @@ list(APPEND SOURCES
         CollisionSprite.h
         TmxExtruder.cpp
         TmxExtruder.h
+        Event.cpp
+        Event.h
+        Dispatcher.cpp
+        Dispatcher.h
 )
 
 add_library(DANG STATIC ${SOURCES} )
