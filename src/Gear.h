@@ -1,6 +1,5 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-// (c) 2019-20 by SwordLord - the coding crew
 
 #pragma once
 
@@ -30,14 +29,11 @@ namespace dang
 
         void    update(uint32_t time);
         void    render(uint32_t time);
-//        void    renderImage(const std::shared_ptr<Imagesheet> is, const uint16_t im_id, const blit::Point& dest, const uint8_t transform) const;
 
         void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
         std::shared_ptr<Imagesheet> getImagesheet(const std::string& name) const;
         void                        removeImagesheet(const std::string& name);
 
-//        std::shared_ptr<Layer>      addTileLayer(tmx_level &lvl, const std::string &name);
-//        std::shared_ptr<Layer>      addSpriteLayer(tmx_level &lvl, const std::string &name, bool collision_enabled);
         void                        addLayer(std::shared_ptr<Layer> layer);
         void                        removeLayer(std::shared_ptr<Layer> layer);
         std::shared_ptr<Layer>      getLayerByName(const std::string& name);
@@ -48,7 +44,6 @@ namespace dang
         RectF  getWorld() const { return _world;}
 
     protected:
-//        dang::level _lvl;
         std::unordered_map<std::string, std::shared_ptr<Imagesheet>> _imagesheets;
         std::forward_list<std::shared_ptr<Layer>> _layers;
 
@@ -59,5 +54,4 @@ namespace dang
 
     };
 }
-
 
