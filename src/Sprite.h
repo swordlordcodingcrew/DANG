@@ -75,6 +75,7 @@ namespace dang
         int32_t                         _z_order{0};
         std::string                     _type{""};
         uint16_t                        _id{0};    // global
+        int32_t                         _type_num{0};
 
     protected:  // variables
 
