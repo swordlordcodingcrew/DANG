@@ -58,14 +58,12 @@ namespace dang
                 {
                     manifold mf = projected_mfs.front();
 
+#ifdef __GEAR_DEBUG
                     if (mf.overlaps)
                     {
-//                        std::cout << "overlap" << std::endl;
-                        //me->_pos = me->_last_pos + mf.deltaMe;
-                        //me->_pos += mf.deltaMe;
-                        //me->setPos(mf.touchMe);
+                        std::cout << "overlap" << std::endl;
                     }
-
+#endif
                     eCollisionResponse cr_me = me->getCollisionResponse(mf.other);
                     eCollisionResponse cr_other = mf.other->getCollisionResponse(me);
                     if (cr_me != CR_NONE && cr_me != CR_CROSS && cr_other != CR_NONE && cr_other != CR_CROSS)
@@ -434,14 +432,14 @@ namespace dang
                     float t1 = t0 + s.dot(r) / r_d_r;
                     if (t0 > 0 && t0 < 1)  // co-linear and intersecting
                     {
-                        std::cout << "co-linear, ti=" << t0 << std::endl;
+//                        std::cout << "co-linear, ti=" << t0 << std::endl;
                         // correct?
                         return t0;
 
                     }
                     else if (t1 > 0 && t1 < 1)   // co-linear and intersecting
                     {
-                        std::cout << "co-linear, ti=" << t1 << std::endl;
+//                        std::cout << "co-linear, ti=" << t1 << std::endl;
                         // correct?
                         return t1;
                     }
