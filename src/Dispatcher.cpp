@@ -8,7 +8,7 @@
 namespace dang
 {
 
-    void Dispatcher::publishEvent(Event &e)
+/*    void Dispatcher::publishEvent(Event &e)
     {
         for (std::pair<const unsigned int, _subscriber_wrapper>& pair : _subscribers)
         {
@@ -23,7 +23,7 @@ namespace dang
             }
         }
     }
-
+*/
     void Dispatcher::removeSubscriber(uint32_t index)
     {
         _subscribers.erase(index);
@@ -59,6 +59,33 @@ namespace dang
     {
         uint32_t ind = getIndex(fn);
         removeSubscriber(ind);
+    }
+
+    void Dispatcher::queueEvent(std::unique_ptr<Event> e)
+    {
+        _event_list.push_front(std::move(e));
+    }
+
+    void Dispatcher::publishEvents()
+    {
+        for (const auto& e : _event_list)
+        {
+            for (std::pair<const unsigned int, _subscriber_wrapper>& pair : _subscribers)
+            {
+                if ((pair.second.filt & e->_filter) > 0)
+                {
+                    pair.second.fn(*e);
+
+                    if (e->_consumend)
+                    {
+                        break; // for-loop
+                    }
+                }
+            }
+
+        }
+
+        _event_list.clear();
     }
 
 }

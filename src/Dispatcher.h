@@ -2,9 +2,9 @@
 // This file is part of the DANG game framework
 
 #pragma once
-#include <queue>
 #include <memory>
 #include <unordered_map>
+#include <forward_list>
 #include <functional>
 
 namespace dang
@@ -14,11 +14,15 @@ namespace dang
 
     /**
      * simple pub-sub-class. Idea & most code is based on EventDispatcher in the oxyggine framework
+     *
      * */
     class Dispatcher
     {
     public:
-        void publishEvent(Event& e);
+        void queueEvent(std::unique_ptr<Event> e);
+        void publishEvents();
+
+//        void publishEvent(Event& e);
 
         uint32_t registerSubscriber(std::function<void(Event&)> fn, uint16_t filter = 0xffff);
         uint32_t    getIndex(const std::function<void(Event&)>& fn);
@@ -40,6 +44,7 @@ namespace dang
 
         std::unordered_map<uint32_t, _subscriber_wrapper> _subscribers;
         uint32_t _index{0};
+        std::forward_list<std::unique_ptr<Event>> _event_list;
     };
 
 }
