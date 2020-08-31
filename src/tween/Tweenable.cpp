@@ -105,6 +105,7 @@ namespace dang
 
         if (_state == TW_PAUSED)
         {
+            // TODO: check if this is correct
             st += (time - _pause_time);
         }
 

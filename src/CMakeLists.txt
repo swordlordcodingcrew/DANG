@@ -13,6 +13,8 @@ list(APPEND SOURCES
         tween/TwVel.h
         tween/TwAcc.cpp
         tween/TwAcc.h
+        tween/TwSequence.cpp
+        tween/TwSequence.h
         Imagesheet.cpp
         Imagesheet.h
         Sprite.cpp

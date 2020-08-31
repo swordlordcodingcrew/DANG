@@ -21,17 +21,17 @@ namespace dang
         Tweenable(uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         virtual ~Tweenable();
 
-        void            setObject(std::weak_ptr<void> obj) {_the_object = obj; }
-        void            clearObject() {_the_object.reset(); }
+        virtual void        setObject(std::weak_ptr<void> obj) {_the_object = obj; }
+        virtual void        clearObject() {_the_object.reset(); }
 
-        void            startTw(uint32_t start_time);
-        void            pauseTw(uint32_t start_time);
-        void            continueTw(uint32_t start_time);
-        void            finishTw(bool suppressCB = false);
-        void            resetTw();
-        bool            isTwFinished();
-        uint32_t        getState() { return _state;}
-        void            setFinishedCallback(std::function<void(void)> finishedCB);
+        virtual void        startTw(uint32_t start_time);
+        virtual void        pauseTw(uint32_t start_time);
+        virtual void        continueTw(uint32_t start_time);
+        virtual void        finishTw(bool suppressCB = false);
+        virtual void        resetTw();
+        virtual bool        isTwFinished();
+        virtual uint32_t    getState() { return _state;}
+        virtual void        setFinishedCallback(std::function<void(void)> finishedCB);
 
         virtual void            update(uint32_t time) = 0;
 

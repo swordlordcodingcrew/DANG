@@ -1,8 +1,5 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-//
-// Created by LordFilu on 16.1.20.
-//
 
 #pragma once
 
@@ -20,7 +17,7 @@ namespace dang
     public:
         TwPos();
         TwPos(const Vector2F& move_to, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
-        void        update(uint32_t time);
+        void        update(uint32_t time) override;
 
 
     protected:
