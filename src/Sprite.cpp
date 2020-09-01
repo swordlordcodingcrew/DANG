@@ -128,7 +128,7 @@ namespace dang
         }
     }
 
-    void Sprite::setAnimation(std::shared_ptr<TwAnim> twa)
+    void Sprite::setAnimation(std::shared_ptr<Tweenable> twa)
     {
         _animation = twa;
         _animation->setObject(shared_from_this());

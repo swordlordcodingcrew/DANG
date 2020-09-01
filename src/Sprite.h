@@ -33,7 +33,7 @@ namespace dang
         bool tweenActive(const std::shared_ptr<Tweenable>& tw);
 
         // animation stuff (special tween)
-        void setAnimation(std::shared_ptr<TwAnim> twa);
+        void setAnimation(std::shared_ptr<Tweenable> twa);
         void removeAnimation(bool suppressCB = false);
 
         void coreUpdate(uint32_t time);
@@ -91,7 +91,7 @@ namespace dang
 
         // tween depot
         std::list<spTweenable> _tweens;
-        std::shared_ptr<TwAnim> _animation;
+        spTweenable _animation;
 
     };
 
