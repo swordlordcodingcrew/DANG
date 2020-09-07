@@ -100,9 +100,9 @@ namespace dang
             vp_tu.y = _worldsize_tu.h - vp_tu.h;
         }
 
-        for (int32_t x = vp_tu.x; x < vp_tu.x + vp_tu.w; x++)
+        for (int32_t x = vp_tu.x; x <= vp_tu.x + vp_tu.w; x++)
         {
-            for (int32_t y = vp_tu.y; y < vp_tu.y + vp_tu.h; y++)
+            for (int32_t y = vp_tu.y; y <= vp_tu.y + vp_tu.h; y++)
             {
                 dang::tmx_tile t = _tiles[x + (y * _worldsize_tu.w)];
 
