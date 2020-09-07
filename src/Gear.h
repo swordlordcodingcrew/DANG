@@ -40,7 +40,8 @@ namespace dang
 
         RectF  getActiveWorld() const;
         RectF  getViewport() const { return _viewport; }
-        void        setViewportPos(Vector2F& pos);
+        void   setViewportPos(Vector2F& pos);
+        void   follow(const std::shared_ptr<Sprite>& spr);
         RectF  getWorld() const { return _world;}
 
     protected:
