@@ -147,7 +147,7 @@ namespace dang
         Vector2F vp_pos = _viewport.tl();
         vp_pos.x += _viewport.w / 2;
         vp_pos.y += _viewport.h /2;
-        Vector2F pos = vp_pos + (dest - vp_pos) / 3.0f;
+        Vector2F pos = vp_pos + (dest - vp_pos) / 20.0f;
         pos.x = pos.x - _viewport.w / 2;
         pos.y = pos.y - _viewport.h / 2;
 
