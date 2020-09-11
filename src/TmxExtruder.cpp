@@ -122,7 +122,7 @@ namespace dang
         tmx_tileset& ts = _level->tilesets[ttl->tiles[0].tileset];
 
         spImagesheet is = gear.getImagesheet(ts.name);
-        std::shared_ptr<TileLayer> tl = std::make_shared<TileLayer>(ts, *ttl, is);
+        std::shared_ptr<TileLayer> tl = std::make_shared<TileLayer>(ts, *ttl, is, gear.getViewport());
         tl->_name = ttl->name;
 
         // TODO js-exporter: implement zOrder
