@@ -115,35 +115,38 @@ namespace dang
     }
 
 
-    void Gear::setViewportPos(Vector2F& pos)
+    void Gear::setViewportPos(const Vector2F& pos)
     {
         if (pos.x < 0)
         {
-            pos.x = 0;
+            _viewport.x = 0;
         }
         else if (pos.x + _viewport.w > _world.w)
         {
-            pos.x = _world.w - _viewport.w;
+            _viewport.x = _world.w - _viewport.w;
+        }
+        else
+        {
+            _viewport.x = pos.x;
         }
 
         if (pos.y < 0)
         {
-            pos.y = 0;
+            _viewport.y = 0;
         }
         else if (pos.y + _viewport.h > _world.h)
         {
-            pos.y = _world.h - _viewport.h;
+            _viewport.y = _world.h - _viewport.h;
+        }
+        else
+        {
+            _viewport.y = pos.y;
         }
 
-        _viewport.x = pos.x;
-        _viewport.y = pos.y;
     }
 
-    void Gear::follow(const std::shared_ptr<Sprite>& spr)
+    void Gear::follow(const Vector2F& dest)
     {
-        assert(spr != nullptr);
-
-        Vector2F dest = spr->getPos() + spr->getSize() / 2.0f;
         Vector2F vp_pos = _viewport.tl();
         vp_pos.x += _viewport.w / 2;
         vp_pos.y += _viewport.h /2;
@@ -154,6 +157,5 @@ namespace dang
         setViewportPos(pos);
 
     }
-
 
 }

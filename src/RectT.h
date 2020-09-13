@@ -144,6 +144,10 @@ namespace dang
             return Vector2T<T>(x + w, y + h);
         }
 
+        Vector2T<T> center() const
+        {
+            return Vector2T<T>(x + w / 2, y + h / 2);
+        }
     };
 
     template <typename T>

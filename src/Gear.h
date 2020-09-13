@@ -40,8 +40,8 @@ namespace dang
 
         RectF  getActiveWorld() const;
         RectF  getViewport() const { return _viewport; }
-        void   setViewportPos(Vector2F& pos);
-        void   follow(const std::shared_ptr<Sprite>& spr);
+        void   setViewportPos(const Vector2F& pos);
+        void   follow(const Vector2F& dest);
         RectF  getWorld() const { return _world;}
 
     protected:
@@ -49,10 +49,9 @@ namespace dang
         std::forward_list<std::shared_ptr<Layer>> _layers;
 
         // viewport handling
-        RectF      _world{0,0,0,0};    // size of the world
-        RectF      _viewport{0,0,0,0};     // part of world to be drawn
-        Vector2F   _active_world_size{0,0}; // center equals to center of viewport. sprite within active world will be updated and - if in viewport - drawnd
-
+        RectF       _world{0,0,0,0};    // size of the world
+        RectF       _viewport{0,0,0,0};     // part of world to be drawn
+        Vector2F    _active_world_size{0,0}; // center equals to center of viewport. sprite within active world will be updated and - if in viewport - drawnd
     };
 }
 
