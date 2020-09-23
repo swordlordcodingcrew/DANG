@@ -68,7 +68,7 @@ namespace dang
 
     protected:
 
-        void handleCollisionDetection();
+        void handleCollisionDetection(const Gear& gear);
 
         void projectCollisions(const spCollisionSprite& me, const std::forward_list<spSprite>& sprites, std::forward_list<manifold>& mf_list);
         bool getRayIntersectionFraction(const Vector2F& origin, const Vector2F& direction, const RectF& aabb, float& ti, Vector2F& normal);

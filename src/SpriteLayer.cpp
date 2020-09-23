@@ -23,8 +23,7 @@ namespace dang
         // call internal core update
         for (spSprite& spr : _sprites)
         {
-           RectF dr = gear.getActiveWorld().intersection(spr->getSizeRect());
-           if (dr.area() != 0)
+           if (gear.getActiveWorld().intersects(spr->getSizeRect()))
            {
                spr->coreUpdate(time);
            }
@@ -33,8 +32,7 @@ namespace dang
         // then call update
         for (spSprite& spr : _sprites)
         {
-            RectF dr = gear.getActiveWorld().intersection(spr->getSizeRect());
-            if (dr.area() != 0)
+            if (gear.getActiveWorld().intersects(spr->getSizeRect()))
             {
                 spr->update(time);
             }

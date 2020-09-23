@@ -5,6 +5,7 @@
 #include "CollisionSpriteLayer.h"
 #include "Sprite.h"
 #include "CollisionSprite.h"
+#include "Gear.h"
 
 namespace dang
 {
@@ -19,7 +20,7 @@ namespace dang
         SpriteLayer::update(time, gear);
 
         // collision resolution
-        handleCollisionDetection();
+        handleCollisionDetection(gear);
     }
 
     void CollisionSpriteLayer::render(const Gear &gear)
@@ -28,7 +29,7 @@ namespace dang
     }
 
     // called on every move of every sprite
-    void CollisionSpriteLayer::handleCollisionDetection()
+    void CollisionSpriteLayer::handleCollisionDetection(const Gear& gear)
     {
         _handled.clear();
         _iteration = 3;
@@ -40,15 +41,23 @@ namespace dang
             {
                 const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>(spr);
 
+                // pointer anomaly, should not happen (but who knows..)
                 if (me == nullptr)
                 {
                     continue;
                 }
 
+                if (!gear.getActiveWorld().intersects(me->getSizeRect()))
+                {
+                    continue;
+                }
+
+                // if collisions sprite type RIGID no active collision detection is processed or sprite is already handled
                 if (me->getCOType() == CollisionSpriteLayer::COT_RIGID || _handled.count(me) > 0)
                 {
                     continue;
                 }
+
 
                 // find possible collisions
                 std::forward_list<manifold> projected_mfs;

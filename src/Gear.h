@@ -38,9 +38,14 @@ namespace dang
         void                        removeLayer(std::shared_ptr<Layer> layer);
         std::shared_ptr<Layer>      getLayerByName(const std::string& name);
 
-        RectF  getActiveWorld() const;
+        RectF       getActiveWorld() const;
+        Vector2F    getActiveWorldSize() const { return _active_world_size; };
+        void        setActiveWorldSize(Vector2F& aws) {_active_world_size = aws; };
+        void        setActiveWorldSize(float w, float h) {_active_world_size.w = w; _active_world_size.h = h; };
+
         RectF  getViewport() const { return _viewport; }
         void   setViewportPos(const Vector2F& pos);
+
         void   follow(const Vector2F& dest);
         RectF  getWorld() const { return _world;}
 
