@@ -16,7 +16,6 @@ namespace dang
 
     Sprite::~Sprite()
     {
-
     }
 
 /*    Sprite::Sprite(const Sprite &sp)

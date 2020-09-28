@@ -39,6 +39,11 @@ namespace dang
         void coreUpdate(uint32_t time);
         virtual void update(uint32_t time);
 
+        // simple image
+        void setImagesheet(std::shared_ptr<Imagesheet> is) { _imagesheet = is; }
+        void setSize(SizeF& s) {_size = s; }
+        void setSize(float w, float h) {_size.w = w; _size.h = h; }
+
         // pos, vel, acc
         Vector2F    getPos() { return _pos; }
         Vector2F    getLastPos() { return _last_pos; }

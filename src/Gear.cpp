@@ -25,8 +25,6 @@ namespace dang
 
     void Gear::initLevel(const tmx_level &lvl, RectF& viewport)
     {
-        _viewport = viewport;
-
         _world.w = lvl.w.width * lvl.w.tileWidth;
         _world.h = lvl.w.height * lvl.w.tileHeight;
 
@@ -34,6 +32,7 @@ namespace dang
         _active_world_size.x = 2 * _world.w;
         _active_world_size.y = 2 * _world.h;
 
+        setViewport(viewport);
     }
 
     void Gear::render(uint32_t time)
@@ -64,6 +63,11 @@ namespace dang
     void Gear::removeImagesheet(const std::string& key)
     {
         _imagesheets.erase(key);
+    }
+
+    void Gear::removeImagesheets()
+    {
+        _imagesheets.clear();
     }
 
     std::shared_ptr<Imagesheet> Gear::getImagesheet(const std::string &name) const
@@ -100,6 +104,11 @@ namespace dang
         _layers.remove(layer);
     }
 
+    void Gear::removeLayers()
+    {
+        _layers.clear();
+    }
+
     std::shared_ptr<Layer> Gear::getLayerByName(const std::string &name)
     {
         std::forward_list<std::shared_ptr<Layer>>::iterator layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
@@ -114,6 +123,12 @@ namespace dang
         return RectF(_viewport.x - (_active_world_size.w - _viewport.w)/2, _viewport.y - ((_active_world_size.h - _viewport.h)/2), _active_world_size.w, _active_world_size.h);
     }
 
+    void Gear::setViewport(const RectF &vp)
+    {
+        _viewport.w = std::min(_world.w, vp.w);
+        _viewport.h = std::min(_world.h, vp.h);
+        setViewportPos(vp.tl());
+    }
 
     void Gear::setViewportPos(const Vector2F& pos)
     {
@@ -157,5 +172,6 @@ namespace dang
         setViewportPos(pos);
 
     }
+
 
 }
