@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <forward_list>
+
 #include "Layer.h"
 
 namespace dang
