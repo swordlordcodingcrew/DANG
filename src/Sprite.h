@@ -44,15 +44,17 @@ namespace dang
         void setSize(SizeF& s) {_size = s; }
         void setSize(float w, float h) {_size.w = w; _size.h = h; }
 
-        // pos, vel, acc
+        // pos, vel, acc, gravity
         Vector2F    getPos() { return _pos; }
         Vector2F    getLastPos() { return _last_pos; }
         Vector2F    getPosDelta() { return _pos - _last_pos; }
         Vector2F    getVel() { return _vel; }
         Vector2F    getAcc() { return _acc; }
+        Vector2F    getGravity() { return _gravity; }
         void        setPos(const Vector2F& pos) { _pos = pos; }
         void        setVel(const Vector2F& vel) { _vel = vel; }
         void        setAcc(const Vector2F& acc) { _acc = acc; }
+        void        setGravity(const Vector2F& g) {_gravity = g; };
 
         void        setPosX(float x) {_pos.x = x; }
         void        setPosY(float y) {_pos.y = y; }
@@ -90,6 +92,7 @@ namespace dang
         Vector2F     _pos{0,0};
         Vector2F     _vel{0,0};
         Vector2F     _acc{0,0};
+        Vector2F     _gravity{0,0};
 
         Vector2F    _last_pos{0,0};     // could be used for collision detection
         uint32_t    _last_update_time{0};

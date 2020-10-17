@@ -23,6 +23,8 @@ namespace dang
         CollisionSprite(const tmx_spriteobject &so, std::shared_ptr<Imagesheet> is);
         ~CollisionSprite() override;
 
+        void        update(uint32_t time) override;
+
         RectF       getHotrect() const { return _hotrect; };
         RectF       getHotrectAbs() const;
         virtual void collide(const CollisionSpriteLayer::manifold &mf);

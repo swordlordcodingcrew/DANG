@@ -14,13 +14,34 @@ namespace dang
 
     }
 
+    void CollisionSpriteLayer::addCollisionSprite(spCollisionSprite cspr)
+    {
+        SpriteLayer::addSprite(cspr);
+    }
+
     void CollisionSpriteLayer::update(uint32_t time, const Gear &gear)
     {
-        // update the sprites
-        SpriteLayer::update(time, gear);
+        // call internal core update
+        for (spSprite& spr : _sprites)
+        {
+            if (gear.getActiveWorld().intersects(spr->getSizeRect()))
+            {
+                spr->coreUpdate(time);
+            }
+        }
 
         // collision resolution
         handleCollisionDetection(gear);
+
+        // then call update
+        for (spSprite& spr : _sprites)
+        {
+            if (gear.getActiveWorld().intersects(spr->getSizeRect()))
+            {
+                spr->update(time);
+            }
+        }
+
     }
 
     void CollisionSpriteLayer::render(const Gear &gear)
@@ -472,5 +493,6 @@ namespace dang
         return std::numeric_limits<float>::infinity();
 
     }
+
 
 }

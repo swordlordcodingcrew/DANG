@@ -94,15 +94,16 @@ namespace dang
     {
         _last_pos = _pos;
         updateTweens(time);
+
+        // dt in 10 ms
+        float dt = float(time - (_last_update_time == 0 ? time : _last_update_time)) / 100;
+        _last_update_time = time;
+        _vel += (_gravity + _acc) * dt;
+        _pos += _vel * dt;
     }
 
     void Sprite::update(uint32_t time)
     {
-        // dt in 10 ms
-        float dt = float(time - (_last_update_time == 0 ? time : _last_update_time)) / 100;
-        _last_update_time = time;
-        _vel += _acc * dt;
-        _pos += _vel * dt;
     }
 
     RectF Sprite::getSizeRect()

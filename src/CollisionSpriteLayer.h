@@ -63,6 +63,8 @@ namespace dang
         CollisionSpriteLayer();
         ~CollisionSpriteLayer() override = default;
 
+        void    addCollisionSprite(spCollisionSprite cspr);
+
         void    update(uint32_t time, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
@@ -81,6 +83,11 @@ namespace dang
         std::unordered_set<spSprite> _handled;
         uint16_t                    _iteration{3};       // number of collision solving cycles
         bool                        _iterate{false};    // internal use
+
+    private:
+        // may not be used in this layer type
+        void    addSprite(spSprite spr) override {};
+
     };
 
 }

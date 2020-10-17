@@ -83,5 +83,10 @@ namespace dang
         return _coll_response;
     }
 
+    void CollisionSprite::update(uint32_t time)
+    {
+
+    }
+
 
 }
