@@ -7,7 +7,7 @@
 #include <list>
 #include <Vector2T.h>
 #include <RectT.h>
-#include "dang_globals.hpp"
+#include "dang.hpp"
 #include "CollisionSpriteLayer.h"
 
 namespace dang

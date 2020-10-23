@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "dang_globals.hpp"
+#include "dang.hpp"
 #include <list>
 #include <Vector2T.h>
 #include <RectT.h>

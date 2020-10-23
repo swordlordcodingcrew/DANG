@@ -4,7 +4,7 @@
 #include <iostream>
 #include <Sprite.h>
 #include "TwPos.h"
-#include "../dang_globals.hpp"
+#include "../dang.hpp"
 
 namespace dang
 {

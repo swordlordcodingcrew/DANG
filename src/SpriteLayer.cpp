@@ -62,7 +62,7 @@ namespace dang
                 }
 
             }
-#ifdef __GEAR_DEBUG
+#ifdef DANG_DEBUG
 
             if(!spr->_visible)
             {

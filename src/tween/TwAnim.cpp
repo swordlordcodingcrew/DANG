@@ -7,7 +7,7 @@
 #include <iostream>
 #include <Sprite.h>
 #include "TwAnim.h"
-#include "../dang_globals.hpp"
+#include "../dang.hpp"
 
 namespace dang
 {

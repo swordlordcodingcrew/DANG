@@ -88,7 +88,7 @@ namespace dang
                 {
                     manifold mf = projected_mfs.front();
 
-#ifdef __GEAR_DEBUG
+#ifdef DANG_DEBUG
                     if (mf.overlaps)
                     {
                         std::cout << "overlap" << std::endl;

@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <assert.h>
-#include "dang_globals.hpp"
+#include "dang.hpp"
 #include "TileLayer.h"
 #include "Gear.h"
 #include "Imagesheet.h"

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "dang_globals.hpp"
+#include "dang.hpp"
 #include <unordered_map>
 #include <forward_list>
 #include "RectT.h"

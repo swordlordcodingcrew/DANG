@@ -50,7 +50,9 @@ namespace dang
 
     TwVel::~TwVel()
     {
+#ifdef DANG_DEBUG
         std::cout << "TwVel destroyed" << std::endl;
+#endif
     }
 
 }

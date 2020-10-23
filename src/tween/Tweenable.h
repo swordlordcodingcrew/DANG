@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "dang_globals.hpp"
+#include "dang.hpp"
 #include <cstdint>
 #include "Ease.h"
 

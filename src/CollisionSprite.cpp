@@ -15,7 +15,7 @@ namespace dang
 
     CollisionSprite::~CollisionSprite()
     {
-#ifdef __GEAR_DEBUG
+#ifdef DANG_DEBUG
         std::cout << "Collision sprite destroyed" << std::endl;
 #endif
     }
