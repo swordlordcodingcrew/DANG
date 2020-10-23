@@ -17,7 +17,7 @@ namespace dang
         SpriteLayer();
         ~SpriteLayer() override = default;
 
-        void    update(uint32_t time, const Gear& gear) override;
+        void    update(uint32_t time, uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
         virtual void    addSprite(spSprite spr);

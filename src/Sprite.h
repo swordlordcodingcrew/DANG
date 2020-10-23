@@ -28,7 +28,6 @@ namespace dang
 
         // tween stuff
         void addTween(std::shared_ptr<Tweenable> tw);
-        void updateTweens(uint32_t time);
         void removeTween(std::shared_ptr<Tweenable> tw, bool suppressCB);
         bool tweenActive(const std::shared_ptr<Tweenable>& tw);
 
@@ -36,8 +35,9 @@ namespace dang
         void setAnimation(std::shared_ptr<Tweenable> twa);
         void removeAnimation(bool suppressCB = false);
 
-        void coreUpdate(uint32_t time);
-        virtual void update(uint32_t time);
+        void updateTweens(uint32_t dt);
+        void coreUpdate(uint32_t time, uint32_t dt);
+        virtual void update(uint32_t time, uint32_t dt);
 
         // simple image
         void setImagesheet(std::shared_ptr<Imagesheet> is) { _imagesheet = is; }
@@ -94,8 +94,8 @@ namespace dang
         Vector2F     _acc{0,0};
         Vector2F     _gravity{0,0};
 
-        Vector2F    _last_pos{0,0};     // could be used for collision detection
-        uint32_t    _last_update_time{0};
+        Vector2F    _last_pos{0,0};     // used e.g. for collision detection
+//        uint32_t    _last_update_time{0};
 
         // tween depot
         std::list<spTweenable> _tweens;

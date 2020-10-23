@@ -38,12 +38,12 @@ namespace dang
      *
      * @param time needed for updating the tween
      */
-    void TwVel::update(uint32_t time)
+    void TwVel::update(uint32_t dt)
     {
         spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
         if (!spr) return;
 
-        float fx = calc(time);
+        float fx = calc(dt);
         spr->setVel(_start_vel + (_end_vel - _start_vel) * fx);
 
     }

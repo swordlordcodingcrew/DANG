@@ -44,7 +44,7 @@ namespace dang
         _tweens.push_front(tw);
     }
 
-    void Sprite::updateTweens(uint32_t time)
+    void Sprite::updateTweens(uint32_t dt)
     {
         std::list<std::shared_ptr<Tweenable>>::iterator tw = _tweens.begin();
         while (tw != _tweens.end())
@@ -57,8 +57,8 @@ namespace dang
             }
             else
             {
-                (*tw)->update(time);
-                if ((*tw)->isTwFinished())
+                (*tw)->update(dt);
+                if ((*tw)->isFinished())
                 {
                     (*tw)->clearObject();
                     tw = _tweens.erase(tw);
@@ -71,11 +71,11 @@ namespace dang
 
         }
 
-        // special case animation. There is only one
+        // special case animation. There can be only one
         if (_animation)
         {
-            _animation->update(time);
-            if (_animation->isTwFinished())
+            _animation->update(dt);
+            if (_animation->isFinished())
             {
                 _animation->clearObject();
                 _animation.reset();
@@ -85,24 +85,25 @@ namespace dang
 
     void Sprite::removeTween(std::shared_ptr<Tweenable> tw, bool suppressCB)
     {
-        tw->finishTw(suppressCB);
+        tw->finish(suppressCB);
         _tweens.remove(tw);
         tw->clearObject();
     }
 
-    void Sprite::coreUpdate(uint32_t time)
+    void Sprite::coreUpdate(uint32_t time, uint32_t dt)
     {
         _last_pos = _pos;
-        updateTweens(time);
+//        _last_update_time = time;
+        updateTweens(dt);
 
         // dt in 10 ms
-        float dt = float(time - (_last_update_time == 0 ? time : _last_update_time)) / 100;
-        _last_update_time = time;
-        _vel += (_gravity + _acc) * dt;
-        _pos += _vel * dt;
+//        float dt = float(time - (_last_update_time == 0 ? time : _last_update_time)) / 100;
+        float dt10ms = dt / 100.0f;
+        _vel += (_gravity + _acc) * dt10ms;
+        _pos += _vel * dt10ms;
     }
 
-    void Sprite::update(uint32_t time)
+    void Sprite::update(uint32_t time, uint32_t dt)
     {
     }
 
@@ -121,8 +122,8 @@ namespace dang
     {
         if (_animation)
         {
-            _animation->finishTw(suppressCB);
-            _animation->resetTw();
+            _animation->finish(suppressCB);
+            _animation->reset();
             _animation->clearObject();
             _animation.reset();
         }

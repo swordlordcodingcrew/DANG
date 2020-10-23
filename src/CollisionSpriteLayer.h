@@ -65,7 +65,7 @@ namespace dang
 
         void    addCollisionSprite(spCollisionSprite cspr);
 
-        void    update(uint32_t time, const Gear& gear) override;
+        void    update(uint32_t time, uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
     protected:

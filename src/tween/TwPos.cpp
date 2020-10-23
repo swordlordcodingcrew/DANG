@@ -42,12 +42,12 @@ namespace dang
      *
      * @param time needed for updating the tween
      */
-    void TwPos::update(uint32_t time)
+    void TwPos::update(uint32_t dt)
     {
         spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
         if (!spr) return;
 
-        float fx = calc(time);
+        float fx = calc(dt);
         spr->setPos(Vector2F(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx));
 
     }

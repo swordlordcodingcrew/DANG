@@ -18,14 +18,14 @@ namespace dang
 
     }
 
-    void SpriteLayer::update(uint32_t time, const Gear &gear)
+    void SpriteLayer::update(uint32_t time, uint32_t dt, const Gear &gear)
     {
         // call internal core update
         for (spSprite& spr : _sprites)
         {
            if (gear.getActiveWorld().intersects(spr->getSizeRect()))
            {
-               spr->coreUpdate(time);
+               spr->coreUpdate(time, dt);
            }
         }
 
@@ -34,7 +34,7 @@ namespace dang
         {
             if (gear.getActiveWorld().intersects(spr->getSizeRect()))
             {
-                spr->update(time);
+                spr->update(time, dt);
             }
         }
     }

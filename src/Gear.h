@@ -27,7 +27,7 @@ namespace dang
 
         void    initLevel(const tmx_level& lvl, RectF& viewport);
 
-        void    update(uint32_t time);
+        void    update(uint32_t time, uint32_t dt);
         void    render(uint32_t time);
 
         void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);

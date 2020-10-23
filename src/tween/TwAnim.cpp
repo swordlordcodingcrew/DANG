@@ -40,12 +40,12 @@ namespace dang
      *
      * @param time needed for updating the tween
      */
-    void TwAnim::update(uint32_t time)
+    void TwAnim::update(uint32_t dt)
     {
         spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
         if (!spr) return;
 
-        float fx = calc(time);
+        float fx = calc(dt);
         uint16_t ind = uint16_t(fx * (_indices.size()));
 
         // for the case that fx == 1, index equals _indices.size()

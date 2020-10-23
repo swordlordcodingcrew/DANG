@@ -46,11 +46,11 @@ namespace dang
         }
     }
 
-    void Gear::update(uint32_t time)
+    void Gear::update(uint32_t time, uint32_t dt)
     {
         for (std::shared_ptr<Layer> l : _layers)
         {
-            l->update(time, *this);
+            l->update(time, dt, *this);
         }
     }
 

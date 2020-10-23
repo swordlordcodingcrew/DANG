@@ -15,8 +15,7 @@ namespace dang
     }
 
     Tweenable::Tweenable(const Tweenable &tw) : _the_object(tw._the_object), _duration(tw._duration), _loops(tw._loops), _alternating(tw._alternating),
-                                                _delay(tw._delay), _finishedCB(tw._finishedCB), _start_time(tw._start_time), _pause_time(tw._pause_time),
-                                                _loop(tw._loop), _state(tw._state)
+                                                _delay(tw._delay), _finishedCB(tw._finishedCB), _loop(tw._loop), _finished(tw._finished)
     {
         _ease = std::unique_ptr<Ease>((*(tw._ease)).clone());
         if (!_ease)
@@ -38,43 +37,17 @@ namespace dang
         }
     }
 
-    void Tweenable::pauseTw(uint32_t start_time)
-    {
-        _state = TW_PAUSED;
-        _pause_time = start_time;
-    }
 
-    void Tweenable::continueTw(uint32_t start_time)
+    void Tweenable::reset()
     {
-        if (_state == TW_FINISHED || _state == TW_RUNNING) return;
-
-        _start_time += start_time - _pause_time;
-        _state = TW_RUNNING;
-    }
-
-    void Tweenable::startTw(uint32_t start_time)
-    {
-        if (_state == TW_READY)
-        {
-            _start_time = start_time;
-            _pause_time = 0;
-            _loop = 0;
-            _state = TW_RUNNING;
-        }
-    }
-
-    void Tweenable::resetTw()
-    {
-        _start_time = 0;
-        _pause_time = 0;
         _loop = 0;
-        _state = TW_READY;
-
+        _progress = 0;
+        _finished = false;
     }
 
-    void Tweenable::finishTw(bool suppressCB)
+    void Tweenable::finish(bool suppressCB)
     {
-        _state = TW_FINISHED;
+        _finished = true;
         if (!suppressCB && _finishedCB != nullptr)
         {
             _finishedCB();
@@ -82,43 +55,32 @@ namespace dang
 
     }
 
-    bool Tweenable::isTwFinished()
+    bool Tweenable::isFinished()
     {
-        return _state == TW_FINISHED;
+        return _finished;
     }
 
-    float Tweenable::calc(uint32_t time)
+    float Tweenable::calc(uint32_t dt)
     {
         assert(_ease != nullptr);
 
-        if (_state == TW_FINISHED)
+        if (_finished)
         {
             return _ease->calc(_alternating && _loop % 2 == 1 ? 0 : 1);
         }
 
-        if (_state == TW_READY)
-        {
-            startTw(time);
-        }
-
-        uint32_t st = _start_time;
-
-        if (_state == TW_PAUSED)
-        {
-            // TODO: check if this is correct
-            st += (time - _pause_time);
-        }
+        _progress += dt;
 
         // during delay
-        if (time < st + _delay)
+        if (_progress < _delay)
         {
             return _ease->calc(_alternating && _loop % 2 == 1 ? 1 : 0);
         }
 
         // during ease
-        if (time < st + _delay + _duration)
+        if (_progress < _delay + _duration)
         {
-            float x = (time - (st + _delay)) / (float)_duration;
+            float x = (_progress - _delay) / (float)_duration;
 //            std::cout << "x=" << x << " , _start_time=" << st << " , time=" << time << std::endl;
             assert(x >= 0 || x <= 1);
 
@@ -130,19 +92,19 @@ namespace dang
             if (_loops < 0)     // endless loops
             {
                 _loop = (_loop + 1) % 2;
-                _start_time = time;
+                _progress = 0;
             }
             else
             {
-                if (_loop + 1 < _loops)
+                if (_loop + 1 < _loops)     // next loop
                 {
                     _loop++;
-                    _start_time = time;
+                    _progress = 0;
                     return _ease->calc(_alternating && _loop % 2 == 1 ? 1 : 0);
                 }
                 else    // tween finished
                 {
-                    _state = TW_FINISHED;
+                    _finished = true;
                     if (_finishedCB != nullptr)
                     {
                         _finishedCB();
