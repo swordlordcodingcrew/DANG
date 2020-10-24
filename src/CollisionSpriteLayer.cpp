@@ -47,6 +47,37 @@ namespace dang
     void CollisionSpriteLayer::render(const Gear &gear)
     {
         SpriteLayer::render(gear);
+
+#ifdef DANG_DEBUG_DRAW
+
+        RectF vp = gear.getViewport();
+
+        for (std::shared_ptr<Sprite>& spr : _sprites)
+        {
+            const spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            blit::screen.pen = blit::Pen(255, 0, 0, 255);
+
+            RectF dr = vp.intersection(cspr->getHotrectAbs());
+            //            RectF dr = vp.intersection(spr->getSizeRect());
+            if (dr.area() != 0)
+            {
+                dr.x -= vp.x;
+                dr.y -= vp.y;
+
+                blit::Point tl(int32_t(dr.tl().x), int32_t(dr.tl().y));
+                blit::Point bl(int32_t(dr.bl().x), int32_t(dr.bl().y));
+                blit::Point br(int32_t(dr.br().x), int32_t(dr.br().y));
+                blit::Point tr(int32_t(dr.tr().x), int32_t(dr.tr().y));
+
+                blit::screen.line(tl, bl); // left -> bottom
+                blit::screen.line(bl, br); // bottom -> right
+                blit::screen.line(br, tr); // right -> top
+                blit::screen.line(tr, tl); // top -> left
+            }
+            //            blit::screen.pen = blit::Pen(0, 0, 0, 255);
+        }
+#endif
+
     }
 
     // called on every move of every sprite
