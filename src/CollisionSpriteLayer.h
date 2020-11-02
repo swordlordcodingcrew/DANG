@@ -72,7 +72,7 @@ namespace dang
 
         void handleCollisionDetection(const Gear& gear);
 
-        void projectCollisions(const spCollisionSprite& me, const std::forward_list<spSprite>& sprites, std::forward_list<manifold>& mf_list);
+        void projectCollisions(const spCollisionSprite& me, const std::list<spSprite>& sprites, std::forward_list<manifold>& mf_list);
         bool getRayIntersectionFraction(const Vector2F& origin, const Vector2F& direction, const RectF& aabb, float& ti, Vector2F& normal);
         float   getRayIntersectionFractionOfFirstRay(const Vector2F &originA, const Vector2F &endA, const Vector2F &originB, const Vector2F &endB);
         void    slide(manifold& mf, bool for_me);

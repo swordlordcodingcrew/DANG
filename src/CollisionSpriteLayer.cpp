@@ -21,20 +21,13 @@ namespace dang
 
     void CollisionSpriteLayer::update(uint32_t time, uint32_t dt, const Gear &gear)
     {
-        // call internal core update
-        for (spSprite& spr : _sprites)
-        {
-            if (gear.getActiveWorld().intersects(spr->getSizeRect()))
-            {
-                spr->coreUpdate(time, dt);
-            }
-        }
+        coreUpdate(time, dt, gear);
 
         // collision resolution
         handleCollisionDetection(gear);
 
         // then call update
-        for (spSprite& spr : _sprites)
+        for (spSprite& spr : _active_sprites)
         {
             if (gear.getActiveWorld().intersects(spr->getSizeRect()))
             {
@@ -89,7 +82,7 @@ namespace dang
 
         while (_iteration > 0)
         {
-            for (const spSprite &spr : _sprites)
+            for (const spSprite &spr : _active_sprites)
             {
                 const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>(spr);
 
@@ -99,10 +92,10 @@ namespace dang
                     continue;
                 }
 
-                if (!gear.getActiveWorld().intersects(me->getSizeRect()))
-                {
-                    continue;
-                }
+ //               if (!gear.getActiveWorld().intersects(me->getSizeRect()))
+ //               {
+ //                   continue;
+ //               }
 
                 // if collisions sprite type RIGID no active collision detection is processed or sprite is already handled
                 if (me->getCOType() == CollisionSpriteLayer::COT_RIGID || _handled.count(me) > 0)
@@ -113,7 +106,7 @@ namespace dang
 
                 // find possible collisions
                 std::forward_list<manifold> projected_mfs;
-                projectCollisions(me, _sprites, projected_mfs);
+                projectCollisions(me, _active_sprites, projected_mfs);
 
                 while (!projected_mfs.empty())
                 {
@@ -273,7 +266,7 @@ namespace dang
     }
 
 
-    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, const std::forward_list<spSprite>& sprites, std::forward_list<manifold>& mf_list)
+    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, const std::list<spSprite>& sprites, std::forward_list<manifold>& mf_list)
     {
         for (const spSprite& spr : sprites)
         {

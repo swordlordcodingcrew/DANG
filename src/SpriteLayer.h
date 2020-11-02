@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <forward_list>
+#include <list>
 
 #include "Layer.h"
 
@@ -26,7 +26,12 @@ namespace dang
     protected:
         explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};
 
-        std::forward_list<spSprite> _sprites;
+        virtual void coreUpdate(uint32_t time, uint32_t dt, const Gear& gear);
+        // sprites inside active area
+        std::list<spSprite> _active_sprites;
+
+        // inactive sprites
+        std::list<spSprite> _inactive_sprites;
 
     };
 

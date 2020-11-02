@@ -1,8 +1,5 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-//
-// Created by LordFilu on 02.03.20.
-//
 
 #include <iostream>
 #include "Gear.h"
@@ -20,17 +17,11 @@ namespace dang
 
     void SpriteLayer::update(uint32_t time, uint32_t dt, const Gear &gear)
     {
-        // call internal core update
-        for (spSprite& spr : _sprites)
-        {
-           if (gear.getActiveWorld().intersects(spr->getSizeRect()))
-           {
-               spr->coreUpdate(time, dt);
-           }
-        }
+        // core update and update active sprites
+        coreUpdate(time, dt, gear);
 
         // then call update
-        for (spSprite& spr : _sprites)
+        for (spSprite& spr : _active_sprites)
         {
             if (gear.getActiveWorld().intersects(spr->getSizeRect()))
             {
@@ -43,7 +34,7 @@ namespace dang
     {
         RectF vp = gear.getViewport();
 
-        for (std::shared_ptr<Sprite>& spr : _sprites)
+        for (std::shared_ptr<Sprite>& spr : _active_sprites)
         {
             if (spr->_visible && spr->_imagesheet != nullptr)
             {
@@ -62,7 +53,6 @@ namespace dang
             }
 
 #ifdef DANG_DEBUG_DRAW
-
             if(!spr->_visible)
             {
                 blit::screen.pen = blit::Pen(0, 255, 0, 255);
@@ -91,7 +81,6 @@ namespace dang
                 blit::screen.line(tr, tl); // top -> left
             }
 //            blit::screen.pen = blit::Pen(0, 0, 0, 255);
-
 #endif
 
         }
@@ -102,11 +91,7 @@ namespace dang
     {
         if (spr != nullptr)
         {
-            _sprites.push_front(spr);
-            _sprites.sort([] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
-                  {
-                      return first->_z_order < second->_z_order;
-                  });
+            _inactive_sprites.push_front(spr);
         }
     }
 
@@ -114,8 +99,58 @@ namespace dang
     {
         if (spr != nullptr)
         {
-            _sprites.remove(spr);
+            _active_sprites.remove(spr);
+            _inactive_sprites.remove(spr);
         }
+    }
+
+    void SpriteLayer::coreUpdate(uint32_t time, uint32_t dt, const Gear &gear)
+    {
+        std::list<spSprite> splice_list;
+
+        // find inactive sprites becoming active, call coreUpdate and put them into the splice_list
+        auto spr = _inactive_sprites.begin();
+        while (spr != _inactive_sprites.end())
+        {
+            if (gear.getActiveWorld().intersects((*spr)->getSizeRect()))
+            {
+                splice_list.push_front(*spr);
+                (*spr)->coreUpdate(time, dt);
+                spr = _inactive_sprites.erase(spr);
+            }
+            else
+            {
+                spr++;
+            }
+        }
+
+        // update active sprite or put them into the inactive sprite list
+        spr = _active_sprites.begin();
+        while (spr != _active_sprites.end())
+        {
+            if (gear.getActiveWorld().intersects((*spr)->getSizeRect()))
+            {
+                (*spr)->coreUpdate(time, dt);
+                spr++;
+            }
+            else
+            {
+                _inactive_sprites.push_front(*spr);
+                spr = _active_sprites.erase(spr);
+            }
+        }
+
+        if (!splice_list.empty())
+        {
+#ifdef DANG_DEBUG
+            std::cout << "merge active:" << splice_list.size() << std::endl;
+#endif
+            _active_sprites.merge(splice_list, [] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
+            {
+                return first->_z_order < second->_z_order;
+            });
+        }
+
     }
 
 }
