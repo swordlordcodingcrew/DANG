@@ -47,7 +47,7 @@ namespace dang
     struct tmx_spriteobject
     {
         uint16_t id; // global
-        //std::string name; // not needed, the reference contains the name
+        std::string name;
         std::string type;
         //std::string shape;
         int32_t x;

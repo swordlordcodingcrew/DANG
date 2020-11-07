@@ -153,32 +153,29 @@ function export32Blit(map, fileName) {
 
 //	    file.writeLine("	// number of objects: " + objects.length)
 
-            for (var j = 0; j < objects.length; ++j) {
+            for (var j = 0; j < objects.length; ++j)
+            {
                 o = objects[j]
-
-//		file.writeLine(j + ": " + o.type + "; " + o.tile)
-
+//		        file.writeLine(j + ": " + o.type + "; " + o.tile)
                 sName = o.name;
                 if(sName == ""){
                     sName = o.id
                 }
 
                 //file.writeLine("spriteobject so_" + sName + " = {" + o.id + ",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + "," + mTS.get(o.tile.tileset.name) + "," + o.tile.id + "};");
-		var tileset_ref = "0"
-		var tile_id = "0"
-		if (o.tile != null)
-		{
-			tileset_ref = mTS.get(o.tile.tileset.name)
-			tile_id = o.tile.id
-		}
-                buf += "        {" + o.id + ",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + "," + tileset_ref + "," + tile_id + "}";
+                var tileset_ref = "0"
+                var tile_id = "0"
+                if (o.tile != null)
+                {
+                    tileset_ref = mTS.get(o.tile.tileset.name)
+                    tile_id = o.tile.id
+                }
+                buf += "        {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + "," + tileset_ref + "," + tile_id + "}";
                 if(j < objects.length - 1){
                     //file.write(",");
                     buf += ",";
                 }
                 buf += "\n";
-
-
 
             }
             file.writeLine("    dang::tmx_spriteobject so" + layer.name + "[] = {" + buf + "    };");
