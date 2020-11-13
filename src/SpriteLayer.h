@@ -17,7 +17,7 @@ namespace dang
         SpriteLayer();
         ~SpriteLayer() override = default;
 
-        void    update(uint32_t time, uint32_t dt, const Gear& gear) override;
+        void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
         virtual void    addSprite(spSprite spr);
@@ -26,7 +26,7 @@ namespace dang
     protected:
         explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};
 
-        virtual void coreUpdate(uint32_t time, uint32_t dt, const Gear& gear);
+        virtual void coreUpdate(uint32_t dt, const Gear& gear);
         // sprites inside active area
         std::list<spSprite> _active_sprites;
 

@@ -90,7 +90,7 @@ namespace dang
         tw->clearObject();
     }
 
-    void Sprite::coreUpdate(uint32_t time, uint32_t dt)
+    void Sprite::coreUpdate(uint32_t dt)
     {
         _last_pos = _pos;
 //        _last_update_time = time;
@@ -103,7 +103,7 @@ namespace dang
         _pos += _vel * dt10ms;
     }
 
-    void Sprite::update(uint32_t time, uint32_t dt)
+    void Sprite::update(uint32_t dt)
     {
     }
 

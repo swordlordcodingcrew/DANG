@@ -1,6 +1,19 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
+/**
+ * The collision detection algorithm was inspired by largely following sources
+ * ===========================================================================
+ * - https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect/565282#565282
+ *   post of Gareth
+ * - https://gist.github.com/hamaluik/e69f96e253a190273bf0
+ *   AABB.hx of Kenton Hamaluik
+ * - https://github.com/kikito/bump.lua
+ *   bump.lua, copyright (c) 2014 Enrique García Cota
+ * - https://box2d.org/
+ *   (c) by Erin Catto
+*/
+
 #pragma once
 
 #include <forward_list>
@@ -65,7 +78,7 @@ namespace dang
 
         void    addCollisionSprite(spCollisionSprite cspr);
 
-        void    update(uint32_t time, uint32_t dt, const Gear& gear) override;
+        void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
     protected:

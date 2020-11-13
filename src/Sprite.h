@@ -36,8 +36,8 @@ namespace dang
         void removeAnimation(bool suppressCB = false);
 
         void updateTweens(uint32_t dt);
-        void coreUpdate(uint32_t time, uint32_t dt);
-        virtual void update(uint32_t time, uint32_t dt);
+        void coreUpdate(uint32_t dt);
+        virtual void update(uint32_t dt);
 
         // simple image
         void setImagesheet(std::shared_ptr<Imagesheet> is) { _imagesheet = is; }

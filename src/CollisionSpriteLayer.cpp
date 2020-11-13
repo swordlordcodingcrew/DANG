@@ -19,9 +19,9 @@ namespace dang
         SpriteLayer::addSprite(cspr);
     }
 
-    void CollisionSpriteLayer::update(uint32_t time, uint32_t dt, const Gear &gear)
+    void CollisionSpriteLayer::update(uint32_t dt, const Gear &gear)
     {
-        coreUpdate(time, dt, gear);
+        coreUpdate(dt, gear);
 
         // collision resolution
         handleCollisionDetection(gear);
@@ -31,7 +31,7 @@ namespace dang
         {
             if (gear.getActiveWorld().intersects(spr->getSizeRect()))
             {
-                spr->update(time, dt);
+                spr->update(dt);
             }
         }
 

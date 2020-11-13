@@ -29,7 +29,7 @@ namespace dang
         explicit Layer(E_TYPE type);
         virtual ~Layer() = default;
 
-        virtual void    update(uint32_t time, uint32_t dt, const Gear& gear) = 0;
+        virtual void    update(uint32_t dt, const Gear& gear) = 0;
         virtual void    render(const Gear& gear) = 0;
 
 

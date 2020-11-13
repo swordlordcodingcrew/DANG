@@ -66,7 +66,7 @@ namespace dang
 
     }
 
-    void TileLayer::update(uint32_t time, uint32_t dt, const Gear& gear)
+    void TileLayer::update(uint32_t dt, const Gear& gear)
     {
 
     }

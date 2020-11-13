@@ -15,17 +15,17 @@ namespace dang
 
     }
 
-    void SpriteLayer::update(uint32_t time, uint32_t dt, const Gear &gear)
+    void SpriteLayer::update(uint32_t dt, const Gear &gear)
     {
         // core update and update active sprites
-        coreUpdate(time, dt, gear);
+        coreUpdate(dt, gear);
 
         // then call update
         for (spSprite& spr : _active_sprites)
         {
             if (gear.getActiveWorld().intersects(spr->getSizeRect()))
             {
-                spr->update(time, dt);
+                spr->update(dt);
             }
         }
     }
@@ -104,7 +104,7 @@ namespace dang
         }
     }
 
-    void SpriteLayer::coreUpdate(uint32_t time, uint32_t dt, const Gear &gear)
+    void SpriteLayer::coreUpdate(uint32_t dt, const Gear &gear)
     {
         std::list<spSprite> splice_list;
 
@@ -115,7 +115,7 @@ namespace dang
             if (gear.getActiveWorld().intersects((*spr)->getSizeRect()))
             {
                 splice_list.push_front(*spr);
-                (*spr)->coreUpdate(time, dt);
+                (*spr)->coreUpdate(dt);
                 spr = _inactive_sprites.erase(spr);
             }
             else
@@ -130,7 +130,7 @@ namespace dang
         {
             if (gear.getActiveWorld().intersects((*spr)->getSizeRect()))
             {
-                (*spr)->coreUpdate(time, dt);
+                (*spr)->coreUpdate(dt);
                 spr++;
             }
             else
