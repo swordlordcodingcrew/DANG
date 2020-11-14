@@ -1,15 +1,15 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-//
-// Created by LordFilu on 24.12.19.
-//
-//#include <cstdint>
 
 #pragma once
 
 #include "dang.hpp"
 #include <cstdint>
+#include <memory>
+#include <functional>
 #include "Ease.h"
+//#include <cstdint>
+
 
 namespace dang
 {

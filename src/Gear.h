@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <forward_list>
 #include "RectT.h"
+#include <memory>
 
 namespace dang
 {
