@@ -7,7 +7,7 @@
 #include <list>
 #include <Vector2T.h>
 #include <RectT.h>
-#include "dang_globals.hpp"
+#include "dang.hpp"
 #include "CollisionSpriteLayer.h"
 
 namespace dang
@@ -22,6 +22,8 @@ namespace dang
         CollisionSprite();
         CollisionSprite(const tmx_spriteobject &so, std::shared_ptr<Imagesheet> is);
         ~CollisionSprite() override;
+
+        void        update(uint32_t dt) override;
 
         RectF       getHotrect() const { return _hotrect; };
         RectF       getHotrectAbs() const;

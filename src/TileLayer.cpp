@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <assert.h>
-#include "dang_globals.hpp"
+#include "dang.hpp"
 #include "TileLayer.h"
 #include "Gear.h"
 #include "Imagesheet.h"
@@ -66,7 +66,7 @@ namespace dang
 
     }
 
-    void TileLayer::update(uint32_t time, const Gear& gear)
+    void TileLayer::update(uint32_t dt, const Gear& gear)
     {
 
     }

@@ -15,7 +15,7 @@ namespace dang
 
     CollisionSprite::~CollisionSprite()
     {
-#ifdef __GEAR_DEBUG
+#ifdef DANG_DEBUG
         std::cout << "Collision sprite destroyed" << std::endl;
 #endif
     }
@@ -81,6 +81,11 @@ namespace dang
     CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(std::shared_ptr<dang::Sprite> other)
     {
         return _coll_response;
+    }
+
+    void CollisionSprite::update(uint32_t dt)
+    {
+
     }
 
 

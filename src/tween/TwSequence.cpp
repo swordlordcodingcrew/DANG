@@ -10,18 +10,18 @@ namespace dang
     {
     }
 
-    void TwSequence::update(uint32_t time)
+    void TwSequence::update(uint32_t dt)
     {
-        if (_tw_seq.empty() || _state == TW_FINISHED)
+        if (_tw_seq.empty() || _finished)
         {
             return;
         }
 
-        _tw_seq.at(_index)->update(time);
+        _tw_seq.at(_index)->update(dt);
 
-        if (_tw_seq.at(_index)->isTwFinished())
+        if (_tw_seq.at(_index)->isFinished())
         {
-            _tw_seq.at(_index)->resetTw();
+            _tw_seq.at(_index)->reset();
 
             _index++;
             if (_index == _tw_seq.size())       // the last tw has finished
@@ -30,22 +30,21 @@ namespace dang
                 if (_loops < 0 || _loop < _loops)   // endless loop of twseq or not yet finished looping
                 {
                     _index = 0;
-                    _start_time = time;
                 }
                 else    // twseq finished
                 {
-                    _state = TW_FINISHED;
+                    _finished = true;
                     if (_finishedCB != nullptr)
                     {
                         _finishedCB();
                     }
                 }
             }
-            else    // next tw in twseq
+/*            else    // next tw in twseq
             {
                 _tw_seq.at(_index)->startTw(time);
             }
-        }
+*/        }
     }
 
     void TwSequence::setObject(std::weak_ptr<void> obj)
@@ -64,52 +63,23 @@ namespace dang
         _tw_seq.push_back(tw);
     }
 
-    void TwSequence::startTw(uint32_t start_time)
-    {
-        if (_state == TW_READY && !_tw_seq.empty())
-        {
-            Tweenable::startTw(start_time);
-            _tw_seq.front()->startTw(start_time);
-        }
-    }
-
-    void TwSequence::pauseTw(uint32_t time)
-    {
-        Tweenable::pauseTw(time);
-        if (!_tw_seq.empty())
-        {
-            _tw_seq.front()->pauseTw(time);
-        }
-    }
-
-    void TwSequence::continueTw(uint32_t time)
-    {
-        Tweenable::continueTw(time);
-        if (!_tw_seq.empty())
-        {
-            _tw_seq.front()->continueTw(time);
-        }
-
-    }
-
-    void TwSequence::finishTw(bool suppressCB)
+    void TwSequence::finish(bool suppressCB)
     {
         for (const auto& it : _tw_seq)
         {
-            it->finishTw(suppressCB);
+            it->finish(suppressCB);
         }
-        Tweenable::finishTw(suppressCB);
+        Tweenable::finish(suppressCB);
         _tw_seq.clear();
     }
 
-    void TwSequence::resetTw()
+    void TwSequence::reset()
     {
-        Tweenable::resetTw();
-
+        Tweenable::reset();
     }
 
-    bool TwSequence::isTwFinished()
+    bool TwSequence::isFinished()
     {
-        return Tweenable::isTwFinished();
+        return Tweenable::isFinished();
     }
 }

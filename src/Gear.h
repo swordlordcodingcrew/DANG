@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "dang_globals.hpp"
+#include "dang.hpp"
 #include <unordered_map>
 #include <forward_list>
 #include "RectT.h"
@@ -27,22 +27,32 @@ namespace dang
 
         void    initLevel(const tmx_level& lvl, RectF& viewport);
 
-        void    update(uint32_t time);
+        void    update(uint32_t dt);
         void    render(uint32_t time);
 
         void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
         std::shared_ptr<Imagesheet> getImagesheet(const std::string& name) const;
         void                        removeImagesheet(const std::string& name);
+        void                        removeImagesheets();
 
         void                        addLayer(std::shared_ptr<Layer> layer);
-        void                        removeLayer(std::shared_ptr<Layer> layer);
         std::shared_ptr<Layer>      getLayerByName(const std::string& name);
+        void                        removeLayer(std::shared_ptr<Layer> layer);
+        void                        removeLayers();
 
-        RectF  getActiveWorld() const;
+        RectF       getActiveWorld() const;
+        Vector2F    getActiveWorldSize() const { return _active_world_size; };
+        void        setActiveWorldSize(Vector2F& aws) {_active_world_size = aws; };
+        void        setActiveWorldSize(float w, float h) {_active_world_size.w = w; _active_world_size.h = h; };
+
         RectF  getViewport() const { return _viewport; }
+        void   setViewport(const RectF& vp);
         void   setViewportPos(const Vector2F& pos);
+
         void   follow(const Vector2F& dest);
+
         RectF  getWorld() const { return _world;}
+        void   setWorld(const RectF& world) {_world = world; };
 
     protected:
         std::unordered_map<std::string, std::shared_ptr<Imagesheet>> _imagesheets;

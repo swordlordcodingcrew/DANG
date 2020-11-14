@@ -1,6 +1,19 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
+/**
+ * The collision detection algorithm was inspired by largely following sources
+ * ===========================================================================
+ * - https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect/565282#565282
+ *   post of Gareth
+ * - https://gist.github.com/hamaluik/e69f96e253a190273bf0
+ *   AABB.hx of Kenton Hamaluik
+ * - https://github.com/kikito/bump.lua
+ *   bump.lua, copyright (c) 2014 Enrique García Cota
+ * - https://box2d.org/
+ *   (c) by Erin Catto
+*/
+
 #pragma once
 
 #include <forward_list>
@@ -63,14 +76,16 @@ namespace dang
         CollisionSpriteLayer();
         ~CollisionSpriteLayer() override = default;
 
-        void    update(uint32_t time, const Gear& gear) override;
+        void    addCollisionSprite(spCollisionSprite cspr);
+
+        void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
     protected:
 
-        void handleCollisionDetection();
+        void handleCollisionDetection(const Gear& gear);
 
-        void projectCollisions(const spCollisionSprite& me, const std::forward_list<spSprite>& sprites, std::forward_list<manifold>& mf_list);
+        void projectCollisions(const spCollisionSprite& me, const std::list<spSprite>& sprites, std::forward_list<manifold>& mf_list);
         bool getRayIntersectionFraction(const Vector2F& origin, const Vector2F& direction, const RectF& aabb, float& ti, Vector2F& normal);
         float   getRayIntersectionFractionOfFirstRay(const Vector2F &originA, const Vector2F &endA, const Vector2F &originB, const Vector2F &endB);
         void    slide(manifold& mf, bool for_me);
@@ -81,6 +96,11 @@ namespace dang
         std::unordered_set<spSprite> _handled;
         uint16_t                    _iteration{3};       // number of collision solving cycles
         bool                        _iterate{false};    // internal use
+
+    private:
+        // may not be used in this layer type
+        void    addSprite(spSprite spr) override {};
+
     };
 
 }

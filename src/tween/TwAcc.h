@@ -17,11 +17,11 @@ namespace dang
         TwAcc();
         ~TwAcc() override;
         TwAcc(const Vector2F& start_acc, const Vector2F& end_acc, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
-        void        update(uint32_t time) override;
+        void        update(uint32_t dt) override;
 
     protected:
-        Vector2F  _start_acc{0, 0};
-        Vector2F   _end_acc{0, 0};
+        Vector2F    _start_acc{0, 0};
+        Vector2F    _end_acc{0, 0};
 
     };
 

@@ -10,7 +10,6 @@
 namespace dang
 {
     class Event;
-    class Subscriber;
 
     /**
      * simple pub-sub-class. Idea & most code is based on EventDispatcher in the oxyggine framework

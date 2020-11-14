@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "dang_globals.hpp"
+#include "dang.hpp"
 #include <list>
 #include <Vector2T.h>
 #include <RectT.h>
@@ -28,7 +28,6 @@ namespace dang
 
         // tween stuff
         void addTween(std::shared_ptr<Tweenable> tw);
-        void updateTweens(uint32_t time);
         void removeTween(std::shared_ptr<Tweenable> tw, bool suppressCB);
         bool tweenActive(const std::shared_ptr<Tweenable>& tw);
 
@@ -36,18 +35,26 @@ namespace dang
         void setAnimation(std::shared_ptr<Tweenable> twa);
         void removeAnimation(bool suppressCB = false);
 
-        void coreUpdate(uint32_t time);
-        virtual void update(uint32_t time);
+        void updateTweens(uint32_t dt);
+        void coreUpdate(uint32_t dt);
+        virtual void update(uint32_t dt);
 
-        // pos, vel, acc
+        // simple image
+        void setImagesheet(std::shared_ptr<Imagesheet> is) { _imagesheet = is; }
+        void setSize(SizeF& s) {_size = s; }
+        void setSize(float w, float h) {_size.w = w; _size.h = h; }
+
+        // pos, vel, acc, gravity
         Vector2F    getPos() { return _pos; }
         Vector2F    getLastPos() { return _last_pos; }
         Vector2F    getPosDelta() { return _pos - _last_pos; }
         Vector2F    getVel() { return _vel; }
         Vector2F    getAcc() { return _acc; }
+        Vector2F    getGravity() { return _gravity; }
         void        setPos(const Vector2F& pos) { _pos = pos; }
         void        setVel(const Vector2F& vel) { _vel = vel; }
         void        setAcc(const Vector2F& acc) { _acc = acc; }
+        void        setGravity(const Vector2F& g) {_gravity = g; };
 
         void        setPosX(float x) {_pos.x = x; }
         void        setPosY(float y) {_pos.y = y; }
@@ -85,9 +92,10 @@ namespace dang
         Vector2F     _pos{0,0};
         Vector2F     _vel{0,0};
         Vector2F     _acc{0,0};
+        Vector2F     _gravity{0,0};
 
-        Vector2F    _last_pos{0,0};     // could be used for collision detection
-        uint32_t    _last_update_time{0};
+        Vector2F    _last_pos{0,0};     // used e.g. for collision detection
+//        uint32_t    _last_update_time{0};
 
         // tween depot
         std::list<spTweenable> _tweens;

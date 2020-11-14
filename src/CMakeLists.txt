@@ -1,6 +1,5 @@
 list(APPEND SOURCES
-        dang_globals.hpp
-        dang_collision.hpp
+        dang.hpp
         tween/Tweenable.cpp
         tween/Tweenable.h
         tween/Ease.cpp

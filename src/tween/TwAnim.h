@@ -18,7 +18,7 @@ namespace dang
     public:
         TwAnim();
         TwAnim(const std::vector<uint16_t>& indices, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
-        void        update(uint32_t time);
+        void        update(uint32_t dt);
 
     protected:
         std::vector<uint16_t>   _indices{0};

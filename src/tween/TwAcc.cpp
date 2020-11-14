@@ -36,14 +36,14 @@ namespace dang
     /**
      * This function updates vel of the sprite which is stored in _the_object
      *
-     * @param time needed for updating the tween
+     * @param dt needed for updating the tween
      */
-    void TwAcc::update(uint32_t time)
+    void TwAcc::update(uint32_t dt)
     {
         spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
         if (!spr) return;
 
-        float fx = calc(time);
+        float fx = calc(dt);
         spr->setAcc(_start_acc + (_end_acc - _start_acc) * fx);
 
     }

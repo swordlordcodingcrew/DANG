@@ -15,14 +15,11 @@ namespace dang
         void    addTween(std::shared_ptr<Tweenable> tw);
         void    setObject(std::weak_ptr<void> obj) override;
 
-        void        update(uint32_t time) override;
+        void        update(uint32_t dt) override;
 
-        void        startTw(uint32_t start_time) override;
-        void        pauseTw(uint32_t time) override;
-        void        continueTw(uint32_t time) override;
-        void        finishTw(bool suppressCB = false) override;
-        void        resetTw() override;
-        bool        isTwFinished() override;
+        void        finish(bool suppressCB = false) override;
+        void        reset() override;
+        bool        isFinished() override;
 
 
     protected:

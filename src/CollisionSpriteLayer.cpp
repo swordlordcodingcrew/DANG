@@ -5,6 +5,7 @@
 #include "CollisionSpriteLayer.h"
 #include "Sprite.h"
 #include "CollisionSprite.h"
+#include "Gear.h"
 
 namespace dang
 {
@@ -13,22 +14,67 @@ namespace dang
 
     }
 
-    void CollisionSpriteLayer::update(uint32_t time, const Gear &gear)
+    void CollisionSpriteLayer::addCollisionSprite(spCollisionSprite cspr)
     {
-        // update the sprites
-        SpriteLayer::update(time, gear);
+        SpriteLayer::addSprite(cspr);
+    }
+
+    void CollisionSpriteLayer::update(uint32_t dt, const Gear &gear)
+    {
+        coreUpdate(dt, gear);
 
         // collision resolution
-        handleCollisionDetection();
+        handleCollisionDetection(gear);
+
+        // then call update
+        for (spSprite& spr : _active_sprites)
+        {
+            if (gear.getActiveWorld().intersects(spr->getSizeRect()))
+            {
+                spr->update(dt);
+            }
+        }
+
     }
 
     void CollisionSpriteLayer::render(const Gear &gear)
     {
         SpriteLayer::render(gear);
+
+#ifdef DANG_DEBUG_DRAW
+
+        RectF vp = gear.getViewport();
+
+        for (std::shared_ptr<Sprite>& spr : _sprites)
+        {
+            const spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            blit::screen.pen = blit::Pen(255, 0, 0, 255);
+
+            RectF dr = vp.intersection(cspr->getHotrectAbs());
+            //            RectF dr = vp.intersection(spr->getSizeRect());
+            if (dr.area() != 0)
+            {
+                dr.x -= vp.x;
+                dr.y -= vp.y;
+
+                blit::Point tl(int32_t(dr.tl().x), int32_t(dr.tl().y));
+                blit::Point bl(int32_t(dr.bl().x), int32_t(dr.bl().y));
+                blit::Point br(int32_t(dr.br().x), int32_t(dr.br().y));
+                blit::Point tr(int32_t(dr.tr().x), int32_t(dr.tr().y));
+
+                blit::screen.line(tl, bl); // left -> bottom
+                blit::screen.line(bl, br); // bottom -> right
+                blit::screen.line(br, tr); // right -> top
+                blit::screen.line(tr, tl); // top -> left
+            }
+            //            blit::screen.pen = blit::Pen(0, 0, 0, 255);
+        }
+#endif
+
     }
 
     // called on every move of every sprite
-    void CollisionSpriteLayer::handleCollisionDetection()
+    void CollisionSpriteLayer::handleCollisionDetection(const Gear& gear)
     {
         _handled.clear();
         _iteration = 3;
@@ -36,29 +82,37 @@ namespace dang
 
         while (_iteration > 0)
         {
-            for (const spSprite &spr : _sprites)
+            for (const spSprite &spr : _active_sprites)
             {
                 const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>(spr);
 
+                // pointer anomaly, should not happen (but who knows..)
                 if (me == nullptr)
                 {
                     continue;
                 }
 
+ //               if (!gear.getActiveWorld().intersects(me->getSizeRect()))
+ //               {
+ //                   continue;
+ //               }
+
+                // if collisions sprite type RIGID no active collision detection is processed or sprite is already handled
                 if (me->getCOType() == CollisionSpriteLayer::COT_RIGID || _handled.count(me) > 0)
                 {
                     continue;
                 }
 
+
                 // find possible collisions
                 std::forward_list<manifold> projected_mfs;
-                projectCollisions(me, _sprites, projected_mfs);
+                projectCollisions(me, _active_sprites, projected_mfs);
 
                 while (!projected_mfs.empty())
                 {
                     manifold mf = projected_mfs.front();
 
-#ifdef __GEAR_DEBUG
+#ifdef DANG_DEBUG
                     if (mf.overlaps)
                     {
                         std::cout << "overlap" << std::endl;
@@ -212,7 +266,7 @@ namespace dang
     }
 
 
-    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, const std::forward_list<spSprite>& sprites, std::forward_list<manifold>& mf_list)
+    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, const std::list<spSprite>& sprites, std::forward_list<manifold>& mf_list)
     {
         for (const spSprite& spr : sprites)
         {
@@ -463,5 +517,6 @@ namespace dang
         return std::numeric_limits<float>::infinity();
 
     }
+
 
 }

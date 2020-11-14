@@ -11,8 +11,8 @@
 
 #pragma once
 
-#define __GEAR
-//#define __GEAR_DEBUG
+//#define DANG_DEBUG
+//#define DANG_DEBUG_DRAW
 
 #include "../../../../../32blit/32blit.hpp"
 

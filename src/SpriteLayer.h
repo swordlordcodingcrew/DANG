@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <list>
+
 #include "Layer.h"
 
 namespace dang
@@ -15,7 +17,7 @@ namespace dang
         SpriteLayer();
         ~SpriteLayer() override = default;
 
-        void    update(uint32_t time, const Gear& gear) override;
+        void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
         virtual void    addSprite(spSprite spr);
@@ -24,7 +26,12 @@ namespace dang
     protected:
         explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};
 
-        std::forward_list<spSprite> _sprites;
+        virtual void coreUpdate(uint32_t dt, const Gear& gear);
+        // sprites inside active area
+        std::list<spSprite> _active_sprites;
+
+        // inactive sprites
+        std::list<spSprite> _inactive_sprites;
 
     };
 
