@@ -2,14 +2,15 @@ name: "CodeQL"
 
 on:
   push:
-    branches-ignore:
-    - '**' # always off
-    #    branches: [master, ]
-#  pull_request:
+#    branches-ignore:
+#    - '**' # always off
+
+    branches: [master, ]
+  pull_request:
     # The branches below must be a subset of the branches above
-#    branches: [master]
-#  schedule:
-#    - cron: '0 21 * * 6'
+    branches: [master]
+  schedule:
+    - cron: '0 21 * * 6'
 
 jobs:
   analyse:
