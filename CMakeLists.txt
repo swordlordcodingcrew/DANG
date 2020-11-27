@@ -46,4 +46,4 @@ set(SOURCES
 add_library(DANG STATIC ${SOURCES} )
 
 #target_include_directories(DANG PUBLIC src)
-target_include_directories (Hello PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories (DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
