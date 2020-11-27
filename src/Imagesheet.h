@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../../../../../32blit/32blit.hpp"
+#include "dang.hpp"
 
 namespace dang
 {
