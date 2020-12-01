@@ -41,14 +41,17 @@ namespace dang
                 RectF dr = vp.intersection(spr->getSizeRect());
                 if (dr.area() != 0)
                 {
-                    if (blit::screen.sprites != spr->_imagesheet.get())
+                    gear.set_spritesheet_cb(spr->_imagesheet);
+/*                    if (blit::screen.sprites != spr->_imagesheet.get())
                     {
                         blit::screen.sprites = spr->_imagesheet.get();
                     }
-
-                    blit::Rect sr = spr->_imagesheet->getRect(spr->_img_index);
-                    Vector2F dp = spr->getPos() - vp.tl();
-                    blit::screen.blit_sprite(sr, blit::Point(int32_t(std::floor(dp.x)), int32_t(std::floor(dp.y))), spr->_transform);
+*/
+                    RectU sr = spr->_imagesheet->getRect(spr->_img_index);
+                    Vector2F vec = spr->getPos() - vp.tl();
+                    Vector2I dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
+                    gear.blit_sprite_cb(sr, dp, spr->_transform);
+//                    blit::screen.blit_sprite(sr, blit::Point(int32_t(std::floor(dp.x)), int32_t(std::floor(dp.y))), spr->_transform);
                 }
             }
 

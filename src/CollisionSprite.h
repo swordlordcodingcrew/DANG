@@ -4,11 +4,12 @@
 #pragma once
 
 #include "Sprite.h"
-#include <list>
-#include <Vector2T.h>
-#include <RectT.h>
-#include "dang.hpp"
+#include "Vector2T.h"
+#include "RectT.h"
 #include "CollisionSpriteLayer.h"
+#include "dang.hpp"
+
+#include <list>
 
 namespace dang
 {

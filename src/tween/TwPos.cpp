@@ -1,10 +1,11 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include <iostream>
-#include <Sprite.h>
 #include "TwPos.h"
+#include "../Sprite.h"
 #include "../dang.hpp"
+
+#include <iostream>
 
 namespace dang
 {

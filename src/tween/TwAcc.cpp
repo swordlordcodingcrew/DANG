@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "Sprite.h"
+#include "../Sprite.h"
 #include "TwAcc.h"
 
 namespace dang

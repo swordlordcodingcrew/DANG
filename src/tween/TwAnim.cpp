@@ -5,7 +5,7 @@
 //
 
 #include <iostream>
-#include <Sprite.h>
+#include "../Sprite.h"
 #include "TwAnim.h"
 #include "../dang.hpp"
 

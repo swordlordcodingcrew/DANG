@@ -37,11 +37,8 @@ namespace dang
     {
         uint16_t id;
         uint16_t tileset;
-
-        // actually values from the cell...
-        uint8_t isFlippedHorizontally : 1;
-        uint8_t isFlippedVertically : 1;
-        uint8_t isFlippedAntiDiagonally : 1;
+        // 32blit transform code
+        uint8_t transform;
     };
 
     struct tmx_spriteobject

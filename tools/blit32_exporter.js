@@ -103,6 +103,14 @@ function export32Blit(map, fileName) {
 
             var buf = "\n";
             //file.writeLine("tile t_" + layer.name + "[" + layer.height + "][" + layer.width + "] = {");
+// flip possibilities in 32blit
+//       NONE = 0b000,          0
+//       HORIZONTAL = 0b001,    1
+//       VERTICAL = 0b010,      2
+//       XYSWAP = 0b100,        4
+//       R90 = 0b101,           5
+//       R180 = 0b011,          3
+//       R270 = 0b110           6
 
             for (y = 0; y < layer.height; ++y) {
 
@@ -111,12 +119,23 @@ function export32Blit(map, fileName) {
                     tile = layer.tileAt(x, y);
                     cell = layer.cellAt(x, y);
 
+                    var transform = 0;
+                    if (cell.flippedHorizontally) {
+                        transform = 1;
+                    }
+                    else if (cell.flippedVertically) {
+                        tranform = 2;
+                    }
+                    else if (cell.flippedAntiDiagonally) {
+                        transform = 4;
+                    }
                     buf += "        {";
                     buf += tile.id + ",";
                     buf += mTS.get(tile.tileset.name) + ",";
-                    buf += (cell.flippedHorizontally | 0) + ",";
-                    buf += (cell.flippedVertically | 0) + ",";
-                    buf += (cell.flippedAntiDiagonally | 0);
+                    buf += transform;
+//                    buf += (cell.flippedHorizontally | 0) + ",";
+//                    buf += (cell.flippedVertically | 0) + ",";
+//                    buf += (cell.flippedAntiDiagonally | 0);
                     buf += "}";
 
                     if(x < layer.width - 1)

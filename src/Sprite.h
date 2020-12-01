@@ -4,9 +4,10 @@
 #pragma once
 
 #include "dang.hpp"
+#include "Vector2T.h"
+#include "RectT.h"
+
 #include <list>
-#include <Vector2T.h>
-#include <RectT.h>
 #include <memory>
 
 namespace dang

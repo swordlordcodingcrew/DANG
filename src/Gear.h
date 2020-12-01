@@ -20,6 +20,8 @@ namespace dang
     class Layer;
     class Imagesheet;
 
+    using spImagesheet = std::shared_ptr<Imagesheet>;
+
     class Gear
     {
     public:
@@ -55,7 +57,17 @@ namespace dang
         RectF  getWorld() const { return _world;}
         void   setWorld(const RectF& world) {_world = world; };
 
+        // function pointers
+        static void empty_blit_sprite_cb(RectU sr, Vector2I p, uint8_t t) {};
+        static void empty_set_spritesheet_cb(spImagesheet is) {};
+        void (*blit_sprite_cb)(RectU, Vector2I, uint8_t) = empty_blit_sprite_cb;
+        void (*set_spritesheet_cb)(spImagesheet is) = empty_set_spritesheet_cb;
+#ifdef DANG_DEBUG_DRAW
+        static void empty_blit_sprite_debug_draw_cb(RectF sr, Vector2F p, uint8_t t);
+        void (*blit_sprite_debug_draw_cb)(RectF, Vector2F, uint8_t) = empty_blit_sprite_debug_draw_cb;
+#endif
     protected:
+
         std::unordered_map<std::string, std::shared_ptr<Imagesheet>> _imagesheets;
         std::forward_list<std::shared_ptr<Layer>> _layers;
 
