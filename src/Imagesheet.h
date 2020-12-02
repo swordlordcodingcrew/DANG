@@ -27,6 +27,10 @@ namespace dang
 
         const uint8_t* getData() { return _data; }
 
+        SizeU getImagesheetSize() { return _imgsheet_size; }
+        uint32_t getImagesheetSizeW() const { return _imgsheet_size.w; }
+        uint32_t getImagesheetSizeH() const { return _imgsheet_size.h; }
+
     protected:
         std::string _name{};
         const uint8_t*    _data{nullptr};
