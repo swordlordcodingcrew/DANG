@@ -25,6 +25,8 @@ namespace dang
         bool getRect(RectU &r, uint16_t index = 0);
         RectU getRect(const uint16_t index);
 
+        const uint8_t* getData() { return _data; }
+
     protected:
         std::string _name{};
         const uint8_t*    _data{nullptr};
