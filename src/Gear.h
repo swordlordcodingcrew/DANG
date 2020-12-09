@@ -33,7 +33,8 @@ namespace dang
         void    update(uint32_t dt);
         void    render(uint32_t time);
 
-        void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
+//        void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
+        void                        addImagesheet(std::shared_ptr<Imagesheet> is);
         std::shared_ptr<Imagesheet> getImagesheet(const std::string& name) const;
         void                        removeImagesheet(const std::string& name);
         void                        removeImagesheets();

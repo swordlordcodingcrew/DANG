@@ -31,8 +31,10 @@ namespace dang
         uint32_t getImagesheetSizeW() const { return _imgsheet_size.w; }
         uint32_t getImagesheetSizeH() const { return _imgsheet_size.h; }
 
+        const std::string&  getName() { return _name; }
+
     protected:
-        std::string _name{};
+        const std::string _name{};
         const uint8_t*    _data{nullptr};
         uint16_t    _cols{1};
         uint16_t    _rows{1};

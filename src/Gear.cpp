@@ -54,9 +54,16 @@ namespace dang
         }
     }
 
-    void Gear::addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is)
+/*    void Gear::addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is)
     {
+        assert(!is->getName().empty());
         _imagesheets[key] = is;
+    }
+*/
+    void Gear::addImagesheet(std::shared_ptr<Imagesheet> is)
+    {
+        assert(!is->getName().empty());
+        _imagesheets[is->getName()] = is;
     }
 
 
@@ -172,6 +179,7 @@ namespace dang
         setViewportPos(pos);
 
     }
+
 
 
 }
