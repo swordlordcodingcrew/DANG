@@ -30,6 +30,7 @@ namespace dang
         // tween stuff
         void addTween(std::shared_ptr<Tweenable> tw);
         void removeTween(std::shared_ptr<Tweenable> tw, bool suppressCB);
+        void removeTweens(bool suppressCB);
         bool tweenActive(const std::shared_ptr<Tweenable>& tw);
 
         // animation stuff (special tween)
