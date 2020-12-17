@@ -156,4 +156,43 @@ namespace dang
 
     }
 
+    spSprite SpriteLayer::getSpriteById(uint16_t id)
+    {
+
+        auto ret = std::find_if(_active_sprites.begin(), _active_sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
+            {
+                return first->_id == id;
+            });
+
+        if (ret != _active_sprites.end())
+        {
+            return (*ret);
+        }
+
+        ret = std::find_if(_inactive_sprites.begin(), _inactive_sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
+            {
+                return first->_id == id;
+            });
+
+        if (ret != _active_sprites.end())
+        {
+            return (*ret);
+        }
+
+        return nullptr;
+    }
+
+    void SpriteLayer::removeSpriteById(uint16_t id)
+    {
+        _active_sprites.remove_if([&] (const std::shared_ptr<Sprite> &spr)
+            {
+              return spr->_id == id;
+            });
+
+        _inactive_sprites.remove_if([&] (const std::shared_ptr<Sprite> &spr)
+            {
+                return spr->_id == id;
+            });
+    }
+
 }
