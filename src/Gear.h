@@ -61,12 +61,11 @@ namespace dang
         // function pointers
         static void empty_blit_sprite_cb(RectU sr, Vector2I p, uint8_t t) {};
         static void empty_set_spritesheet_cb(spImagesheet is) {};
+        static void empty_line_cb(Vector2I sp, Vector2I dp, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {};
         void (*blit_sprite_cb)(RectU, Vector2I, uint8_t) = empty_blit_sprite_cb;
         void (*set_spritesheet_cb)(spImagesheet is) = empty_set_spritesheet_cb;
-#ifdef DANG_DEBUG_DRAW
-        static void empty_blit_sprite_debug_draw_cb(RectF sr, Vector2F p, uint8_t t);
-        void (*blit_sprite_debug_draw_cb)(RectF, Vector2F, uint8_t) = empty_blit_sprite_debug_draw_cb;
-#endif
+        void (*line_cb)(Vector2I, Vector2I, uint8_t, uint8_t, uint8_t, uint8_t) = empty_line_cb;
+
     protected:
 
         std::unordered_map<std::string, std::shared_ptr<Imagesheet>> _imagesheets;

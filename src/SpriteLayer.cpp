@@ -42,50 +42,12 @@ namespace dang
                 if (dr.area() != 0)
                 {
                     gear.set_spritesheet_cb(spr->_imagesheet);
-/*                    if (blit::screen.sprites != spr->_imagesheet.get())
-                    {
-                        blit::screen.sprites = spr->_imagesheet.get();
-                    }
-*/
                     RectU sr = spr->_imagesheet->getRect(spr->_img_index);
                     Vector2F vec = spr->getPos() - vp.tl();
                     Vector2I dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
                     gear.blit_sprite_cb(sr, dp, spr->_transform);
-//                    blit::screen.blit_sprite(sr, blit::Point(int32_t(std::floor(dp.x)), int32_t(std::floor(dp.y))), spr->_transform);
                 }
             }
-
-#ifdef DANG_DEBUG_DRAW
-            if(!spr->_visible)
-            {
-                blit::screen.pen = blit::Pen(0, 255, 0, 255);
-
-            }
-            else
-            {
-                blit::screen.pen = blit::Pen(0, 0, 255, 255);
-            }
-
-            RectF dr = vp.intersection(spr->getSizeRect());
-//            RectF dr = vp.intersection(spr->getSizeRect());
-            if (dr.area() != 0)
-            {
-                dr.x -= vp.x;
-                dr.y -= vp.y;
-
-                blit::Point tl(int32_t(dr.tl().x), int32_t(dr.tl().y));
-                blit::Point bl(int32_t(dr.bl().x), int32_t(dr.bl().y));
-                blit::Point br(int32_t(dr.br().x), int32_t(dr.br().y));
-                blit::Point tr(int32_t(dr.tr().x), int32_t(dr.tr().y));
-
-                blit::screen.line(tl, bl); // left -> bottom
-                blit::screen.line(bl, br); // bottom -> right
-                blit::screen.line(br, tr); // right -> top
-                blit::screen.line(tr, tl); // top -> left
-            }
-//            blit::screen.pen = blit::Pen(0, 0, 0, 255);
-#endif
-
         }
     }
 
