@@ -84,7 +84,7 @@ namespace dang
      */
     EaseOutQuad* EaseOutQuad::clone() const
     {
-        return nullptr;
+        return new EaseOutQuad(*this);
     }
 
     /**
@@ -149,6 +149,8 @@ namespace dang
     {
         return new EaseStep(*this);
     }
+
+
 }
 
 /*
