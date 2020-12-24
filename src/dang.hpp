@@ -12,6 +12,6 @@
 #pragma once
 
 //#define DANG_DEBUG
-#define DANG_DEBUG_DRAW
+//#define DANG_DEBUG_DRAW
 
 
