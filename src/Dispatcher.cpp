@@ -39,21 +39,21 @@ namespace dang
 
     uint32_t Dispatcher::getIndex(const std::function<void(Event &)>& fn)
     {
-        try
-        {
+//        try
+//        {
             auto it = std::find_if(_subscribers.begin(), _subscribers.end(), [=](const std::pair<uint32_t, _subscriber_wrapper>& val)
             {
                 auto ptr1 = val.second.fn.target<void(Event&)>();
                 auto ptr2 = fn.target<void(Event&)>();
                 return ( ptr1 == ptr2);
             });
-        }
+/*        }
         catch (std::out_of_range &oor)
         {
             // do nothing
         }
         return 0;
-    }
+*/    }
 
     void Dispatcher::removeSubscriber(const std::function<void(Event &)> &fn)
     {
@@ -70,7 +70,7 @@ namespace dang
     {
         for (const auto& e : _event_list)
         {
-            for (std::pair<const unsigned int, _subscriber_wrapper>& pair : _subscribers)
+            for (std::pair<const uint32_t , _subscriber_wrapper>& pair : _subscribers)
             {
                 if ((pair.second.filt & e->_filter) > 0)
                 {
