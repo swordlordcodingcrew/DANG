@@ -2,12 +2,12 @@
 // This file is part of the DANG game framework
 
 
-#include "TmxExtruder.h"
-#include "Imagesheet.h"
-#include "CollisionSpriteLayer.h"
-#include "SpriteLayer.h"
-#include "TileLayer.h"
-#include "Gear.h"
+#include "TmxExtruder.hpp"
+#include "Imagesheet.hpp"
+#include "CollisionSpriteLayer.hpp"
+#include "SpriteLayer.hpp"
+#include "TileLayer.hpp"
+#include "Gear.hpp"
 
 namespace dang
 {

@@ -6,7 +6,7 @@
 
 #include <vector>
 #include <cstdint>
-#include "Ease.h"
+#include "Ease.hpp"
 
 namespace dang
 {

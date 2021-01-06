@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-#include "../Sprite.h"
-#include "TwVel.h"
+#include "../Sprite.hpp"
+#include "TwVel.hpp"
 
 namespace dang
 {

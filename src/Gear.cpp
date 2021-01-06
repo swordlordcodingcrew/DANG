@@ -3,14 +3,14 @@
 
 #include <cassert>
 #include <algorithm>
-#include "Gear.h"
-#include "Layer.h"
-#include "Sprite.h"
-#include "Imagesheet.h"
-#include "TmxExtruder.h"
-#include "SpriteLayer.h"
-#include "TileLayer.h"
-#include "CollisionSpriteLayer.h"
+#include "Gear.hpp"
+#include "Layer.hpp"
+#include "Sprite.hpp"
+#include "Imagesheet.hpp"
+#include "TmxExtruder.hpp"
+#include "SpriteLayer.hpp"
+#include "TileLayer.hpp"
+#include "CollisionSpriteLayer.hpp"
 
 namespace dang
 {

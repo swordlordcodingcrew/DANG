@@ -2,11 +2,11 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
-#include "Gear.h"
-#include "SpriteLayer.h"
-#include "Sprite.h"
-#include "Layer.h"
-#include "Imagesheet.h"
+#include "Gear.hpp"
+#include "SpriteLayer.hpp"
+#include "Sprite.hpp"
+#include "Layer.hpp"
+#include "Imagesheet.hpp"
 
 namespace dang
 {

@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include "Sprite.h"
-#include "Vector2T.h"
-#include "RectT.h"
-#include "CollisionSpriteLayer.h"
+#include "Sprite.hpp"
+#include "Vector2T.hpp"
+#include "RectT.hpp"
+#include "CollisionSpriteLayer.hpp"
 #include "dang.hpp"
 
 #include <list>

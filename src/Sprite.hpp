@@ -4,8 +4,8 @@
 #pragma once
 
 #include "dang.hpp"
-#include "Vector2T.h"
-#include "RectT.h"
+#include "Vector2T.hpp"
+#include "RectT.hpp"
 
 #include <list>
 #include <memory>

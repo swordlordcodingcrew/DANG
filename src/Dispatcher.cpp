@@ -2,8 +2,8 @@
 // This file is part of the DANG game framework
 
 #include <algorithm>
-#include "Dispatcher.h"
-#include "Event.h"
+#include "Dispatcher.hpp"
+#include "Event.hpp"
 
 namespace dang
 {

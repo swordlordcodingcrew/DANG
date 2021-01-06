@@ -5,10 +5,10 @@
 #include <iostream>
 #include <assert.h>
 #include "dang.hpp"
-#include "TileLayer.h"
-#include "Gear.h"
-#include "Imagesheet.h"
-#include "TmxExtruder.h"
+#include "TileLayer.hpp"
+#include "Gear.hpp"
+#include "Imagesheet.hpp"
+#include "TmxExtruder.hpp"
 
 namespace dang
 {

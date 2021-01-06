@@ -8,43 +8,43 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(SOURCES
         src/dang.hpp
         src/tween/Tweenable.cpp
-        src/tween/Tweenable.h
+        src/tween/Tweenable.hpp
         src/tween/Ease.cpp
-        src/tween/Ease.h
+        src/tween/Ease.hpp
         src/tween/TwAnim.cpp
-        src/tween/TwAnim.h
+        src/tween/TwAnim.hpp
         src/tween/TwPos.cpp
-        src/tween/TwPos.h
+        src/tween/TwPos.hpp
         src/tween/TwVel.cpp
-        src/tween/TwVel.h
+        src/tween/TwVel.hpp
         src/tween/TwAcc.cpp
-        src/tween/TwAcc.h
+        src/tween/TwAcc.hpp
         src/tween/TwSequence.cpp
-        src/tween/TwSequence.h
+        src/tween/TwSequence.hpp
         src/Imagesheet.cpp
-        src/Imagesheet.h
+        src/Imagesheet.hpp
         src/Sprite.cpp
-        src/Sprite.h
+        src/Sprite.hpp
         src/Gear.cpp
-        src/Gear.h
+        src/Gear.hpp
         src/Layer.cpp
-        src/Layer.h
+        src/Layer.hpp
         src/TileLayer.cpp
-        src/TileLayer.h
+        src/TileLayer.hpp
         src/SpriteLayer.cpp
-        src/SpriteLayer.h
+        src/SpriteLayer.hpp
         src/CollisionSpriteLayer.cpp
-        src/CollisionSpriteLayer.h
-        src/Vector2T.h
-        src/RectT.h
+        src/CollisionSpriteLayer.hpp
+        src/Vector2T.hpp
+        src/RectT.hpp
         src/CollisionSprite.cpp
-        src/CollisionSprite.h
+        src/CollisionSprite.hpp
         src/TmxExtruder.cpp
-        src/TmxExtruder.h
+        src/TmxExtruder.hpp
         src/Event.cpp
-        src/Event.h
+        src/Event.hpp
         src/Dispatcher.cpp
-        src/Dispatcher.h
+        src/Dispatcher.hpp
 )
 
 add_library(DANG STATIC ${SOURCES} )

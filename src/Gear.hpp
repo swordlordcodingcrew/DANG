@@ -6,7 +6,7 @@
 #include "dang.hpp"
 #include <unordered_map>
 #include <forward_list>
-#include "RectT.h"
+#include "RectT.hpp"
 #include <memory>
 
 namespace dang

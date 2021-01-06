@@ -4,8 +4,8 @@
 // Created by LordFilu on 20.2.20.
 //
 
-#include "Layer.h"
-#include "Sprite.h"
+#include "Layer.hpp"
+#include "Sprite.hpp"
 
 namespace dang
 {

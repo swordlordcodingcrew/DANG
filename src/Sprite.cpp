@@ -2,11 +2,11 @@
 // This file is part of the DANG game framework
 
 #include <algorithm>
-#include "Sprite.h"
-#include "TmxExtruder.h"
-#include "tween/Tweenable.h"
-#include "tween/TwAnim.h"
-#include "CollisionSpriteLayer.h"
+#include "Sprite.hpp"
+#include "TmxExtruder.hpp"
+#include "tween/Tweenable.hpp"
+#include "tween/TwAnim.hpp"
+#include "CollisionSpriteLayer.hpp"
 
 namespace dang
 {

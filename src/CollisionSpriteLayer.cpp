@@ -2,10 +2,10 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
-#include "CollisionSpriteLayer.h"
-#include "Sprite.h"
-#include "CollisionSprite.h"
-#include "Gear.h"
+#include "CollisionSpriteLayer.hpp"
+#include "Sprite.hpp"
+#include "CollisionSprite.hpp"
+#include "Gear.hpp"
 
 namespace dang
 {
