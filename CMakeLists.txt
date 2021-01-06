@@ -49,5 +49,12 @@ set(SOURCES
 
 add_library(DANG STATIC ${SOURCES} )
 
+# make sure to link the 32blit supplied stdlibs when compiling for the 32blit HW
+# variable pic_stdlibs is set by the 32blit cmake configuration
+if(${CMAKE_SYSTEM_NAME} STREQUAL Generic)
+    target_link_libraries(DANG ${PIC_STDLIBS})
+    set_target_properties(DANG PROPERTIES COMPILE_FLAGS "-fPIC -mno-pic-data-is-text-relative -mno-single-pic-base")
+endif()
+
 #target_include_directories(DANG PUBLIC src)
 target_include_directories (DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
