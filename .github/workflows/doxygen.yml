@@ -1,0 +1,23 @@
+name: Doxygen Action
+on: [push]
+
+jobs:
+  doxygen:
+    runs-on: ${{ matrix. os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Doxygen Build
+      run: |
+	doxygen
+
+    - name: Doxygen Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      if: ${{ github.ref == 'master' }}
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/html
