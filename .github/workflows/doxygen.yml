@@ -9,10 +9,11 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Get Sources
+      uses: actions/checkout@v2
 
-    - name: Doxygen Build
-      run: doxygen
+    - name: Run Doxygen
+      uses: mattnotmitt/doxygen-action@v1
 
     - name: Doxygen Deploy
       uses: peaceiris/actions-gh-pages@v3
