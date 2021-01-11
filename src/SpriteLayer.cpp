@@ -41,7 +41,7 @@ namespace dang
                 RectF dr = vp.intersection(spr->getSizeRect());
                 if (dr.area() != 0)
                 {
-                    gear.set_spritesheet_cb(spr->_imagesheet);
+                    gear.set_surface_cb(spr->_imagesheet);
                     RectU sr = spr->_imagesheet->getRect(spr->_img_index);
                     Vector2F vec = spr->getPos() - vp.tl();
                     Vector2I dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};

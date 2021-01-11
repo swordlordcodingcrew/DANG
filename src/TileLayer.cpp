@@ -78,7 +78,7 @@ namespace dang
             return;
         }
 
-        gear.set_spritesheet_cb(_imagesheet);
+        gear.set_surface_cb(_imagesheet);
 /*        if (blit::screen.sprites != _imagesheet.get())
         {
             blit::screen.sprites = _imagesheet.get();

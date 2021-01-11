@@ -60,10 +60,10 @@ namespace dang
 
         // function pointers
         static void empty_blit_sprite_cb(RectU sr, Vector2I p, uint8_t t) {};
-        static void empty_set_spritesheet_cb(spImagesheet is) {};
+        static void empty_set_surface_cb(spImagesheet is) {};
         static void empty_line_cb(Vector2I sp, Vector2I dp, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {};
         void (*blit_sprite_cb)(RectU, Vector2I, uint8_t) = empty_blit_sprite_cb;
-        void (*set_spritesheet_cb)(spImagesheet is) = empty_set_spritesheet_cb;
+        void (*set_surface_cb)(spImagesheet is) = empty_set_surface_cb;
         void (*line_cb)(Vector2I, Vector2I, uint8_t, uint8_t, uint8_t, uint8_t) = empty_line_cb;
 
     protected:
