@@ -114,6 +114,8 @@ function export32Blit(map, fileName) {
 
             for (y = 0; y < layer.height; ++y) {
 
+                buf += ("       ");
+
                 for (x = 0; x < layer.width; ++x) {
 
                     tile = layer.tileAt(x, y);
@@ -129,7 +131,7 @@ function export32Blit(map, fileName) {
                     else if (cell.flippedAntiDiagonally) {
                         transform = 4;
                     }
-                    buf += "        {";
+                    buf += " {";
                     buf += tile.id + ",";
                     buf += mTS.get(tile.tileset.name) + ",";
                     buf += transform;
@@ -141,7 +143,7 @@ function export32Blit(map, fileName) {
                     if(x < layer.width - 1)
                     {
                         buf += ",";
-                        buf += ("\n");
+//                        buf += ("\n");
                     }
                 }
                 if(y < layer.height - 1){
