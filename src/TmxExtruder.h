@@ -1,4 +1,4 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-2021 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
 #pragma once
@@ -23,7 +23,6 @@ namespace dang
         uint16_t cols;
         uint16_t rows;
 
-
         /*
         TODO: to be considered
         backgroundColor : color 	Background color for this tmx_tileset in the Tilesets view.
@@ -37,11 +36,22 @@ namespace dang
     {
         uint16_t id;
         uint16_t tileset;
+        // 32blit transform code
+        uint8_t transform;
+    };
 
-        // actually values from the cell...
-        uint8_t isFlippedHorizontally : 1;
-        uint8_t isFlippedVertically : 1;
-        uint8_t isFlippedAntiDiagonally : 1;
+    struct tmx_tileanimation
+    {
+        std::string tileset; // reference to the tileset id
+        uint16_t tile; // reference to the tile
+        std::string name; // name of the animation to be referenced in the source
+        std::vector<tmx_frame> frames;
+    };
+
+    struct tmx_frame
+    {
+        uint16_t tileId; // relative to the tileset
+        uint16_t duration;
     };
 
     struct tmx_spriteobject
@@ -143,6 +153,7 @@ namespace dang
          */
         std::unordered_map<std::string, const uint8_t*> images;
         std::unordered_map<uint8_t, tmx_tileset> tilesets;
+        std::unordered_map<uint8_t, tmx_tileanimation> tileanimation;
 
         std::vector<std::shared_ptr<tmx_layer>> layers;
 
