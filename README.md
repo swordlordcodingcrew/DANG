@@ -44,4 +44,4 @@ Bear with us while DANG! slowly grows and we start to document and release every
     - support for automated viewport handling.
 
 ## Licence
-SwordLord DANG! and all its tools are released under the AGPLv3 Licence. Drop us a note if you need another licence.
+SwordLord DANG! and all its tools are released under the AGPLv3 License. See LICENSE file for details. Drop us a note if you need another license.
