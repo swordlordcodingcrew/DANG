@@ -40,18 +40,18 @@ namespace dang
         uint8_t transform;
     };
 
+    struct tmx_frame
+    {
+        uint16_t tileId; // relative to the tileset
+        uint16_t duration;
+    };
+
     struct tmx_tileanimation
     {
         std::string tileset; // reference to the tileset id
         uint16_t tile; // reference to the tile
         std::string name; // name of the animation to be referenced in the source
         std::vector<tmx_frame> frames;
-    };
-
-    struct tmx_frame
-    {
-        uint16_t tileId; // relative to the tileset
-        uint16_t duration;
     };
 
     struct tmx_spriteobject
