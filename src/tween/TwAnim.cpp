@@ -5,8 +5,8 @@
 //
 
 #include <iostream>
-#include <Sprite.h>
-#include "TwAnim.h"
+#include "../Sprite.hpp"
+#include "TwAnim.hpp"
 #include "../dang.hpp"
 
 namespace dang

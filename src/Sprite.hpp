@@ -4,9 +4,10 @@
 #pragma once
 
 #include "dang.hpp"
+#include "Vector2T.hpp"
+#include "RectT.hpp"
+
 #include <list>
-#include <Vector2T.h>
-#include <RectT.h>
 #include <memory>
 
 namespace dang
@@ -29,11 +30,12 @@ namespace dang
         // tween stuff
         void addTween(std::shared_ptr<Tweenable> tw);
         void removeTween(std::shared_ptr<Tweenable> tw, bool suppressCB);
+        void removeTweens(bool suppressCB);
         bool tweenActive(const std::shared_ptr<Tweenable>& tw);
 
         // animation stuff (special tween)
         void setAnimation(std::shared_ptr<Tweenable> twa);
-        void removeAnimation(bool suppressCB = false);
+        void removeAnimation(bool suppressCB = true);
 
         void updateTweens(uint32_t dt);
         void coreUpdate(uint32_t dt);

@@ -6,7 +6,7 @@
 #include "dang.hpp"
 #include <unordered_map>
 #include <forward_list>
-#include "RectT.h"
+#include "RectT.hpp"
 #include <memory>
 
 namespace dang
@@ -20,6 +20,8 @@ namespace dang
     class Layer;
     class Imagesheet;
 
+    using spImagesheet = std::shared_ptr<Imagesheet>;
+
     class Gear
     {
     public:
@@ -31,7 +33,8 @@ namespace dang
         void    update(uint32_t dt);
         void    render(uint32_t time);
 
-        void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
+//        void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
+        void                        addImagesheet(std::shared_ptr<Imagesheet> is);
         std::shared_ptr<Imagesheet> getImagesheet(const std::string& name) const;
         void                        removeImagesheet(const std::string& name);
         void                        removeImagesheets();
@@ -55,7 +58,16 @@ namespace dang
         RectF  getWorld() const { return _world;}
         void   setWorld(const RectF& world) {_world = world; };
 
+        // function pointers
+        static void empty_blit_sprite_cb(RectU sr, Vector2I p, uint8_t t) {};
+        static void empty_set_surface_cb(spImagesheet is) {};
+        static void empty_line_cb(Vector2I sp, Vector2I dp, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {};
+        void (*blit_sprite_cb)(RectU, Vector2I, uint8_t) = empty_blit_sprite_cb;
+        void (*set_surface_cb)(spImagesheet is) = empty_set_surface_cb;
+        void (*line_cb)(Vector2I, Vector2I, uint8_t, uint8_t, uint8_t, uint8_t) = empty_line_cb;
+
     protected:
+
         std::unordered_map<std::string, std::shared_ptr<Imagesheet>> _imagesheets;
         std::forward_list<std::shared_ptr<Layer>> _layers;
 

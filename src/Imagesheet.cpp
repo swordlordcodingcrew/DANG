@@ -1,11 +1,38 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include "Imagesheet.h"
+#include "Imagesheet.hpp"
+
 #include <cassert>
 
 namespace dang
 {
+
+    Imagesheet::Imagesheet()
+    {
+
+    }
+
+    /**
+     *
+     * @param name name of spritesheet
+     * @param data pointer to spritesheet
+     * @param imgsheet_size size of imagesheet in pixels
+     * @param cols number of columns
+     * @param rows number of rows
+     */
+    Imagesheet::Imagesheet(const std::string& name, const uint8_t *data, SizeU& imgsheet_size, uint16_t cols, uint16_t rows)
+    : _name(name), _data(data), _imgsheet_size(imgsheet_size), _cols(cols), _rows(rows)
+    {
+        assert (cols < UINT16_MAX);
+        assert (rows < UINT16_MAX);
+
+        if (_cols == 0) _cols = 1;
+        if (_rows == 0) _rows = 1;
+
+        update_image_size();
+
+    }
 
     /**
      * Create an Imagesheet from packaged data. Child of spritesheet (for compaitbility reasons)
@@ -16,7 +43,7 @@ namespace dang
      * @param cols number of columns. Must be 1 or higher. 0 will be interpreted as 1. Default value is 1 if no value is given.
      * @param rows number of rows. Must be 1 or higher. 0 will be interpreted as 1. Default value is 1 if no value is given.
      */
-    Imagesheet::Imagesheet(uint8_t *data, blit::PixelFormat format, const blit::packed_image *image, const uint16_t cols, const uint16_t rows) : SpriteSheet(data, format, image), _cols(cols), _rows(rows)
+/*    Imagesheet::Imagesheet(uint8_t *data, blit::PixelFormat format, const blit::packed_image *image, const uint16_t cols, const uint16_t rows) : SpriteSheet(data, format, image), _cols(cols), _rows(rows)
     {
         assert (cols < UINT16_MAX);
         assert (rows < UINT16_MAX);
@@ -26,10 +53,10 @@ namespace dang
 
         update_image_size();
     }
-
+*/
     Imagesheet::~Imagesheet()
     {
-        // TODO: should we delete some data?
+
     }
 
     /**
@@ -81,8 +108,8 @@ namespace dang
      */
     void Imagesheet::update_image_size()
     {
-        _img_size.h = bounds.h / _rows;
-        _img_size.w = bounds.w / _cols;
+        _img_size.h = _imgsheet_size.h / _rows;
+        _img_size.w = _imgsheet_size.w / _cols;
     }
 
     /**
@@ -93,7 +120,7 @@ namespace dang
      * @param row row index (beginning with 0)
      * @return true if success
      */
-    bool Imagesheet::getRect(blit::Rect &r, const uint16_t col, const uint16_t row)
+    bool Imagesheet::getRect(RectU &r, uint16_t col, uint16_t row)
     {
         if (col >= _cols || row >= _rows) return false;
 
@@ -109,33 +136,73 @@ namespace dang
      * Get the source rect of the image
      *
      * @param r rect to be filled as source rect of the imagesheet (spritesheet)
-     * @param index of image. Beginning with zero, counting up to the right (cols) and down (rows)
+     * @param index of image. Beginning with zero, counting up to the right (cols) and then down (rows)
      * @return true if success
      */
-    bool Imagesheet::getRect(blit::Rect &r, uint16_t index)
+    bool Imagesheet::getRect(RectU &r, uint16_t index)
     {
         return getRect(r, index % _cols, index / _cols);
     }
 
+    RectU Imagesheet::getRect(const uint16_t index)
+    {
+        RectU sr{0, 0, 0, 0};
+        getRect(sr, index);
+        return sr;
+    }
+
+
+    /**
+     * Get the source rect of the image
+     *
+     * @param r rect to be filled as source rect of the imagesheet (spritesheet)
+     * @param col column index (beginning with 0)
+     * @param row row index (beginning with 0)
+     * @return true if success
+     */
+/*    bool Imagesheet::getRect(blit::Rect &r, const uint16_t col, const uint16_t row)
+    {
+        if (col >= _cols || row >= _rows) return false;
+
+        r.x = _img_size.w * col;
+        r.y = _img_size.h * row;
+        r.w = _img_size.w;
+        r.h = _img_size.h;
+
+        return true;
+    }
+*/
+    /**
+     * Get the source rect of the image
+     *
+     * @param r rect to be filled as source rect of the imagesheet (spritesheet)
+     * @param index of image. Beginning with zero, counting up to the right (cols) and down (rows)
+     * @return true if success
+     */
+/*    bool Imagesheet::getRect(blit::Rect &r, uint16_t index)
+    {
+        return getRect(r, index % _cols, index / _cols);
+    }
+*/
     /**
      * Returns the source rect of given index. (spritesheet compatibility function)
      *
      * @param index of image. Beginning with zero, counting up to the right (cols) and down (rows)
      * @return source rect of image with index index
      */
-    blit::Rect Imagesheet::getRect(const uint16_t &index)
+/*    blit::Rect Imagesheet::getRect(const uint16_t &index)
     {
         blit::Rect sr{0, 0, 1, 1};
         getRect(sr, index);
         return sr;
     }
-
+*/
     /**
      * Returns the source rect of given cols/rows represented in a point struct. (spritesheet compatibility function)
      * @param p
      * @return
      */
-    blit::Rect Imagesheet::getRect(const blit::Point &p)
+/*    blit::Rect Imagesheet::getRect(const blit::Point &p)
     {
         assert (p.x < UINT16_MAX);
         assert (p.y < UINT16_MAX);
@@ -144,13 +211,13 @@ namespace dang
         getRect(sr, (uint16_t)p.x, (uint16_t)p.y);
         return sr;
     }
-
+*/
     /**
      * Returns the source rect of given cols/rows represented in a rect struct. (spritesheet compatibility function)
      * @param r
      * @return
      */
-    blit::Rect Imagesheet::getRect(const blit::Rect &r)
+/*    blit::Rect Imagesheet::getRect(const blit::Rect &r)
     {
         assert (r.x < UINT16_MAX);
         assert (r.y < UINT16_MAX);
@@ -159,7 +226,7 @@ namespace dang
         getRect(sr, (uint16_t)r.x, (uint16_t)r.y);
         return sr;
     }
-
+*/
     /**
      * Static function to load an imagesheet. Copied from spritesheet
      *
@@ -169,11 +236,11 @@ namespace dang
      * @param rows
      * @return
      */
-    Imagesheet *Imagesheet::load(const uint8_t *data, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
+/*    Imagesheet *Imagesheet::load(const uint8_t *data, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
     {
         return load((blit::packed_image *)data, buffer, cols, rows);
     }
-
+*/
     /**
      * Static function to load an imagesheet. Copied from spritesheet
      *
@@ -183,7 +250,7 @@ namespace dang
      * @param rows
      * @return
      */
-    Imagesheet *Imagesheet::load(const blit::packed_image *image, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
+/*    Imagesheet *Imagesheet::load(const blit::packed_image *image, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
     {
         if (buffer == nullptr)
         {
@@ -196,7 +263,7 @@ namespace dang
 
         return new Imagesheet(buffer, (blit::PixelFormat)image->format, image, cols, rows);
     }
-
+*/
     /**
      * Static function to load an imagesheet. Copied from spritesheet. Return value is a shared_pointer
      * @param data
@@ -205,11 +272,11 @@ namespace dang
      * @param rows
      * @return
      */
-    std::shared_ptr<Imagesheet> Imagesheet::loadShared(const uint8_t *data, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
+/*    std::shared_ptr<Imagesheet> Imagesheet::loadShared(const uint8_t *data, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
     {
         return loadShared((blit::packed_image *) data, buffer, cols, rows);
     }
-
+*/
     /**
      * Static function to load an imagesheet. Copied from spritesheet. Return value is a shared_pointer
      * @param image
@@ -218,7 +285,7 @@ namespace dang
      * @param rows
      * @return
      */
-    std::shared_ptr<Imagesheet> Imagesheet::loadShared(const blit::packed_image *image, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
+/*    std::shared_ptr<Imagesheet> Imagesheet::loadShared(const blit::packed_image *image, uint8_t *buffer, const uint16_t cols, const uint16_t rows)
     {
         if (buffer == nullptr)
         {
@@ -227,5 +294,5 @@ namespace dang
 
         return std::make_shared<Imagesheet>(buffer, (blit::PixelFormat)image->format, image, cols, rows);
     }
-
+*/
 }

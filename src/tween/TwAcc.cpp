@@ -3,8 +3,8 @@
 
 #include <iostream>
 
-#include "Sprite.h"
-#include "TwAcc.h"
+#include "../Sprite.hpp"
+#include "TwAcc.hpp"
 
 namespace dang
 {

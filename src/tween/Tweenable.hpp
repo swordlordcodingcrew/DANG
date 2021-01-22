@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include "dang.hpp"
+#include "../dang.hpp"
 #include <cstdint>
 #include <memory>
 #include <functional>
-#include "Ease.h"
+#include "Ease.hpp"
 //#include <cstdint>
 
 

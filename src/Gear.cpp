@@ -3,14 +3,14 @@
 
 #include <cassert>
 #include <algorithm>
-#include "Gear.h"
-#include "Layer.h"
-#include "Sprite.h"
-#include "Imagesheet.h"
-#include "TmxExtruder.h"
-#include "SpriteLayer.h"
-#include "TileLayer.h"
-#include "CollisionSpriteLayer.h"
+#include "Gear.hpp"
+#include "Layer.hpp"
+#include "Sprite.hpp"
+#include "Imagesheet.hpp"
+#include "TmxExtruder.hpp"
+#include "SpriteLayer.hpp"
+#include "TileLayer.hpp"
+#include "CollisionSpriteLayer.hpp"
 
 namespace dang
 {
@@ -54,9 +54,16 @@ namespace dang
         }
     }
 
-    void Gear::addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is)
+/*    void Gear::addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is)
     {
+        assert(!is->getName().empty());
         _imagesheets[key] = is;
+    }
+*/
+    void Gear::addImagesheet(std::shared_ptr<Imagesheet> is)
+    {
+        assert(!is->getName().empty());
+        _imagesheets[is->getName()] = is;
     }
 
 
@@ -172,6 +179,7 @@ namespace dang
         setViewportPos(pos);
 
     }
+
 
 
 }

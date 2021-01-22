@@ -55,6 +55,7 @@ namespace dang
         std::vector<float> _values;
         uint32_t _pos{0};
     };
+
 }
 
 /*

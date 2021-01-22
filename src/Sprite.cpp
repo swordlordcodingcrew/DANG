@@ -2,11 +2,11 @@
 // This file is part of the DANG game framework
 
 #include <algorithm>
-#include "Sprite.h"
-#include "TmxExtruder.h"
-#include "tween/Tweenable.h"
-#include "tween/TwAnim.h"
-#include "CollisionSpriteLayer.h"
+#include "Sprite.hpp"
+#include "TmxExtruder.hpp"
+#include "tween/Tweenable.hpp"
+#include "tween/TwAnim.hpp"
+#include "CollisionSpriteLayer.hpp"
 
 namespace dang
 {
@@ -90,14 +90,27 @@ namespace dang
         tw->clearObject();
     }
 
+    void Sprite::removeTweens(bool suppressCB)
+    {
+        while (!_tweens.empty())
+        {
+            std::shared_ptr<Tweenable> tw = _tweens.back();
+            removeTween(tw, suppressCB);
+        }
+    }
+
+    bool Sprite::tweenActive(const std::shared_ptr<Tweenable> &tw)
+    {
+        auto tw_it = std::find(_tweens.begin(), _tweens.end(), tw);
+        return tw_it != std::end(_tweens);
+    }
+
     void Sprite::coreUpdate(uint32_t dt)
     {
         _last_pos = _pos;
-//        _last_update_time = time;
         updateTweens(dt);
 
         // dt in 10 ms
-//        float dt = float(time - (_last_update_time == 0 ? time : _last_update_time)) / 100;
         float dt10ms = dt / 100.0f;
         _vel += (_gravity + _acc) * dt10ms;
         _pos += _vel * dt10ms;
@@ -112,10 +125,11 @@ namespace dang
         return RectF(_pos.x, _pos.y, _size.x, _size.y);
     }
 
-    bool Sprite::tweenActive(const std::shared_ptr<Tweenable> &tw)
+
+    void Sprite::setAnimation(std::shared_ptr<Tweenable> twa)
     {
-        auto tw_it = std::find(_tweens.begin(), _tweens.end(), tw);
-        return tw_it != std::end(_tweens);
+        _animation = twa;
+        _animation->setObject(shared_from_this());
     }
 
     void Sprite::removeAnimation(bool suppressCB)
@@ -127,12 +141,6 @@ namespace dang
             _animation->clearObject();
             _animation.reset();
         }
-    }
-
-    void Sprite::setAnimation(std::shared_ptr<Tweenable> twa)
-    {
-        _animation = twa;
-        _animation->setObject(shared_from_this());
     }
 
 }

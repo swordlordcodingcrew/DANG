@@ -6,8 +6,9 @@
 
 #pragma once
 
-#include "Vector2T.h"
+#include "Vector2T.hpp"
 #include <algorithm>
+#include <cstdint>
 
 namespace dang
 {
@@ -191,8 +192,8 @@ namespace dang
     }
 
 
-    typedef RectT<int>          RectI;
-    typedef RectT<unsigned int> RectU;
+    typedef RectT<int32_t>      RectI;
+    typedef RectT<uint32_t>     RectU;
     typedef RectT<float>        RectF;
     typedef RectT<double>       RectD;
 

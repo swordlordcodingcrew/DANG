@@ -6,7 +6,7 @@
 
 #include <assert.h>
 #include <iostream>
-#include "Tweenable.h"
+#include "Tweenable.hpp"
 
 namespace dang
 {

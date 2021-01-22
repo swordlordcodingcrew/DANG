@@ -19,9 +19,9 @@
 #include <forward_list>
 #include <unordered_set>
 
-#include "Vector2T.h"
-#include "RectT.h"
-#include "SpriteLayer.h"
+#include "Vector2T.hpp"
+#include "RectT.hpp"
+#include "SpriteLayer.hpp"
 
 namespace dang
 {

@@ -2,12 +2,12 @@
 // This file is part of the DANG game framework
 
 
-#include "TmxExtruder.h"
-#include "Imagesheet.h"
-#include "CollisionSpriteLayer.h"
-#include "SpriteLayer.h"
-#include "TileLayer.h"
-#include "Gear.h"
+#include "TmxExtruder.hpp"
+#include "Imagesheet.hpp"
+#include "CollisionSpriteLayer.hpp"
+#include "SpriteLayer.hpp"
+#include "TileLayer.hpp"
+#include "Gear.hpp"
 
 namespace dang
 {
@@ -41,8 +41,9 @@ namespace dang
             if (ts_it != _level->tilesets.end())
             {
                 const uint8_t *image = _level->images.at(name);
-                std::shared_ptr<Imagesheet> is = dang::Imagesheet::loadShared(image, nullptr, ts_it->second.cols,
-                                                                              ts_it->second.rows);
+                SizeU imgsh_size(ts_it->second.imageWidth, ts_it->second.imageHeight);
+                std::shared_ptr<Imagesheet> is = std::make_shared<Imagesheet>(name, image, imgsh_size, ts_it->second.cols, ts_it->second.rows);
+//                std::shared_ptr<Imagesheet> is = dang::Imagesheet::loadShared(image, nullptr, ts_it->second.cols, ts_it->second.rows);
                 return is;
             }
 

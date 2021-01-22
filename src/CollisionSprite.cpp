@@ -2,9 +2,9 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
-#include "CollisionSprite.h"
-#include "CollisionSpriteLayer.h"
-#include "TmxExtruder.h"
+#include "CollisionSprite.hpp"
+#include "CollisionSpriteLayer.hpp"
+#include "TmxExtruder.hpp"
 
 namespace dang
 {

@@ -5,7 +5,7 @@
 
 #include <list>
 
-#include "Layer.h"
+#include "Layer.hpp"
 
 namespace dang
 {
@@ -22,6 +22,8 @@ namespace dang
 
         virtual void    addSprite(spSprite spr);
         virtual void    removeSprite(spSprite spr);
+        virtual void    removeSpriteById(uint16_t id);
+        virtual spSprite    getSpriteById(uint16_t id);
 
     protected:
         explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};

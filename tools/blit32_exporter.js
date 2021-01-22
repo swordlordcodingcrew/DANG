@@ -177,6 +177,17 @@ function export32Blit(map, fileName) {
                         transform = 4;
                     }
                     buf += "        {";
+                    var transform = 0;
+                    if (cell.flippedHorizontally) {
+                        transform = 1;
+                    }
+                    else if (cell.flippedVertically) {
+                        tranform = 2;
+                    }
+                    else if (cell.flippedAntiDiagonally) {
+                        transform = 4;
+                    }
+                    buf += " {";
                     buf += tile.id + ",";
                     buf += mTS.get(tile.tileset.name) + ",";
                     buf += transform;
@@ -188,7 +199,7 @@ function export32Blit(map, fileName) {
                     if(x < layer.width - 1)
                     {
                         buf += ",";
-                        buf += ("\n");
+//                        buf += ("\n");
                     }
                 }
                 if(y < layer.height - 1){

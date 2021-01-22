@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "Tweenable.h"
-#include "Vector2T.h"
+#include "Tweenable.hpp"
+#include "../Vector2T.hpp"
 
 namespace dang
 {

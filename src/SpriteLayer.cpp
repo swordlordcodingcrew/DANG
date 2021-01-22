@@ -2,11 +2,11 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
-#include "Gear.h"
-#include "SpriteLayer.h"
-#include "Sprite.h"
-#include "Layer.h"
-#include "Imagesheet.h"
+#include "Gear.hpp"
+#include "SpriteLayer.hpp"
+#include "Sprite.hpp"
+#include "Layer.hpp"
+#include "Imagesheet.hpp"
 
 namespace dang
 {
@@ -41,48 +41,13 @@ namespace dang
                 RectF dr = vp.intersection(spr->getSizeRect());
                 if (dr.area() != 0)
                 {
-                    if (blit::screen.sprites != spr->_imagesheet.get())
-                    {
-                        blit::screen.sprites = spr->_imagesheet.get();
-                    }
-
-                    blit::Rect sr = spr->_imagesheet->getRect(spr->_img_index);
-                    Vector2F dp = spr->getPos() - vp.tl();
-                    blit::screen.blit_sprite(sr, blit::Point(int32_t(std::floor(dp.x)), int32_t(std::floor(dp.y))), spr->_transform);
+                    gear.set_surface_cb(spr->_imagesheet);
+                    RectU sr = spr->_imagesheet->getRect(spr->_img_index);
+                    Vector2F vec = spr->getPos() - vp.tl();
+                    Vector2I dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
+                    gear.blit_sprite_cb(sr, dp, spr->_transform);
                 }
             }
-
-#ifdef DANG_DEBUG_DRAW
-            if(!spr->_visible)
-            {
-                blit::screen.pen = blit::Pen(0, 255, 0, 255);
-
-            }
-            else
-            {
-                blit::screen.pen = blit::Pen(0, 0, 255, 255);
-            }
-
-            RectF dr = vp.intersection(spr->getSizeRect());
-//            RectF dr = vp.intersection(spr->getSizeRect());
-            if (dr.area() != 0)
-            {
-                dr.x -= vp.x;
-                dr.y -= vp.y;
-
-                blit::Point tl(int32_t(dr.tl().x), int32_t(dr.tl().y));
-                blit::Point bl(int32_t(dr.bl().x), int32_t(dr.bl().y));
-                blit::Point br(int32_t(dr.br().x), int32_t(dr.br().y));
-                blit::Point tr(int32_t(dr.tr().x), int32_t(dr.tr().y));
-
-                blit::screen.line(tl, bl); // left -> bottom
-                blit::screen.line(bl, br); // bottom -> right
-                blit::screen.line(br, tr); // right -> top
-                blit::screen.line(tr, tl); // top -> left
-            }
-//            blit::screen.pen = blit::Pen(0, 0, 0, 255);
-#endif
-
         }
     }
 
@@ -151,6 +116,45 @@ namespace dang
             });
         }
 
+    }
+
+    spSprite SpriteLayer::getSpriteById(uint16_t id)
+    {
+
+        auto ret = std::find_if(_active_sprites.begin(), _active_sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
+            {
+                return first->_id == id;
+            });
+
+        if (ret != _active_sprites.end())
+        {
+            return (*ret);
+        }
+
+        ret = std::find_if(_inactive_sprites.begin(), _inactive_sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
+            {
+                return first->_id == id;
+            });
+
+        if (ret != _active_sprites.end())
+        {
+            return (*ret);
+        }
+
+        return nullptr;
+    }
+
+    void SpriteLayer::removeSpriteById(uint16_t id)
+    {
+        _active_sprites.remove_if([&] (const std::shared_ptr<Sprite> &spr)
+            {
+              return spr->_id == id;
+            });
+
+        _inactive_sprites.remove_if([&] (const std::shared_ptr<Sprite> &spr)
+            {
+                return spr->_id == id;
+            });
     }
 
 }
