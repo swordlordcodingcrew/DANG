@@ -1,8 +1,18 @@
 #!/bin/bash
+# This script is part of the SwordLord DANG Game Framework
+# (c) 2020-2021 by SwordLord - the coding crew
 
-FILE="test.yml"
-_dfiles="world/**/*.tsx"
+# Check correct amount of parameters
+if (( $# != 2 )); then
+    echo "Illegal number of parameters"
+    exit
+fi
 
+# Param 1 is the file to write into, param 2 is the file list to search through
+FILE=$1
+_dfiles=$2
+
+# remove the old file, although there should be none laying around
 rm $FILE
 
 # Open file descriptor (fd) 3 for read/write on a text file.

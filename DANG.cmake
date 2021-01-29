@@ -19,7 +19,7 @@ if (NOT DEFINED DANG_ONCE)
 		endif()
 
 		# get the inputs/outputs for the asset tool (at configure time)
-		execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/libs/DANG/tools/asset_generator.sh ${ASSET_FILE} ${PATH_TO_SEARCH})
+		execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/libs/DANG/tools/asset_yml_generator.sh ${ASSET_FILE} ${PATH_TO_SEARCH})
 
 	endfunction()
 
