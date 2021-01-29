@@ -45,6 +45,7 @@ set(SOURCES
         src/Event.hpp
         src/Dispatcher.cpp
         src/Dispatcher.hpp
+        src/snd/pocketmod.h
 )
 
 add_library(DANG STATIC ${SOURCES} )
