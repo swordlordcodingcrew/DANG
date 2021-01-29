@@ -13,7 +13,9 @@ FILE=$1
 _dfiles=$2
 
 # remove the old file, although there should be none laying around
-rm $FILE
+if [ -f "$FILE" ]; then
+  rm $FILE
+fi
 
 # Open file descriptor (fd) 3 for read/write on a text file.
 exec 3<> $FILE
