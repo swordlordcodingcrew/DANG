@@ -46,6 +46,8 @@ set(SOURCES
         src/Dispatcher.cpp
         src/Dispatcher.hpp
         src/snd/pocketmod.h
+        src/snd/SndGear.cpp
+        src/snd/SndGear.hpp
 )
 
 add_library(DANG STATIC ${SOURCES} )
