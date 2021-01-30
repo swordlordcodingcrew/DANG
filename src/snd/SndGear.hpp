@@ -19,8 +19,9 @@ namespace dang
         static uint8_t getMusicChan() { return 0; }
         static uint8_t getSfxChan() { return ++chan % 15 + 1; }
 
-    protected:
         static bool mod_set;
+
+    protected:
         static uint8_t chan;
         static float clip(float value);
 //        static pocketmod_context context;
