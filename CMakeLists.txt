@@ -48,6 +48,7 @@ set(SOURCES
         src/snd/pocketmod.h
         src/snd/SndGear.cpp
         src/snd/SndGear.hpp
+        src/snd/wave.h
 )
 
 add_library(DANG STATIC ${SOURCES} )
