@@ -18,6 +18,22 @@ namespace dang
     {
     }
 
+    void TmxExtruder::extrudeImagesheets(Gear &gear)
+    {
+        if (_level == nullptr)
+        {
+            return;
+        }
+
+        for (const std::pair<uint8_t, tmx_tileset>& p : _level->tilesets)
+        {
+            const uint8_t *image = _level->images.at(p.second.name);
+            SizeU imgsh_size(p.second.imageWidth, p.second.imageHeight);
+            std::shared_ptr<Imagesheet> is = std::make_shared<Imagesheet>(p.second.name, image, imgsh_size, p.second.cols, p.second.rows);
+            gear.addImagesheet(is);
+        }
+    }
+
     /**
      * Extrude imagesheet from tmx_level with given name
      * @param name the name of the imagesheet (the corresponding tmx_tileset must have the same name)

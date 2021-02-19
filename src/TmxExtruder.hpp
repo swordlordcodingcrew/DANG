@@ -199,6 +199,7 @@ namespace dang
         ~TmxExtruder() = default;
 
         spImagesheet            extrudeImagesheet(const std::string& name);
+        void                    extrudeImagesheets(Gear& gear);
 
         spSpriteLayer           extrudeSpriteLayer(const std::string& name);
         spCollisionSpriteLayer  extrudeCollisionSpriteLayer(const std::string& name);
