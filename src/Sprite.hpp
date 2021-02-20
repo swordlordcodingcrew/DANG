@@ -81,10 +81,9 @@ namespace dang
         uint16_t                        _img_index{0};  // index to the image of the imagesheet. (equals tmx_tile of tmx_spriteobject?)
         std::shared_ptr<Imagesheet>     _imagesheet{nullptr};
         uint8_t                         _transform{0};      // transform for blitting
-//        uint8_t                         _transform{blit::SpriteTransform::NONE};      // transform for blitting
         int32_t                         _z_order{0};
-        std::string                     _type{""};
         uint16_t                        _id{0};    // global
+        std::string                     _type{""};
         int32_t                         _type_num{0};
 
     protected:  // variables
