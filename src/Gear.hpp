@@ -58,6 +58,9 @@ namespace dang
         RectF  getWorld() const { return _world;}
         void   setWorld(const RectF& world) {_world = world; };
 
+        const std::unordered_map<std::string, spImagesheet>& getImagesheets() { return _imagesheets; };
+
+
         // function pointers
         static void empty_blit_sprite_cb(RectU sr, Vector2I p, uint8_t t) {};
         static void empty_set_surface_cb(spImagesheet is) {};

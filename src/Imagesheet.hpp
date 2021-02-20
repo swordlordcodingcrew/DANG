@@ -33,9 +33,13 @@ namespace dang
 
         const std::string&  getName() { return _name; }
 
+        void setSurface(void* surface) {_surface = surface; }
+        void* getSurface() { return _surface; }
+
     protected:
         const std::string _name{};
         const uint8_t*    _data{nullptr};
+        void*         _surface{nullptr};
         uint16_t    _cols{1};
         uint16_t    _rows{1};
         SizeU      _img_size{0,0};
