@@ -14,29 +14,20 @@ namespace dang
     {
     }
 
-    Tweenable::Tweenable(const Tweenable &tw) : _the_object(tw._the_object), _duration(tw._duration), _loops(tw._loops), _alternating(tw._alternating),
-                                                _delay(tw._delay), _finishedCB(tw._finishedCB), _loop(tw._loop), _finished(tw._finished)
+    Tweenable::Tweenable(const Tweenable &tw)
+                : _the_object(tw._the_object), _duration(tw._duration), _loops(tw._loops), _alternating(tw._alternating),
+                _delay(tw._delay), _finishedCB(tw._finishedCB), _loop(tw._loop), _finished(tw._finished), _ease_cb(tw._ease_cb)
     {
-        _ease = std::unique_ptr<Ease>((*(tw._ease)).clone());
-        if (!_ease)
-        {
-            _ease = std::unique_ptr<Ease>(new EaseLinear());
-        }
     }
 
     Tweenable::~Tweenable()
     {
     }
 
-    Tweenable::Tweenable(uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops, bool alternating, uint32_t delay) : _duration(duration), _loops(loops), _alternating(alternating), _delay(delay)
+    Tweenable::Tweenable(uint32_t duration, EaseFn& ease_cb, int32_t loops, bool alternating, uint32_t delay)
+                : _duration(duration), _loops(loops), _alternating(alternating), _delay(delay), _ease_cb(ease_cb)
     {
-        _ease = std::move(ease);
-        if (!_ease)
-        {
-            _ease = std::unique_ptr<Ease>(new EaseLinear());
-        }
     }
-
 
     void Tweenable::reset()
     {
@@ -52,7 +43,6 @@ namespace dang
         {
             _finishedCB();
         }
-
     }
 
     bool Tweenable::isFinished()
@@ -62,11 +52,11 @@ namespace dang
 
     float Tweenable::calc(uint32_t dt)
     {
-        assert(_ease != nullptr);
+        assert(_ease_cb != nullptr);
 
         if (_finished)
         {
-            return _ease->calc(_alternating && _loop % 2 == 1 ? 0 : 1);
+            return _ease_cb(_alternating && _loop % 2 == 1 ? 0 : 1);
         }
 
         _progress += dt;
@@ -74,7 +64,7 @@ namespace dang
         // during delay
         if (_progress < _delay)
         {
-            return _ease->calc(_alternating && _loop % 2 == 1 ? 1 : 0);
+            return _ease_cb(_alternating && _loop % 2 == 1 ? 1 : 0);
         }
 
         // during ease
@@ -84,8 +74,7 @@ namespace dang
 //            std::cout << "x=" << x << " , _start_time=" << st << " , time=" << time << std::endl;
             assert(x >= 0 || x <= 1);
 
-            return _ease->calc(_alternating && _loop % 2 == 1 ? 1 - x : x);
-
+            return (_alternating && _loop % 2 == 1 ? 1 - x : x);
         }
         else    // ease finished
         {
@@ -100,7 +89,7 @@ namespace dang
                 {
                     _loop++;
                     _progress = 0;
-                    return _ease->calc(_alternating && _loop % 2 == 1 ? 1 : 0);
+                    return _ease_cb(_alternating && _loop % 2 == 1 ? 1 : 0);
                 }
                 else    // tween finished
                 {
@@ -109,7 +98,7 @@ namespace dang
                     {
                         _finishedCB();
                     }
-                    return _ease->calc(_alternating && _loop % 2 == 1 ? 0 : 1);
+                    return _ease_cb(_alternating && _loop % 2 == 1 ? 0 : 1);
                 }
             }
         }

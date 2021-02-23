@@ -27,9 +27,9 @@ namespace dang
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwPos::TwPos(const Vector2F& move_to, uint32_t duration, std::unique_ptr<Ease> ease,
+    TwPos::TwPos(const Vector2F& move_to, uint32_t duration, EaseFn& ease_cb,
                  int32_t loops, bool alternating, uint32_t delay)
-            : _move_to(move_to), Tweenable(duration, std::move(ease), loops, alternating, delay)
+            : _move_to(move_to), Tweenable(duration, ease_cb, loops, alternating, delay)
     {
         spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
         if (!spr) return;

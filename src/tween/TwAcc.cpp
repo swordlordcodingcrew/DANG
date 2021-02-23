@@ -26,9 +26,9 @@ namespace dang
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwAcc::TwAcc(const Vector2F& start_acc, const Vector2F& end_acc, uint32_t duration, std::unique_ptr<Ease> ease,
+    TwAcc::TwAcc(const Vector2F& start_acc, const Vector2F& end_acc, uint32_t duration,  EaseFn& ease_cb,
                  int32_t loops, bool alternating, uint32_t delay)
-            : _start_acc(start_acc), _end_acc(end_acc), Tweenable(duration, std::move(ease), loops, alternating, delay)
+            : _start_acc(start_acc), _end_acc(end_acc), Tweenable(duration, ease_cb, loops, alternating, delay)
     {
 
     }

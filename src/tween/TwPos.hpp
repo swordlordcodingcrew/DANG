@@ -16,7 +16,7 @@ namespace dang
     {
     public:
         TwPos();
-        TwPos(const Vector2F& move_to, uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        TwPos(const Vector2F& move_to, uint32_t duration, EaseFn& ease_cb, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         void        update(uint32_t dt) override;
 
 

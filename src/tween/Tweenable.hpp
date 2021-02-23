@@ -18,7 +18,7 @@ namespace dang
     public:
         Tweenable();
         Tweenable(const Tweenable& tw);
-        Tweenable(uint32_t duration, std::unique_ptr<Ease> ease, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        Tweenable(uint32_t duration, EaseFn& ease_cb, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         virtual ~Tweenable();
 
         virtual void        setObject(std::weak_ptr<void> obj) {_the_object = obj; }
@@ -35,7 +35,8 @@ namespace dang
         // ugly hack with void*. Should be narrowed with a base class or template class
         std::weak_ptr<void>       _the_object;
 
-        std::unique_ptr<Ease>       _ease{new EaseLinear()};
+        EaseFn&                     _ease_cb = Ease::Linear;
+//        std::unique_ptr<Ease>       __ease{new EaseLinear()};
 
         uint32_t                    _duration{100};
         int32_t                     _loops{1};
