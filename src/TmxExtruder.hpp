@@ -7,6 +7,7 @@
 #include <forward_list>
 #include <vector>
 #include <memory>
+#include "tween/Ease.hpp"
 
 namespace dang
 {
@@ -153,7 +154,7 @@ namespace dang
          */
         std::unordered_map<std::string, const uint8_t*> images;
         std::unordered_map<uint8_t, tmx_tileset> tilesets;
-        std::unordered_map<uint8_t, tmx_tileanimation> tileanimation;
+        std::unordered_map<std::string, tmx_tileanimation> tileanimation;
 
         std::vector<std::shared_ptr<tmx_layer>> layers;
 
@@ -178,6 +179,7 @@ namespace dang
     class CollisionSpriteLayer;
     class TileLayer;
     class Gear;
+    class TwAnim;
 
     // using aliases
     using spLayer = std::shared_ptr<Layer>;
@@ -185,6 +187,7 @@ namespace dang
     using spCollisionSpriteLayer = std::shared_ptr<CollisionSpriteLayer>;
     using spTileLayer = std::shared_ptr<TileLayer>;
     using spImagesheet = std::shared_ptr<Imagesheet>;
+    using spTwAnim = std::shared_ptr<TwAnim>;
 
 
     /**
@@ -204,6 +207,8 @@ namespace dang
         spSpriteLayer           extrudeSpriteLayer(const std::string& name);
         spCollisionSpriteLayer  extrudeCollisionSpriteLayer(const std::string& name);
         spTileLayer             extrudeTileLayer(const std::string& name, const Gear& gear);
+        spTwAnim                extrudeAnimation(const std::string& is_name, const std::string& anim_name, EaseFn& ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
+
 
         const tmx_objectlayer*     getTmxObjectLayer(const std::string &name);
         const tmx_tilelayer*     getTmxTileLayer(const std::string &name);

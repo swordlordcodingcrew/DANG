@@ -2,6 +2,8 @@
 // This file is part of the DANG game framework
 
 
+#include "tween/Ease.hpp"
+#include "tween/TwAnim.hpp"
 #include "TmxExtruder.hpp"
 #include "Imagesheet.hpp"
 #include "CollisionSpriteLayer.hpp"
@@ -205,6 +207,36 @@ namespace dang
         }
 
         return nullptr;
+    }
+
+
+    spTwAnim TmxExtruder::extrudeAnimation(const std::string &is_name, const std::string &anim_name, EaseFn& ease_cb,
+                                  int32_t loops, bool alternating, uint32_t delay)
+    {
+        if (_level == nullptr)
+        {
+            return nullptr;
+        }
+
+        try
+        {
+            const tmx_tileanimation& ta = _level->tileanimation.at(is_name + "_" + anim_name);
+            std::vector<uint16_t> frame_list;
+            uint32_t duration = 0;
+            for (auto f : ta.frames)
+            {
+                frame_list.push_back(f.tileId);
+                duration += f.duration;
+            }
+
+            TwAnim twa = TwAnim(frame_list, duration, ease_cb, loops, alternating, delay);
+            spTwAnim ret = std::make_shared<TwAnim>(twa);
+        }
+        catch (std::out_of_range& oor)
+        {
+            return nullptr;
+        }
+
     }
 
 }
