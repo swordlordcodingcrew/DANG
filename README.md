@@ -13,6 +13,8 @@ While it would be cool to build a game engine for the 32blit, this is not what w
 
 We work on gluing a few existing (and new) tools and pieces together. Think of things as a set of tools in a toolbox where you (hand-) pick the tools you need for a specific job.
 
+DANG! is an opinionated framework. Which means while you are free to use only parts, you will only experience the full power of DANG! when you follow a few rules.
+
 ## Documentation
 You can generate the code documentation with the help of doxygen and graphviz.
 
