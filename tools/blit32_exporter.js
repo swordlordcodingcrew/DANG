@@ -177,7 +177,7 @@ function export32Blit(map, fileName) {
                     else if (cell.flippedAntiDiagonally) {
                         transform = 4;
                     }
-                    buf += "        {";
+                    //buf += "        {"; // opened the curly braces twice!
                     var transform = 0;
                     if (cell.flippedHorizontally) {
                         transform = 1;
@@ -212,7 +212,7 @@ function export32Blit(map, fileName) {
             //file.writeLine("};");
             //file.writeLine("layer l_" + layer.name + " = {\"" + layer.name + "\"," + layer.opacity + "," + layer.visible + ",0," + "t_" + layer.name + "};");
 
-            file.writeLine("    dang::tmx_tile t" + layer.name + "[] = {" + buf + "    };");
+            file.writeLine("    dang::tmx_tile t" + layer.name + "[] = {" + buf + " };");
 
             var size = layer.width * layer.height;
 
