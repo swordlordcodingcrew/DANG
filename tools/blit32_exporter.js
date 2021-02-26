@@ -131,7 +131,8 @@ function export32Blit(map, fileName) {
                 }
 
                 file.writeLine("    // Animation: " + t.type);
-                file.writeLine("    lvl.tileanimation[" + animationId + "] = {\"" + ts.name + "\"," + t.id + ",\"" + t.type + "\",{" + buf + "}};");
+                file.writeLine("    lvl.tileanimation[\"" + ts.name + "_" + t.type + "\"] = {\"" + ts.name + "\"," + t.id + ",\"" + t.type + "\",{" + buf + "}};");
+//                file.writeLine("    lvl.tileanimation[" + animationId + "] = {\"" + ts.name + "\"," + t.id + ",\"" + t.type + "\",{" + buf + "}};");
                 animationId++;
             }
         }
