@@ -23,6 +23,11 @@ namespace dang
 
         virtual void        setObject(std::weak_ptr<void> obj) {_the_object = obj; }
         virtual void        clearObject() {_the_object.reset(); }
+        virtual void        duration(uint32_t d) {_duration = d; }
+        virtual void        loops(int32_t l) { _loops = l; }
+        virtual void        alternating(bool a) { _alternating = a; }
+        virtual void        delay(uint32_t d) {_delay = d; }
+
 
         virtual void        finish(bool suppressCB = false);
         virtual void        reset();
