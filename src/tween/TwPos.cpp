@@ -1,4 +1,4 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-21 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
 #include "TwPos.hpp"
@@ -31,6 +31,22 @@ namespace dang
                  int32_t loops, bool alternating, uint32_t delay)
             : _move_to(move_to), Tweenable(duration, ease_cb, loops, alternating, delay)
     {
+        // removed the initialisation of start_from vector since
+        // the_object cannot be set in this situation (creation of
+        // tween comes first, it is then (later) added to the sprite).
+        // See setObject
+    }
+
+    /**
+     * This function sets the pointer of the sprite in _the_object
+     * and initialises the start_from vector
+     *
+     * @param pointer to sprite
+     */
+    void  TwPos::setObject(std::weak_ptr<void> obj)
+    {
+        _the_object = obj;
+
         spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
         if (!spr) return;
 
@@ -50,7 +66,5 @@ namespace dang
 
         float fx = calc(dt);
         spr->setPos(Vector2F(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx));
-
     }
-
 }

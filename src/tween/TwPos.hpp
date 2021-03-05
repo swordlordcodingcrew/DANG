@@ -1,4 +1,4 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-21 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
 #pragma once
@@ -18,7 +18,7 @@ namespace dang
         TwPos();
         TwPos(const Vector2F& move_to, uint32_t duration, EaseFn& ease_cb, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         void        update(uint32_t dt) override;
-
+        void        setObject(std::weak_ptr<void> obj) override;
 
     protected:
         Vector2F  _move_to{0, 0};
