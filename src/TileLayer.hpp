@@ -18,7 +18,7 @@ namespace dang
     public:
         TileLayer();
         TileLayer(const SizeU& tilesize_px, const SizeF& layersize, const std::vector<tmx_tile>& tiles, const SizeU& worldsize_tu, std::shared_ptr<Imagesheet> is, const RectF& vp);
-        TileLayer(const tmx_tileset& tileset, const tmx_tilelayer& tilelayer, std::shared_ptr<Imagesheet> is, const RectF& vp);
+        TileLayer(const tmx_tileset& tileset, const std::shared_ptr<tmx_tilelayer> ttl, std::shared_ptr<Imagesheet> is, const RectF& vp);
         ~TileLayer() override;
 
         void    update(uint32_t dt, const Gear& gear) override;

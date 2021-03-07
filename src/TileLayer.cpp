@@ -47,17 +47,17 @@ namespace dang
      * @param tilelayer from the tmx level
      * @param is imagesheet containing all tile images. Multiple imagesheets is not supported
      */
-    TileLayer::TileLayer(const tmx_tileset& tileset, const tmx_tilelayer& tilelayer, std::shared_ptr<Imagesheet> is, const RectF& vp)
+    TileLayer::TileLayer(const tmx_tileset &tileset, std::shared_ptr<tmx_tilelayer> ttl, std::shared_ptr<Imagesheet> is, const RectF &vp)
             : Layer(Layer::LT_TILELAYER)
     {
-        _tiles = tilelayer.tiles;
+        _tiles = ttl->tiles;
         _imagesheet = is;
 
         _tilesize.w = tileset.tileWidth;
         _tilesize.h = tileset.tileHeight;
 
-        _worldsize_tu.w = tilelayer.width;
-        _worldsize_tu.h = tilelayer.height;
+        _worldsize_tu.w = ttl->width;
+        _worldsize_tu.h = ttl->height;
         _worldsize.w = _worldsize_tu.w * _tilesize.w;
         _worldsize.h = _worldsize_tu.h * _tilesize.h;
 
@@ -65,6 +65,7 @@ namespace dang
         _vpsize_tu.h = std::ceil(vp.h / _tilesize.h);
 
     }
+
 
     void TileLayer::update(uint32_t dt, const Gear& gear)
     {
@@ -111,4 +112,5 @@ namespace dang
             }
         }
     }
+
 }

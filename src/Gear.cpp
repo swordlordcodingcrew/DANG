@@ -54,12 +54,6 @@ namespace dang
         }
     }
 
-/*    void Gear::addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is)
-    {
-        assert(!is->getName().empty());
-        _imagesheets[key] = is;
-    }
-*/
     void Gear::addImagesheet(std::shared_ptr<Imagesheet> is)
     {
         assert(!is->getName().empty());
@@ -91,6 +85,8 @@ namespace dang
 
     void Gear::addLayer(std::shared_ptr<Layer> layer)
     {
+        assert(layer != nullptr);
+
         // if the layer is already added, do nothing
         auto layer_it = std::find(_layers.begin(), _layers.end(), layer);
         if (layer_it != _layers.end())
