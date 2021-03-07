@@ -15,10 +15,10 @@ namespace dang
         static float Linear(float x)        { return x; }
         static float InQuad(float x)        { return x * x; }
         static float OutQuad(float x)       { return x * (2 - x); }
-        static float InOutQuad(float x)     { return x < 0.5 ? (2 * x * x) : (-1 + (4 - 2 * x) * x); }
+        static float InOutQuad(float x)     { return x < 0.5f ? (2 * x * x) : (-1 + (4 - 2 * x) * x); }
         static float InCubic(float x)       { return x * x * x; }
         static float OutCubic(float x)      { return 1 + (--x) * x * x; }
-        static float InOutCubic(float x)    { return x < 0.5 ? 4 * x * x * x : 1 + (--x) * (2 * (--x)) * (2 * x); }
+        static float InOutCubic(float x)    { return x < 0.5f ? 4 * x * x * x : 1 + (--x) * (2 * (--x)) * (2 * x); }
     };
 }
 
