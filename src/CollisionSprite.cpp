@@ -13,6 +13,12 @@ namespace dang
 
     }
 
+    CollisionSprite::CollisionSprite(const CollisionSprite &cs)
+    : Sprite(cs), _coll_object_type(cs._coll_object_type), _hotrect(cs._hotrect), _coll_response(cs._coll_response)
+    {
+
+    }
+
     CollisionSprite::~CollisionSprite()
     {
 #ifdef DANG_DEBUG
@@ -87,6 +93,7 @@ namespace dang
     {
 
     }
+
 
 
 }

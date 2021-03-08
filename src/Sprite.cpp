@@ -18,11 +18,25 @@ namespace dang
     {
     }
 
-/*    Sprite::Sprite(const Sprite &sp)
+    Sprite::Sprite(const Sprite &sp)
+    : _visible(sp._visible), _img_index(sp._img_index), _imagesheet(sp._imagesheet), _transform(sp._transform),
+    _z_order(sp._z_order), _type(sp._type), _type_num(sp._type_num), _size(sp._size), _pos(sp._pos), _vel(sp._vel),
+    _acc(sp._acc), _gravity(sp._gravity), _last_pos(sp._last_pos)
     {
+        // this is somewhat an issue since the id is not anymore global like that
+        _id = sp._id; // global
+
+        for (auto& t : sp._tweens)
+        {
+            spTweenable tw(t);
+            // the tweens are copied as is. No reset
+            _tweens.push_back(tw);
+        }
+
+        _animation = spTweenable(sp._animation);
 
     }
-*/
+
     Sprite::Sprite(const tmx_spriteobject &so, std::shared_ptr<Imagesheet> is)
     {
         _id = so.id; // global
@@ -142,5 +156,6 @@ namespace dang
             _animation.reset();
         }
     }
+
 
 }

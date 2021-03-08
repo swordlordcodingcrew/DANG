@@ -21,6 +21,7 @@ namespace dang
     {
     public: // functions
         CollisionSprite();
+        CollisionSprite(const CollisionSprite& cs);
         CollisionSprite(const tmx_spriteobject &so, std::shared_ptr<Imagesheet> is);
         ~CollisionSprite() override;
 
