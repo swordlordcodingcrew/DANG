@@ -26,7 +26,7 @@ namespace dang
      * @param alternating if true, the animation will reverse for every second loop
      * @param delay delay until loop shall start. Is applied for each loop
      */
-    TwVel::TwVel(const Vector2F& start_vel, const Vector2F& end_vel, uint32_t duration, EaseFn& ease_cb,
+    TwVel::TwVel(const Vector2F& start_vel, const Vector2F& end_vel, uint32_t duration, EaseFn ease_cb,
                  int32_t loops, bool alternating, uint32_t delay)
             : _start_vel(start_vel), _end_vel(end_vel), Tweenable(duration, ease_cb, loops, alternating, delay)
     {

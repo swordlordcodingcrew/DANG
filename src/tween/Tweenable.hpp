@@ -23,11 +23,12 @@ namespace dang
 
         virtual void        setObject(std::weak_ptr<void> obj) {_the_object = obj; }
         virtual void        clearObject() {_the_object.reset(); }
+
         virtual void        duration(uint32_t d) {_duration = d; }
         virtual void        loops(int32_t l) { _loops = l; }
         virtual void        alternating(bool a) { _alternating = a; }
         virtual void        delay(uint32_t d) {_delay = d; }
-
+        virtual void        easeFunction(EaseFn ease_cb) { _ease_cb = ease_cb; }
 
         virtual void        finish(bool suppressCB = false);
         virtual void        reset();
@@ -40,9 +41,7 @@ namespace dang
         // ugly hack with void*. Should be narrowed with a base class or template class
         std::weak_ptr<void>       _the_object;
 
-        EaseFn&                     _ease_cb = Ease::Linear;
-//        std::unique_ptr<Ease>       __ease{new EaseLinear()};
-
+        EaseFn                      _ease_cb = Ease::Linear;
         uint32_t                    _duration{100};
         int32_t                     _loops{1};
         bool                        _alternating{false};

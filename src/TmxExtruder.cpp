@@ -232,7 +232,7 @@ namespace dang
     }
 
 
-    spTwAnim TmxExtruder::getAnimation(const std::string &is_name, const std::string &anim_name, EaseFn& ease_cb,
+    spTwAnim TmxExtruder::getAnimation(const std::string &is_name, const std::string &anim_name, EaseFn ease_cb,
                                        int32_t loops, bool alternating, uint32_t delay)
     {
         if (_level == nullptr)

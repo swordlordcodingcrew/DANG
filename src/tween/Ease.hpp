@@ -5,7 +5,7 @@
 
 #include <vector>
 
-typedef float EaseFn(float);
+typedef float (*EaseFn)(float);
 
 namespace dang
 {

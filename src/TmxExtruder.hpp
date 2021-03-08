@@ -207,7 +207,7 @@ namespace dang
         spSpriteLayer           getSpriteLayer(const std::string& name, Gear& gear, bool addSprites, bool addToGear);
         spCollisionSpriteLayer  getCollisionSpriteLayer(const std::string& name, Gear& gear, bool addSprites, bool addToGear);
         spTileLayer             getTileLayer(const std::string& name, Gear& gear, bool addToGear);
-        spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn& ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
+        spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
 
         const std::vector<tmx_spriteobject>& getSOList(spSpriteLayer sl);
 
