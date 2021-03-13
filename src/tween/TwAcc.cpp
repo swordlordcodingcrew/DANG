@@ -2,6 +2,7 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
+#include <cassert>
 
 #include "../Sprite.hpp"
 #include "TwAcc.hpp"
@@ -38,14 +39,13 @@ namespace dang
      *
      * @param dt needed for updating the tween
      */
-    void TwAcc::update(uint32_t dt)
+    void TwAcc::update(void* obj, uint32_t dt)
     {
-        spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
-        if (!spr) return;
+        assert(obj != nullptr);
+        Sprite* spr = static_cast<Sprite*>(obj);
 
         float fx = calc(dt);
         spr->setAcc(_start_acc + (_end_acc - _start_acc) * fx);
-
     }
 
     TwAcc::~TwAcc()

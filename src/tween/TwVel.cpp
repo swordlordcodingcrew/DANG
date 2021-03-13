@@ -2,6 +2,7 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
+#include <cassert>
 
 #include "../Sprite.hpp"
 #include "TwVel.hpp"
@@ -38,10 +39,10 @@ namespace dang
      *
      * @param time needed for updating the tween
      */
-    void TwVel::update(uint32_t dt)
+    void TwVel::update(void* obj, uint32_t dt)
     {
-        spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
-        if (!spr) return;
+        assert(obj != nullptr);
+        Sprite* spr = static_cast<Sprite*>(obj);
 
         float fx = calc(dt);
         spr->setVel(_start_vel + (_end_vel - _start_vel) * fx);

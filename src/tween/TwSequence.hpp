@@ -12,10 +12,10 @@ namespace dang
     {
     public:
         TwSequence();
+        TwSequence(const TwSequence& tw);
         void    addTween(std::shared_ptr<Tweenable> tw);
-        void    setObject(std::weak_ptr<void> obj) override;
 
-        void        update(uint32_t dt) override;
+        void        update(void* obj, uint32_t dt) override;
 
         void        finish(bool suppressCB = false) override;
         void        reset() override;

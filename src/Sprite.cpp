@@ -19,22 +19,26 @@ namespace dang
     }
 
     Sprite::Sprite(const Sprite &sp)
-    : _visible(sp._visible), _img_index(sp._img_index), _imagesheet(sp._imagesheet), _transform(sp._transform),
+    : std::enable_shared_from_this<Sprite>(), _visible(sp._visible), _img_index(sp._img_index), _imagesheet(sp._imagesheet), _transform(sp._transform),
     _z_order(sp._z_order), _type(sp._type), _type_num(sp._type_num), _size(sp._size), _pos(sp._pos), _vel(sp._vel),
     _acc(sp._acc), _gravity(sp._gravity), _last_pos(sp._last_pos)
     {
         // this is somewhat an issue since the id is not anymore global like that
         _id = sp._id; // global
 
-        for (auto& t : sp._tweens)
+        for (auto t : sp._tweens)
         {
-            spTweenable tw(t);
-            // the tweens are copied as is. No reset
-            _tweens.push_back(tw);
+            addTween(std::make_shared<Tweenable>(*t));
         }
 
-        _animation = spTweenable(sp._animation);
-
+        if (sp._animation != nullptr)
+        {
+            setAnimation(std::make_shared<Tweenable>(*(sp._animation)));
+        }
+        else
+        {
+            _animation = nullptr;
+        }
     }
 
     Sprite::Sprite(const tmx_spriteobject &so, std::shared_ptr<Imagesheet> is)
@@ -51,30 +55,27 @@ namespace dang
         _last_pos = _pos;
     }
 
-    void Sprite::addTween(std::shared_ptr<Tweenable> tw)
+    void Sprite::addTween(spTweenable tw)
     {
-        // this is a weak ptr reference to omit a dangling pointer (or circular reference)
-        tw->setObject(shared_from_this());
+        tw->init(this);
         _tweens.push_front(tw);
     }
 
     void Sprite::updateTweens(uint32_t dt)
     {
-        std::list<std::shared_ptr<Tweenable>>::iterator tw = _tweens.begin();
+        auto tw = _tweens.begin();
         while (tw != _tweens.end())
         {
             if (!(*tw))
             {
                 // somehow a stale tween
-                (*tw)->clearObject();
                 tw = _tweens.erase(tw);
             }
             else
             {
-                (*tw)->update(dt);
+                (*tw)->update(this, dt);
                 if ((*tw)->isFinished())
                 {
-                    (*tw)->clearObject();
                     tw = _tweens.erase(tw);
                 }
                 else
@@ -88,32 +89,30 @@ namespace dang
         // special case animation. There can be only one
         if (_animation)
         {
-            _animation->update(dt);
+            _animation->update(this, dt);
             if (_animation->isFinished())
             {
-                _animation->clearObject();
                 _animation.reset();
             }
         }
     }
 
-    void Sprite::removeTween(std::shared_ptr<Tweenable> tw, bool suppressCB)
+    void Sprite::removeTween(const spTweenable& tw, bool suppressCB)
     {
         tw->finish(suppressCB);
         _tweens.remove(tw);
-        tw->clearObject();
     }
 
     void Sprite::removeTweens(bool suppressCB)
     {
         while (!_tweens.empty())
         {
-            std::shared_ptr<Tweenable> tw = _tweens.back();
+            spTweenable& tw = _tweens.back();
             removeTween(tw, suppressCB);
         }
     }
 
-    bool Sprite::tweenActive(const std::shared_ptr<Tweenable> &tw)
+    bool Sprite::tweenActive(const spTweenable &tw)
     {
         auto tw_it = std::find(_tweens.begin(), _tweens.end(), tw);
         return tw_it != std::end(_tweens);
@@ -140,21 +139,27 @@ namespace dang
     }
 
 
-    void Sprite::setAnimation(std::shared_ptr<Tweenable> twa)
+    void Sprite::setAnimation(spTweenable twa)
     {
         _animation = twa;
-        _animation->setObject(shared_from_this());
+        _animation->init(this);
     }
 
-    void Sprite::removeAnimation(bool suppressCB)
+    spTweenable Sprite::removeAnimation(bool suppressCB)
     {
         if (_animation)
         {
             _animation->finish(suppressCB);
             _animation->reset();
-            _animation->clearObject();
-            _animation.reset();
         }
+        return _animation;
+    }
+
+    spTweenable Sprite::swapAnimation(spTweenable new_anim, bool suppressCB)
+    {
+        spTweenable ret = removeAnimation(suppressCB);
+        _animation = new_anim;
+        return ret;
     }
 
 

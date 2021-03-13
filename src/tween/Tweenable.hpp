@@ -21,8 +21,8 @@ namespace dang
         Tweenable(uint32_t duration, EaseFn& ease_cb, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         virtual ~Tweenable();
 
-        virtual void        setObject(std::weak_ptr<void> obj) {_the_object = obj; }
-        virtual void        clearObject() {_the_object.reset(); }
+//        virtual void        setObject(std::weak_ptr<void> obj) {_the_object = obj; }
+//        virtual void        clearObject() {_the_object.reset(); }
 
         virtual void        duration(uint32_t d) {_duration = d; }
         virtual void        loops(int32_t l) { _loops = l; }
@@ -35,11 +35,12 @@ namespace dang
         virtual bool        isFinished();
         virtual void        setFinishedCallback(std::function<void(void)> finishedCB);
 
-        virtual void            update(uint32_t dt) = 0;
+        virtual void            init(void* obj) {};
+        virtual void            update(void* obj, uint32_t dt) {};
 
     protected:
         // ugly hack with void*. Should be narrowed with a base class or template class
-        std::weak_ptr<void>       _the_object;
+//        std::weak_ptr<void>       _the_object;
 
         EaseFn                      _ease_cb = Ease::Linear;
         uint32_t                    _duration{100};

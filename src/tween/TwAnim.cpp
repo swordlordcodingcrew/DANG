@@ -5,6 +5,7 @@
 //
 
 #include <iostream>
+#include <cassert>
 #include "../Sprite.hpp"
 #include "TwAnim.hpp"
 #include "../dang.hpp"
@@ -40,10 +41,10 @@ namespace dang
      *
      * @param time needed for updating the tween
      */
-    void TwAnim::update(uint32_t dt)
+    void TwAnim::update(void* obj, uint32_t dt)
     {
-        spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
-        if (!spr) return;
+        assert(obj != nullptr);
+        Sprite* spr = static_cast<Sprite*>(obj);
 
         float fx = calc(dt);
         uint16_t ind = uint16_t(fx * (_indices.size()));

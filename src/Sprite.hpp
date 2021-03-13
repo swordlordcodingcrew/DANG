@@ -18,6 +18,7 @@ namespace dang
     class Tweenable;
     class TwAnim;
     using spTweenable = std::shared_ptr<Tweenable>;
+    using spTwAnim = std::shared_ptr<TwAnim>;
 
     class Sprite : public std::enable_shared_from_this<Sprite>
     {
@@ -28,14 +29,15 @@ namespace dang
         virtual ~Sprite();
 
         // tween stuff
-        void addTween(std::shared_ptr<Tweenable> tw);
-        void removeTween(std::shared_ptr<Tweenable> tw, bool suppressCB);
+        void addTween(spTweenable tw);
+        void removeTween(const spTweenable& tw, bool suppressCB);
         void removeTweens(bool suppressCB);
-        bool tweenActive(const std::shared_ptr<Tweenable>& tw);
+        bool tweenActive(const spTweenable& tw);
 
         // animation stuff (special tween)
-        void setAnimation(std::shared_ptr<Tweenable> twa);
-        void removeAnimation(bool suppressCB = true);
+        void setAnimation(spTweenable twa);
+        spTweenable removeAnimation(bool suppressCB = true);
+        spTweenable swapAnimation(spTweenable new_anim, bool suppressCB = true);
 
         void updateTweens(uint32_t dt);
         void coreUpdate(uint32_t dt);

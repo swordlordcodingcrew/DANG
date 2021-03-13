@@ -10,14 +10,22 @@ namespace dang
     {
     }
 
-    void TwSequence::update(uint32_t dt)
+    TwSequence::TwSequence(const TwSequence &tw) : Tweenable(tw), _index(tw._index)
+    {
+        for (auto it : tw._tw_seq)
+        {
+            _tw_seq.push_back(std::make_shared<Tweenable>(*it));
+        }
+    }
+
+    void TwSequence::update(void* obj, uint32_t dt)
     {
         if (_tw_seq.empty() || _finished)
         {
             return;
         }
 
-        _tw_seq.at(_index)->update(dt);
+        _tw_seq.at(_index)->update(obj, dt);
 
         if (_tw_seq.at(_index)->isFinished())
         {
@@ -47,17 +55,6 @@ namespace dang
 */        }
     }
 
-    void TwSequence::setObject(std::weak_ptr<void> obj)
-    {
-        for (const auto& it : _tw_seq)
-        {
-            if (it)
-            {
-                it->setObject(obj);
-            }
-        }
-    }
-
     void TwSequence::addTween(std::shared_ptr<Tweenable> tw)
     {
         _tw_seq.push_back(tw);
@@ -82,4 +79,5 @@ namespace dang
     {
         return Tweenable::isFinished();
     }
+
 }

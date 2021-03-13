@@ -6,6 +6,7 @@
 #include "../dang.hpp"
 
 #include <iostream>
+#include <cassert>
 
 namespace dang
 {
@@ -37,19 +38,10 @@ namespace dang
         // See setObject
     }
 
-    /**
-     * This function sets the pointer of the sprite in _the_object
-     * and initialises the start_from vector
-     *
-     * @param pointer to sprite
-     */
-    void  TwPos::setObject(std::weak_ptr<void> obj)
+    void TwPos::init(void* obj)
     {
-        _the_object = obj;
-
-        spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
-        if (!spr) return;
-
+        assert(obj != nullptr);
+        Sprite* spr = static_cast<Sprite*>(obj);
         _start_from.x = spr->getPos().x;
         _start_from.y = spr->getPos().y;
     }
@@ -59,10 +51,10 @@ namespace dang
      *
      * @param time needed for updating the tween
      */
-    void TwPos::update(uint32_t dt)
+    void TwPos::update(void* obj, uint32_t dt)
     {
-        spSprite spr = std::static_pointer_cast<Sprite>(_the_object.lock());
-        if (!spr) return;
+        assert(obj != nullptr);
+        Sprite* spr = static_cast<Sprite*>(obj);
 
         float fx = calc(dt);
         spr->setPos(Vector2F(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx));
