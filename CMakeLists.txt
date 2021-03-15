@@ -11,6 +11,8 @@ set(SOURCES
         src/tween/Tweenable.hpp
         src/tween/Ease.cpp
         src/tween/Ease.hpp
+        src/tween/TwNull.cpp
+        src/tween/TwNull.hpp
         src/tween/TwAnim.cpp
         src/tween/TwAnim.hpp
         src/tween/TwPos.cpp
