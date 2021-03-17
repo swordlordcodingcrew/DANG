@@ -149,6 +149,26 @@ namespace dang
         {
             return Vector2T<T>(x + w / 2, y + h / 2);
         }
+
+        T top() const
+        {
+            return y;
+        }
+
+        T bottom() const
+        {
+            return y + h;
+        }
+
+        T left() const
+        {
+            return x;
+        }
+
+        T right() const
+        {
+            return x + w;
+        }
     };
 
     template <typename T>
