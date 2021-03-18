@@ -12,6 +12,7 @@
 #include "Gear.hpp"
 #include "Sprite.hpp"
 #include "CollisionSprite.hpp"
+#include "BaseHUDLayer.hpp"
 
 namespace dang
 {
@@ -110,6 +111,33 @@ namespace dang
         }
 
         return sl;
+    }
+
+    void TmxExtruder::fillHUDLayer(spHUDLayer layer, const std::string& name, Gear& gear, bool addSprites, bool addToGear)
+    {
+        const std::shared_ptr<tmx_objectlayer> tol = getTmxObjectLayer(name);
+
+        layer->_name = tol->name;
+        // TODO js-exporter: implement zOrder
+        layer->_z_order = 200;
+        // TODO js-exporter: implement visible flag
+        // sl->_visible = ola->visible;
+        // TODO js-exporter: implement position
+        // sl->_position = position
+
+        if (addSprites)
+        {
+            for (const dang::tmx_spriteobject &so : getSOList(layer))
+            {
+                spImagesheet is = gear.getImagesheet(_level->tilesets[so.tileset].name);
+                layer->addSprite(std::make_shared<Sprite>(so, is));
+            }
+        }
+
+        if (addToGear)
+        {
+            gear.addLayer(layer);
+        }
     }
 
     spCollisionSpriteLayer TmxExtruder::getCollisionSpriteLayer(const std::string &name, Gear& gear, bool addSprites, bool addToGear)
@@ -262,10 +290,9 @@ namespace dang
 
     }
 
-    const std::vector<tmx_spriteobject> &TmxExtruder::getSOList(spSpriteLayer sl)
+    const std::vector<tmx_spriteobject> &TmxExtruder::getSOList(const spSpriteLayer& sl)
     {
         const std::shared_ptr<tmx_objectlayer> ola = getTmxObjectLayer(sl->_name);
         return ola->so;
     }
-
 }

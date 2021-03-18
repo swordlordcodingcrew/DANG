@@ -37,6 +37,8 @@ set(SOURCES
         src/SpriteLayer.hpp
         src/CollisionSpriteLayer.cpp
         src/CollisionSpriteLayer.hpp
+        src/BaseHUDLayer.cpp
+        src/BaseHUDLayer.hpp
         src/Vector2T.hpp
         src/RectT.hpp
         src/CollisionSprite.cpp

@@ -16,7 +16,7 @@ namespace dang
             {
                 pair.second.fn(e);
 
-                if (e._consumend)
+                if (e._consumed)
                 {
                     break; // for-loop
                 }
@@ -79,7 +79,7 @@ namespace dang
                 {
                     pair.second.fn(*e);
 
-                    if (e->_consumend)
+                    if (e->_consumed)
                     {
                         break; // for-loop
                     }

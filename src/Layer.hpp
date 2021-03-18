@@ -23,7 +23,8 @@ namespace dang
             LT_UNDEFINED = 0,
             LT_TILELAYER,
             LT_SPRITELAYER,
-            LT_COLLISIONSPRITELAYER
+            LT_COLLISIONSPRITELAYER,
+            LT_HUDLAYER
         };
 
         explicit Layer(E_TYPE type);

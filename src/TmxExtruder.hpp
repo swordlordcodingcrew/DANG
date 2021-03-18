@@ -8,6 +8,7 @@
 #include <vector>
 #include <memory>
 #include "tween/Ease.hpp"
+#include "BaseHUDLayer.hpp"
 
 namespace dang
 {
@@ -184,6 +185,7 @@ namespace dang
     // using aliases
     using spLayer = std::shared_ptr<Layer>;
     using spSpriteLayer = std::shared_ptr<SpriteLayer>;
+    using spHUDLayer = std::shared_ptr<BaseHUDLayer>;
     using spCollisionSpriteLayer = std::shared_ptr<CollisionSpriteLayer>;
     using spTileLayer = std::shared_ptr<TileLayer>;
     using spImagesheet = std::shared_ptr<Imagesheet>;
@@ -206,10 +208,11 @@ namespace dang
 
         spSpriteLayer           getSpriteLayer(const std::string& name, Gear& gear, bool addSprites, bool addToGear);
         spCollisionSpriteLayer  getCollisionSpriteLayer(const std::string& name, Gear& gear, bool addSprites, bool addToGear);
+        void                    fillHUDLayer(spHUDLayer layer, const std::string& name, Gear& gear, bool addSprites, bool addToGear);
         spTileLayer             getTileLayer(const std::string& name, Gear& gear, bool addToGear);
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
 
-        const std::vector<tmx_spriteobject>& getSOList(spSpriteLayer sl);
+        const std::vector<tmx_spriteobject>& getSOList(const spSpriteLayer& sl);
 
         const std::shared_ptr<tmx_objectlayer>     getTmxObjectLayer(const std::string &name);
         const std::shared_ptr<tmx_tilelayer>     getTmxTileLayer(const std::string &name);
