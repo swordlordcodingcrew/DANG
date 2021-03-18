@@ -28,6 +28,6 @@ do
   FILENAME=${ARR[-1]}
 
 #  python3 -m ttblit --debug  pack --force --config ${CMAKE_CURRENT_SOURCE_DIR}/${FILE} --output ${CMAKE_CURRENT_BINARY_DIR}
-  python3 -m ttblit image --input_file $SOURCE --input_type image --output_file rsrc/$FILENAME.h --output_format c_header --symbol_name $NAME
+  python3 -m ttblit image --input_file $SOURCE --input_type image --output_file rsrc/$FILENAME.h --output_format c_header --symbol_name $NAME --force
   echo "rsrc/$FILENAME.h"
 done
