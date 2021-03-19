@@ -89,8 +89,8 @@ namespace dang
         spSpriteLayer sl = std::make_shared<SpriteLayer>();
 
         sl->_name = tol->name;
-        // TODO js-exporter: implement zOrder
-        sl->_z_order = 1;
+        sl->_z_order = tol->z_order;
+
         // TODO js-exporter: implement visible flag
         // sl->_visible = ola->visible;
         // TODO js-exporter: implement position
@@ -118,8 +118,8 @@ namespace dang
         const std::shared_ptr<tmx_objectlayer> tol = getTmxObjectLayer(name);
 
         layer->_name = tol->name;
-        // TODO js-exporter: implement zOrder
-        layer->_z_order = 200;
+        layer->_z_order = tol->z_order;
+
         // TODO js-exporter: implement visible flag
         // sl->_visible = ola->visible;
         // TODO js-exporter: implement position
@@ -152,8 +152,8 @@ namespace dang
         spCollisionSpriteLayer sl = std::make_shared<CollisionSpriteLayer>();
 
         sl->_name = tol->name;
-        // TODO js-exporter: implement zOrder
-        sl->_z_order = 1;
+        sl->_z_order = tol->z_order;
+
         // TODO js-exporter: implement visible flag
         // csl->_visible = ola->visible;
         // TODO js-exporter: implement position
@@ -200,9 +200,8 @@ namespace dang
         spImagesheet is = gear.getImagesheet(ts.name);
         std::shared_ptr<TileLayer> tl = std::make_shared<TileLayer>(ts, ttl, is, gear.getViewport());
         tl->_name = ttl->name;
+        tl->_z_order = ttl->z_order;
 
-        // TODO js-exporter: implement zOrder
-        tl->_z_order = 0;
         // TODO js-exporter: implement visible flag
         // tl->_visible = tilel->visible;
         // TODO js-exporter: implement position

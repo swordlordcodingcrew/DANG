@@ -93,9 +93,9 @@ namespace dang
         float opacity;
         bool visible;
         uint8_t type; // 0 = tmx_tile, 1 = objects
+        uint32_t z_order;   // the z-order of the layers
         // TODO: to be considered
         //offset : point 	Offset in pixels that is applied when this tmx_layer is rendered.
-        //z_order : uint    the z-order of the layers
         //map : TileMap 	Map that this tmx_layer is part of (or null in case of a standalone tmx_layer).
     };
 
@@ -106,12 +106,13 @@ namespace dang
         uint8_t height;
         std::vector<tmx_tile> tiles;
 
-        tmx_tilelayer(std::string n, uint32_t size, tmx_tile _tiles[], uint8_t w, uint8_t h) : tmx_layer()
+        tmx_tilelayer(std::string n, uint32_t size, tmx_tile _tiles[], uint8_t w, uint8_t h, uint32_t z) : tmx_layer()
         {
             name = n;
             width = w;
             height = h;
             type = 0;
+            z_order = z;
             tiles.assign(_tiles, _tiles + size);
         };
     };
@@ -120,10 +121,11 @@ namespace dang
     {
         std::vector<tmx_spriteobject> so;
 
-        tmx_objectlayer(std::string n, uint16_t size, tmx_spriteobject _so[]) : tmx_layer()
+        tmx_objectlayer(std::string n, uint16_t size, tmx_spriteobject _so[], uint32_t z) : tmx_layer()
         {
             name = n;
             type = 1;
+            z_order = z;
             so.assign(_so, _so + size);
         };
 

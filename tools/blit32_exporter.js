@@ -216,7 +216,7 @@ function export32Blit(map, fileName) {
 
             var size = layer.width * layer.height;
 
-            file.writeLine("    dang::tmx_tilelayer tl" + layer.name + " = {\"" + layer.name + "\"," + size + ",t" + layer.name + "," + layer.width + "," + layer.height + "};");
+            file.writeLine("    dang::tmx_tilelayer tl" + layer.name + " = {\"" + layer.name + "\"," + size + ",t" + layer.name + "," + layer.width + "," + layer.height + "," + i + "};");
             file.writeLine("    lvl.layers.push_back(std::make_shared<dang::tmx_tilelayer>(tl" + layer.name + "));");
 
         }
@@ -258,7 +258,7 @@ function export32Blit(map, fileName) {
             }
             file.writeLine("    dang::tmx_spriteobject so" + layer.name + "[] = {" + buf + "    };");
 
-            file.writeLine("    dang::tmx_objectlayer l" + layer.name + " = {\"" + layer.name + "\"," + objects.length + ",so" + layer.name + "};");
+            file.writeLine("    dang::tmx_objectlayer l" + layer.name + " = {\"" + layer.name + "\"," + objects.length + ",so" + layer.name + "," + i +"};");
             file.writeLine("    lvl.layers.push_back(std::make_shared<dang::tmx_objectlayer>(l" + layer.name + "));");
 
             //file.writeLine("layer l_" + layer.name + " = {\"" + layer.name + "\"," + layer.opacity + "," + layer.visible + ",1," + "&so_" + sName + "};");
