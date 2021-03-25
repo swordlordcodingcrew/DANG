@@ -10,7 +10,10 @@
 
 namespace dang
 {
+    class CollisionSprite;
+
     using spSprite = std::shared_ptr<Sprite>;
+    using spCollisionSprite = std::shared_ptr<CollisionSprite>;
 
     class BaseHUDLayer : public SpriteLayer
     {

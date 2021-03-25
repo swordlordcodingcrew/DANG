@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "BaseHUDLayer.hpp"
+#include "CollisionSprite.hpp"
 #include "Sprite.hpp"
 #include "Gear.hpp"
 
@@ -35,7 +36,7 @@ namespace dang
 
 #ifdef DANG_DEBUG_DRAW
 
-        RectF vp = gear.getViewport();
+/*        RectF vp = gear.getViewport();
 
         for (std::shared_ptr<Sprite>& spr : _active_sprites)
         {
@@ -59,6 +60,7 @@ namespace dang
                 gear.line_cb(tr, tl, 0, 0, 255, 255); // top -> left
             }
         }
+        */
 #endif
 
         renderInternal(gear);
