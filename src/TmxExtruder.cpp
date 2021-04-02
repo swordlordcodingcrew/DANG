@@ -117,6 +117,11 @@ namespace dang
     {
         const std::shared_ptr<tmx_objectlayer> tol = getTmxObjectLayer(name);
 
+        if (tol == nullptr)
+        {
+            return;
+        }
+
         layer->_name = tol->name;
         layer->_z_order = tol->z_order;
 
