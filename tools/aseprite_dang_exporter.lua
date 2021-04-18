@@ -13,21 +13,19 @@ if not spr then
   return app.alert("There is no active sprite")
 end
 
+-- make sure the image is in colormode indexed, having a palette
+local colorMode = spr.colorMode
+if colorMode ~= ColorMode.INDEXED then
+    -- todo: change mode only after asking the user and she says OK
+    app.alert("Image does not have indexed colours. Trying to change that. Make sure to save the image afterwards if you want to keep changes.")
+    app.command.ChangePixelFormat{ format="indexed", dithering="none" }
+end
+
 -- make sure there is an active image
 local img = app.activeImage
 if not img then
     return app.alert("There is no active image")
 end
-
--- make sure the image is in colormode indexed, having a palette
-local colorMode = spr.colorMode
-if colorMode ~= ColorMode.INDEXED then
-    return app.alert("Image does not have indexed colours")
-    -- todo: change mode after asking the user
-end
-
---app.alert(spr.width)
---app.alert(spr.height)
 
 -- todo: make sure that there is only one palette or ask the user
 local palette = spr.palettes[1]
@@ -57,6 +55,11 @@ for i = 0,#palette-1 do
   	--print("r:" .. color.red .. " g:" .. color.green .." b:" .. color.blue .. " a:" .. color.alpha )
 	io.write(string.format("palette[%d] = blit::Pen(%d, %d, %d, %d);\n", i, color.red, color.green, color.blue, color.alpha))
 end
+
+io.write("\n")
+
+io.write(string.format("spriteWidth = %d;\n", spr.width))
+io.write(string.format("spriteHeight = %d;\n", spr.height))
 
 io.write("\n")
 
