@@ -29,14 +29,12 @@ do
 
 #  python3 -m ttblit --debug  pack --force --config ${CMAKE_CURRENT_SOURCE_DIR}/${FILE} --output ${CMAKE_CURRENT_BINARY_DIR}
 
-  PALETTEFILE=$(echo "$SOURCE" | sed 's/.png/.gpl/')
-  if [ -f "$PALETTEFILE" ]; then
-    python3 -m ttblit image --input_file $SOURCE --palette $PALETTEFILE --strict --input_type image --output_file rsrc/gfx/$FILENAME.h --output_format c_header --symbol_name $NAME --force
-  else
-    # palette does not exist, normal packed file
-    python3 -m ttblit image --input_file $SOURCE --input_type image --output_file rsrc/gfx/$FILENAME.h --output_format c_header --symbol_name $NAME --force
-    echo "rsrc/gfx/$FILENAME.h"
-  fi
+  #PALETTEFILE=$(echo "$SOURCE" | sed 's/.png/.gpl/')
+  #if [ -f "$PALETTEFILE" ]; then
 
-  echo "rsrc/gfx/$FILENAME.h"
+    # switched to our own aseprite exporter
+    ~/dev/apps/aseprite/aseprite -b -v $SOURCE -script-param symbol_name=$NAME -script-param output_file=rsrc/gfx/dump.$FILENAME.h -script ~/.config/aseprite/scripts/aseprite_dang_exporter.lua
+    #python3 -m ttblit image --input_file $SOURCE --input_type image --output_file rsrc/gfx/$FILENAME.h --output_format c_header --symbol_name $NAME --force
+    echo "rsrc/gfx/$FILENAME.h"
+
 done
