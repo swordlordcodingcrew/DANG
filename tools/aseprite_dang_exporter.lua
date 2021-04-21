@@ -1,11 +1,21 @@
+------------------------------------------------------------------------------------------------------
 -- (c) 2021 by SwordLord - the coding crew
--- Add this script to your Aseprite Sprite Editor. With this script you can export your sprites to their cpp representation.
+-- Add this script directly to your Aseprite Sprite Editor to export your sprites into
+-- the grafic format used by the DANG framework as well as the 32blit sdk.
 --
 -- This file is part of the SwordLord DANG! Game Framework. DANG! is made for the 32blit Gaming Hardware.
+------------------------------------------------------------------------------------------------------
 
--- functions
+------------------------------------------------------------------------------------------------------
+-- Helper functions
 
--- actual script
+-- This function returns the filename when given a complete path
+function GetFilename(path)
+    return string.match(path, "^.+/(.+)$")
+end
+
+------------------------------------------------------------------------------------------------------
+-- Actual script
 
 -- Make sure that there is an active image
 local spr = app.activeSprite
@@ -14,6 +24,7 @@ if not spr then
 end
 
 -- make sure the image is in colormode indexed, having a palette
+-- if not, this script tries to convert to indexed colours
 local colorMode = spr.colorMode
 if colorMode ~= ColorMode.INDEXED then
     -- todo: change mode only after asking the user and she says OK
@@ -35,6 +46,7 @@ local colourCount = #palette
 --app.alert(ncolors)
 
 -- todo: ask the user what name she wants to store the export under
+-- only do so if there is no parameter output_file
 
 local outfile = spr.filename .. ".h" -- :split(".")[1]
 
@@ -46,9 +58,14 @@ end
 local f = io.open(outfile, "w")
 io.output(f)
 
--- set default
+-- set symbol name
 -- todo: choose something sensible here. like file name without path or such
 local symbol_name = outfile
+if app.params["output_file"] == nil then
+    -- this is a bit of a hack, since we assume that if output_file was not set
+    -- with a parameter, symbol name will contain a full path otherwise
+    symbol_name = GetFilename(symbol_name)
+end
 
 if app.params["symbol_name"] ~= nil then
     symbol_name = app.params["symbol_name"]
@@ -67,12 +84,12 @@ io.write(string.format("static dang::image_import %s\n", symbol_name))
 io.write("{\n")
 
 -- alpha
-io.write(string.format("    uint8_t{%d},\n", 255))
+io.write(string.format("\tuint8_t{%d},\n", 255))
 -- bounds
-io.write(string.format("    blit::Size{%d, %d},\n", spr.width, spr.height))
+io.write(string.format("\tblit::Size{%d, %d},\n", spr.width, spr.height))
 -- data
-io.write("  std::vector<uint8_t>\n")
-io.write("  {\n")
+io.write("\tstd::vector<uint8_t>\n")
+io.write("\t{\n\t\t")
 
 local counter = 0
 local counterMax = (img.height) * (img.width)
@@ -88,16 +105,16 @@ for h = 0, img.height-1, 1 do
         end
 
 	    counter = counter + 1
-        if counter % 40 == 0 then
-            io.write("\n") 
+        if counter % 40 == 0 and counter < counterMax-1 then
+            io.write("\n\t\t")
         end
     end
 end
-io.write("  },\n")
+io.write("\n\t},\n")
 
 -- palette
-io.write("  std::vector<blit::Pen>\n")
-io.write("  {\n")
+io.write("\tstd::vector<blit::Pen>\n")
+io.write("\t{\n")
 
 local iPaletteCount = #palette
 
@@ -105,14 +122,14 @@ for i = 0,iPaletteCount-1 do
   	local color = palette:getColor(i)
   	--print("r:" .. color.red .. " g:" .. color.green .." b:" .. color.blue .. " a:" .. color.alpha )
 	if i < iPaletteCount-1 then
-		io.write(string.format("    blit::Pen(%d, %d, %d, %d),\n", color.red, color.green, color.blue, color.alpha))
+		io.write(string.format("\t\tblit::Pen(%d, %d, %d, %d),\n", color.red, color.green, color.blue, color.alpha))
 	else
 		-- last line, no comma
-		io.write(string.format("    blit::Pen(%d, %d, %d, %d)\n", color.red, color.green, color.blue, color.alpha))
+		io.write(string.format("\t\tblit::Pen(%d, %d, %d, %d)\n", color.red, color.green, color.blue, color.alpha))
 	end
 end
 
-io.write("  }\n")
+io.write("\t}\n")
 io.write("};\n")
 io.write("\n")
 io.write("// EOF\n")
@@ -120,4 +137,3 @@ io.write("// EOF\n")
 io.close(f)
 
 print("Written your file to: " .. outfile)
---return app.alert("Written your file: " .. filename)
