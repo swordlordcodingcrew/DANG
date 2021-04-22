@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.8)
 project(dang)
 
 # specify the C++ standard
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+#set(CMAKE_CXX_STANDARD 11)
+#set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(SOURCES
         src/dang.hpp
@@ -66,3 +66,13 @@ endif()
 
 #target_include_directories(DANG PUBLIC src)
 target_include_directories (DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(32BLIT_LOC "../32blit-sdk/32blit")
+
+target_include_directories (DANG PUBLIC ${32BLIT_LOC})
+#target_include_directories (DANG PUBLIC ${32BLIT_LOC}/audio)
+#target_include_directories (DANG PUBLIC ${32BLIT_LOC}/engine)
+#target_include_directories (DANG PUBLIC ${32BLIT_LOC}/graphics)
+#target_include_directories (DANG PUBLIC ${32BLIT_LOC}/math)
+#target_include_directories (DANG PUBLIC ${32BLIT_LOC}/types)
+

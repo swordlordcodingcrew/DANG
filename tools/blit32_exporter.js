@@ -278,7 +278,7 @@ function export32Blit(map, fileName) {
     file.writeLine("");
     mTS.forEach(function(value, key)
     {
-        file.writeLine("    lvl.images[\"" + key + "\"] = " + key + ";");
+        file.writeLine("    lvl.images[\"" + key + "\"] = &" + key + ";");
 
     })
 

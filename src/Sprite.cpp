@@ -1,12 +1,16 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include <algorithm>
 #include "Sprite.hpp"
 #include "TmxExtruder.hpp"
 #include "tween/Tweenable.hpp"
 #include "tween/TwAnim.hpp"
 #include "CollisionSpriteLayer.hpp"
+#include "Imagesheet.hpp"
+
+#include <32blit.hpp>
+
+#include <algorithm>
 
 namespace dang
 {
@@ -160,6 +164,12 @@ namespace dang
         spTweenable ret = removeAnimation(suppressCB);
         _animation = new_anim;
         return ret;
+    }
+
+    blit::Rect Sprite::getBlitRect()
+    {
+        blit::Rect sr = _imagesheet->getBlitRect(_img_index);
+        return sr;
     }
 
 

@@ -1,7 +1,12 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-21 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
 #pragma once
+
+#include <types/size.hpp>
+#include <graphics/surface.hpp>
+
+#include <vector>
 
 namespace dang
 {

@@ -10,6 +10,12 @@
 #include <list>
 #include <memory>
 
+// forward declaration
+namespace blit
+{
+    struct Rect;
+}
+
 namespace dang
 {
     struct tmx_spriteobject;
@@ -47,6 +53,7 @@ namespace dang
         void setImagesheet(std::shared_ptr<Imagesheet> is) { _imagesheet = is; }
         void setSize(SizeF& s) {_size = s; }
         void setSize(float w, float h) {_size.w = w; _size.h = h; }
+        blit::Rect getBlitRect();
 
         // pos, vel, acc, gravity
         Vector2F    getPos() { return _pos; }

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <assert.h>
+#include <32blit.hpp>
 #include "dang.hpp"
 #include "TileLayer.hpp"
 #include "Gear.hpp"
@@ -79,12 +80,11 @@ namespace dang
             return;
         }
 
-        gear.set_surface_cb(_imagesheet);
-/*        if (blit::screen.sprites != _imagesheet.get())
+        if (blit::screen.sprites != _imagesheet->getSurface())
         {
-            blit::screen.sprites = _imagesheet.get();
+            blit::screen.sprites = _imagesheet->getSurface();
         }
-*/
+
         PointF vp = gear.getViewport().tl();
         PointU vp_tu{0,0};
         vp_tu.x = int32_t(vp.x) / _tilesize.x;
@@ -101,14 +101,9 @@ namespace dang
                 size_t index = x + (y * _worldsize_tu.w);
                 dang::tmx_tile t = _tiles.at(index);
 
-/*                uint8_t transform = (t.isFlippedHorizontally ? blit::SpriteTransform::HORIZONTAL : uint8_t(0)) |
-                                    (t.isFlippedVertically ? blit::SpriteTransform::VERTICAL : uint8_t(0)) |
-                                    (t.isFlippedAntiDiagonally ? blit::SpriteTransform::XYSWAP : uint8_t(0));
-*/
-                Vector2I  dp(x * _tilesize.w - int32_t(vp.x), y * _tilesize.h - int32_t(vp.y));
-                gear.blit_sprite_cb(_imagesheet->getRect(t.id), dp, t.transform);
-//                blit::Point p(x * _tilesize.w - int32_t(vp.x), y * _tilesize.h - int32_t(vp.y));
-//                blit::screen.blit_sprite(_imagesheet->getRect(t.id), p, transform);
+                blit::Point  dp(x * _tilesize.w - int32_t(vp.x), y * _tilesize.h - int32_t(vp.y));
+                blit::screen.blit_sprite(_imagesheet->getBlitRect(t.id), dp, t.transform);
+
             }
         }
     }

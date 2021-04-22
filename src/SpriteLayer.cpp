@@ -2,6 +2,7 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
+#include <32blit.hpp>
 #include "Gear.hpp"
 #include "SpriteLayer.hpp"
 #include "Sprite.hpp"
@@ -41,11 +42,14 @@ namespace dang
                 RectF dr = vp.intersection(spr->getSizeRect());
                 if (dr.area() != 0)
                 {
-                    gear.set_surface_cb(spr->_imagesheet);
-                    RectU sr = spr->_imagesheet->getRect(spr->_img_index);
+                    if (blit::screen.sprites != spr->_imagesheet->getSurface())
+                    {
+                        blit::screen.sprites = spr->_imagesheet->getSurface();
+                    }
                     Vector2F vec = spr->getPos() - vp.tl();
-                    Vector2I dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
-                    gear.blit_sprite_cb(sr, dp, spr->_transform);
+                    blit::Point dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
+
+                    blit::screen.blit_sprite(spr->getBlitRect(), dp, spr->_transform);
                 }
             }
         }

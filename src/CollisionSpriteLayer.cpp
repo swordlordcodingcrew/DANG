@@ -45,6 +45,7 @@ namespace dang
 
         RectF vp = gear.getViewport();
 
+        blit::screen.pen = blit::Pen(0, 0, 255, 255);
         for (std::shared_ptr<Sprite>& spr : _active_sprites)
         {
             RectF dr = vp.intersection(spr->getSizeRect());
@@ -56,15 +57,15 @@ namespace dang
                 hr.x -= vp.tl().x;
                 hr.y -= vp.tl().y;
 
-                Vector2I tl(int32_t(hr.tl().x), int32_t(hr.tl().y));
-                Vector2I bl(int32_t(hr.bl().x), int32_t(hr.bl().y));
-                Vector2I br(int32_t(hr.br().x), int32_t(hr.br().y));
-                Vector2I tr(int32_t(hr.tr().x), int32_t(hr.tr().y));
+                blit::Point tl(int32_t(hr.tl().x), int32_t(hr.tl().y));
+                blit::Point bl(int32_t(hr.bl().x), int32_t(hr.bl().y));
+                blit::Point br(int32_t(hr.br().x), int32_t(hr.br().y));
+                blit::Point tr(int32_t(hr.tr().x), int32_t(hr.tr().y));
 
-                gear.line_cb(tl, bl, 0, 0, 255, 255); // left -> bottom
-                gear.line_cb(bl, br, 0, 0, 255, 255); // bottom -> right
-                gear.line_cb(br, tr, 0, 0, 255, 255); // right -> top
-                gear.line_cb(tr, tl, 0, 0, 255, 255); // top -> left
+                blit::screen.line(tl, bl); // left -> bottom
+                blit::screen.line(bl, br); // bottom -> right
+                blit::screen.line(br, tr); // right -> top
+                blit::screen.line(tr, tl); // top -> left
             }
         }
 #endif

@@ -3,12 +3,14 @@
 
 #pragma once
 
+#include "tween/Ease.hpp"
+#include "BaseHUDLayer.hpp"
+#include "ImageImport.h"
+
 #include <unordered_map>
 #include <forward_list>
 #include <vector>
 #include <memory>
-#include "tween/Ease.hpp"
-#include "BaseHUDLayer.hpp"
 
 namespace dang
 {
@@ -155,7 +157,7 @@ namespace dang
          * Loading the image must be done on a per level base in the game
          * further info such as cols and rows is stored in the tileset with the same name
          */
-        std::unordered_map<std::string, const uint8_t*> images;
+        std::unordered_map<std::string, image_import*> images;
         std::unordered_map<uint8_t, tmx_tileset> tilesets;
         std::unordered_map<std::string, tmx_tileanimation> tileanimation;
 

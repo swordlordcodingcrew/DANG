@@ -5,6 +5,7 @@
 #include "tween/Ease.hpp"
 #include "tween/TwAnim.hpp"
 #include "TmxExtruder.hpp"
+#include "ImageImport.h"
 #include "Imagesheet.hpp"
 #include "CollisionSpriteLayer.hpp"
 #include "SpriteLayer.hpp"
@@ -32,9 +33,8 @@ namespace dang
 
         for (const std::pair<uint8_t, tmx_tileset>& p : _level->tilesets)
         {
-            const uint8_t *image = _level->images.at(p.second.name);
-            SizeU imgsh_size(p.second.imageWidth, p.second.imageHeight);
-            std::shared_ptr<Imagesheet> is = std::make_shared<Imagesheet>(p.second.name, image, imgsh_size, p.second.cols, p.second.rows);
+            image_import *ii = _level->images.at(p.second.name);
+            std::shared_ptr<Imagesheet> is = std::make_shared<Imagesheet>(p.second.name, ii, p.second.cols, p.second.rows);
             gear.addImagesheet(is);
         }
     }
@@ -61,10 +61,11 @@ namespace dang
 
             if (ts_it != _level->tilesets.end())
             {
-                const uint8_t *image = _level->images.at(name);
-                SizeU imgsh_size(ts_it->second.imageWidth, ts_it->second.imageHeight);
-                std::shared_ptr<Imagesheet> is = std::make_shared<Imagesheet>(name, image, imgsh_size, ts_it->second.cols, ts_it->second.rows);
-//                std::shared_ptr<Imagesheet> is = dang::Imagesheet::loadShared(image, nullptr, ts_it->second.cols, ts_it->second.rows);
+                // TODO: get the image_import struct from the tmx-export
+                image_import *ii = _level->images.at(name);
+//                SizeU imgsh_size(ts_it->second.imageWidth, ts_it->second.imageHeight);
+
+                std::shared_ptr<Imagesheet> is = std::make_shared<Imagesheet>(name, ii, ts_it->second.cols, ts_it->second.rows);
                 return is;
             }
 
