@@ -61,10 +61,7 @@ namespace dang
 
             if (ts_it != _level->tilesets.end())
             {
-                // TODO: get the image_import struct from the tmx-export
                 image_import *ii = _level->images.at(name);
-//                SizeU imgsh_size(ts_it->second.imageWidth, ts_it->second.imageHeight);
-
                 std::shared_ptr<Imagesheet> is = std::make_shared<Imagesheet>(name, ii, ts_it->second.cols, ts_it->second.rows);
                 return is;
             }
