@@ -68,7 +68,7 @@ endif()
 target_include_directories (DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(32BLIT_LOC "../32blit-sdk/32blit")
-include_directories(../32blit-sdk/32blit)
+include_directories(32blit-sdk/32blit)
 
 target_include_directories (DANG PUBLIC ${32BLIT_LOC})
 #target_include_directories (DANG PUBLIC ${32BLIT_LOC}/audio)
