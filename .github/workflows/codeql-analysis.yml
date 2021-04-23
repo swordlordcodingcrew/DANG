@@ -45,9 +45,9 @@ jobs:
       #   languages: go, javascript, csharp, python, cpp, java
 
     - run: |
-      pwd
-      ls -alh
-      ls -alh ..
+        pwd
+        ls -alh
+        ls -alh ..
 
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
