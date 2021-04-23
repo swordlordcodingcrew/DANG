@@ -35,13 +35,14 @@ The documentation will be generated in the /docs/ folder. Check the index file i
 Bear with us while DANG! slowly grows and we start to document and release everything. A quick overview for now:
 
 - Design your levels in [Tiled Editor](https://www.mapeditor.org/).
-- DANG! contains a [Tiled Editor](https://www.mapeditor.org/) script which can be used to export (simple) maps. Instead of generating JSON or XML, the DANG! exporter will write C++ source code.
-- Most of the tiled map can be exported. But the conversion of the spritesheets is still a manual process. You will need to use the 32blit [sprite-builder](https://github.com/pimoroni/32blit-beta/blob/master/tools/sprite-builder) conversion utility to generate a source file per Spritesheet.
+- DANG! contains a [Tiled Editor](https://www.mapeditor.org/) script which can be used to export your maps. Instead of generating JSON or XML, the DANG! exporter will write C++ source code containing the relevant data.
+- If you draw your sprites and graphics with [Aseprite](aseprite.org) (which we think you should), we got you covered. There is an export script to convert your graphics directly into the format used by DANG (and the 32Blit SDK). No need to use the 32blit tool to do so.
+- There is a bash script which helps you in exporting your maps and all relevant sprites in one simple step.
 - Then use the DANG! framework to write your game. DANG! helps with:
     - in-memory representation of your levels.
     - helper functions to manage sprites and objects.
     - out of the box animations as defined in the tiled map.
-    - tween functions to anmiate your sprites.
+    - tween functions to move and animate your sprites.
     - collision detection and (extendable) reactions.
     - support for automated viewport handling.
 
