@@ -517,5 +517,57 @@ namespace dang
 
     }
 
+    /**
+     * Axis Aligned Line-of-Sight (aaLoS). The calculation is done on the horizontal axis (the H).
+     * as eyes the center of the viewer's hotrect is used
+     * @param the viewer
+     * @param target the point to be seen or not
+     * @return 0 for not visible. 1 visible on the right; -1 visible on the left
+     */
+    float CollisionSpriteLayer::aaLoSH(const spCollisionSprite me, const spCollisionSprite target)
+    {
+        Vector2F me_p = me->getHotrectAbs().center();
+        RectF target_hr = target->getHotrectAbs();
+
+        // target too high / too low, ergo not visible
+        if (me_p.y > target_hr.bottom() || me_p.y < target_hr.top())
+        {
+            return 0;
+        }
+
+        float dx_target = std::min(me_p.x - target_hr.left(), me_p.x - target_hr.right());
+
+        for (const spSprite &spr : _active_sprites)
+        {
+            const spCollisionSprite obst = std::dynamic_pointer_cast<CollisionSprite>(spr);
+
+            // this is rather a philosophical condition. Might be removed
+            if (obst->getCollisionResponse(me) == eCollisionResponse::CR_NONE)
+            {
+                continue;
+            }
+
+            // obstacle too high / too low, ergo not an obstacle
+            if (me_p.y > obst->getHotrectAbs().bottom() || me_p.y < obst->getHotrectAbs().top())
+            {
+                continue;
+            }
+
+            float dx_obst = std::min(me_p.x - obst->getHotrectAbs().left(), me_p.x - obst->getHotrectAbs().right());
+
+            if (dx_obst * dx_target < 0) // if not the same sign (not both obstacle and target on the left or both on the right), no obstacle
+            {
+                continue;
+            }
+            else if (dx_obst < dx_target) // both on the same side and distance to obstacle smaller than targer -> obstacle
+            {
+                return 0;
+            }
+
+        }
+
+        return (dx_target > 0) ? 1 : -1;
+    }
+
 
 }

@@ -2,7 +2,7 @@
 // This file is part of the DANG game framework
 
 /**
- * The collision detection algorithm was inspired by largely following sources
+ * The collision detection algorithm was inspired largely by the following sources
  * ===========================================================================
  * - https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect/565282#565282
  *   post of Gareth
@@ -66,7 +66,7 @@ namespace dang
 
         /**
          * loosely based on box2d
-         * COT_RIGID: should not move, Rigid object will not collide with oder rigid object. Example: Wall
+         * COT_RIGID: should not move, Rigid object will not collide with other rigid object. Example: Wall
          * COT_DYNAMIC: moving object. Hero, enemies
          */
         enum eCollObjectType{COT_RIGID, COT_DYNAMIC};
@@ -85,13 +85,14 @@ namespace dang
 
         void handleCollisionDetection(const Gear& gear);
 
-        void projectCollisions(const spCollisionSprite& me, const std::list<spSprite>& sprites, std::forward_list<manifold>& mf_list);
-        bool getRayIntersectionFraction(const Vector2F& origin, const Vector2F& direction, const RectF& aabb, float& ti, Vector2F& normal);
+        void    projectCollisions(const spCollisionSprite& me, const std::list<spSprite>& sprites, std::forward_list<manifold>& mf_list);
+        bool    getRayIntersectionFraction(const Vector2F& origin, const Vector2F& direction, const RectF& aabb, float& ti, Vector2F& normal);
         float   getRayIntersectionFractionOfFirstRay(const Vector2F &originA, const Vector2F &endA, const Vector2F &originB, const Vector2F &endB);
-        void    slide(manifold& mf, bool for_me);
-        void    touch(manifold& mf, bool for_me);
-        void    bounce(manifold& mf, bool for_me);
+        static void    slide(manifold& mf, bool for_me);
+        static void    touch(manifold& mf, bool for_me);
+        static void    bounce(manifold& mf, bool for_me);
 
+        float   aaLoSH(const spCollisionSprite me, const spCollisionSprite target);
 
         std::unordered_set<spSprite> _handled;
         uint16_t                    _iteration{3};       // number of collision solving cycles
