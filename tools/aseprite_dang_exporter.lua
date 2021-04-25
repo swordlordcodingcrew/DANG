@@ -80,15 +80,8 @@ io.write("#include <32blit.hpp>\n")
 io.write("#include <ImageImport.h>\n")
 io.write("\n")
 
-io.write(string.format("static dang::image_import %s\n", symbol_name))
-io.write("{\n")
-
--- alpha
-io.write(string.format("\tuint8_t{%d},\n", 255))
--- bounds
-io.write(string.format("\tblit::Size{%d, %d},\n", spr.width, spr.height))
--- data
-io.write("\tstd::vector<uint8_t>\n")
+-- data static array
+io.write(string.format("static const uint8_t %s_data[] = \n", symbol_name))
 io.write("\t{\n\t\t")
 
 local counter = 0
@@ -110,10 +103,11 @@ for h = 0, img.height-1, 1 do
         end
     end
 end
-io.write("\n\t},\n")
+io.write("\n\t};\n")
 
--- palette
-io.write("\tstd::vector<blit::Pen>\n")
+
+-- palette static array
+io.write(string.format("static const blit::Pen %s_palette[] = \n", symbol_name))
 io.write("\t{\n")
 
 local iPaletteCount = #palette
@@ -122,14 +116,28 @@ for i = 0,iPaletteCount-1 do
   	local color = palette:getColor(i)
   	--print("r:" .. color.red .. " g:" .. color.green .." b:" .. color.blue .. " a:" .. color.alpha )
 	if i < iPaletteCount-1 then
-		io.write(string.format("\t\tblit::Pen(%d, %d, %d, %d),\n", color.red, color.green, color.blue, color.alpha))
+		io.write(string.format("\t\t{%d, %d, %d, %d},\n", color.red, color.green, color.blue, color.alpha))
 	else
 		-- last line, no comma
-		io.write(string.format("\t\tblit::Pen(%d, %d, %d, %d)\n", color.red, color.green, color.blue, color.alpha))
+		io.write(string.format("\t\t{%d, %d, %d, %d}\n", color.red, color.green, color.blue, color.alpha))
 	end
 end
+io.write("\n\t};\n\n\n")
 
-io.write("\t}\n")
+
+-- fill the struct
+io.write(string.format("static dang::image_import %s\n", symbol_name))
+io.write("{\n")
+
+-- alpha
+io.write(string.format("\t.alpha = %d,\n", 255))
+-- bounds
+io.write(string.format("\t.bounds = {%d, %d},\n", spr.width, spr.height))
+-- palette
+io.write(string.format("\t.palette = %s_palette,\n", symbol_name))
+-- data
+io.write(string.format("\t.data = %s_data\n", symbol_name))
+
 io.write("};\n")
 io.write("\n")
 io.write("// EOF\n")

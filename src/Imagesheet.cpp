@@ -30,9 +30,11 @@ namespace dang
 
         update_image_size();
 
-        _surface = new blit::Surface(ii->data.data(), blit::PixelFormat::P, ii->bounds);
+//        _surface = new blit::Surface(ii->data.data(), blit::PixelFormat::P, ii->bounds);
+        _surface = new blit::Surface(const_cast<uint8_t *>(ii->data), blit::PixelFormat::P, ii->bounds);
         _surface->alpha = ii->alpha;
-        _surface->palette = ii->palette.data();
+//        _surface->palette = ii->palette.data();
+        _surface->palette = const_cast<blit::Pen*>(ii->palette);
 
     }
 
