@@ -216,7 +216,7 @@ namespace dang
         spTileLayer             getTileLayer(const std::string& name, Gear& gear, bool addToGear);
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
 
-        const std::vector<tmx_spriteobject>& getSOList(const spSpriteLayer& sl);
+        const std::vector<tmx_spriteobject>& getSOList(const spLayer& sl);
 
         const std::shared_ptr<tmx_objectlayer>     getTmxObjectLayer(const std::string &name);
         const std::shared_ptr<tmx_tilelayer>     getTmxTileLayer(const std::string &name);

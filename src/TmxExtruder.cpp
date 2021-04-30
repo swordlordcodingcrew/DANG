@@ -292,7 +292,7 @@ namespace dang
 
     }
 
-    const std::vector<tmx_spriteobject> &TmxExtruder::getSOList(const spSpriteLayer& sl)
+    const std::vector<tmx_spriteobject> &TmxExtruder::getSOList(const spLayer& sl)
     {
         const std::shared_ptr<tmx_objectlayer> ola = getTmxObjectLayer(sl->_name);
         return ola->so;
