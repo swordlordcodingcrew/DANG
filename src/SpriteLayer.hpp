@@ -9,6 +9,8 @@
 
 namespace dang
 {
+    class Sprite;
+
     using spSprite = std::shared_ptr<Sprite>;
 
     class SpriteLayer : public Layer

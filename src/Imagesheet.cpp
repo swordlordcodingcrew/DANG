@@ -18,7 +18,7 @@ namespace dang
      * @param cols number of columns
      * @param rows number of rows
      */
-    Imagesheet::Imagesheet(const std::string& name, image_import* ii, uint16_t cols, uint16_t rows)
+    Imagesheet::Imagesheet(const std::string& name, const image_import* ii, uint16_t cols, uint16_t rows)
     : _name(name), _image_import(ii), _cols(cols), _rows(rows)
     {
         assert (cols < UINT16_MAX);

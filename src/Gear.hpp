@@ -12,8 +12,6 @@
 namespace dang
 {
     struct tmx_level;
-    struct tmx_tilelayer;
-    struct tmx_objectlayer;
     struct tmx_layer;
 
     class Sprite;
@@ -28,7 +26,7 @@ namespace dang
         Gear();
         virtual ~Gear();
 
-        void    initLevel(const tmx_level& lvl, RectF& viewport);
+        void    initLevel(const tmx_level* lvl, RectF& viewport);
 
         void    update(uint32_t dt);
         void    render(uint32_t time);

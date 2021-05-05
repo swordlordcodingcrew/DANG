@@ -12,7 +12,7 @@
 
 namespace dang
 {
-
+    struct tmx_layer;
     class Sprite;
     class Gear;
 
@@ -39,10 +39,11 @@ namespace dang
 //        RectF           _size{0, 0, 1, 1};
 
     public:     // public variables
-        PointF          _position{0,0};
-        int32_t         _z_order{0};
-        std::string     _name{""};
-        bool            _visible{true};
+        PointF              _position{0,0};
+        int32_t             _z_order{0};
+        std::string         _name{""};
+        bool                _visible{true};
+        const tmx_layer*    _tmx_layer{nullptr};
     };
 
 }

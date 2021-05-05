@@ -21,7 +21,7 @@ namespace dang
     {
     public:
         Imagesheet() = delete;
-        Imagesheet(const std::string& name, image_import* ii, uint16_t cols = 1, uint16_t rows = 1);
+        Imagesheet(const std::string& name, const image_import* ii, uint16_t cols = 1, uint16_t rows = 1);
         ~Imagesheet();
 
         void setCols(uint16_t cols);
@@ -42,12 +42,12 @@ namespace dang
         blit::Surface* getSurface() { return _surface; }
 
     protected:
-        const std::string   _name{};
-        image_import*       _image_import{nullptr};
-        blit::Surface*      _surface{nullptr};
-        uint16_t            _cols{1};
-        uint16_t            _rows{1};
-        SizeU               _img_size{0,0};
+        const std::string       _name{};
+        const image_import*     _image_import{nullptr};
+        blit::Surface*          _surface{nullptr};
+        uint16_t                _cols{1};
+        uint16_t                _rows{1};
+        SizeU                   _img_size{0,0};
 
         void        update_image_size();
     };

@@ -45,16 +45,16 @@ namespace dang
         }
     }
 
-    Sprite::Sprite(const tmx_spriteobject &so, std::shared_ptr<Imagesheet> is)
+    Sprite::Sprite(const tmx_spriteobject* so, std::shared_ptr<Imagesheet> is)
     {
-        _id = so.id; // global
-        _type = so.type;
-        _pos.x = so.x;
-        _pos.y = so.y;
-        _size.w = so.width;
-        _size.h = so.height;
-        _visible = so.visible;
-        _img_index = so.tile;
+        _id = so->id; // global
+        _type = so->type;
+        _pos.x = so->x;
+        _pos.y = so->y;
+        _size.w = so->width;
+        _size.h = so->height;
+        _visible = so->visible;
+        _img_index = so->tile;
         _imagesheet = is;
         _last_pos = _pos;
     }

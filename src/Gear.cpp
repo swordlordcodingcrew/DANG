@@ -23,10 +23,12 @@ namespace dang
     {
     }
 
-    void Gear::initLevel(const tmx_level &lvl, RectF& viewport)
+    void Gear::initLevel(const tmx_level* lvl, RectF& viewport)
     {
-        _world.w = lvl.w.width * lvl.w.tileWidth;
-        _world.h = lvl.w.height * lvl.w.tileHeight;
+        assert(lvl != nullptr);
+
+        _world.w = lvl->w->width * lvl->w->tileWidth;
+        _world.h = lvl->w->height * lvl->w->tileHeight;
 
         // active world defaults to double width and height of world
         _active_world_size.x = 2 * _world.w;

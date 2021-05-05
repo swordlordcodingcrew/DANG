@@ -31,7 +31,7 @@ namespace dang
     public: // functions
         Sprite();
         Sprite(const Sprite& sp);
-        Sprite(const tmx_spriteobject& so, std::shared_ptr<Imagesheet> is);
+        Sprite(const tmx_spriteobject* so, std::shared_ptr<Imagesheet> is);
         virtual ~Sprite();
 
         // tween stuff
