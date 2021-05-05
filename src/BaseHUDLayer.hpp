@@ -6,7 +6,6 @@
 #include <list>
 
 #include "Layer.hpp"
-#include "SpriteLayer.hpp"
 
 namespace dang
 {
@@ -15,7 +14,7 @@ namespace dang
     using spSprite = std::shared_ptr<Sprite>;
     using spCollisionSprite = std::shared_ptr<CollisionSprite>;
 
-    class BaseHUDLayer : public SpriteLayer
+    class BaseHUDLayer : public Layer
     {
     public:
         BaseHUDLayer();
@@ -24,9 +23,18 @@ namespace dang
         void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
+        virtual void    addSprite(spSprite spr);
+        virtual void    removeSprite(spSprite spr);
+        virtual void    removeSpriteById(uint16_t id);
+        virtual spSprite    getSpriteById(uint16_t id);
+
+
     protected:
         virtual void updateInternal(uint32_t dt, const Gear& gear) = 0;
         virtual void renderInternal(const Gear& gear) = 0;
+
+        // all sprites, no active vs inactive as SpriteLayer knows
+        std::list<spSprite> _sprites;
     };
 }
 

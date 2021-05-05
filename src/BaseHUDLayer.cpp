@@ -2,29 +2,26 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
+#include <32blit.hpp>
 #include "BaseHUDLayer.hpp"
 #include "CollisionSprite.hpp"
 #include "Sprite.hpp"
 #include "Gear.hpp"
+#include "Imagesheet.hpp"
 
 namespace dang
 {
-    BaseHUDLayer::BaseHUDLayer() : SpriteLayer(LT_HUDLAYER)
+    BaseHUDLayer::BaseHUDLayer() : Layer(LT_HUDLAYER)
     {
 
     }
 
     void BaseHUDLayer::update(uint32_t dt, const Gear &gear)
     {
-        coreUpdate(dt, gear);
-
-        // then call update
-        for (spSprite& spr : _active_sprites)
+        // call update, updating all sprites, no filter
+        for (spSprite& spr : _sprites)
         {
-            if (gear.getActiveWorld().intersects(spr->getSizeRect()))
-            {
-                spr->update(dt);
-            }
+            spr->update(dt);
         }
 
         updateInternal(dt, gear);
@@ -32,11 +29,30 @@ namespace dang
 
     void BaseHUDLayer::render(const Gear &gear)
     {
-        SpriteLayer::render(gear);
+        RectF vp = {0, 0, gear.getViewport().w, gear.getViewport().h};
+
+        for (std::shared_ptr<Sprite>& spr : _sprites)
+        {
+            if (spr->_visible && spr->_imagesheet != nullptr)
+            {
+                RectF dr = vp.intersection(spr->getSizeRect());
+                if (dr.area() != 0)
+                {
+                    if (blit::screen.sprites != spr->_imagesheet->getSurface())
+                    {
+                        blit::screen.sprites = spr->_imagesheet->getSurface();
+                    }
+                    Vector2F vec = spr->getPos() - vp.tl();
+                    blit::Point dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
+
+                    blit::screen.blit_sprite(spr->getBlitRect(), dp, spr->_transform);
+                }
+            }
+        }
 
 #ifdef DANG_DEBUG_DRAW
 
-/*        RectF vp = gear.getViewport();
+        /*        RectF vp = gear.getViewport();
 
         for (std::shared_ptr<Sprite>& spr : _active_sprites)
         {
@@ -64,6 +80,47 @@ namespace dang
 #endif
 
         renderInternal(gear);
+    }
+
+
+    void BaseHUDLayer::addSprite(std::shared_ptr<Sprite> spr)
+    {
+        if (spr != nullptr)
+        {
+            _sprites.push_front(spr);
+        }
+    }
+
+    void BaseHUDLayer::removeSprite(std::shared_ptr<Sprite> spr)
+    {
+        if (spr != nullptr)
+        {
+            _sprites.remove(spr);
+        }
+    }
+
+    spSprite BaseHUDLayer::getSpriteById(uint16_t id)
+    {
+
+        auto ret = std::find_if(_sprites.begin(), _sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
+        {
+            return first->_id == id;
+        });
+
+        if (ret != _sprites.end())
+        {
+            return (*ret);
+        }
+
+        return nullptr;
+    }
+
+    void BaseHUDLayer::removeSpriteById(uint16_t id)
+    {
+        _sprites.remove_if([&] (const std::shared_ptr<Sprite> &spr)
+                                  {
+                                      return spr->_id == id;
+                                  });
     }
 
 }
