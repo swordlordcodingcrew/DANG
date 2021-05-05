@@ -58,7 +58,6 @@ function export32Blit(map, fileName) {
 
 // world ==============================================================================================================
 
-//    file.writeLine("dang::tmx_level init_" + functionName + "() {");
     file.writeLine("// World ------------------------------------------------");
     file.writeLine("");
     file.writeLine("static const dang::tmx_world " + functionName + "_world = {");
@@ -68,12 +67,6 @@ function export32Blit(map, fileName) {
     file.writeLine("    .tileHeight = " + map.tileHeight);
     file.writeLine("};");
     file.writeLine("");
-
-//    file.writeLine("    dang::tmx_level lvl = {};");
-//    file.writeLine("    lvl.w.width = " + map.width + ";");
-//    file.writeLine("    lvl.w.height = " + map.height + ";");
-//    file.writeLine("    lvl.w.tileWidth = " + map.tileWidth + ";");
-//    file.writeLine("    lvl.w.tileHeight = " + map.tileHeight + ";");
 
 // Tilesets ===========================================================================================================
 
@@ -101,9 +94,6 @@ function export32Blit(map, fileName) {
         }
         file.writeLine("    {\"" + ts.name + "\", &" + ts.name + ", " + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight +
             "," + ts.imageWidth + "," + ts.imageHeight + "," + cols + "," + rows + "}" + comma);
-//        file.writeLine("    // Tileset: " + ts.name + " has ID: " + i);
-//        file.writeLine("    lvl.tilesets[" + i + "] = {\"" + ts.name + "\"," + ts.tileCount + "," + ts.tileWidth + "," + ts.tileHeight +
-//            "," + ts.imageWidth + "," + ts.imageHeight + "," + cols + "," + rows + "};");
     }
     file.writeLine("};");
     file.writeLine("");
@@ -142,10 +132,7 @@ function export32Blit(map, fileName) {
                     buf += "{" + f.tileId + ", " + f.duration + "}";
                 }
 
-//                file.writeLine("    // Animation: " + t.type);
                 file.writeLine("    {\"" + ts.name + "\"," + t.id + ",\"" + t.type + "\",{" + buf + "}},");
-//                file.writeLine("    lvl.tileanimation[\"" + ts.name + "_" + t.type + "\"] = {\"" + ts.name + "\"," + t.id + ",\"" + t.type + "\",{" + buf + "}};");
-//                file.writeLine("    lvl.tileanimation[" + animationId + "] = {\"" + ts.name + "\"," + t.id + ",\"" + t.type + "\",{" + buf + "}};");
                 animationId++;
             }
         }
@@ -167,8 +154,6 @@ function export32Blit(map, fileName) {
 //       R270 = 0b110           6
 
     file.writeLine("// Layers ------------------------------------------------");
-    //file.writeLine("const uint8_t LAYER_COUNT=" + map.layerCount + ";");
-    //file.writeLine("layer* layers[LAYER_COUNT];");
     file.writeLine("");
 
     for (var i = 0; i < map.layerCount; ++i)
@@ -208,30 +193,21 @@ function export32Blit(map, fileName) {
                     }
 
                     buf += " {" + tile.id + ", " + transform + "}";
-//                    buf += tile.id + ",";
-//                    buf += mTS.get(tile.tileset.name) + ",";
-//                    buf += transform;
-//                    buf += "}";
 
                     if (x < layer.width - 1)
                     {
                         buf += ",";
-//                        buf += ("\n");
                     }
                 }
 
                 if (y < layer.height - 1)
                 {
-                    //file.write(",");
                     buf += ",";
                 }
 
                 buf += ("\n");
             }
-            //file.writeLine("};");
-            //file.writeLine("layer l_" + layer.name + " = {\"" + layer.name + "\"," + layer.opacity + "," + layer.visible + ",0," + "t_" + layer.name + "};");
 
-//            file.writeLine("    dang::tmx_tile t" + layer.name + "[] = {" + buf + " };");
             file.writeLine("static const dang::tmx_tile " + functionName + "_" + layer.name + "_tiles[] = {");
             file.writeLine(buf);
             file.writeLine("};");
@@ -254,55 +230,40 @@ function export32Blit(map, fileName) {
             file.writeLine("};");
             file.writeLine("");
 
-//            var size = layer.width * layer.height;
-//            file.writeLine("    dang::tmx_tilelayer tl" + layer.name + " = {\"" + layer.name + "\"," + size + ",t" + layer.name + "," + layer.width + "," + layer.height + "," + i + "};");
-//            file.writeLine("    lvl.layers.push_back(std::make_shared<dang::tmx_tilelayer>(tl" + layer.name + "));");
         }
         else if (layer.isObjectLayer)
         {
-//            file.writeLine("");
             file.writeLine("// Objects for layer: " + layer.name);
 
             var buf = "\n";
 
             objects = layer.objects
 
-//	    file.writeLine("	// number of objects: " + objects.length)
-
             for (var j = 0; j < objects.length; ++j)
             {
                 o = objects[j]
-//		        file.writeLine(j + ": " + o.type + "; " + o.tile)
                 sName = o.name;
                 if (sName == "")
                 {
                     sName = o.id;
                 }
 
-                //file.writeLine("spriteobject so_" + sName + " = {" + o.id + ",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + "," + mTS.get(o.tile.tileset.name) + "," + o.tile.id + "};");
-//                var tileset_ref = "0";
                 var tileset_ref = "";
                 var tile_id = "0";
                 if (o.tile != null)
                 {
-//                    tileset_ref = mTS.get(o.tile.tileset.name)
                     tileset_ref = o.tile.tileset.name;
                     tile_id = o.tile.id;
                 }
                 buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + "}";
                 if (j < objects.length - 1)
                 {
-                    //file.write(",");
                     buf += ",";
                 }
                 buf += "\n";
 
             }
 
-//            file.writeLine("    dang::tmx_spriteobject so" + layer.name + "[] = {" + buf + "    };");
-//            file.writeLine("    dang::tmx_objectlayer l" + layer.name + " = {\"" + layer.name + "\"," + objects.length + ",so" + layer.name + "," + i +"};");
-//            file.writeLine("    lvl.layers.push_back(std::make_shared<dang::tmx_objectlayer>(l" + layer.name + "));");
-            //file.writeLine("layer l_" + layer.name + " = {\"" + layer.name + "\"," + layer.opacity + "," + layer.visible + ",1," + "&so_" + sName + "};");
             file.writeLine("static const dang::tmx_spriteobject " + functionName + "_" + layer.name + "_objects[] = {");
             file.writeLine(buf);
             file.writeLine("};");
@@ -364,20 +325,6 @@ function export32Blit(map, fileName) {
     file.writeLine("");
 
 
-/*    file.writeLine("");
-    file.writeLine("// Images ------------------------------------------------");
-    file.writeLine("");
-    mTS.forEach(function(value, key)
-    {
-        file.writeLine("    lvl.images[\"" + key + "\"] = &" + key + ";");
-
-    })
-
-    for (var i = 0; i < map.layerCount; ++i) {
-        var layer = map.layerAt(i);
-        //file.writeLine("    layers[" + i + "] = &l_" + layer.name + ";");
-    }
-*/
 
 // wash hands ==========================================================================================================
 
