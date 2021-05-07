@@ -46,8 +46,11 @@ namespace dang
                     {
                         blit::screen.sprites = spr->_imagesheet->getSurface();
                     }
-                    Vector2F vec = spr->getPos() - vp.tl();
-                    blit::Point dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
+                    blit::Point dp;
+                    dp.x  = int32_t(std::floor(spr->getPos().x) - std::floor(vp.tl().x));
+                    dp.y  = int32_t(std::floor(spr->getPos().y) - std::floor(vp.tl().y));
+
+//                    blit::Point dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
 
                     blit::screen.blit_sprite(spr->getBlitRect(), dp, spr->_transform);
                 }

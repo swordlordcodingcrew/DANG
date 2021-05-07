@@ -108,7 +108,7 @@ namespace dang
                 size_t index = x + (y * _worldsize_tu.w);
                 dang::tmx_tile t = _tiles.at(index);
 
-                blit::Point  dp(x * _tilesize.w - int32_t(vp.x), y * _tilesize.h - int32_t(vp.y));
+                blit::Point  dp(x * _tilesize.w - int32_t(std::floor(vp.x)), y * _tilesize.h - int32_t(std::floor(vp.y)));
                 blit::screen.blit_sprite(_imagesheet->getBlitRect(t.id), dp, t.transform);
 
             }
