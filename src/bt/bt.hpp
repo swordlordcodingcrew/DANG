@@ -2,8 +2,10 @@
 // This file is part of the DANG game framework
 
 // This file is based on beehive - https://github.com/crust/beehive
-
 #pragma once
+
+#ifndef BEEHIVE_BEHAVIOR_TREE_HPP
+#define BEEHIVE_BEHAVIOR_TREE_HPP
 
 #include <algorithm>
 #include <cassert>
@@ -15,9 +17,9 @@
 
 namespace dang
 {
-    struct SpriteState
+    struct SpriteContext
     {
-        bool is_hungry{true};
+        bool is_hungry{false};
         void eat_food() {};
 
         bool has_food() const
@@ -30,7 +32,7 @@ namespace dang
 
     struct EnemiesAroundChecker
     {
-        bool operator()(SpriteState &) const {
+        bool operator()(std::shared_ptr<SpriteContext>) const {
             return _enemies_around;
         }
         bool _enemies_around{false};
@@ -65,23 +67,20 @@ namespace dang
         size_t _resume_index{};
         size_t _offset{};
 
-        template<typename C, typename A>
         friend class Tree;
-        template<typename C>
         friend struct Node;
     };
 
 /*!
  \brief A handle on a process function. This should not be built directly, see #beehive::Builder.
 */
-    template<typename C>
     struct Node
     {
-        using ProcessFunction = std::function<Status(C &context, Node const &self, TreeState &state)>;
+        using ProcessFunction = std::function<Status(std::shared_ptr<SpriteContext> context, Node const &self, std::shared_ptr<TreeState> state)>;
 
         Node(ProcessFunction process): _process(move(process)) {}
 
-        Status process(C &context, TreeState &state) const
+        Status process(std::shared_ptr<SpriteContext> context, std::shared_ptr<TreeState> state) const
         {
             return _process(context, *this, state);
         }
@@ -131,22 +130,21 @@ namespace dang
         /*!
             \brief Updates the given tree state so that the tree can resume at this (composite) node with the child generator starting at the given child index.
         */
-        void save_state_at_child_index(TreeState &state, size_t child_index) const {
-            state._resume_index = index();
+        void save_state_at_child_index(std::shared_ptr<TreeState> state, size_t child_index) const {
+            state->_resume_index = index();
             assert(child_index < child_count());
-            state._offset = child_index;
+            state->_offset = child_index;
         }
 
         /*!
             \brief Clears the given tree state so that subsequent process() calls do not resume.
         */
-        void clear_state(TreeState &state) const {
-            state._resume_index = 0;
-            state._offset = 0;
+        void clear_state(std::shared_ptr<TreeState> state) const {
+            state->_resume_index = 0;
+            state->_offset = 0;
         }
 
     private:
-        template<typename Context, typename A>
         friend class Tree;
 
         size_t _index{};
@@ -155,8 +153,7 @@ namespace dang
         ProcessFunction _process;
     };
 
-    template<typename C>
-    using Generator = std::function<Node<C> const *()>;
+    using Generator = std::function<Node const *()>;
 
 /*!
  \brief Composites define how to run the process() function on the child range.
@@ -170,14 +167,12 @@ namespace dang
    The child pointer returned is only valid within the scope of the composite function
    body.
 */
-    template<typename C>
-    using Composite = std::function<Status(C &, Generator<C> const &, TreeState &)>;
+    using Composite = std::function<Status(std::shared_ptr<SpriteContext>, Generator const &, std::shared_ptr<TreeState>)>;
 
 /*!
  \brief Composite that returns success if all children return success.
 */
-    template<typename C>
-    Status sequence(C &context, Generator<C> const &next_child, TreeState &state)
+    Status sequence(std::shared_ptr<SpriteContext> context, Generator const &next_child, std::shared_ptr<TreeState> state)
     {
         while (auto const *child = next_child())
         {
@@ -193,8 +188,7 @@ namespace dang
 /*!
  \brief Composite that returns success on the first successful call.
 */
-    template<typename C>
-    Status selector(C &context, Generator<C> const &next_child, TreeState &state)
+    Status selector(std::shared_ptr<SpriteContext> context, Generator const &next_child, std::shared_ptr<TreeState> state)
     {
         while (auto const *child = next_child())
         {
@@ -210,14 +204,12 @@ namespace dang
 /*!
  \brief A decorator is a composite that may only have a single child.
 */
-    template<typename C>
-    using Decorator = std::function<Status(C &context, Node<C> const &child, TreeState &state)>;
+    using Decorator = std::function<Status(std::shared_ptr<SpriteContext> context, Node const &child, std::shared_ptr<TreeState> state)>;
 
 /*!
  \brief Decorator that just returns the result of the child. Not very useful...
 */
-    template<typename C>
-    Status forwarder(C &context, Node<C> const &child, TreeState &state)
+    Status forwarder(std::shared_ptr<SpriteContext> context, Node const &child, std::shared_ptr<TreeState> state)
     {
         return child.process(context, state);
     }
@@ -225,10 +217,10 @@ namespace dang
 /*!
  \brief Decorator that inverts the result of its child node.
 */
-    template<typename C>
-    Status inverter(C &context, Node<C> const &child, TreeState &state)
+    Status inverter(std::shared_ptr<SpriteContext> context, Node const &child, std::shared_ptr<TreeState> state)
     {
         const auto status = child.process(context, state);
+        // this is to allow for the process function to also return a bool which is then translated to Status
         if (status == Status::RUNNING)
         {
             return status;
@@ -239,31 +231,25 @@ namespace dang
 /*!
  \brief Decorator that returns success regardless of the child result.
 */
-    template<typename C>
-    Status succeeder(C &context, Node<C> const &child, TreeState &state)
+    Status succeeder(std::shared_ptr<SpriteContext> context, Node const &child, std::shared_ptr<TreeState> state)
     {
         child.process(context, state);
         return Status::SUCCESS;
     }
 
 
-    template<typename ReturnType, typename ContextType>
-    using BasicLeaf = std::function<ReturnType(ContextType &context)>; //!< Leaf nodes are the `process()` function taking the mutable context and must return a status.
+    //using BasicLeaf = std::function<Status(std::shared_ptr<SpriteContext> context)>; //!< Leaf nodes are the `process()` function taking the mutable context and must return a status.
 
-    template<typename C>
-    using Leaf = BasicLeaf<Status, C>; //!< A Leaf function takes a Context & and returns a Status.
+    using Leaf = std::function<Status(std::shared_ptr<SpriteContext> context)>; //!< A Leaf function takes a Context & and returns a Status.
 
-    template<typename C>
-    using BoolLeaf = BasicLeaf<bool, C>; //!< A Leaf function returning bool returns SUCCESS on true and FAILURE on false. It is not possible to return RUNNING from such a function.
+    using BoolLeaf = std::function<bool(std::shared_ptr<SpriteContext> context)>;//BasicLeaf<bool, std::shared_ptr<SpriteContext>>; //!< A Leaf function returning bool returns SUCCESS on true and FAILURE on false. It is not possible to return RUNNING from such a function.
 
-    template<typename C>
-    using VoidLeaf = BasicLeaf<void, C>; //!< A Leaf function returning anything other than bool or Status can be added using #beehive::BuilderBase::void_leaf. The return value is ignored and SUCCESS is returned.
+    using VoidLeaf = std::function<void(std::shared_ptr<SpriteContext> context)>;//BasicLeaf<void, std::shared_ptr<SpriteContext>>; //!< A Leaf function returning anything other than bool or Status can be added using #beehive::BuilderBase::void_leaf. The return value is ignored and SUCCESS is returned.
 
 /*!
  \brief A leaf that always succeeds. Not very useful...
 */
-    template<typename C>
-    Status noop(C &)
+    Status noop(std::shared_ptr<SpriteContext>)
     {
         return Status::SUCCESS;
     }
@@ -271,26 +257,23 @@ namespace dang
 /*!
  \brief The behavior tree class which passes the ContextType around. See #beehive::Builder for making one.
 */
-    template<typename ContextType, typename A = std::allocator<Node<ContextType>>>
     class Tree
     {
     public:
-        using Context = ContextType;
-
         /*!
          \brief Process with the given context reference.
         */
-        Status process(Context &context) const;
+        Status process(std::shared_ptr<SpriteContext> context) const;
 
         /*!
          \brief Process with the given state and context reference.
         */
-        Status process(TreeState &state, Context &context) const;
+        Status process(std::shared_ptr<TreeState> state, std::shared_ptr<SpriteContext> context) const;
 
         /*!
          \brief Retrieves the nodes, for debugging purposes.
         */
-        std::vector<Node<Context>, A> const &nodes() const {
+        std::vector<Node> const &nodes() const {
             return _nodes;
         }
 
@@ -301,31 +284,28 @@ namespace dang
             return {_id};
         }
 
-    //private:
+    private:
         static size_t id() {
             static size_t id{};
             return ++id;
         }
 
-        template<typename C, typename Allocator>
         friend class BuilderBase;
-
-        template<typename C, typename Allocator>
         friend class Builder;
 
         /*!
          \brief Constructs a tree with the given nodes.
             See #beehive::Builder.
         */
-        Tree(std::vector<Node<Context>, A> nodes);
+        Tree(std::vector<Node> nodes);
 
-        std::vector<Node<Context>, A> _nodes;
+        std::vector<Node> _nodes;
         size_t _id{id()};
+
+        // redeclared -> Status process(std::shared_ptr<SpriteContext> context) const;
     };
 
-    template<typename C, typename A>
-    Tree<C, A>::Tree(std::vector<Node<Context>, A> nodes)
-            : _nodes(move(nodes))
+    Tree::Tree(std::vector<Node> nodes) : _nodes(move(nodes))
     {
         size_t i = 0;
         for (auto &node : _nodes) {
@@ -333,44 +313,36 @@ namespace dang
         }
     }
 
-    template<typename C, typename A>
-    Status Tree<C, A>::process(Context &context) const
+    Status Tree::process(std::shared_ptr<SpriteContext> context) const
     {
         TreeState state{_id};
-        return _nodes[0].process(context, state);
+        // TODO next line is a hack
+        return _nodes[0].process(context, std::make_shared<TreeState>(state));
     }
 
-    template<typename C, typename A>
-    Status Tree<C, A>::process(TreeState &state, Context &context) const
+    Status Tree::process(std::shared_ptr<TreeState> state, std::shared_ptr<SpriteContext> context) const
     {
-        assert(state._tree_id == _id); // another tree's state used with this tree
-        return _nodes.at(state.resume_index()).process(context, state);
+        assert(state->_tree_id == _id); // another tree's state used with this tree
+        return _nodes.at(state->resume_index()).process(context, state);
     }
 
-/// @cond
-    template<typename C>
-    auto make_branch(Decorator<C> f) -> typename Node<C>::ProcessFunction;
+    /// @cond
+    auto make_branch(Decorator f) -> typename Node::ProcessFunction;
 
-    template<typename C>
-    auto make_branch(Composite<C> f) -> typename Node<C>::ProcessFunction;
+    auto make_branch(Composite f) -> typename Node::ProcessFunction;
 
-    template<typename C>
-    auto make_leaf(Leaf<C> f) -> typename Node<C>::ProcessFunction;
+    auto make_leaf(Leaf f) -> typename Node::ProcessFunction;
 
-    template<typename C>
-    auto make_leaf(VoidLeaf<C> f) -> typename Node<C>::ProcessFunction;
+    auto make_leaf(VoidLeaf f) -> typename Node::ProcessFunction;
 
-    template<typename C>
-    auto make_leaf(BoolLeaf<C> f) -> typename Node<C>::ProcessFunction;
+    auto make_leaf(BoolLeaf f) -> typename Node::ProcessFunction;
 /// @endcond
 
-    template<typename C, typename A>
     class Builder;
 
 /*!
  \brief A helper for building trees which can be instantiated as #beehive::Builder.
 */
-    template<typename C, typename A>
     class BuilderBase
     {
     public:
@@ -387,36 +359,36 @@ namespace dang
 
          \note The composite builder must call end() to signify end of child list.
         */
-        BuilderBase composite(Composite<C> composite);
+        BuilderBase composite(Composite composite);
 
         /*!
          \brief Adds the given decorator to the tree. Decorators have exactly one child.
 
          \note The decorator builder must call end() to signify the end of the child list.
         */
-        BuilderBase decorator(Decorator<C> decorator);
+        BuilderBase decorator(Decorator decorator);
 
         // Note: "no known conversion" warnings here could indicate that you forgot to return something from your lambda.
         /*!
          \brief Adds the given leaf to the tree. Leaves have no children.
         */
-        BuilderBase &leaf(Leaf<C> leaf);
+        BuilderBase &leaf(Leaf leaf);
 
         /*!
          \brief Convenience wrapper so that bool functions can be used. Translates true
             result to Status::SUCCESS, false to Status::FAILURE and never returns Status:RUNNING.
         */
-        BuilderBase &leaf(BoolLeaf<C> leaf);
+        BuilderBase &leaf(BoolLeaf leaf);
 
         /*!
          \brief Convenience wrapper for a void function, or really a function returning any type other than bool or Status. This always returns Status::SUCCESS.
         */
-        BuilderBase &void_leaf(VoidLeaf<C> leaf);
+        BuilderBase &void_leaf(VoidLeaf leaf);
 
         /*!
          \brief Copies another tree as a subtree at the current node.
         */
-        BuilderBase &tree(Tree<C> const &subtree);
+        BuilderBase &tree(Tree const &subtree);
 
         /*!
          \brief Closes the composite or decorator branch.
@@ -429,13 +401,13 @@ namespace dang
          \brief Finalizes the tree by returning a copy. This will assert if done while
             a decorator or composite branch is still 'open'.
         */
-        virtual Tree<C> build() const &;
+        virtual Tree build() const &;
 
         /*!
          \brief Finalizes the tree by returning a tree constructed with the builder's
             root node. The builder is then invalid.
         */
-        virtual Tree<C> build() &&;
+        virtual Tree build() &&;
 
         /*!
          \brief Shorthand for `composite(&sequence<C>)`.
@@ -465,16 +437,19 @@ namespace dang
                 , _type(type)
         {}
 
-        Node<C> &node() {
+        Node &node()
+        {
             return nodes()[_offset];
         }
 
-        virtual std::vector<Node<C>, A> &nodes() {
+        virtual std::vector<Node> &nodes()
+        {
             return _parent.nodes();
         }
 
     private:
-        size_t add_child(typename Node<C>::ProcessFunction &&fn) {
+        size_t add_child(typename Node::ProcessFunction &&fn)
+        {
             node().add_child();
             nodes().emplace_back(std::move(fn));
             return nodes().size() - 1;
@@ -499,23 +474,15 @@ namespace dang
     This Builder pattern is inspired by arvidsson's implementation, BrainTree.
  \sa #beehive::BuilderBase
 */
-    template<typename C, typename Allocator = std::allocator<Node<C>>>
-    class Builder
-            : public BuilderBase<C, Allocator>
+    class Builder : public BuilderBase
     {
     public:
         /*!
-         \brief The context type.
-        */
-        using Context = C;
-
-        /*!
          \brief Begins construction of a tree.
         */
-        Builder()
-                : BuilderBase<C, Allocator>(*this, 0, BuilderBase<C, Allocator>::Type::DECORATOR)
+        Builder() : BuilderBase(*this, 0, BuilderBase::Type::DECORATOR)
         {
-            auto root = make_branch(Decorator<C>(&forwarder<C>));
+            auto root = make_branch(Decorator(&forwarder));
             _nodes.emplace_back(std::move(root));
         }
 
@@ -524,31 +491,31 @@ namespace dang
         Builder &operator=(Builder const &) = delete; //!< Deleted copy assignment operator.
         Builder &operator=(Builder &&) = default; //!< Move assignment operator.
 
-        virtual Tree<C> build() const & override
+        virtual Tree build() const & override
         {
             assert(_nodes[0].child_count() > 0); // must have at least one leaf node added
             return {_nodes};
         }
 
-        virtual Tree<C> build() && override
+        virtual Tree build() && override
         {
             assert(_nodes[0].child_count() > 0); // must have at least one leaf node added
             return {std::move(_nodes)};
         }
 
     private:
-        virtual std::vector<Node<C>, Allocator> &nodes() override {
+        virtual std::vector<Node> &nodes() override
+        {
             return _nodes;
         }
 
-        std::vector<Node<C>, Allocator> _nodes;
+        std::vector<Node> _nodes;
     };
 
 /// @cond
-    template<typename C>
-    auto make_branch(Decorator<C> f) -> typename Node<C>::ProcessFunction
+    auto make_branch(Decorator f) -> typename Node::ProcessFunction
     {
-        return [process = move(f)](C &context, Node<C> const &self, TreeState &state)
+        return [process = move(f)](std::shared_ptr<SpriteContext> context, Node const &self, std::shared_ptr<TreeState> state)
         {
             assert(self.child_count() == 1); // invariant violation!
             auto &child = *(&self + 1);
@@ -556,19 +523,18 @@ namespace dang
         };
     }
 
-    template<typename C>
-    auto make_branch(Composite<C> f) -> typename Node<C>::ProcessFunction
+    auto make_branch(Composite f) -> typename Node::ProcessFunction
     {
-        return [process = move(f)](C &context, Node<C> const &self, TreeState &state)
+        return [process = move(f)](std::shared_ptr<SpriteContext> context, Node const &self, std::shared_ptr<TreeState> state)
         {
             auto i = 0;
             auto *child = self.first_child();
-            if (self.index() == state.resume_index()) {
-                for (; i < state.offset(); ++i) {
+            if (self.index() == state->resume_index()) {
+                for (; i < state->offset(); ++i) {
                     child = child->next_sibling();
                 }
             }
-            auto generator = [&self, &i, &child]() -> Node<C> const * {
+            auto generator = [&self, &i, &child]() -> Node const * {
                 if (i++ == self.child_count()) {
                     return nullptr;
                 }
@@ -586,90 +552,79 @@ namespace dang
         };
     }
 
-    template<typename C>
-    auto make_leaf(Leaf<C> f) -> typename Node<C>::ProcessFunction
+    auto make_leaf(Leaf f) -> typename Node::ProcessFunction
     {
-        return [process = move(f)](C &context, Node<C> const &self, TreeState &state)
+        return [process = move(f)](std::shared_ptr<SpriteContext> context, Node const &self, std::shared_ptr<TreeState> state)
         {
             assert(self.child_count() == 0); // invariant violation!
             return process(context);
         };
     }
 
-    template<typename C>
-    auto make_leaf(VoidLeaf<C> f) -> typename Node<C>::ProcessFunction
+    auto make_leaf(VoidLeaf f) -> typename Node::ProcessFunction
     {
-        return make_leaf(Leaf<C>{[void_process = move(f)](C &context)
-                                 {
-                                     void_process(context);
-                                     return Status::SUCCESS;
-                                 }});
+        return make_leaf(Leaf{[void_process = move(f)](std::shared_ptr<SpriteContext> context)
+                             {
+                                 void_process(context);
+                                 return Status::SUCCESS;
+                             }});
     }
 
-    template<typename C>
-    auto make_leaf(BoolLeaf<C> f) -> typename Node<C>::ProcessFunction
+    auto make_leaf(BoolLeaf f) -> typename Node::ProcessFunction
     {
-        return make_leaf(Leaf<C>{[bool_process = move(f)](C &context)
-                                 {
-                                     const bool result = bool_process(context);
-                                     return result ? Status::SUCCESS : Status::FAILURE;
-                                 }});
+        return make_leaf(Leaf{[bool_process = move(f)](std::shared_ptr<SpriteContext> context)
+                             {
+                                 const bool result = bool_process(context);
+                                 return result ? Status::SUCCESS : Status::FAILURE;
+                             }});
     }
 
-    template<typename C, typename A>
-    auto BuilderBase<C, A>::composite(Composite<C> composite) -> BuilderBase
+    auto BuilderBase::composite(Composite composite) -> BuilderBase
     {
         return _branch(std::move(composite));
     }
 
-    template<typename C, typename A>
-    auto BuilderBase<C, A>::decorator(Decorator<C> decorator) -> BuilderBase
+    auto BuilderBase::decorator(Decorator decorator) -> BuilderBase
     {
         return _branch(std::move(decorator));
     }
 
-    template<typename C, typename A>
     template<typename BranchType>
-    auto BuilderBase<C, A>::_branch(BranchType &&branch) -> BuilderBase
+    auto BuilderBase::_branch(BranchType &&branch) -> BuilderBase
     {
         assert((_type != Type::DECORATOR) || node().child_count() == 0); // Decorators may only have one child!
         auto type = std::is_same<
                 typename std::decay<BranchType>::type,
-                Decorator<C>
+                Decorator
         >::value ? Type::DECORATOR : Type::COMPOSITE;
         auto child_offset = add_child(make_branch(move(branch)));
         return {*this, child_offset, type};
     }
 
-    template<typename C, typename A>
     template<typename LeafType>
-    auto BuilderBase<C, A>::_leaf(LeafType &&leaf) -> BuilderBase &
+    auto BuilderBase::_leaf(LeafType &&leaf) -> BuilderBase &
     {
         assert((_type != Type::DECORATOR) || node().child_count() == 0); // Decorators may only have one child!
         add_child(make_leaf(move(leaf)));
         return *this;
     }
 
-    template<typename C, typename A>
-    auto BuilderBase<C, A>::leaf(Leaf<C> leaf) -> BuilderBase &
+    auto BuilderBase::leaf(Leaf leaf) -> BuilderBase &
     {
         return _leaf(std::move(leaf));
     }
 
-    template<typename C, typename A>
-    auto BuilderBase<C, A>::leaf(BoolLeaf<C> leaf) -> BuilderBase &
+    auto BuilderBase::leaf(BoolLeaf leaf) -> BuilderBase &
     {
         return _leaf(std::move(leaf));
     }
 
-    template<typename C, typename A>
-    auto BuilderBase<C, A>::void_leaf(VoidLeaf<C> leaf) -> BuilderBase &
+    auto BuilderBase::void_leaf(VoidLeaf leaf) -> BuilderBase &
     {
         return _leaf(std::move(leaf));
     }
 
-    template<typename C, typename A>
-    auto BuilderBase<C, A>::tree(Tree<C> const &subtree) -> BuilderBase &
+    auto BuilderBase::tree(Tree const &subtree) -> BuilderBase &
     {
         assert((_type != Type::DECORATOR) || node().child_count() == 0); // Decorators may only have one child!
         auto const &subtree_nodes = subtree.nodes();
@@ -678,32 +633,28 @@ namespace dang
         return *this;
     }
 
-    template<typename C, typename A>
-    auto BuilderBase<C, A>::end() -> BuilderBase &
+    auto BuilderBase::end() -> BuilderBase &
     {
         assert(node().child_count() > 0); // can't have composite/decorator without children!
         return _parent;
     }
 
-    template<typename C, typename A>
-    auto BuilderBase<C, A>::build() const & -> Tree<C>
+    auto BuilderBase::build() const & -> Tree
     {
         assert(false); // unterminated tree!
         return {{}};
     }
 
-    template<typename C, typename A>
-    auto BuilderBase<C, A>::build() && -> Tree<C>
+    auto BuilderBase::build() && -> Tree
     {
         assert(false); // unterminated tree!
         return {{}};
     }
 
 #define BH_IMPLEMENT_SHORTHAND(Type, Name) \
-    template<typename Context, typename A> \
-    auto BuilderBase<Context, A>::Name() -> BuilderBase \
+    auto BuilderBase::Name() -> BuilderBase \
     { \
-        return _branch(Type<Context>{&dang::Name<Context>}); \
+        return _branch(Type{&dang::Name}); \
     }
 
     BH_IMPLEMENT_SHORTHAND(Composite, sequence);
@@ -715,3 +666,4 @@ namespace dang
 /// @endcond
 
 } // namespace dang
+#endif
