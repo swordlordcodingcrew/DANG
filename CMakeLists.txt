@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCES
         src/dang.hpp
+        src/bt/bt.cpp
         src/bt/bt.hpp
         src/tween/Tweenable.cpp
         src/tween/Tweenable.hpp

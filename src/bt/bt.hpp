@@ -4,9 +4,6 @@
 // This file is based on beehive - https://github.com/crust/beehive
 #pragma once
 
-#ifndef BEEHIVE_BEHAVIOR_TREE_HPP
-#define BEEHIVE_BEHAVIOR_TREE_HPP
-
 #include <algorithm>
 #include <cassert>
 #include <functional>
@@ -17,9 +14,11 @@
 
 namespace dang
 {
-    struct SpriteContext
+    class SpriteContext
     {
-        bool is_hungry{false};
+    public:
+
+        bool is_hungry{true};
         void eat_food() {};
 
         bool has_food() const
@@ -30,8 +29,10 @@ namespace dang
         bool _has_food{true};
     };
 
-    struct EnemiesAroundChecker
+    class EnemiesAroundChecker
     {
+    public:
+
         bool operator()(std::shared_ptr<SpriteContext>) const {
             return _enemies_around;
         }
@@ -74,8 +75,10 @@ namespace dang
 /*!
  \brief A handle on a process function. This should not be built directly, see #beehive::Builder.
 */
-    struct Node
+    class Node
     {
+    public:
+
         using ProcessFunction = std::function<Status(std::shared_ptr<SpriteContext> context, Node const &self, std::shared_ptr<TreeState> state)>;
 
         Node(ProcessFunction process): _process(move(process)) {}
@@ -102,9 +105,7 @@ namespace dang
             return _descendant_count;
         }
 
-        void add_child() {
-            ++_child_count;
-        }
+        void add_child();
 
         Node const *first_child() const {
             if (_child_count == 0) {
@@ -172,34 +173,12 @@ namespace dang
 /*!
  \brief Composite that returns success if all children return success.
 */
-    Status sequence(std::shared_ptr<SpriteContext> context, Generator const &next_child, std::shared_ptr<TreeState> state)
-    {
-        while (auto const *child = next_child())
-        {
-            auto status = child->process(context, state);
-            if (status != Status::SUCCESS)
-            {
-                return status;
-            }
-        }
-        return Status::SUCCESS;
-    }
+    Status sequence(std::shared_ptr<SpriteContext> context, Generator const &next_child, std::shared_ptr<TreeState> state);
 
 /*!
  \brief Composite that returns success on the first successful call.
 */
-    Status selector(std::shared_ptr<SpriteContext> context, Generator const &next_child, std::shared_ptr<TreeState> state)
-    {
-        while (auto const *child = next_child())
-        {
-            auto status = child->process(context, state);
-            if (status != Status::FAILURE)
-            {
-                return status;
-            }
-        }
-        return Status::FAILURE;
-    }
+    Status selector(std::shared_ptr<SpriteContext> context, Generator const &next_child, std::shared_ptr<TreeState> state);
 
 /*!
  \brief A decorator is a composite that may only have a single child.
@@ -209,36 +188,17 @@ namespace dang
 /*!
  \brief Decorator that just returns the result of the child. Not very useful...
 */
-    Status forwarder(std::shared_ptr<SpriteContext> context, Node const &child, std::shared_ptr<TreeState> state)
-    {
-        return child.process(context, state);
-    }
+    Status forwarder(std::shared_ptr<SpriteContext> context, Node const &child, std::shared_ptr<TreeState> state);
 
 /*!
  \brief Decorator that inverts the result of its child node.
 */
-    Status inverter(std::shared_ptr<SpriteContext> context, Node const &child, std::shared_ptr<TreeState> state)
-    {
-        const auto status = child.process(context, state);
-        // this is to allow for the process function to also return a bool which is then translated to Status
-        if (status == Status::RUNNING)
-        {
-            return status;
-        }
-        return status == Status::FAILURE ? Status::SUCCESS : Status::FAILURE;
-    }
+    Status inverter(std::shared_ptr<SpriteContext> context, Node const &child, std::shared_ptr<TreeState> state);
 
 /*!
  \brief Decorator that returns success regardless of the child result.
 */
-    Status succeeder(std::shared_ptr<SpriteContext> context, Node const &child, std::shared_ptr<TreeState> state)
-    {
-        child.process(context, state);
-        return Status::SUCCESS;
-    }
-
-
-    //using BasicLeaf = std::function<Status(std::shared_ptr<SpriteContext> context)>; //!< Leaf nodes are the `process()` function taking the mutable context and must return a status.
+    Status succeeder(std::shared_ptr<SpriteContext> context, Node const &child, std::shared_ptr<TreeState> state);
 
     using Leaf = std::function<Status(std::shared_ptr<SpriteContext> context)>; //!< A Leaf function takes a Context & and returns a Status.
 
@@ -249,10 +209,7 @@ namespace dang
 /*!
  \brief A leaf that always succeeds. Not very useful...
 */
-    Status noop(std::shared_ptr<SpriteContext>)
-    {
-        return Status::SUCCESS;
-    }
+    Status noop(std::shared_ptr<SpriteContext>);
 
 /*!
  \brief The behavior tree class which passes the ContextType around. See #beehive::Builder for making one.
@@ -305,37 +262,8 @@ namespace dang
         // redeclared -> Status process(std::shared_ptr<SpriteContext> context) const;
     };
 
-    Tree::Tree(std::vector<Node> nodes) : _nodes(move(nodes))
-    {
-        size_t i = 0;
-        for (auto &node : _nodes) {
-            node._index = i++;
-        }
-    }
-
-    Status Tree::process(std::shared_ptr<SpriteContext> context) const
-    {
-        TreeState state{_id};
-        // TODO next line is a hack
-        return _nodes[0].process(context, std::make_shared<TreeState>(state));
-    }
-
-    Status Tree::process(std::shared_ptr<TreeState> state, std::shared_ptr<SpriteContext> context) const
-    {
-        assert(state->_tree_id == _id); // another tree's state used with this tree
-        return _nodes.at(state->resume_index()).process(context, state);
-    }
-
     /// @cond
-    auto make_branch(Decorator f) -> typename Node::ProcessFunction;
 
-    auto make_branch(Composite f) -> typename Node::ProcessFunction;
-
-    auto make_leaf(Leaf f) -> typename Node::ProcessFunction;
-
-    auto make_leaf(VoidLeaf f) -> typename Node::ProcessFunction;
-
-    auto make_leaf(BoolLeaf f) -> typename Node::ProcessFunction;
 /// @endcond
 
     class Builder;
@@ -429,6 +357,13 @@ namespace dang
         */
         BuilderBase succeeder();
 
+        static Node::ProcessFunction make_branch(Decorator f);
+        static Node::ProcessFunction make_branch(Composite f);
+
+        static Node::ProcessFunction make_leaf(Leaf f);
+        static Node::ProcessFunction make_leaf(VoidLeaf f);
+        static Node::ProcessFunction make_leaf(BoolLeaf f);
+
     protected:
         /// @cond
         BuilderBase(BuilderBase &parent, size_t offset, Type type)
@@ -512,158 +447,4 @@ namespace dang
         std::vector<Node> _nodes;
     };
 
-/// @cond
-    auto make_branch(Decorator f) -> typename Node::ProcessFunction
-    {
-        return [process = move(f)](std::shared_ptr<SpriteContext> context, Node const &self, std::shared_ptr<TreeState> state)
-        {
-            assert(self.child_count() == 1); // invariant violation!
-            auto &child = *(&self + 1);
-            return process(context, child, state);
-        };
-    }
-
-    auto make_branch(Composite f) -> typename Node::ProcessFunction
-    {
-        return [process = move(f)](std::shared_ptr<SpriteContext> context, Node const &self, std::shared_ptr<TreeState> state)
-        {
-            auto i = 0;
-            auto *child = self.first_child();
-            if (self.index() == state->resume_index()) {
-                for (; i < state->offset(); ++i) {
-                    child = child->next_sibling();
-                }
-            }
-            auto generator = [&self, &i, &child]() -> Node const * {
-                if (i++ == self.child_count()) {
-                    return nullptr;
-                }
-                auto c = child;
-                child = child->next_sibling();
-                return c;
-            };
-            auto status = process(context, generator, state);
-            if (status == Status::RUNNING) {
-                self.save_state_at_child_index(state, i - 1);
-            } else {
-                self.clear_state(state);
-            }
-            return status;
-        };
-    }
-
-    auto make_leaf(Leaf f) -> typename Node::ProcessFunction
-    {
-        return [process = move(f)](std::shared_ptr<SpriteContext> context, Node const &self, std::shared_ptr<TreeState> state)
-        {
-            assert(self.child_count() == 0); // invariant violation!
-            return process(context);
-        };
-    }
-
-    auto make_leaf(VoidLeaf f) -> typename Node::ProcessFunction
-    {
-        return make_leaf(Leaf{[void_process = move(f)](std::shared_ptr<SpriteContext> context)
-                             {
-                                 void_process(context);
-                                 return Status::SUCCESS;
-                             }});
-    }
-
-    auto make_leaf(BoolLeaf f) -> typename Node::ProcessFunction
-    {
-        return make_leaf(Leaf{[bool_process = move(f)](std::shared_ptr<SpriteContext> context)
-                             {
-                                 const bool result = bool_process(context);
-                                 return result ? Status::SUCCESS : Status::FAILURE;
-                             }});
-    }
-
-    auto BuilderBase::composite(Composite composite) -> BuilderBase
-    {
-        return _branch(std::move(composite));
-    }
-
-    auto BuilderBase::decorator(Decorator decorator) -> BuilderBase
-    {
-        return _branch(std::move(decorator));
-    }
-
-    template<typename BranchType>
-    auto BuilderBase::_branch(BranchType &&branch) -> BuilderBase
-    {
-        assert((_type != Type::DECORATOR) || node().child_count() == 0); // Decorators may only have one child!
-        auto type = std::is_same<
-                typename std::decay<BranchType>::type,
-                Decorator
-        >::value ? Type::DECORATOR : Type::COMPOSITE;
-        auto child_offset = add_child(make_branch(move(branch)));
-        return {*this, child_offset, type};
-    }
-
-    template<typename LeafType>
-    auto BuilderBase::_leaf(LeafType &&leaf) -> BuilderBase &
-    {
-        assert((_type != Type::DECORATOR) || node().child_count() == 0); // Decorators may only have one child!
-        add_child(make_leaf(move(leaf)));
-        return *this;
-    }
-
-    auto BuilderBase::leaf(Leaf leaf) -> BuilderBase &
-    {
-        return _leaf(std::move(leaf));
-    }
-
-    auto BuilderBase::leaf(BoolLeaf leaf) -> BuilderBase &
-    {
-        return _leaf(std::move(leaf));
-    }
-
-    auto BuilderBase::void_leaf(VoidLeaf leaf) -> BuilderBase &
-    {
-        return _leaf(std::move(leaf));
-    }
-
-    auto BuilderBase::tree(Tree const &subtree) -> BuilderBase &
-    {
-        assert((_type != Type::DECORATOR) || node().child_count() == 0); // Decorators may only have one child!
-        auto const &subtree_nodes = subtree.nodes();
-        copy(subtree_nodes.begin(), subtree_nodes.end(), back_inserter(nodes()));
-        node().add_child();
-        return *this;
-    }
-
-    auto BuilderBase::end() -> BuilderBase &
-    {
-        assert(node().child_count() > 0); // can't have composite/decorator without children!
-        return _parent;
-    }
-
-    auto BuilderBase::build() const & -> Tree
-    {
-        assert(false); // unterminated tree!
-        return {{}};
-    }
-
-    auto BuilderBase::build() && -> Tree
-    {
-        assert(false); // unterminated tree!
-        return {{}};
-    }
-
-#define BH_IMPLEMENT_SHORTHAND(Type, Name) \
-    auto BuilderBase::Name() -> BuilderBase \
-    { \
-        return _branch(Type{&dang::Name}); \
-    }
-
-    BH_IMPLEMENT_SHORTHAND(Composite, sequence);
-    BH_IMPLEMENT_SHORTHAND(Composite, selector);
-    BH_IMPLEMENT_SHORTHAND(Decorator, inverter);
-    BH_IMPLEMENT_SHORTHAND(Decorator, succeeder);
-
-#undef BH_IMPLEMENT_SHORTHAND
-/// @endcond
-
 } // namespace dang
-#endif
