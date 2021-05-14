@@ -149,6 +149,37 @@ namespace dang
         }
 */    };
 
+    enum e_tmx_waypoint_type
+    {
+        wp_none = 0x0,
+        wp_bombdepot = 0x1,
+        wp_cratedepot = 0x2
+    };
+
+    enum e_tmx_waypoint_connection
+    {
+        wp_walk = 0x1,
+        wp_jump = 0x2,
+        wp_warp = 0x4
+
+    };
+
+    struct tmx_waypoint
+    {
+        const uint32_t id;
+        const float x;
+        const float y;
+        const uint32_t type;     // see enum tmx_waypoint_type
+    };
+
+    struct tmx_waypoint_connection
+    {
+        const uint32_t waypoint_start_id;
+        const uint32_t waypoint_goal_id;
+        const uint32_t connection_type;     // see enum tmx_waypoint_connection
+    };
+
+
     // forward declarations
     class Layer;
     class SpriteLayer;

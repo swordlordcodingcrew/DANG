@@ -233,72 +233,135 @@ function export32Blit(map, fileName) {
         }
         else if (layer.isObjectLayer)
         {
-            file.writeLine("// Objects for layer: " + layer.name);
-
-            var buf = "\n";
-
-            objects = layer.objects
-
-            for (var j = 0; j < objects.length; ++j)
+            // check if this layser has points. If this is the case the layer is assumed to be the path-layer
+            if (layer.objects[0].shape == MapObject.Point)
             {
-                o = objects[j]
-                sName = o.name;
-                if (sName == "")
+                file.writeLine("// layer with points - path layer");
+
+                objects = layer.objects
+
+                var buf_pts = "static const dang::tmx_waypoint " + functionName + "_waypoints[] = {\n";
+                var buf_conn = "static const dang::tmx_waypoint_connection " + functionName + "_connections[] = {\n";
+
+                for (var j = 0; j < objects.length; ++j)
                 {
-                    sName = o.id;
+                    var o = objects[j];
+                    // ugly hack since iteration over custom props is not possible
+                    for (var k = 0; k < 10; ++k)
+                    {
+                        var val = o.property("walk_" + k);
+                        if (val != undefined)
+                        {
+                            buf_conn += "    {" + o.id + ", " + val.id + ", 0x1},\n";
+//                            file.writeLine("// " + val.id);
+                        }
+                    }
+
+                    for (var k = 0; k < 10; ++k)
+                    {
+                        var val = o.property("jump_" + k);
+                        if (val != undefined)
+                        {
+                            buf_conn += "    {" + o.id + ", " + val.id + ", 0x2},\n";
+//                            file.writeLine("// " + val.id);
+                        }
+                    }
+
+                    //                    file.writeLine("//    map test");
+//                    file.writeLine("// " + o);
+//                    for (let prop of o.entries())
+//                    {
+//                        file.writeLine("// props")
+//                    }
+//                    file.writeLine("//    map test");
+
+                    buf_pts += "    {" + o.id + ", " + o.x + "," + o.y + ", " + o.type + "},\n";
+
                 }
 
-                var tileset_ref = "";
-                var tile_id = "0";
-                if (o.tile != null)
-                {
-                    tileset_ref = o.tile.tileset.name;
-                    tile_id = o.tile.id;
-                }
-                buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + "}";
-                if (j < objects.length - 1)
-                {
-                    buf += ",";
-                }
-                buf += "\n";
-
+                buf_pts += "};";
+                buf_conn += "};";
+                file.writeLine(buf_pts);
+                file.writeLine("");
+                file.writeLine(buf_conn);
+                file.writeLine("");
             }
+            else
+            {
+                file.writeLine("// Objects for layer: " + layer.name);
 
-            file.writeLine("static const dang::tmx_spriteobject " + functionName + "_" + layer.name + "_objects[] = {");
-            file.writeLine(buf);
-            file.writeLine("};");
-            file.writeLine("");
-            file.writeLine("static const size_t " + functionName + "_" + layer.name + "_objects_len = " + objects.length + ";");
-            file.writeLine("");
-            file.writeLine("static const dang::tmx_layer " + functionName + "_" + layer.name + " = {");
-            file.writeLine("    .name = \"" + layer.name + "\",");
-            file.writeLine("    .type = dang::tmx_layerType::ltObjects,");
-            file.writeLine("    .opacity = " + layer.opacity + ",");
-            file.writeLine("    .visible = " + layer.visible + ",");
-            file.writeLine("    .z_order = " + i + ",");
-            file.writeLine("    .tl_width = 0,");
-            file.writeLine("    .tl_height = 0,");
-            file.writeLine("    .tl_tileset = \"\",");
-            file.writeLine("    .tl_tiles = nullptr,");
-            file.writeLine("    .tl_tiles_len = 0,");
-            file.writeLine("    .spriteobjects = " + functionName + "_" + layer.name + "_objects,");
-            file.writeLine("    .spriteobejcts_len = " + functionName + "_" + layer.name + "_objects_len");
-            file.writeLine("};");
-            file.writeLine("");
-        }
-    }
+                var buf = "\n";
+
+                objects = layer.objects
+
+                for (var j = 0; j < objects.length; ++j)
+                {
+                    o = objects[j]
+                    sName = o.name;
+                    if (sName == "")
+                    {
+                        sName = o.id;
+                    }
+
+                    var tileset_ref = "";
+                    var tile_id = "0";
+                    if (o.tile != null)
+                    {
+                        tileset_ref = o.tile.tileset.name;
+                        tile_id = o.tile.id;
+                    }
+                    buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + "}";
+                    if (j < objects.length - 1)
+                    {
+                        buf += ",";
+                    }
+                    buf += "\n";
+
+                }
+
+                file.writeLine("static const dang::tmx_spriteobject " + functionName + "_" + layer.name + "_objects[] = {");
+                file.writeLine(buf);
+                file.writeLine("};");
+                file.writeLine("");
+                file.writeLine("static const size_t " + functionName + "_" + layer.name + "_objects_len = " + objects.length + ";");
+                file.writeLine("");
+                file.writeLine("static const dang::tmx_layer " + functionName + "_" + layer.name + " = {");
+                file.writeLine("    .name = \"" + layer.name + "\",");
+                file.writeLine("    .type = dang::tmx_layerType::ltObjects,");
+                file.writeLine("    .opacity = " + layer.opacity + ",");
+                file.writeLine("    .visible = " + layer.visible + ",");
+                file.writeLine("    .z_order = " + i + ",");
+                file.writeLine("    .tl_width = 0,");
+                file.writeLine("    .tl_height = 0,");
+                file.writeLine("    .tl_tileset = \"\",");
+                file.writeLine("    .tl_tiles = nullptr,");
+                file.writeLine("    .tl_tiles_len = 0,");
+                file.writeLine("    .spriteobjects = " + functionName + "_" + layer.name + "_objects,");
+                file.writeLine("    .spriteobejcts_len = " + functionName + "_" + layer.name + "_objects_len");
+                file.writeLine("};");
+                file.writeLine("");
+            }   // end of sprite object layer
+
+        }   // end of object layer
+
+    } // end of layer
 
     file.writeLine("const static dang::tmx_layer " + functionName + "_layers[] = {");
 
     for (var i = 0; i < map.layerCount; ++i)
     {
-        var comma = ",";
-        if (i == map.layerCount-1)
+        var layer = map.layerAt(i);
+        if (layer.isObjectLayer)
         {
-            comma = "";
+            if (layer.objects[0].shape != MapObject.Point)
+            {
+                file.writeLine("    " + functionName + "_" + layer.name + ",");
+            }
         }
-
-        file.writeLine("    " + functionName + "_" + map.layerAt(i).name + comma);
+        else
+        {
+            file.writeLine("    " + functionName + "_" + layer.name + ",");
+        }
     }
     file.writeLine("};");
     file.writeLine("");
