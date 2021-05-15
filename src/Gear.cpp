@@ -116,7 +116,7 @@ namespace dang
 
     std::shared_ptr<Layer> Gear::getLayerByName(const std::string &name)
     {
-        std::forward_list<std::shared_ptr<Layer>>::iterator layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
+        auto layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
         {
             return (val->_name == name);
         });
