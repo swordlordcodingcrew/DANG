@@ -56,6 +56,16 @@ namespace dang
         }
     }
 
+    dang::Status Gear::runBehaviourTree(std::shared_ptr<TreeState> ts, std::shared_ptr<Sprite> s) const
+    {
+        if(_tree == nullptr)
+        {
+            return Status::FAILURE;
+        }
+
+        return _tree->process(ts, s);
+    }
+
     void Gear::addImagesheet(std::shared_ptr<Imagesheet> is)
     {
         assert(!is->getName().empty());
@@ -177,7 +187,5 @@ namespace dang
         setViewportPos(pos);
 
     }
-
-
 
 }

@@ -8,6 +8,7 @@
 #include <forward_list>
 #include "RectT.hpp"
 #include <memory>
+#include "bt/bt.hpp"
 
 namespace dang
 {
@@ -30,6 +31,11 @@ namespace dang
 
         void    update(uint32_t dt);
         void    render(uint32_t time);
+        dang::Status    runBehaviourTree(std::shared_ptr<TreeState> ts, std::shared_ptr<Sprite> s) const;
+
+        //TEST
+        std::shared_ptr<dang::Tree> _tree;
+        //ENDTEST
 
 //        void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
         void                        addImagesheet(std::shared_ptr<Imagesheet> is);
@@ -67,6 +73,8 @@ namespace dang
         RectF       _world{0,0,0,0};    // size of the world
         RectF       _viewport{0,0,0,0};     // part of world to be drawn
         Vector2F    _active_world_size{0,0}; // center equals to center of viewport. sprite within active world will be updated and - if in viewport - drawnd
+
+
     };
 }
 

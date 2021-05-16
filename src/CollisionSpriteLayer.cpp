@@ -31,6 +31,20 @@ namespace dang
         {
             if (gear.getActiveWorld().intersects(spr->getSizeRect()))
             {
+                // TODO validate that we only handle active sprites
+                // check if sprite wants to run a behaviour tree
+                // it probably does if it has a tree state...
+                if(spr->_btTreeState != nullptr)
+                {
+                    // if there is a tree state, run from where it stopped last
+                    dang::Status s = gear.runBehaviourTree(spr->_btTreeState, spr);
+
+#ifdef DANG_DEBUG
+                    std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::Status>>(s) << " and position: " << spr->_btTreeState->resume_index() << std::endl;
+#endif
+                }
+
+                // update sprite normally
                 spr->update(dt);
             }
         }
