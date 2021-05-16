@@ -7,6 +7,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCES
         src/dang.hpp
+        src/path/SceneGraph.cpp
+        src/path/SceneGraph.hpp
+        src/path/Waypoint.cpp
+        src/path/Waypoint.hpp
         src/bt/bt.hpp
         src/tween/Tweenable.cpp
         src/tween/Tweenable.hpp

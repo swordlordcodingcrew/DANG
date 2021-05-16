@@ -1,4 +1,4 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-21 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
 
@@ -107,40 +107,7 @@ namespace dang
 
         return sl;
 
-
-/*        const std::shared_ptr<tmx_objectlayer> tol = getTmxObjectLayer(name);
-
-        if (tol == nullptr)
-        {
-            return nullptr;
-        }
-
-        spSpriteLayer sl = std::make_shared<SpriteLayer>();
-
-        sl->_name = tol->name;
-        sl->_z_order = tol->z_order;
-
-        // TODO js-exporter: implement visible flag
-        // sl->_visible = ola->visible;
-        // TODO js-exporter: implement position
-        // sl->_position = position
-
-        if (addSprites)
-        {
-            for (const dang::tmx_spriteobject &so : getSOList(sl))
-            {
-                spImagesheet is = gear.getImagesheet(_level->tilesets[so.tileset].name);
-                sl->addSprite(std::make_shared<Sprite>(so, is));
-            }
-        }
-
-        if (addToGear)
-        {
-            gear.addLayer(sl);
-        }
-
-        return sl;
-*/    }
+    }
 
     void TmxExtruder::fillHUDLayer(spHUDLayer layer, const std::string& name, Gear& gear, bool addSprites, bool addToGear)
     {
@@ -156,13 +123,6 @@ namespace dang
             return;
         }
 
-/*        const std::shared_ptr<tmx_objectlayer> tol = getTmxObjectLayer(name);
-
-        if (tol == nullptr)
-        {
-            return;
-        }
-*/
         layer->_name = l->name;
         layer->_z_order = l->z_order;
         layer->_visible = l->visible;
@@ -181,12 +141,7 @@ namespace dang
                 layer->addSprite(std::make_shared<Sprite>(so, is));
             }
 
-/*            for (const dang::tmx_spriteobject &so : getSOList(layer))
-            {
-                spImagesheet is = gear.getImagesheet(_level->tilesets[so.tileset].name);
-                layer->addSprite(std::make_shared<Sprite>(so, is));
-            }
-*/        }
+        }
 
         if (addToGear)
         {
@@ -208,13 +163,6 @@ namespace dang
             return nullptr;
         }
 
-/*        const std::shared_ptr<tmx_objectlayer> tol = getTmxObjectLayer(name);
-
-        if (tol == nullptr)
-        {
-            return nullptr;
-        }
-*/
         spCollisionSpriteLayer sl = std::make_shared<CollisionSpriteLayer>();
 
         sl->_name = l->name;
@@ -235,12 +183,7 @@ namespace dang
                 sl->addCollisionSprite(std::make_shared<CollisionSprite>(so, is));
             }
 
-/*            for (const dang::tmx_spriteobject &so : getSOList(sl))
-            {
-                spImagesheet is = gear.getImagesheet(_level->tilesets[so.tileset].name);
-                sl->addCollisionSprite(std::make_shared<CollisionSprite>(so, is));
-            }
-*/        }
+        }
 
         if (addToGear)
         {
@@ -273,22 +216,12 @@ namespace dang
             return nullptr;
         }
 
-/*        const std::shared_ptr<tmx_tilelayer> ttl = getTmxTileLayer(name);
-
-        if (ttl == nullptr)
-        {
-            return nullptr;
-        }
-*/
         const tmx_tileset* ts = getTileset(l->tl_tileset);
 
         if (ts == nullptr)
         {
             return nullptr;
         }
-
-        // Fetch one tmx_tileset - assuming that all tiles are in the same imagesheet.
-//        tmx_tileset& ts = _level->tilesets[ttl->tiles[0].tileset];
 
         spImagesheet is = gear.getImagesheet(ts->name);
         std::shared_ptr<TileLayer> tl = std::make_shared<TileLayer>(ts, l, is, gear.getViewport());
@@ -328,50 +261,6 @@ namespace dang
         return nullptr;
     }
 
-
-/*    const std::shared_ptr<tmx_objectlayer> TmxExtruder::getTmxObjectLayer(const std::string &name)
-    {
-        if (_level == nullptr)
-        {
-            return nullptr;
-        }
-
-        auto l_it = std::find_if(_level->layers.begin(), _level->layers.end(), [=](const std::shared_ptr<dang::tmx_layer>& val)
-        {
-            return (val->name == name);
-        });
-
-        // tmx_layer found..
-        if (l_it != _level->layers.end())
-        {
-            return (*l_it)->type == ltObjects ? std::static_pointer_cast<tmx_objectlayer>(*l_it) : nullptr;
-        }
-
-        return nullptr;
-    }
-
-    const std::shared_ptr<tmx_tilelayer> TmxExtruder::getTmxTileLayer(const std::string &name)
-    {
-        if (_level == nullptr)
-        {
-            return nullptr;
-        }
-
-        auto l_it = std::find_if(_level->layers.begin(), _level->layers.end(), [=](const std::shared_ptr<dang::tmx_layer>& val)
-        {
-            return (val->name == name);
-        });
-
-        // tmx_layer found..
-        if (l_it != _level->layers.end())
-        {
-            return (*l_it)->type == ltTile ? std::static_pointer_cast<tmx_tilelayer>(*l_it) : nullptr;
-        }
-
-        return nullptr;
-    }
-*/
-
     spTwAnim TmxExtruder::getAnimation(const std::string &is_name, const std::string &anim_name, EaseFn ease_cb,
                                        int32_t loops, bool alternating, uint32_t delay)
     {
@@ -399,27 +288,6 @@ namespace dang
         spTwAnim ret = std::make_shared<TwAnim>(twa);
         return ret;
 
-
-/*        try
-        {
-            const tmx_tileanimation& ta = _level->tileanimation.at(is_name + "_" + anim_name);
-            std::vector<uint16_t> frame_list;
-            uint32_t duration = 0;
-            for (auto f : ta.frames)
-            {
-                frame_list.push_back(f.tileId);
-                duration += f.duration;
-            }
-
-            TwAnim twa = TwAnim(frame_list, duration, ease_cb, loops, alternating, delay);
-            spTwAnim ret = std::make_shared<TwAnim>(twa);
-            return ret;
-        }
-        catch (std::out_of_range& oor)
-        {
-            return nullptr;
-        }
-*/
     }
 
     const tmx_tileset* TmxExtruder::getTileset(const std::string &name)
@@ -451,11 +319,14 @@ namespace dang
 
     }
 
-
-/*    const std::vector<tmx_spriteobject> &TmxExtruder::getSOList(const spSpriteLayer& sl)
+    spWaypoint TmxExtruder::createPaths(RectF &room_extent)
     {
-        const std::shared_ptr<tmx_objectlayer> ola = getTmxObjectLayer(sl->_name);
-        return ola->so;
+        for (size_t i = 0; i < _level->waypoints_len; ++i)
+        {
+            
+        }
+
+        return nullptr;
     }
-*/
+
 }
