@@ -101,9 +101,9 @@ namespace dang
         vp_end_tu.x = std::min(vp_end_tu.x, _worldsize_tu.w-1);
         vp_end_tu.y = std::min(vp_end_tu.y, _worldsize_tu.h-1);
 
-        for (int32_t x = vp_tu.x; x <= vp_end_tu.x; x++)
+        for (uint32_t x = vp_tu.x; x <= vp_end_tu.x; x++)
         {
-            for (int32_t y = vp_tu.y; y <= vp_end_tu.y; y++)
+            for (uint32_t y = vp_tu.y; y <= vp_end_tu.y; y++)
             {
                 size_t index = x + (y * _worldsize_tu.w);
                 dang::tmx_tile t = _tiles.at(index);

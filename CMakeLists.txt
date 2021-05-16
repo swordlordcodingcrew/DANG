@@ -11,6 +11,7 @@ set(SOURCES
         src/path/SceneGraph.hpp
         src/path/Waypoint.cpp
         src/path/Waypoint.hpp
+        src/bt/bt.cpp
         src/bt/bt.hpp
         src/tween/Tweenable.cpp
         src/tween/Tweenable.hpp

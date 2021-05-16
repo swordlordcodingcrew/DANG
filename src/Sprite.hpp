@@ -10,6 +10,7 @@
 #include <list>
 #include <memory>
 
+
 // forward declaration
 namespace blit
 {
@@ -20,6 +21,7 @@ namespace dang
 {
     struct tmx_spriteobject;
 
+    class TreeState;
     class Imagesheet;
     class Tweenable;
     class TwAnim;
@@ -33,6 +35,18 @@ namespace dang
         Sprite(const Sprite& sp);
         Sprite(const tmx_spriteobject* so, std::shared_ptr<Imagesheet> is);
         virtual ~Sprite();
+
+        // TEST
+        bool is_hungry{true};
+        void eat_food() {};
+
+        bool has_food() const
+        {
+            return _has_food;
+        }
+
+        bool _has_food{true};
+        // ENDTEST
 
         // tween stuff
         void addTween(spTweenable tw);
@@ -94,6 +108,8 @@ namespace dang
         uint16_t                        _id{0};    // global
         std::string                     _type{""};
         int32_t                         _type_num{0};
+
+        std::shared_ptr<TreeState>      _btTreeState{nullptr};
 
     protected:  // variables
 
