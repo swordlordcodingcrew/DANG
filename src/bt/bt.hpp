@@ -10,6 +10,7 @@
 #include <iterator>
 #include <thread>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 namespace dang
@@ -53,29 +54,43 @@ namespace dang
         SUCCESS //!< Returns when the process has succeeded.
     };
 
-/*!
+    /*!
  \brief Pass a TreeState instance to #beehive::Tree's process function in order to resume Running nodes. Instantiate with #beehive::Tree::make_state.
 */
+    class Tree;
+
     class TreeState
     {
+
     public:
+        TreeState(std::shared_ptr<Tree> tree);
+        TreeState();
+        //TreeState(std::shared_ptr<Tree> sharedPtr);
+
         // For internal use only.
-        size_t resume_index() const {
+        uint16_t resume_index() const {
             return _resume_index;
         }
         // For internal use only.
-        size_t offset() const {
+        uint16_t offset() const {
             return _offset;
         }
-    //private:
-        TreeState(size_t tree_id): _tree_id(tree_id) {}
 
-        size_t _tree_id;
-        size_t _resume_index{};
-        size_t _offset{};
+        // For internal use only.
+        void setTree(std::shared_ptr<Tree> tree) {
+            _tree = std::move(tree);
+        }
+        //private:
+
+        //size_t _tree_id;
+        std::shared_ptr<Tree> _tree{nullptr};
+        uint16_t _resume_index{};
+        uint16_t _offset{};
 
         friend class Tree;
         friend struct Node;
+
+
     };
 
 /*!
@@ -226,7 +241,7 @@ namespace dang
         /*!
          \brief Process with the given context reference.
         */
-        Status process(std::shared_ptr<Sprite> context) const;
+        //Status process(std::shared_ptr<Sprite> context) const;
 
         /*!
          \brief Process with the given state and context reference.
@@ -243,9 +258,9 @@ namespace dang
         /*!
          \brief Creates a state object that can be passed to subsequent process() calls.
         */
-        TreeState make_state() const {
-            return {_id};
-        }
+        //TreeState make_state() const {
+        //    return {shared_from_this()};
+        //}
 
     private:
         static size_t id() {
@@ -452,5 +467,7 @@ namespace dang
 
         std::vector<Node> _nodes;
     };
+
+    const TreeState* getTreeStateFromTree(std::shared_ptr<Tree> tree);
 
 } // namespace dang

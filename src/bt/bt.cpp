@@ -7,7 +7,13 @@
 
 namespace dang
 {
-/*!
+    TreeState::TreeState(std::shared_ptr<Tree> tree) : _tree(move(tree))
+    {
+
+    }
+
+
+    /*!
  \brief Composite that returns success if all children return success.
 */
     Status sequence(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state)
@@ -86,16 +92,19 @@ namespace dang
         }
     }
 
+    /*
     Status Tree::process(std::shared_ptr<Sprite> context) const
     {
         TreeState state{_id};
         // TODO next line is a hack
         return _nodes[0].process(context, std::make_shared<TreeState>(state));
     }
+     */
 
     Status Tree::process(std::shared_ptr<TreeState> state, std::shared_ptr<Sprite> context) const
     {
-        assert(state->_tree_id == _id); // another tree's state used with this tree
+        // TODO redo asset with pointer?
+        //assert(state->_tree_id == _id); // another tree's state used with this tree
         return _nodes.at(state->resume_index()).process(context, state);
     }
 
