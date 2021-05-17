@@ -240,6 +240,9 @@ function export32Blit(map, fileName) {
 
                 objects = layer.objects
 
+                var wap_len = 0;
+                var conn_len = 0;
+
                 var buf_pts = "static const dang::tmx_waypoint " + functionName + "_waypoints[] = {\n";
                 var buf_conn = "static const dang::tmx_waypoint_connection " + functionName + "_connections[] = {\n";
 
@@ -253,7 +256,7 @@ function export32Blit(map, fileName) {
                         if (val != undefined)
                         {
                             buf_conn += "    {" + o.id + ", " + val.id + ", 0x1},\n";
-//                            file.writeLine("// " + val.id);
+                            conn_len++;
                         }
                     }
 
@@ -263,27 +266,24 @@ function export32Blit(map, fileName) {
                         if (val != undefined)
                         {
                             buf_conn += "    {" + o.id + ", " + val.id + ", 0x2},\n";
-//                            file.writeLine("// " + val.id);
+                            conn_len++;
                         }
                     }
 
-                    //                    file.writeLine("//    map test");
-//                    file.writeLine("// " + o);
-//                    for (let prop of o.entries())
-//                    {
-//                        file.writeLine("// props")
-//                    }
-//                    file.writeLine("//    map test");
-
                     buf_pts += "    {" + o.id + ", " + o.x + "," + o.y + ", " + o.type + "},\n";
-
+                    wap_len++;
                 }
 
                 buf_pts += "};";
                 buf_conn += "};";
                 file.writeLine(buf_pts);
                 file.writeLine("");
+                file.writeLine("static const size_t " + functionName + "_waypoints_len = " + wap_len + ";")
+                file.writeLine("");
+
                 file.writeLine(buf_conn);
+                file.writeLine("");
+                file.writeLine("static const size_t " + functionName + "_connections_len = " + conn_len + ";")
                 file.writeLine("");
             }
             else
@@ -383,7 +383,11 @@ function export32Blit(map, fileName) {
     file.writeLine("    .tileanimations = " + functionName + "_tileanimations,");
     file.writeLine("    .tileanimations_len = " + functionName + "_tileanimations_len,");
     file.writeLine("    .layers = " + functionName + "_layers,");
-    file.writeLine("    .layers_len = " + functionName + "_layers_len");
+    file.writeLine("    .layers_len = " + functionName + "_layers_len,");
+    file.writeLine("    .waypoints = " + functionName + "_waypoints,");
+    file.writeLine("    .waypoints_len = " + functionName + "_waypoints_len,");
+    file.writeLine("    .waypoint_connections = " + functionName + "_connections,");
+    file.writeLine("    .waypoint_connections_len = " + functionName + "_connections_len");
     file.writeLine("};");
     file.writeLine("");
 

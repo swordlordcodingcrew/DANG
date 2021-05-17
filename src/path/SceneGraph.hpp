@@ -1,0 +1,73 @@
+// (c) 2019-2021 by SwordLord - the coding crew
+// This file is part of the DANG game framework
+// Inspired by https://github.com/Sahnvour/PathFinder
+
+#pragma once
+
+#include <vector>
+#include <algorithm>
+#include "Waypoint.hpp"
+
+namespace dang
+{
+    struct CompareWaypoints
+    {
+        bool operator() (const wpWaypoint wap1, const wpWaypoint wap2) const
+        {
+            if (auto spwap1 = wap1.lock())
+            {
+                if (auto spwap2 = wap2.lock())
+                {
+                    return spwap1->getF() < spwap2->getF();
+                }
+            }
+            // this case should not happen
+            return false;
+        }
+    };
+
+    class SceneGraph
+    {
+    public:
+
+        SceneGraph();
+        ~SceneGraph();
+
+        // A* algo
+        bool getPath(wpWaypoint start, wpWaypoint goal, std::vector<wpWaypoint>& path);
+        void clear();
+
+    protected:
+
+        /** container of the waypoints */
+        std::vector<spWaypoint> _waypoints;
+
+        /** A* stuff */
+        void releaseNodes();
+        void pushOpen(wpWaypoint wap);
+        void popOpen(wpWaypoint wap);
+        std::vector<wpWaypoint> open, closed;
+
+        /**
+            @brief Computes the distance between two nodes using the specified
+            Node::distanceTo() method from T.
+            @param[in] n1 A pointer referencing the source node.
+            @param[in] n2 A pointer referencing the destination node.
+            @see Node::distanceTo()
+        */
+        inline float distanceBetween(spWaypoint wap1, spWaypoint wap2) const
+        {
+            return wap1->distanceTo(wap2);
+        }
+
+        /**
+            @brief Builds the path from the goal found back up to the start and reorders the order such that
+            the first entry is start. The function is used in getPath
+            @param[in] node The node from where to get the path.
+            @param[out] path The vector to fill with the nodes.
+        */
+        void reconstructPath(wpWaypoint wap, std::vector<wpWaypoint>& path);
+
+    };
+
+}

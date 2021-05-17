@@ -11,6 +11,7 @@
 #include <forward_list>
 #include <vector>
 #include <memory>
+#include <src/path/Waypoint.hpp>
 
 namespace dang
 {
@@ -123,32 +124,6 @@ namespace dang
         const uint16_t tileHeight = 0; // height of tiles
     };
 
-    struct tmx_level
-    {
-        const tmx_world* w;
-        const tmx_tileset* tilesets;
-        const size_t tilesets_len;
-
-        const tmx_tileanimation* tileanimations;
-        const size_t tileanimations_len;
-
-        const tmx_layer* layers;
-        const size_t layers_len;
-
-/*        std::vector<std::shared_ptr<tmx_layer>> layers;
-
-        // TODO: sprites should know on which tmx_layer they belong...
-        std::forward_list<std::shared_ptr<tmx_spriteobject>> sprites;
-
-        std::shared_ptr<tmx_spriteobject> addSprite(tmx_spriteobject* s)
-        {
-            std::shared_ptr<tmx_spriteobject> s_p = std::make_shared<tmx_spriteobject>(*s);
-            sprites.push_front(s_p);
-
-            return s_p;
-        }
-*/    };
-
     enum e_tmx_waypoint_type
     {
         wp_none = 0x0,
@@ -178,6 +153,38 @@ namespace dang
         const uint32_t waypoint_goal_id;
         const uint32_t connection_type;     // see enum tmx_waypoint_connection
     };
+
+    struct tmx_level
+    {
+        const tmx_world* w;
+        const tmx_tileset* tilesets;
+        const size_t tilesets_len;
+
+        const tmx_tileanimation* tileanimations;
+        const size_t tileanimations_len;
+
+        const tmx_layer* layers;
+        const size_t layers_len;
+
+        const tmx_waypoint* waypoints;
+        const size_t waypoints_len;
+
+        const tmx_waypoint_connection* waypoint_connections;
+        const size_t waypoint_connections_len;
+
+/*        std::vector<std::shared_ptr<tmx_layer>> layers;
+
+        // TODO: sprites should know on which tmx_layer they belong...
+        std::forward_list<std::shared_ptr<tmx_spriteobject>> sprites;
+
+        std::shared_ptr<tmx_spriteobject> addSprite(tmx_spriteobject* s)
+        {
+            std::shared_ptr<tmx_spriteobject> s_p = std::make_shared<tmx_spriteobject>(*s);
+            sprites.push_front(s_p);
+
+            return s_p;
+        }
+*/    };
 
 
     // forward declarations
@@ -217,6 +224,7 @@ namespace dang
         void                    fillHUDLayer(spHUDLayer layer, const std::string& name, Gear& gear, bool addSprites, bool addToGear);
         spTileLayer             getTileLayer(const std::string& name, Gear& gear, bool addToGear);
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
+        spWaypoint              createPaths(RectF& room_extent);
 
 //        const std::vector<tmx_spriteobject>& getSOList(const spSpriteLayer& sl);
 
