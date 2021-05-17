@@ -2,7 +2,9 @@
 // This file is part of the DANG game framework
 // Inspired by https://github.com/Sahnvour/PathFinder
 
+#include <cfloat>
 #include "SceneGraph.hpp"
+#include "src/Vector2T.hpp"
 
 namespace dang
 {
@@ -167,6 +169,22 @@ namespace dang
     void SceneGraph::clearWaypoints()
     {
         _waypoints.clear();
+    }
+
+    spWaypoint SceneGraph::getNearestWaypoint(Vector2F &pos)
+    {
+        float dist = FLT_MAX;
+        spWaypoint ret;
+        for (auto sp : _waypoints)
+        {
+            float newdist = sp.second->_pos.squareDistance(pos);
+            if (newdist < dist)
+            {
+                dist = newdist;
+                ret = sp.second;
+            }
+        }
+        return ret;
     }
 
 }

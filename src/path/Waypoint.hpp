@@ -58,8 +58,8 @@ namespace dang
         std::vector<std::pair<wpWaypoint, connection>>& getNeighbours();
 
 
-        void setPosition(Vector2F& pos) { _pos = pos; };
-        void setPosition(float x, float y) { _pos.x = x; _pos.y = y; }
+//        void setPosition(Vector2F& pos) { _pos = pos; };
+//        void setPosition(float x, float y) { _pos.x = x; _pos.y = y; }
         void setF(float f) { _f = f; }
         void setG(float g) { _g = g; }
         void setH(float h) { _h = h; }
@@ -81,6 +81,9 @@ namespace dang
         /** id of waypoint */
         const uint32_t _id;
 
+        /** position of waypoint */
+        const Vector2F _pos;
+
     protected:
 
         /** Clears the neighbours of the node. */
@@ -93,9 +96,6 @@ namespace dang
             List of all the node's children.
         */
         std::vector<std::pair<wpWaypoint, connection>> _neighbours;
-
-        /** position of waypoint */
-        Vector2F _pos;
 
         /** added value type */
         uint32_t _type;

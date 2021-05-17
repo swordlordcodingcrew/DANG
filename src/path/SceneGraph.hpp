@@ -37,7 +37,7 @@ namespace dang
         void addWaypoint(uint32_t id, spWaypoint wp);
         void clearWaypoints();
         std::map<uint32_t, spWaypoint>& getWaypoints() { return _waypoints; }
-//        spWaypoint getNearestWaypoint(Vector2F& pos);
+        spWaypoint getNearestWaypoint(Vector2F& pos);
 
         // A* algo
         bool getPath(wpWaypoint start, wpWaypoint goal, std::vector<wpWaypoint>& path);
