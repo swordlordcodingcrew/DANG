@@ -133,13 +133,13 @@ namespace dang
         }
     }
 
-    void SceneGraph::releaseNodes()
+    void SceneGraph::resetWaypoints()
     {
         for (const auto& wp : open)
         {
             if (spWaypoint spwp = wp.lock())
             {
-                spwp->release();
+                spwp->resetWaypoint();
             }
         }
 
@@ -147,16 +147,26 @@ namespace dang
         {
             if (spWaypoint spwp = wp.lock())
             {
-                spwp->release();
+                spwp->resetWaypoint();
             }
         }
     }
 
-    void SceneGraph::clear()
+    void SceneGraph::resetAStar()
     {
-        releaseNodes();
+        resetWaypoints();
         open.clear();
         closed.clear();
+    }
+
+    void SceneGraph::addWaypoint(uint32_t id, spWaypoint wp)
+    {
+        _waypoints[id] = wp;
+    }
+
+    void SceneGraph::clearWaypoints()
+    {
+        _waypoints.clear();
     }
 
 }

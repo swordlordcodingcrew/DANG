@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <map>
 #include "Waypoint.hpp"
 
 namespace dang
@@ -33,20 +34,26 @@ namespace dang
         SceneGraph();
         ~SceneGraph();
 
+        void addWaypoint(uint32_t id, spWaypoint wp);
+        void clearWaypoints();
+        std::map<uint32_t, spWaypoint>& getWaypoints() { return _waypoints; }
+//        spWaypoint getNearestWaypoint(Vector2F& pos);
+
         // A* algo
         bool getPath(wpWaypoint start, wpWaypoint goal, std::vector<wpWaypoint>& path);
-        void clear();
+        void resetAStar();
 
     protected:
 
         /** container of the waypoints */
-        std::vector<spWaypoint> _waypoints;
+        std::map<uint32_t, spWaypoint> _waypoints;
 
         /** A* stuff */
-        void releaseNodes();
+        void resetWaypoints();
         void pushOpen(wpWaypoint wap);
         void popOpen(wpWaypoint wap);
-        std::vector<wpWaypoint> open, closed;
+        std::vector<wpWaypoint> open;
+        std::vector<wpWaypoint> closed;
 
         /**
             @brief Computes the distance between two nodes using the specified
@@ -69,5 +76,4 @@ namespace dang
         void reconstructPath(wpWaypoint wap, std::vector<wpWaypoint>& path);
 
     };
-
 }

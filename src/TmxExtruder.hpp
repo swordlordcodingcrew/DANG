@@ -11,11 +11,15 @@
 #include <forward_list>
 #include <vector>
 #include <memory>
-#include <src/path/Waypoint.hpp>
+//#include <src/path/Waypoint.hpp>
 
 namespace dang
 {
     class Imagesheet;
+    class SceneGraph;
+
+    using spSceneGraph = std::shared_ptr<SceneGraph>;
+
 
     struct tmx_tileset
     {
@@ -224,17 +228,11 @@ namespace dang
         void                    fillHUDLayer(spHUDLayer layer, const std::string& name, Gear& gear, bool addSprites, bool addToGear);
         spTileLayer             getTileLayer(const std::string& name, Gear& gear, bool addToGear);
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
-        spWaypoint              createPaths(RectF& room_extent);
-
-//        const std::vector<tmx_spriteobject>& getSOList(const spSpriteLayer& sl);
+        spSceneGraph            createPaths(RectF& room_extent);
 
         const tmx_layer* getTmxLayer(const std::string &name);
         const tmx_tileset*  getTileset(const std::string &name);
         const tmx_tileanimation* getTileAnimation(const std::string &tileset, const std::string& name);
-
-//        const std::shared_ptr<tmx_objectlayer>     getTmxObjectLayer(const std::string &name);
-//        const std::shared_ptr<tmx_tilelayer>     getTmxTileLayer(const std::string &name);
-
 
     protected:
         const tmx_level*  _level{nullptr};
