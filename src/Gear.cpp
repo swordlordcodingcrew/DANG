@@ -58,12 +58,15 @@ namespace dang
 
     dang::Status Gear::runBehaviourTree(std::shared_ptr<TreeState> ts, std::shared_ptr<Sprite> s) const
     {
-        if(_tree == nullptr)
+        // TODO refactor
+        try
+        {
+            return _behaviourTree.at("insanity")->process(ts, s);
+        }
+        catch(std::out_of_range& oor)
         {
             return Status::FAILURE;
         }
-
-        return _tree->process(ts, s);
     }
 
     void Gear::addImagesheet(std::shared_ptr<Imagesheet> is)
@@ -88,6 +91,35 @@ namespace dang
         try
         {
             return _imagesheets.at(name);
+        }
+        catch(std::out_of_range& oor)
+        {
+            return nullptr;
+        }
+    }
+
+    void Gear::addBehaviourTree(const std::string& name, std::shared_ptr<Tree> bt)
+    {
+        assert(!name.empty());
+        _behaviourTree[name] = bt;
+    }
+
+
+    void Gear::removeBehaviourTree(const std::string& key)
+    {
+        _behaviourTree.erase(key);
+    }
+
+    void Gear::removeBehaviourTrees()
+    {
+        _behaviourTree.clear();
+    }
+
+    std::shared_ptr<Tree> Gear::getBehaviourTree(const std::string &name) const
+    {
+        try
+        {
+            return _behaviourTree.at(name);
         }
         catch(std::out_of_range& oor)
         {

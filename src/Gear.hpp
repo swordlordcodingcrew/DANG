@@ -18,8 +18,10 @@ namespace dang
     class Sprite;
     class Layer;
     class Imagesheet;
+    class Tree;
 
     using spImagesheet = std::shared_ptr<Imagesheet>;
+    using spBehaviourTree = std::shared_ptr<Tree>;
 
     class Gear
     {
@@ -33,15 +35,17 @@ namespace dang
         void    render(uint32_t time);
         dang::Status    runBehaviourTree(std::shared_ptr<TreeState> ts, std::shared_ptr<Sprite> s) const;
 
-        //TEST
-        std::shared_ptr<dang::Tree> _tree;
-        //ENDTEST
-
 //        void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
         void                        addImagesheet(std::shared_ptr<Imagesheet> is);
-        std::shared_ptr<Imagesheet> getImagesheet(const std::string& name) const;
+        spImagesheet                getImagesheet(const std::string& name) const;
+        void                        addBehaviourTree(const std::string& name, spBehaviourTree bt);
+        spBehaviourTree             getBehaviourTree(const std::string& name) const;
+
         void                        removeImagesheet(const std::string& name);
         void                        removeImagesheets();
+
+        void                        removeBehaviourTree(const std::string& name);
+        void                        removeBehaviourTrees();
 
         void                        addLayer(std::shared_ptr<Layer> layer);
         std::shared_ptr<Layer>      getLayerByName(const std::string& name);
@@ -66,7 +70,8 @@ namespace dang
 
     protected:
 
-        std::unordered_map<std::string, std::shared_ptr<Imagesheet>> _imagesheets;
+        std::unordered_map<std::string, spImagesheet> _imagesheets;
+        std::unordered_map<std::string, spBehaviourTree> _behaviourTree;
         std::forward_list<std::shared_ptr<Layer>> _layers;
 
         // viewport handling

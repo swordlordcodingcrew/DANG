@@ -72,6 +72,7 @@ namespace dang
         const bool visible;
         const std::string tileset;
         const uint16_t tile;
+        const std::string bt; // behaviour tree name
 
         /*
         // TODO: to be considered
@@ -213,16 +214,16 @@ namespace dang
 
     public:
         TmxExtruder() = default;
-        explicit TmxExtruder(const tmx_level* lvl);
+        explicit TmxExtruder(const tmx_level* lvl, Gear* gear);
         ~TmxExtruder() = default;
 
         spImagesheet            getImagesheet(const std::string& name);
-        void                    getImagesheets(Gear& gear);
+        void                    getImagesheets();
 
-        spSpriteLayer           getSpriteLayer(const std::string& name, Gear& gear, bool addSprites, bool addToGear);
-        spCollisionSpriteLayer  getCollisionSpriteLayer(const std::string& name, Gear& gear, bool addSprites, bool addToGear);
-        void                    fillHUDLayer(spHUDLayer layer, const std::string& name, Gear& gear, bool addSprites, bool addToGear);
-        spTileLayer             getTileLayer(const std::string& name, Gear& gear, bool addToGear);
+        spSpriteLayer           getSpriteLayer(const std::string& name, bool addSprites, bool addToGear);
+        spCollisionSpriteLayer  getCollisionSpriteLayer(const std::string& name, bool addSprites, bool addToGear);
+        void                    fillHUDLayer(spHUDLayer layer, const std::string& name, bool addSprites, bool addToGear);
+        spTileLayer             getTileLayer(const std::string& name, bool addToGear);
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
         spWaypoint              createPaths(RectF& room_extent);
 
@@ -235,6 +236,7 @@ namespace dang
 //        const std::shared_ptr<tmx_objectlayer>     getTmxObjectLayer(const std::string &name);
 //        const std::shared_ptr<tmx_tilelayer>     getTmxTileLayer(const std::string &name);
 
+        dang::Gear*  _gear{nullptr};
 
     protected:
         const tmx_level*  _level{nullptr};

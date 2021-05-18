@@ -18,11 +18,11 @@
 namespace dang
 {
 
-    TmxExtruder::TmxExtruder(const tmx_level* lvl) : _level(lvl)
+    TmxExtruder::TmxExtruder(const tmx_level* lvl, dang::Gear* gear) : _level(lvl), _gear(gear)
     {
     }
 
-    void TmxExtruder::getImagesheets(Gear &gear)
+    void TmxExtruder::getImagesheets()
     {
         if (_level == nullptr)
         {
@@ -34,7 +34,7 @@ namespace dang
             const tmx_tileset* ts = _level->tilesets + i;
             const image_import* ii = ts->image;
             std::shared_ptr<Imagesheet> is = std::make_shared<Imagesheet>(ts->name, ii, ts->cols, ts->rows);
-            gear.addImagesheet(is);
+            _gear->addImagesheet(is);
         }
     }
 
@@ -62,7 +62,7 @@ namespace dang
         return is;
     }
 
-    spSpriteLayer TmxExtruder::getSpriteLayer(const std::string& name, Gear& gear, bool addSprites, bool addToGear)
+    spSpriteLayer TmxExtruder::getSpriteLayer(const std::string& name, bool addSprites, bool addToGear)
     {
         const tmx_layer* l = getTmxLayer(name);
 
@@ -95,21 +95,21 @@ namespace dang
             {
                 const tmx_spriteobject* so = l->spriteobjects + j;
 
-                spImagesheet is = gear.getImagesheet(so->tileset);
+                spImagesheet is = _gear->getImagesheet(so->tileset);
                 sl->addSprite(std::make_shared<Sprite>(so, is));
             }
         }
 
         if (addToGear)
         {
-            gear.addLayer(sl);
+            _gear->addLayer(sl);
         }
 
         return sl;
 
     }
 
-    void TmxExtruder::fillHUDLayer(spHUDLayer layer, const std::string& name, Gear& gear, bool addSprites, bool addToGear)
+    void TmxExtruder::fillHUDLayer(spHUDLayer layer, const std::string& name, bool addSprites, bool addToGear)
     {
         const tmx_layer* l = getTmxLayer(name);
 
@@ -137,7 +137,7 @@ namespace dang
             {
                 const tmx_spriteobject* so = l->spriteobjects + j;
 
-                spImagesheet is = gear.getImagesheet(so->tileset);
+                spImagesheet is = _gear->getImagesheet(so->tileset);
                 layer->addSprite(std::make_shared<Sprite>(so, is));
             }
 
@@ -145,11 +145,11 @@ namespace dang
 
         if (addToGear)
         {
-            gear.addLayer(layer);
+            _gear->addLayer(layer);
         }
     }
 
-    spCollisionSpriteLayer TmxExtruder::getCollisionSpriteLayer(const std::string &name, Gear& gear, bool addSprites, bool addToGear)
+    spCollisionSpriteLayer TmxExtruder::getCollisionSpriteLayer(const std::string &name, bool addSprites, bool addToGear)
     {
         const tmx_layer* l = getTmxLayer(name);
 
@@ -179,7 +179,7 @@ namespace dang
             {
                 const tmx_spriteobject* so = l->spriteobjects + j;
 
-                spImagesheet is = gear.getImagesheet(so->tileset);
+                spImagesheet is = _gear->getImagesheet(so->tileset);
                 sl->addCollisionSprite(std::make_shared<CollisionSprite>(so, is));
             }
 
@@ -187,7 +187,7 @@ namespace dang
 
         if (addToGear)
         {
-            gear.addLayer(sl);
+            _gear->addLayer(sl);
         }
 
         return sl;
@@ -202,7 +202,7 @@ namespace dang
      * @param gear the gear
      * @return shared ptr to the extruded tilelayer or null
      */
-    spTileLayer TmxExtruder::getTileLayer(const std::string &name, Gear &gear, bool addToGear)
+    spTileLayer TmxExtruder::getTileLayer(const std::string &name, bool addToGear)
     {
         const tmx_layer* l = getTmxLayer(name);
 
@@ -223,8 +223,8 @@ namespace dang
             return nullptr;
         }
 
-        spImagesheet is = gear.getImagesheet(ts->name);
-        std::shared_ptr<TileLayer> tl = std::make_shared<TileLayer>(ts, l, is, gear.getViewport());
+        spImagesheet is = _gear->getImagesheet(ts->name);
+        std::shared_ptr<TileLayer> tl = std::make_shared<TileLayer>(ts, l, is, _gear->getViewport());
         tl->_name = l->name;
         tl->_z_order = l->z_order;
         tl->_visible = l->visible;
@@ -235,7 +235,7 @@ namespace dang
 
         if (addToGear)
         {
-            gear.addLayer(tl);
+            _gear->addLayer(tl);
         }
 
         return tl;
