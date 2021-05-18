@@ -57,13 +57,13 @@ namespace dang
     /*!
  \brief Pass a TreeState instance to #beehive::Tree's process function in order to resume Running nodes. Instantiate with #beehive::Tree::make_state.
 */
-    class Tree;
+    class BehaviourTree;
 
     class TreeState
     {
 
     public:
-        TreeState(std::shared_ptr<Tree> tree);
+        TreeState(std::shared_ptr<BehaviourTree> tree);
         TreeState();
         //TreeState(std::shared_ptr<Tree> sharedPtr);
 
@@ -77,17 +77,17 @@ namespace dang
         }
 
         // For internal use only.
-        void setTree(std::shared_ptr<Tree> tree) {
+        void setTree(std::shared_ptr<BehaviourTree> tree) {
             _tree = std::move(tree);
         }
         //private:
 
         //size_t _tree_id;
-        std::shared_ptr<Tree> _tree{nullptr};
+        std::shared_ptr<BehaviourTree> _tree{nullptr};
         uint16_t _resume_index{};
         uint16_t _offset{};
 
-        friend class Tree;
+        friend class BehaviourTree;
         friend struct Node;
 
 
@@ -167,7 +167,7 @@ namespace dang
         }
 
     private:
-        friend class Tree;
+        friend class BehaviourTree;
 
         size_t _index{};
         size_t _child_count{};
@@ -235,7 +235,7 @@ namespace dang
 /*!
  \brief The behavior tree class which passes the ContextType around. See #beehive::Builder for making one.
 */
-    class Tree
+    class BehaviourTree
     {
     public:
         /*!
@@ -275,7 +275,7 @@ namespace dang
          \brief Constructs a tree with the given nodes.
             See #beehive::Builder.
         */
-        Tree(std::vector<Node> nodes);
+        BehaviourTree(std::vector<Node> nodes);
 
         std::vector<Node> _nodes;
         size_t _id{id()};
@@ -337,7 +337,7 @@ namespace dang
         /*!
          \brief Copies another tree as a subtree at the current node.
         */
-        BuilderBase &tree(Tree const &subtree);
+        BuilderBase &tree(BehaviourTree const &subtree);
 
         /*!
          \brief Closes the composite or decorator branch.
@@ -350,13 +350,13 @@ namespace dang
          \brief Finalizes the tree by returning a copy. This will assert if done while
             a decorator or composite branch is still 'open'.
         */
-        virtual Tree build() const &;
+        virtual BehaviourTree build() const &;
 
         /*!
          \brief Finalizes the tree by returning a tree constructed with the builder's
             root node. The builder is then invalid.
         */
-        virtual Tree build() &&;
+        virtual BehaviourTree build() &&;
 
         /*!
          \brief Shorthand for `composite(&sequence<C>)`.
@@ -447,13 +447,13 @@ namespace dang
         Builder &operator=(Builder const &) = delete; //!< Deleted copy assignment operator.
         Builder &operator=(Builder &&) = default; //!< Move assignment operator.
 
-        virtual Tree build() const & override
+        virtual BehaviourTree build() const & override
         {
             assert(_nodes[0].child_count() > 0); // must have at least one leaf node added
             return {_nodes};
         }
 
-        virtual Tree build() && override
+        virtual BehaviourTree build() && override
         {
             assert(_nodes[0].child_count() > 0); // must have at least one leaf node added
             return {std::move(_nodes)};
@@ -468,6 +468,6 @@ namespace dang
         std::vector<Node> _nodes;
     };
 
-    const TreeState* getTreeStateFromTree(std::shared_ptr<Tree> tree);
+    const TreeState* getTreeStateFromTree(std::shared_ptr<BehaviourTree> tree);
 
 } // namespace dang

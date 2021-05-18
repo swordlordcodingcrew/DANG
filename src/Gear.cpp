@@ -98,7 +98,7 @@ namespace dang
         }
     }
 
-    void Gear::addBehaviourTree(const std::string& name, std::shared_ptr<Tree> bt)
+    void Gear::addBehaviourTree(const std::string& name, std::shared_ptr<BehaviourTree> bt)
     {
         assert(!name.empty());
         _behaviourTree[name] = bt;
@@ -115,7 +115,7 @@ namespace dang
         _behaviourTree.clear();
     }
 
-    std::shared_ptr<Tree> Gear::getBehaviourTree(const std::string &name) const
+    std::shared_ptr<BehaviourTree> Gear::getBehaviourTree(const std::string &name) const
     {
         try
         {

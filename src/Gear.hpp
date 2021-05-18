@@ -18,10 +18,10 @@ namespace dang
     class Sprite;
     class Layer;
     class Imagesheet;
-    class Tree;
+    class BehaviourTree;
 
     using spImagesheet = std::shared_ptr<Imagesheet>;
-    using spBehaviourTree = std::shared_ptr<Tree>;
+    using spBehaviourTree = std::shared_ptr<BehaviourTree>;
 
     class Gear
     {

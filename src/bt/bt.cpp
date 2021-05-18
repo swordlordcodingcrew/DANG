@@ -7,7 +7,7 @@
 
 namespace dang
 {
-    TreeState::TreeState(std::shared_ptr<Tree> tree) : _tree(move(tree))
+    TreeState::TreeState(std::shared_ptr<BehaviourTree> tree) : _tree(move(tree))
     {
 
     }
@@ -84,7 +84,7 @@ namespace dang
         return Status::SUCCESS;
     }
 
-    Tree::Tree(std::vector<Node> nodes) : _nodes(move(nodes))
+    BehaviourTree::BehaviourTree(std::vector<Node> nodes) : _nodes(move(nodes))
     {
         size_t i = 0;
         for (auto &node : _nodes) {
@@ -101,7 +101,7 @@ namespace dang
     }
      */
 
-    Status Tree::process(std::shared_ptr<TreeState> state, std::shared_ptr<Sprite> context) const
+    Status BehaviourTree::process(std::shared_ptr<TreeState> state, std::shared_ptr<Sprite> context) const
     {
         // TODO redo asset with pointer?
         //assert(state->_tree_id == _id); // another tree's state used with this tree
@@ -226,7 +226,7 @@ namespace dang
         return _leaf(std::move(leaf));
     }
 
-    auto BuilderBase::tree(Tree const &subtree) -> BuilderBase &
+    auto BuilderBase::tree(BehaviourTree const &subtree) -> BuilderBase &
     {
         assert((_type != Type::DECORATOR) || node().child_count() == 0); // Decorators may only have one child!
         auto const &subtree_nodes = subtree.nodes();
@@ -241,13 +241,13 @@ namespace dang
         return _parent;
     }
 
-    auto BuilderBase::build() const & -> Tree
+    auto BuilderBase::build() const & -> BehaviourTree
     {
         assert(false); // unterminated tree!
         return {{}};
     }
 
-    auto BuilderBase::build() && -> Tree
+    auto BuilderBase::build() && -> BehaviourTree
     {
         assert(false); // unterminated tree!
         return {{}};
