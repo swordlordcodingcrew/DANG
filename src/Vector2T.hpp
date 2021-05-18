@@ -75,12 +75,12 @@ namespace dang
             return (x * a.x) + (y * a.y);
         }
 
-        T distance(const Vector2T<T> &a)
+        T distance(const Vector2T<T> &a) const
         {
             return std::sqrt((x - a.x) * (x - a.x) + (y - a.y) * (y - a.y));
         }
 
-        T squareDistance(const Vector2T<T> &a)
+        T squareDistance(const Vector2T<T> &a) const
         {
             return (x - a.x) * (x - a.x) + (y - a.y) * (y - a.y);
         }

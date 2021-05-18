@@ -8,7 +8,13 @@
 namespace dang
 {
     Waypoint::Waypoint() :
-            _f(0.0), _g(0.0), _h(0.0), _closed(false), _open(false), _pos(0, 0)
+            _f(0.0), _g(0.0), _h(0.0), _closed(false), _open(false), _pos(0, 0), _id(0), _type(0)
+    {
+        _parent.reset();
+    }
+
+    Waypoint::Waypoint(uint32_t id, float x, float y, uint32_t type) :
+        _f(0.0), _g(0.0), _h(0.0), _closed(false), _open(false),  _id(id), _pos(x, y), _type(type)
     {
         _parent.reset();
     }
@@ -23,15 +29,20 @@ namespace dang
         return _parent;
     }
 
-    std::vector<std::pair<spWaypoint, Waypoint::connection>>& Waypoint::getNeighbours()
+    std::vector<std::pair<wpWaypoint, Waypoint::connection>>& Waypoint::getNeighbours()
     {
         return _neighbours;
     }
 
-    void Waypoint::addNeighbour(spWaypoint child, connection &conn)
+    void Waypoint::addNeighbour(wpWaypoint child, connection &conn)
     {
-        _neighbours.emplace_back(std::make_pair(child, conn));
-    //	_children.push_back(std::make_pair(child,conn));
+        _neighbours.push_back(std::make_pair(child, conn));
+    }
+
+    void Waypoint::addNeighbour(wpWaypoint child, float distance, uint32_t type)
+    {
+        connection co = {distance, type};
+        _neighbours.push_back(std::make_pair(child, co));
     }
 
     void Waypoint::clearNeighbours()
@@ -50,14 +61,12 @@ namespace dang
 //        return _pos.distance(node->_pos);
     }
 
-    void Waypoint::release()
+    void Waypoint::resetWaypoint()
     {
         _open = _closed = false;
         _f = _g = _h = 0.0f;
-        _parent.reset();
-        // TODO: correct?
-        _neighbours.clear();
     }
+
 
 }
 

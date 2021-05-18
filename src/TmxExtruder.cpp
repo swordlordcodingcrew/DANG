@@ -14,6 +14,7 @@
 #include "Sprite.hpp"
 #include "CollisionSprite.hpp"
 #include "BaseHUDLayer.hpp"
+#include "path/SceneGraph.hpp"
 
 namespace dang
 {
@@ -319,14 +320,37 @@ namespace dang
 
     }
 
-    spWaypoint TmxExtruder::createPaths(RectF &room_extent)
+    spSceneGraph TmxExtruder::createPaths(RectF &room_extent)
     {
+        spSceneGraph ret = std::make_shared<SceneGraph>();
+
+        // first add all the waypoints
         for (size_t i = 0; i < _level->waypoints_len; ++i)
         {
-            
+            const tmx_waypoint* twap = _level->waypoints + i;
+            if (room_extent.contains({twap->x, twap->y}))
+            {
+                spWaypoint spwap = std::make_shared<Waypoint>(twap->id, twap->x, twap->y, twap->type);
+                ret->addWaypoint(spwap->_id, spwap);
+            }
         }
 
-        return nullptr;
+        std::map<uint32_t, spWaypoint>& wapts = ret->getWaypoints();
+
+        // second add the connections to the waypoints
+        for (size_t j = 0; j < _level->waypoint_connections_len; ++j)
+        {
+            const tmx_waypoint_connection* twc = _level->waypoint_connections + j;
+            if (wapts.count(twc->waypoint_start_id) > 0 && wapts.count(twc->waypoint_goal_id) > 0)
+            {
+                spWaypoint start = wapts.at(twc->waypoint_start_id);
+                spWaypoint goal = wapts.at(twc->waypoint_goal_id);
+                float dist = start->distanceTo(goal);
+                start->addNeighbour(goal, dist, twc->connection_type);
+            }
+        }
+
+        return ret;
     }
 
 }
