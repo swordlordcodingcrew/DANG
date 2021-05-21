@@ -171,7 +171,7 @@ namespace dang
         _waypoints.clear();
     }
 
-    spWaypoint SceneGraph::getNearestWaypoint(Vector2F &pos)
+    spWaypoint SceneGraph::getNearestWaypoint(const Vector2F &pos)
     {
         float dist = FLT_MAX;
         spWaypoint ret;
@@ -186,5 +186,53 @@ namespace dang
         }
         return ret;
     }
+
+    bool SceneGraph::waypointReached(const RectF hotrect_abs, wpWaypoint goal)
+    {
+        spWaypoint wp = goal.lock();
+        if (wp)
+        {
+            if (hotrect_abs.contains(wp->_pos))
+            {
+                // fine tuning. wp within 5 pixels of hotrect-center
+                if ((hotrect_abs.center().x - wp->_pos.x) * (hotrect_abs.center().x - wp->_pos.x) < 10)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool SceneGraph::getRandomNextWaypoint(wpWaypoint start, std::vector<wpWaypoint> &path)
+    {
+        spWaypoint wp = start.lock();
+        if (wp)
+        {
+            size_t r = std::rand() % wp->getNeighbours().size();
+            path.push_back(wp->getNeighbour(r));
+        }
+    }
+
+    uint32_t SceneGraph::getConnectionType(wpWaypoint start, wpWaypoint goal)
+    {
+        spWaypoint st = start.lock();
+        spWaypoint go = goal.lock();
+        if (!st || !go)
+        {
+            return 0;
+        }
+
+        for (auto neigh : st->getNeighbours())
+        {
+            if (neigh.first.lock() == go)
+            {
+                return neigh.second.type;
+            }
+        }
+
+        return 0;
+    }
+
 
 }

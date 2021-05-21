@@ -31,30 +31,15 @@ namespace dang
         Waypoint(uint32_t id, float x, float y, uint32_t type);
         virtual ~Waypoint();
 
-        /**
-            @brief Assigns the parent of the node. The parent of a node will
-            be evaluated when reconstituing the path form the goal.
-            @param[in] parent Pointer to the node to assign as the parent.
-        */
         void setParent(wpWaypoint parent);
 
-        /**
-            @brief Returns a pointer to the parent node.
-            @return A pointer to the parent node.
-        */
         wpWaypoint getParent() const;
 
-        /**
-            @brief Add a node to the children of the current node.
-            @param[in] child A pointer to the child.
-        */
         void addNeighbour(wpWaypoint child, connection& nc);
         void addNeighbour(wpWaypoint child, float distance, uint32_t type);
+        wpWaypoint getNeighbour(size_t index);
 
-        /**
-            @brief Returns a vector containing all the children of the current node.
-            @return A vector of Node pointers.
-        */
+
         std::vector<std::pair<wpWaypoint, connection>>& getNeighbours();
 
 

@@ -7,6 +7,7 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <src/RectT.hpp>
 #include "Waypoint.hpp"
 
 namespace dang
@@ -37,7 +38,12 @@ namespace dang
         void addWaypoint(uint32_t id, spWaypoint wp);
         void clearWaypoints();
         std::map<uint32_t, spWaypoint>& getWaypoints() { return _waypoints; }
-        spWaypoint getNearestWaypoint(Vector2F& pos);
+
+        spWaypoint getNearestWaypoint(const Vector2F& pos);
+        bool waypointReached(const RectF hotrect_abs, wpWaypoint goal);
+
+        bool getRandomNextWaypoint(wpWaypoint start, std::vector<wpWaypoint>& path);
+        uint32_t getConnectionType(wpWaypoint start, wpWaypoint goal);
 
         // A* algo
         bool getPath(wpWaypoint start, wpWaypoint goal, std::vector<wpWaypoint>& path);

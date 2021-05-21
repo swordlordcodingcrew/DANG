@@ -3,6 +3,7 @@
 // Inspired by https://github.com/Sahnvour/PathFinder
 
 #include <iostream>
+#include <cassert>
 #include "Waypoint.hpp"
 
 namespace dang
@@ -21,7 +22,7 @@ namespace dang
 
     Waypoint::~Waypoint()
     {
-        std::cout << "destroying waypoint (" << _pos.x << "," << _pos.y << ")" << std::endl;
+//        std::cout << "destroying waypoint (" << _pos.x << "," << _pos.y << ")" << std::endl;
     }
 
     wpWaypoint Waypoint::getParent() const
@@ -58,13 +59,19 @@ namespace dang
     float Waypoint::distanceTo(spWaypoint wp)
     {
         return _pos.squareDistance(wp->_pos);
-//        return _pos.distance(node->_pos);
     }
 
     void Waypoint::resetWaypoint()
     {
         _open = _closed = false;
         _f = _g = _h = 0.0f;
+    }
+
+    wpWaypoint Waypoint::getNeighbour(size_t index)
+    {
+        assert(index < _neighbours.size());
+
+        return _neighbours[index].first;
     }
 
 
