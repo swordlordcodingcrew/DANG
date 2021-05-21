@@ -310,7 +310,16 @@ function export32Blit(map, fileName) {
                         tileset_ref = o.tile.tileset.name;
                         tile_id = o.tile.id;
                     }
-                    buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + "}";
+
+                    sBT = "";
+                    if (o.property("bt") != undefined)
+                    {
+                        sBT = o.property("bt");
+                    }
+
+                    buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + ",\"" + sBT + "\"}";
+
+                    // add separator except at the end
                     if (j < objects.length - 1)
                     {
                         buf += ",";
