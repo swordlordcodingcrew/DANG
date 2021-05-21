@@ -101,7 +101,7 @@ namespace dang
     void Gear::addBehaviourTree(const std::string& name, std::shared_ptr<BehaviourTree> bt)
     {
         assert(!name.empty());
-        _behaviourTree[name] = bt;
+        _behaviourTree[name] = move(bt);
     }
 
 

@@ -29,8 +29,23 @@ namespace dang
     };
      */
 
+    /*
+           auto tr = dang::Builder{}
+           .sequence()
+           .leaf([](std::shared_ptr<dang::Sprite> s) -> dang::BTNodeStatus { // Passing a lambda
+               return s->is_hungry ? dang::BTNodeStatus::SUCCESS : dang::BTNodeStatus::FAILURE;
+           })
+           .leaf(dang::Sprite::BTLoiter) // Passed a member function pointer
+           .leaf([](std::shared_ptr<dang::Sprite> s) { return dang::BTNodeStatus::RUNNING; })
+           .inverter()
+           .leaf(dang::EnemiesAroundChecker{}) // Passing functor
+           .end()
+           .void_leaf(&dang::Sprite::eat_food) // Void member function
+           .end()
+           .build();
+
 /*!
- \brief The status returned by process functions.
+\brief The status returned by process functions.
 */
     enum class BTNodeStatus : uint8_t
     {
