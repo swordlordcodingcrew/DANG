@@ -7,6 +7,17 @@
 #include "CollisionSprite.hpp"
 #include "Gear.hpp"
 
+#ifdef TARGET_32BLIT_HW
+/*
+#include "32blit.hpp"
+#include <malloc.h>
+extern "C"
+{
+    extern char _sbss, _end, __ltdc_start;
+}
+ */
+#endif
+
 namespace dang
 {
     CollisionSpriteLayer::CollisionSpriteLayer() : SpriteLayer(LT_COLLISIONSPRITELAYER)
@@ -82,6 +93,23 @@ namespace dang
                 blit::screen.line(tr, tl); // top -> left
             }
         }
+
+        #ifdef TARGET_32BLIT_HW
+        /*
+        // memory stats
+
+        auto static_used = &_end - &_sbss;
+        auto heap_total = &__ltdc_start - &_end;
+        auto heap_used = mallinfo().uordblks;
+
+        auto total_ram = static_used + heap_total;
+
+        blit::screen.pen = blit::Pen(255, 0, 255, 255);
+        char buf[100];
+        snprintf(buf, sizeof(buf), "Mem: %i + %i / %i", static_used, heap_used, total_ram);
+        blit::screen.text(buf, hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
+         */
+#endif
 #endif
 
     }
