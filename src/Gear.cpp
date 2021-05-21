@@ -56,7 +56,7 @@ namespace dang
         }
     }
 
-    dang::Status Gear::runBehaviourTree(std::shared_ptr<TreeState> ts, std::shared_ptr<Sprite> s) const
+    dang::BTNodeStatus Gear::runBehaviourTree(std::shared_ptr<TreeState> ts, std::shared_ptr<Sprite> s) const
     {
         // TODO refactor
         try
@@ -65,7 +65,7 @@ namespace dang
         }
         catch(std::out_of_range& oor)
         {
-            return Status::FAILURE;
+            return BTNodeStatus::FAILURE;
         }
     }
 

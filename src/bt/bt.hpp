@@ -18,22 +18,6 @@ namespace dang
     class Sprite;
 
     /*
-    class SpriteContext
-    {
-    public:
-
-        bool is_hungry{true};
-        void eat_food() {};
-
-        bool has_food() const
-        {
-            return _has_food;
-        }
-
-        bool _has_food{true};
-    };
-     */
-
     class EnemiesAroundChecker
     {
     public:
@@ -43,11 +27,12 @@ namespace dang
         }
         bool _enemies_around{false};
     };
+     */
 
 /*!
  \brief The status returned by process functions.
 */
-    enum class Status : uint8_t
+    enum class BTNodeStatus : uint8_t
     {
         FAILURE = 0, //!< Returned when the process function has failed.
         RUNNING, //!< Returned when the outcome of process has not been determined yet.
@@ -100,11 +85,11 @@ namespace dang
     {
     public:
 
-        using ProcessFunction = std::function<Status(std::shared_ptr<Sprite> context, Node const &self, std::shared_ptr<TreeState> state)>;
+        using ProcessFunction = std::function<BTNodeStatus(std::shared_ptr<Sprite> context, Node const &self, std::shared_ptr<TreeState> state)>;
 
         Node(ProcessFunction process): _process(move(process)) {}
 
-        Status process(std::shared_ptr<Sprite> context, std::shared_ptr<TreeState> state) const
+        BTNodeStatus process(std::shared_ptr<Sprite> context, std::shared_ptr<TreeState> state) const
         {
             return _process(context, *this, state);
         }
@@ -189,39 +174,39 @@ namespace dang
    The child pointer returned is only valid within the scope of the composite function
    body.
 */
-    using Composite = std::function<Status(std::shared_ptr<Sprite>, Generator const &, std::shared_ptr<TreeState>)>;
+    using Composite = std::function<BTNodeStatus(std::shared_ptr<Sprite>, Generator const &, std::shared_ptr<TreeState>)>;
 
 /*!
  \brief Composite that returns success if all children return success.
 */
-    Status sequence(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state);
+    BTNodeStatus sequence(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state);
 
 /*!
  \brief Composite that returns success on the first successful call.
 */
-    Status selector(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state);
+    BTNodeStatus selector(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state);
 
 /*!
  \brief A decorator is a composite that may only have a single child.
 */
-    using Decorator = std::function<Status(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)>;
+    using Decorator = std::function<BTNodeStatus(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)>;
 
 /*!
  \brief Decorator that just returns the result of the child. Not very useful...
 */
-    Status forwarder(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state);
+    BTNodeStatus forwarder(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state);
 
 /*!
  \brief Decorator that inverts the result of its child node.
 */
-    Status inverter(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state);
+    BTNodeStatus inverter(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state);
 
 /*!
  \brief Decorator that returns success regardless of the child result.
 */
-    Status succeeder(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state);
+    BTNodeStatus succeeder(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state);
 
-    using Leaf = std::function<Status(std::shared_ptr<Sprite> context)>; //!< A Leaf function takes a Context & and returns a Status.
+    using Leaf = std::function<BTNodeStatus(std::shared_ptr<Sprite> context)>; //!< A Leaf function takes a Context & and returns a Status.
 
     using BoolLeaf = std::function<bool(std::shared_ptr<Sprite> context)>;//BasicLeaf<bool, std::shared_ptr<SpriteContext>>; //!< A Leaf function returning bool returns SUCCESS on true and FAILURE on false. It is not possible to return RUNNING from such a function.
 
@@ -230,7 +215,7 @@ namespace dang
 /*!
  \brief A leaf that always succeeds. Not very useful...
 */
-    Status noop(std::shared_ptr<Sprite>);
+    BTNodeStatus noop(std::shared_ptr<Sprite>);
 
 /*!
  \brief The behavior tree class which passes the ContextType around. See #beehive::Builder for making one.
@@ -246,7 +231,7 @@ namespace dang
         /*!
          \brief Process with the given state and context reference.
         */
-        Status process(std::shared_ptr<TreeState> state, std::shared_ptr<Sprite> context) const;
+        BTNodeStatus process(std::shared_ptr<TreeState> state, std::shared_ptr<Sprite> context) const;
 
         /*!
          \brief Retrieves the nodes, for debugging purposes.

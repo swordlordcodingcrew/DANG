@@ -16,39 +16,39 @@ namespace dang
     /*!
  \brief Composite that returns success if all children return success.
 */
-    Status sequence(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state)
+    BTNodeStatus sequence(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state)
     {
         while (auto const *child = next_child())
         {
             auto status = child->process(context, state);
-            if (status != Status::SUCCESS)
+            if (status != BTNodeStatus::SUCCESS)
             {
                 return status;
             }
         }
-        return Status::SUCCESS;
+        return BTNodeStatus::SUCCESS;
     }
 
 /*!
  \brief Composite that returns success on the first successful call.
 */
-    Status selector(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state)
+    BTNodeStatus selector(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state)
     {
         while (auto const *child = next_child())
         {
             auto status = child->process(context, state);
-            if (status != Status::FAILURE)
+            if (status != BTNodeStatus::FAILURE)
             {
                 return status;
             }
         }
-        return Status::FAILURE;
+        return BTNodeStatus::FAILURE;
     }
 
 /*!
  \brief Decorator that just returns the result of the child. Not very useful...
 */
-    Status forwarder(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)
+    BTNodeStatus forwarder(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)
     {
         return child.process(context, state);
     }
@@ -56,32 +56,32 @@ namespace dang
 /*!
  \brief Decorator that inverts the result of its child node.
 */
-    Status inverter(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)
+    BTNodeStatus inverter(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)
     {
         const auto status = child.process(context, state);
         // this is to allow for the process function to also return a bool which is then translated to Status
-        if (status == Status::RUNNING)
+        if (status == BTNodeStatus::RUNNING)
         {
             return status;
         }
-        return status == Status::FAILURE ? Status::SUCCESS : Status::FAILURE;
+        return status == BTNodeStatus::FAILURE ? BTNodeStatus::SUCCESS : BTNodeStatus::FAILURE;
     }
 
 /*!
  \brief Decorator that returns success regardless of the child result.
 */
-    Status succeeder(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)
+    BTNodeStatus succeeder(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)
     {
         child.process(context, state);
-        return Status::SUCCESS;
+        return BTNodeStatus::SUCCESS;
     }
 
 /*!
  \brief A leaf that always succeeds. Not very useful...
 */
-    Status noop(std::shared_ptr<Sprite>)
+    BTNodeStatus noop(std::shared_ptr<Sprite>)
     {
-        return Status::SUCCESS;
+        return BTNodeStatus::SUCCESS;
     }
 
     BehaviourTree::BehaviourTree(std::vector<Node> nodes) : _nodes(move(nodes))
@@ -101,7 +101,7 @@ namespace dang
     }
      */
 
-    Status BehaviourTree::process(std::shared_ptr<TreeState> state, std::shared_ptr<Sprite> context) const
+    BTNodeStatus BehaviourTree::process(std::shared_ptr<TreeState> state, std::shared_ptr<Sprite> context) const
     {
         // TODO redo asset with pointer?
         //assert(state->_tree_id == _id); // another tree's state used with this tree
@@ -145,7 +145,7 @@ namespace dang
                 return c;
             };
             auto status = process(context, generator, state);
-            if (status == Status::RUNNING) {
+            if (status == BTNodeStatus::RUNNING) {
                 self.save_state_at_child_index(state, i - 1);
             } else {
                 self.clear_state(state);
@@ -168,7 +168,7 @@ namespace dang
         return make_leaf(Leaf{[void_process = move(f)](std::shared_ptr<Sprite> context)
                              {
                                  void_process(context);
-                                 return Status::SUCCESS;
+                                 return BTNodeStatus::SUCCESS;
                              }});
     }
 
@@ -177,7 +177,7 @@ namespace dang
         return make_leaf(Leaf{[bool_process = move(f)](std::shared_ptr<Sprite> context)
                              {
                                  const bool result = bool_process(context);
-                                 return result ? Status::SUCCESS : Status::FAILURE;
+                                 return result ? BTNodeStatus::SUCCESS : BTNodeStatus::FAILURE;
                              }});
     }
 

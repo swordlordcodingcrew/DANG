@@ -33,7 +33,7 @@ namespace dang
 
         void    update(uint32_t dt);
         void    render(uint32_t time);
-        dang::Status    runBehaviourTree(std::shared_ptr<TreeState> ts, std::shared_ptr<Sprite> s) const;
+        dang::BTNodeStatus    runBehaviourTree(std::shared_ptr<TreeState> ts, std::shared_ptr<Sprite> s) const;
 
 //        void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
         void                        addImagesheet(std::shared_ptr<Imagesheet> is);

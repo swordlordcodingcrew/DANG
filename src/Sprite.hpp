@@ -6,6 +6,7 @@
 #include "dang.hpp"
 #include "Vector2T.hpp"
 #include "RectT.hpp"
+#include "src/bt/bt.hpp"
 
 #include <list>
 #include <memory>
@@ -35,18 +36,6 @@ namespace dang
         Sprite(const Sprite& sp);
         Sprite(const tmx_spriteobject* so, std::shared_ptr<Imagesheet> is);
         virtual ~Sprite();
-
-        // TEST
-        bool is_hungry{true};
-        void eat_food() {};
-
-        bool has_food() const
-        {
-            return _has_food;
-        }
-
-        bool _has_food{true};
-        // ENDTEST
 
         // tween stuff
         void addTween(spTweenable tw);
@@ -92,6 +81,24 @@ namespace dang
         float        getPosY() const { return _pos.y; }
         float        getLastPosX() const { return _last_pos.x; }
         float        getLastPosY() const { return _last_pos.y; }
+
+        // Behaviour Tree functions
+        static BTNodeStatus BTLoiter(std::shared_ptr<Sprite> s);
+        static BTNodeStatus BTIsHeroAround(std::shared_ptr<Sprite> s);
+        static BTNodeStatus BTSleep1Sec(std::shared_ptr<Sprite> s);
+
+
+        // TEST
+        bool is_hungry{true};
+        void eat_food() {};
+
+        bool has_food() const
+        {
+            return _has_food;
+        }
+
+        bool _has_food{true};
+        // ENDTEST
 
         Vector2F    getSize() { return _size; }
 

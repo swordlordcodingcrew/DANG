@@ -48,7 +48,7 @@ namespace dang
                 if(spr->_btTreeState != nullptr)
                 {
                     // if there is a tree state, run from where it stopped last
-                    dang::Status s = gear.runBehaviourTree(spr->_btTreeState, spr);
+                    dang::BTNodeStatus s = gear.runBehaviourTree(spr->_btTreeState, spr);
 
 #ifdef DANG_DEBUG
                     std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::Status>>(s) << " and position: " << spr->_btTreeState->resume_index() << std::endl;
