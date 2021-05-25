@@ -3,6 +3,8 @@
 // Inspired by https://github.com/Sahnvour/PathFinder
 
 #include <cfloat>
+#include <iostream>
+#include <engine/engine.hpp>
 #include "SceneGraph.hpp"
 #include "src/Vector2T.hpp"
 
@@ -10,7 +12,7 @@ namespace dang
 {
     SceneGraph::SceneGraph()
     {
-
+        std::srand(blit::now());
     }
 
     SceneGraph::~SceneGraph()
@@ -195,7 +197,7 @@ namespace dang
             if (hotrect_abs.contains(wp->_pos))
             {
                 // fine tuning. wp within 5 pixels of hotrect-center
-                if ((hotrect_abs.center().x - wp->_pos.x) * (hotrect_abs.center().x - wp->_pos.x) < 10)
+                if (std::abs(hotrect_abs.center().x - wp->_pos.x) < 2)
                 {
                     return true;
                 }
@@ -210,8 +212,11 @@ namespace dang
         if (wp)
         {
             size_t r = std::rand() % wp->getNeighbours().size();
+//            std::cout << "next index " << r << " - connection type " << wp->getNeighbourConnection(r).type << std::endl;
             path.push_back(wp->getNeighbour(r));
+            return true;
         }
+        return false;
     }
 
     uint32_t SceneGraph::getConnectionType(wpWaypoint start, wpWaypoint goal)

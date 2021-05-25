@@ -27,6 +27,9 @@ set(SOURCES
         src/tween/TwVel.hpp
         src/tween/TwAcc.cpp
         src/tween/TwAcc.hpp
+        src/tween/TwAccX.cpp
+        src/tween/TwAccY.cpp
+        src/tween/TwAccY.hpp
         src/tween/TwSequence.cpp
         src/tween/TwSequence.hpp
         src/Imagesheet.cpp
