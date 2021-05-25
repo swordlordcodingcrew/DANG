@@ -74,6 +74,12 @@ namespace dang
         return _neighbours[index].first;
     }
 
+    const Waypoint::connection& Waypoint::getNeighbourConnection(size_t index)
+    {
+        assert(index < _neighbours.size());
+
+        return _neighbours[index].second;
+    }
 
 }
 
