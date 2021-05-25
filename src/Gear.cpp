@@ -58,7 +58,7 @@ namespace dang
 
     dang::BTNodeStatus Gear::runBehaviourTree(std::shared_ptr<TreeState> ts, std::shared_ptr<Sprite> s) const
     {
-        // TODO refactor
+        // TODO refactor
         try
         {
             return _behaviourTree.at("insanity")->process(ts, s);
@@ -86,15 +86,23 @@ namespace dang
         _imagesheets.clear();
     }
 
-    std::shared_ptr<Imagesheet> Gear::getImagesheet(const std::string &name) const
+    std::shared_ptr<Imagesheet> Gear::getImagesheet(const std::string& name) const
     {
-        try
-        {
-            return _imagesheets.at(name);
-        }
-        catch(std::out_of_range& oor)
+        // there are no empty named imagesheets, must be a hotrecht or something
+        if(name.length() == 0)
         {
             return nullptr;
+        }
+
+        std::unordered_map<std::string, spImagesheet>::const_iterator it = _imagesheets.find (name);
+
+        if ( it == _imagesheets.end() )
+        {
+            return nullptr;
+        }
+        else
+        {
+            return it->second;
         }
     }
 
@@ -117,13 +125,21 @@ namespace dang
 
     std::shared_ptr<BehaviourTree> Gear::getBehaviourTree(const std::string &name) const
     {
-        try
-        {
-            return _behaviourTree.at(name);
-        }
-        catch(std::out_of_range& oor)
+        // there are no empty named behaviour trees
+        if(name.length() == 0)
         {
             return nullptr;
+        }
+
+        std::unordered_map<std::string, spBehaviourTree>::const_iterator it = _behaviourTree.find (name);
+
+        if ( it == _behaviourTree.end() )
+        {
+            return nullptr;
+        }
+        else
+        {
+            return it->second;
         }
     }
 
