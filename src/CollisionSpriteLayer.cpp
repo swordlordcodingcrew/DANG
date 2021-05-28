@@ -16,6 +16,10 @@ extern "C"
     extern char _sbss, _end, __ltdc_start;
 }
  */
+#include "32blit.hpp"
+#include <malloc.h>
+#include "../../../fonts/hud_font_small.h"
+extern char _sbss, _end, __ltdc_start;
 #endif
 
 namespace dang
@@ -45,10 +49,13 @@ namespace dang
                 // TODO validate that we only handle active sprites
                 // check if sprite wants to run a behaviour tree
                 // it probably does if it has a tree state...
-                if(spr->_btTreeState != nullptr)
+                auto ts = spr->getTreeState();
+                if(ts != nullptr)
                 {
                     // if there is a tree state, run from where it stopped last
-                    dang::BTNodeStatus s = gear.runBehaviourTree(spr->_btTreeState, spr);
+                    dang::BTNodeStatus s = gear.runBehaviourTree(spr);
+
+                    // TODO do something with the node status? like resetting the tree state or something when the tree run through?
 
 #ifdef DANG_DEBUG
                     std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::Status>>(s) << " and position: " << spr->_btTreeState->resume_index() << std::endl;
@@ -110,6 +117,23 @@ namespace dang
         blit::screen.text(buf, hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
          */
 #endif
+#endif
+
+#ifdef TARGET_32BLIT_HW
+
+        // memory stats
+
+        auto static_used = &_end - &_sbss;
+        auto heap_total = &__ltdc_start - &_end;
+        auto heap_used = mallinfo().uordblks;
+
+        auto total_ram = static_used + heap_total;
+
+        blit::screen.pen = blit::Pen(255, 0, 255, 255);
+        char buf[100];
+        snprintf(buf, sizeof(buf), "Mem: %i + %i / %i", static_used, heap_used, total_ram);
+        blit::screen.text(buf, hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
+
 #endif
 
     }

@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <iostream>
 #include "Gear.hpp"
 #include "Layer.hpp"
 #include "Sprite.hpp"
@@ -56,17 +57,53 @@ namespace dang
         }
     }
 
-    dang::BTNodeStatus Gear::runBehaviourTree(std::shared_ptr<TreeState> ts, std::shared_ptr<Sprite> s) const
+    dang::BTNodeStatus Gear::runBehaviourTree(std::shared_ptr<TreeState>& ts, const std::shared_ptr<Sprite>& s) const
     {
-        // TODO refactor
-        try
+        auto tree = ts->getTree();
+        if(tree == nullptr)
         {
-            return _behaviourTree.at("insanity")->process(ts, s);
-        }
-        catch(std::out_of_range& oor)
-        {
+            // return fail, since we can't find a tree, something went miserably wrong
+            std::cout << "wanted to run behaviour tree but could not find one in the given tree state." << std::endl;
             return BTNodeStatus::FAILURE;
         }
+
+        if(s == nullptr)
+        {
+            // return fail, since we can't find a context object, something went miserably wrong
+            std::cout << "wanted to run behaviour tree but could not find the context object (sprite)." << std::endl;
+            return BTNodeStatus::FAILURE;
+        }
+
+        return tree->process(ts, s);
+    }
+
+    dang::BTNodeStatus Gear::runBehaviourTree(const std::shared_ptr<Sprite>& s) const
+    {
+        if(s == nullptr)
+        {
+            // return fail, since we can't find a context object, something went miserably wrong
+            std::cout << "wanted to run behaviour tree but could not find the context object (sprite)." << std::endl;
+            return BTNodeStatus::FAILURE;
+        }
+
+        auto ts = s->getTreeState();
+        if(ts == nullptr)
+        {
+            // return fail, since we can't find a tree state in the given sprite, something went miserably wrong
+            std::cout << "wanted to run behaviour tree but could not find the tree state in the given sprite." << std::endl;
+            return BTNodeStatus::FAILURE;
+        }
+
+        auto tree = ts->getTree();
+        if(tree == nullptr)
+        {
+            // return fail, since we can't find a tree, something went miserably wrong
+            std::cout << "wanted to run behaviour tree but could not find one in the given tree state." << std::endl;
+            return BTNodeStatus::FAILURE;
+        }
+
+
+        return tree->process(ts, s);
     }
 
     void Gear::addImagesheet(std::shared_ptr<Imagesheet> is)

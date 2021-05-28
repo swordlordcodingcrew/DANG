@@ -16,7 +16,7 @@ namespace dang
     /*!
  \brief Composite that returns success if all children return success.
 */
-    BTNodeStatus sequence(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state)
+    BTNodeStatus sequence(const std::shared_ptr<Sprite>& context, Generator const &next_child, std::shared_ptr<TreeState>& state)
     {
         while (auto const *child = next_child())
         {
@@ -32,7 +32,23 @@ namespace dang
 /*!
  \brief Composite that returns success on the first successful call.
 */
-    BTNodeStatus selector(std::shared_ptr<Sprite> context, Generator const &next_child, std::shared_ptr<TreeState> state)
+    BTNodeStatus selector(const std::shared_ptr<Sprite>& context, Generator const &next_child, std::shared_ptr<TreeState>& state)
+    {
+        while (auto const *child = next_child())
+        {
+            auto status = child->process(context, state);
+            if (status != BTNodeStatus::FAILURE)
+            {
+                return status;
+            }
+        }
+        return BTNodeStatus::FAILURE;
+    }
+
+    /*!
+ \brief Composite that returns success on the first successful call.
+*/
+    BTNodeStatus randomiser(const std::shared_ptr<Sprite>& context, Generator const &next_child, std::shared_ptr<TreeState>& state)
     {
         while (auto const *child = next_child())
         {
@@ -48,7 +64,7 @@ namespace dang
 /*!
  \brief Decorator that just returns the result of the child. Not very useful...
 */
-    BTNodeStatus forwarder(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)
+    BTNodeStatus forwarder(const std::shared_ptr<Sprite>& context, Node const &child, std::shared_ptr<TreeState>& state)
     {
         return child.process(context, state);
     }
@@ -56,7 +72,7 @@ namespace dang
 /*!
  \brief Decorator that inverts the result of its child node.
 */
-    BTNodeStatus inverter(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)
+    BTNodeStatus inverter(const std::shared_ptr<Sprite>& context, Node const &child, std::shared_ptr<TreeState>& state)
     {
         const auto status = child.process(context, state);
         // this is to allow for the process function to also return a bool which is then translated to Status
@@ -70,7 +86,7 @@ namespace dang
 /*!
  \brief Decorator that returns success regardless of the child result.
 */
-    BTNodeStatus succeeder(std::shared_ptr<Sprite> context, Node const &child, std::shared_ptr<TreeState> state)
+    BTNodeStatus succeeder(const std::shared_ptr<Sprite>& context, Node const &child, std::shared_ptr<TreeState>& state)
     {
         child.process(context, state);
         return BTNodeStatus::SUCCESS;
@@ -79,7 +95,7 @@ namespace dang
 /*!
  \brief A leaf that always succeeds. Not very useful...
 */
-    BTNodeStatus noop(std::shared_ptr<Sprite>)
+    BTNodeStatus noop(const std::shared_ptr<Sprite>&)
     {
         return BTNodeStatus::SUCCESS;
     }
@@ -101,7 +117,7 @@ namespace dang
     }
      */
 
-    BTNodeStatus BehaviourTree::process(std::shared_ptr<TreeState> state, std::shared_ptr<Sprite> context) const
+    BTNodeStatus BehaviourTree::process(std::shared_ptr<TreeState>& state, const std::shared_ptr<Sprite>& context) const
     {
         // TODO redo asset with pointer?
         //assert(state->_tree_id == _id); // another tree's state used with this tree
@@ -117,7 +133,7 @@ namespace dang
 
     Node::ProcessFunction BuilderBase::make_branch(Decorator f)
     {
-        return [process = move(f)](std::shared_ptr<Sprite> context, Node const &self, std::shared_ptr<TreeState> state)
+        return [process = move(f)](const std::shared_ptr<Sprite>& context, Node const &self, std::shared_ptr<TreeState>& state)
         {
             assert(self.child_count() == 1); // invariant violation!
             auto &child = *(&self + 1);
@@ -127,7 +143,7 @@ namespace dang
 
     Node::ProcessFunction BuilderBase::make_branch(Composite f)
     {
-        return [process = move(f)](std::shared_ptr<Sprite> context, Node const &self, std::shared_ptr<TreeState> state)
+        return [process = move(f)](const std::shared_ptr<Sprite>& context, Node const &self, std::shared_ptr<TreeState>& state)
         {
             size_t i = 0; // C specs say: size_t ... is the unsigned integer type of the result of the sizeof operator
             auto *child = self.first_child();
@@ -156,7 +172,7 @@ namespace dang
 
     Node::ProcessFunction BuilderBase::make_leaf(Leaf f)
     {
-        return [process = move(f)](std::shared_ptr<Sprite> context, Node const &self, std::shared_ptr<TreeState> state)
+        return [process = move(f)](const std::shared_ptr<Sprite>& context, Node const &self, std::shared_ptr<TreeState>& state)
         {
             assert(self.child_count() == 0); // invariant violation!
             return process(context);
@@ -165,7 +181,7 @@ namespace dang
 
     Node::ProcessFunction BuilderBase::make_leaf(VoidLeaf f)
     {
-        return make_leaf(Leaf{[void_process = move(f)](std::shared_ptr<Sprite> context)
+        return make_leaf(Leaf{[void_process = move(f)](const std::shared_ptr<Sprite>& context)
                              {
                                  void_process(context);
                                  return BTNodeStatus::SUCCESS;
@@ -174,7 +190,7 @@ namespace dang
 
     Node::ProcessFunction BuilderBase::make_leaf(BoolLeaf f)
     {
-        return make_leaf(Leaf{[bool_process = move(f)](std::shared_ptr<Sprite> context)
+        return make_leaf(Leaf{[bool_process = move(f)](const std::shared_ptr<Sprite>& context)
                              {
                                  const bool result = bool_process(context);
                                  return result ? BTNodeStatus::SUCCESS : BTNodeStatus::FAILURE;

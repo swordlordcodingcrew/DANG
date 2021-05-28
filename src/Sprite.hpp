@@ -87,6 +87,10 @@ namespace dang
         static BTNodeStatus BTIsHeroAround(std::shared_ptr<Sprite> s);
         static BTNodeStatus BTSleep1Sec(std::shared_ptr<Sprite> s);
 
+        // ts pointer will get moved
+        void setTreeState(std::shared_ptr<TreeState> ts);
+        std::shared_ptr<TreeState>& getTreeState();
+
 
         // TEST
         bool is_hungry{true};
@@ -116,9 +120,9 @@ namespace dang
         std::string                     _type{""};
         int32_t                         _type_num{0};
 
-        std::shared_ptr<TreeState>      _btTreeState{nullptr};
 
     protected:  // variables
+        std::shared_ptr<TreeState>      _btTreeState{nullptr};
 
         //std::string name;     // to be implemented
         Vector2F      _size{0,0};
