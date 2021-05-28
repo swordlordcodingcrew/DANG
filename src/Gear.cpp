@@ -18,6 +18,7 @@ namespace dang
 
     Gear::Gear()
     {
+        std::srand(std::time(nullptr));
     }
 
     Gear::~Gear()
