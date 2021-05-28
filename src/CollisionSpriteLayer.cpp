@@ -8,18 +8,14 @@
 #include "Gear.hpp"
 
 #ifdef TARGET_32BLIT_HW
-/*
-#include "32blit.hpp"
-#include <malloc.h>
-extern "C"
-{
-    extern char _sbss, _end, __ltdc_start;
-}
- */
 #include "32blit.hpp"
 #include <malloc.h>
 #include "../../../fonts/hud_font_small.h"
 extern char _sbss, _end, __ltdc_start;
+#endif
+
+#ifdef DANG_DEBUG_DRAW
+#include "32blit.hpp"
 #endif
 
 namespace dang
