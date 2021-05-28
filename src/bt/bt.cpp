@@ -108,18 +108,9 @@ namespace dang
         }
     }
 
-    /*
-    Status Tree::process(std::shared_ptr<Sprite> context) const
-    {
-        TreeState state{_id};
-        // TODO next line is a hack
-        return _nodes[0].process(context, std::make_shared<TreeState>(state));
-    }
-     */
-
     BTNodeStatus BehaviourTree::process(std::shared_ptr<TreeState>& state, const std::shared_ptr<Sprite>& context) const
     {
-        // TODO redo asset with pointer?
+        // TODO redo assert with pointer?
         //assert(state->_tree_id == _id); // another tree's state used with this tree
         return _nodes.at(state->resume_index()).process(context, state);
     }
