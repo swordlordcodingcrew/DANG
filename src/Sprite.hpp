@@ -29,6 +29,57 @@ namespace dang
     using spTweenable = std::shared_ptr<Tweenable>;
     using spTwAnim = std::shared_ptr<TwAnim>;
 
+    /**
+         * definition of _type_num of sprites.
+         */
+    enum class SpriteType : int8_t
+    {
+        UNDEFINED = 0,
+
+        // 1 - 9 king and associated stuff to king
+        KING = 1,
+        BUBBLE = 5,
+
+        // 10 - 39 enemies
+        ENEMIES = 10,
+        PIG_NORMAL = 11,
+        NORMAL_PIG_HIVE = 12,
+        PIG_BETTER = 13,
+        PIG_BOX = 14,
+        PIG_BOMB = 15,
+        PIG_CANNON = 16,
+        FLYING_CRATE = 17,
+        FLYING_BOMB = 18,
+        FLYING_CANNONBALL = 19,
+        ENEMIES_END = 39,
+
+        // 40 - 49 hotrects
+        HOTRECT = 40,
+        HOTRECT_PLATFORM = 41,
+
+        // 50 - 69 coins and rewards in general
+        REWARDS = 50,
+        COIN_SILVER = 51,
+        COIN_GOLD = 52,
+        GEM_BLUE = 53,
+        GEM_GREEN = 54,
+        GEM_RED = 55,
+        POTION_BLUE = 56,
+        POTION_RED = 57,
+        POTION_GREEN = 58,
+        PIG_REWARD = 59,
+        REWARDS_END = 69,
+
+        // 70 - 79 triggers
+        TRIGGERS = 70,
+        ROOM_TRIGGER = 71,
+        WARP_ROOM_TRIGGER = 72,
+        TRIGGERS_END = 79,
+
+        // 80 - 89 Mood stuff
+        PIG_POOF = 81,
+    };
+
     class Sprite : public std::enable_shared_from_this<Sprite>
     {
     public: // functions
@@ -109,7 +160,6 @@ namespace dang
         uint8_t     getTransform() const { return _transform; }
         RectF       getSizeRect();      // return size of sprite
 
-
     public: // variables
         bool                            _visible{true};
         uint16_t                        _img_index{0};  // index to the image of the imagesheet. (equals tmx_tile of tmx_spriteobject?)
@@ -117,9 +167,8 @@ namespace dang
         uint8_t                         _transform{0};      // transform for blitting
         int32_t                         _z_order{0};
         uint16_t                        _id{0};    // global
-        std::string                     _type{""};
-        int32_t                         _type_num{0};
-
+        std::string                     _type_name{""};
+        SpriteType                      _type_num{SpriteType::UNDEFINED};
 
     protected:  // variables
         std::shared_ptr<TreeState>      _btTreeState{nullptr};
