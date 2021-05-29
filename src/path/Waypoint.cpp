@@ -65,6 +65,7 @@ namespace dang
     {
         _open = _closed = false;
         _f = _g = _h = 0.0f;
+        _parent.reset();
     }
 
     wpWaypoint Waypoint::getNeighbour(size_t index)
