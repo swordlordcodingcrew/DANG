@@ -138,9 +138,10 @@ namespace dang
 
     enum e_tmx_waypoint_connection
     {
-        wp_walk = 0x1,
-        wp_jump = 0x2,
-        wp_warp = 0x4
+        wpc_invalid = 0x0,
+        wpc_walk = 0x1,
+        wpc_jump = 0x2,
+        wpc_warp = 0x4
 
     };
 
