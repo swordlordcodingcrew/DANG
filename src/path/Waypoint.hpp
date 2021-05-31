@@ -39,7 +39,7 @@ namespace dang
         void addNeighbour(wpWaypoint child, float distance, uint32_t type);
         wpWaypoint getNeighbour(size_t index);
         const connection& getNeighbourConnection(size_t index);
-
+        uint32_t getType() const { return _type; }
 
         std::vector<std::pair<wpWaypoint, connection>>& getNeighbours();
 

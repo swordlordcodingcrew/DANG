@@ -239,5 +239,19 @@ namespace dang
         return 0;
     }
 
+    spWaypoint SceneGraph::getWaypointWithType(uint32_t type)
+    {
+        spWaypoint ret;
+        for (auto sp : _waypoints)
+        {
+            if (sp.second->getType() == type)
+            {
+                ret = sp.second;
+                break;
+            }
+        }
+        return ret;
+    }
+
 
 }
