@@ -30,6 +30,8 @@ set(SOURCES
         src/tween/TwAccX.cpp
         src/tween/TwAccY.cpp
         src/tween/TwAccY.hpp
+        src/tween/TwVelY.cpp
+        src/tween/TwVelY.hpp
         src/tween/TwSequence.cpp
         src/tween/TwSequence.hpp
         src/Imagesheet.cpp
