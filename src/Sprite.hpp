@@ -48,9 +48,11 @@ namespace dang
         PIG_BOX = 14,
         PIG_BOMB = 15,
         PIG_CANNON = 16,
-        FLYING_CRATE = 17,
-        FLYING_BOMB = 18,
-        FLYING_CANNONBALL = 19,
+        CANNON = 17,
+        FLYING_CANNONBALL = 18,
+        FLYING_CRATE = 19,
+        FLYING_BOMB = 20,
+        EXPLOSION = 38,
         ENEMIES_END = 39,
 
         // 40 - 49 hotrects
@@ -78,6 +80,7 @@ namespace dang
 
         // 80 - 89 Mood stuff
         PIG_POOF = 81,
+        CANNON_MUZZLE = 82,
     };
 
     class Sprite : public std::enable_shared_from_this<Sprite>
