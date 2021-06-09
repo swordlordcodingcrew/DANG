@@ -11,6 +11,18 @@
 
 #pragma once
 
+//#define DANG_DEBUG_PRINT
+
+#ifdef DANG_DEBUG_PRINT
+#ifdef TARGET_32BLIT_HW
+        #define D_DEBUG_PRINT(...) blit::debug(__VA_ARGS__)
+    #else
+        #define D_DEBUG_PRINT(...) std::printf(__VA_ARGS__)
+    #endif
+#else
+#define D_DEBUG_PRINT(...)
+#endif
+
 //#define DANG_DEBUG
 //#define DANG_DEBUG_DRAW
 

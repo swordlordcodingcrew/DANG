@@ -64,6 +64,11 @@ set(SOURCES
         src/snd/SndGear.cpp
         src/snd/SndGear.hpp
         src/snd/wave.h
+        src/snd/xm/context.c
+        src/snd/xm/load.c
+        src/snd/xm/play.c
+        src/snd/xm/xm.h
+        src/snd/xm/xm_internal.h
 )
 
 add_library(DANG STATIC ${SOURCES} )
