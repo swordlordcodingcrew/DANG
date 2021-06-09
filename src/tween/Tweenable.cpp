@@ -99,6 +99,7 @@ namespace dang
                     if (_finishedCB != nullptr)
                     {
                         _finishedCB();
+                        _finishedCB = nullptr;
                     }
                     return _ease_cb(_alternating && _loop % 2 == 1 ? 0 : 1);
                 }
