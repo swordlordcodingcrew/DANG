@@ -104,6 +104,7 @@ namespace dang
 
         void updateTweens(uint32_t dt);
         void coreUpdate(uint32_t dt);
+
         virtual void update(uint32_t dt);
 
         // simple image
