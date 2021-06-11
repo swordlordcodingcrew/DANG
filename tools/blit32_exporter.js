@@ -156,6 +156,8 @@ function export32Blit(map, fileName) {
     file.writeLine("// Layers ------------------------------------------------");
     file.writeLine("");
 
+    var hasWaypoints = false;
+
     for (var i = 0; i < map.layerCount; ++i)
     {
         var layer = map.layerAt(i);
@@ -164,7 +166,6 @@ function export32Blit(map, fileName) {
             file.writeLine("// layer tilelayer: " + layer.name);
 
             var buf = "\n";
-            //file.writeLine("tile t_" + layer.name + "[" + layer.height + "][" + layer.width + "] = {");
 
             for (y = 0; y < layer.height; ++y)
             {
@@ -237,6 +238,7 @@ function export32Blit(map, fileName) {
             if (layer.objects[0].shape == MapObject.Point)
             {
                 file.writeLine("// layer with points - path layer");
+                hasWaypoints = true;
 
                 objects = layer.objects
 
@@ -286,7 +288,7 @@ function export32Blit(map, fileName) {
                 file.writeLine("static const size_t " + functionName + "_connections_len = " + conn_len + ";")
                 file.writeLine("");
             }
-            else
+            else    // the layer is an object layer
             {
                 file.writeLine("// Objects for layer: " + layer.name);
 
@@ -393,10 +395,17 @@ function export32Blit(map, fileName) {
     file.writeLine("    .tileanimations_len = " + functionName + "_tileanimations_len,");
     file.writeLine("    .layers = " + functionName + "_layers,");
     file.writeLine("    .layers_len = " + functionName + "_layers_len,");
-    file.writeLine("    .waypoints = " + functionName + "_waypoints,");
-    file.writeLine("    .waypoints_len = " + functionName + "_waypoints_len,");
-    file.writeLine("    .waypoint_connections = " + functionName + "_connections,");
-    file.writeLine("    .waypoint_connections_len = " + functionName + "_connections_len");
+    if (hasWaypoints)
+    {
+        file.writeLine("    .waypoints = " + functionName + "_waypoints,");
+        file.writeLine("    .waypoints_len = " + functionName + "_waypoints_len,");
+        file.writeLine("    .waypoint_connections = " + functionName + "_connections,");
+        file.writeLine("    .waypoint_connections_len = " + functionName + "_connections_len");
+    }
+    else
+    {
+        file.writeLine("//   no waypoints");
+    }
     file.writeLine("};");
     file.writeLine("");
 
