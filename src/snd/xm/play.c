@@ -1229,8 +1229,8 @@ static void xm_tick(xm_context_t* ctx) {
 		ch->target_volume[0] = volume * sqrt(1.f - panning);
 		ch->target_volume[1] = volume * sqrt(panning);
 #else
-		ch->actual_volume[0] = volume * sqrt(1.f - panning);
-		ch->actual_volume[1] = volume * sqrt(panning);
+		ch->actual_volume[0] = (double) volume * sqrt((double) (1.f - panning));
+		ch->actual_volume[1] = (double) volume * sqrt((double) panning);
 #endif
 	}
 

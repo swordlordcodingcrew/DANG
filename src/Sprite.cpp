@@ -60,6 +60,15 @@ namespace dang
         _img_index = so->tile;
         _imagesheet = is;
         _last_pos = _pos;
+
+        if(so->transform.test(0))
+        {
+            _transform |= blit::SpriteTransform::HORIZONTAL;
+        }
+        if(so->transform.test(1))
+        {
+            _transform |= blit::SpriteTransform::VERTICAL;
+        }
     }
 
     void Sprite::addTween(spTweenable tw)

@@ -39,6 +39,8 @@ tiled.extendMenu("File", [
 // the export function
 function export32Blit(map, fileName) {
 
+    var bHasWaypoints = false;
+
     var file = new TextFile(fileName, TextFile.WriteOnly);
 
     var mTS = new Map();
@@ -156,8 +158,6 @@ function export32Blit(map, fileName) {
     file.writeLine("// Layers ------------------------------------------------");
     file.writeLine("");
 
-    var hasWaypoints = false;
-
     for (var i = 0; i < map.layerCount; ++i)
     {
         var layer = map.layerAt(i);
@@ -166,6 +166,7 @@ function export32Blit(map, fileName) {
             file.writeLine("// layer tilelayer: " + layer.name);
 
             var buf = "\n";
+            //file.writeLine("tile t_" + layer.name + "[" + layer.height + "][" + layer.width + "] = {");
 
             for (y = 0; y < layer.height; ++y)
             {
@@ -237,8 +238,8 @@ function export32Blit(map, fileName) {
             // check if this layser has points. If this is the case the layer is assumed to be the path-layer
             if (layer.objects[0].shape == MapObject.Point)
             {
+                bHasWaypoints = true; // so that we only link waypoints at the end if there really are...
                 file.writeLine("// layer with points - path layer");
-                hasWaypoints = true;
 
                 objects = layer.objects
 
@@ -288,7 +289,7 @@ function export32Blit(map, fileName) {
                 file.writeLine("static const size_t " + functionName + "_connections_len = " + conn_len + ";")
                 file.writeLine("");
             }
-            else    // the layer is an object layer
+            else
             {
                 file.writeLine("// Objects for layer: " + layer.name);
 
@@ -319,7 +320,12 @@ function export32Blit(map, fileName) {
                         sBT = o.property("bt");
                     }
 
-                    buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + ",\"" + sBT + "\"}";
+                    var sTransform = "0b0"; // this is prefix and bit 3
+                    sTransform += o.FlippedAntiDiagonally ? "1" : "0"; // not sure that one works...
+                    sTransform += o.tileFlippedVertically ? "1" : "0";
+                    sTransform += o.tileFlippedHorizontally ? "1" : "0";
+
+                    buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + ",\"" + sBT + "\"," + sTransform + "}";
 
                     // add separator except at the end
                     if (j < objects.length - 1)
@@ -395,17 +401,15 @@ function export32Blit(map, fileName) {
     file.writeLine("    .tileanimations_len = " + functionName + "_tileanimations_len,");
     file.writeLine("    .layers = " + functionName + "_layers,");
     file.writeLine("    .layers_len = " + functionName + "_layers_len,");
-    if (hasWaypoints)
-    {
+
+    // only have the following lines if
+    if (bHasWaypoints) {
         file.writeLine("    .waypoints = " + functionName + "_waypoints,");
         file.writeLine("    .waypoints_len = " + functionName + "_waypoints_len,");
         file.writeLine("    .waypoint_connections = " + functionName + "_connections,");
         file.writeLine("    .waypoint_connections_len = " + functionName + "_connections_len");
     }
-    else
-    {
-        file.writeLine("//   no waypoints");
-    }
+
     file.writeLine("};");
     file.writeLine("");
 
