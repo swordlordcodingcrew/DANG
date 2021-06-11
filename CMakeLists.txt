@@ -46,6 +46,8 @@ set(SOURCES
         src/TileLayer.hpp
         src/SpriteLayer.cpp
         src/SpriteLayer.hpp
+        src/SimpleImageLayer.cpp
+        src/SimpleImageLayer.hpp
         src/CollisionSpriteLayer.cpp
         src/CollisionSpriteLayer.hpp
         src/BaseHUDLayer.cpp
