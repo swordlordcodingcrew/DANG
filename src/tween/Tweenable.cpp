@@ -99,7 +99,13 @@ namespace dang
                     if (_finishedCB != nullptr)
                     {
                         _finishedCB();
-                        _finishedCB = nullptr;
+                        // WARNING: Sometimes it would make sense to kill the Callback here. Especially in
+                        // use-once scenarios where the callback and the tweenable as a whole only is needed
+                        // for a single animation or something.
+                        // But this has the side effect, that recurring animations wont probably play anymore
+                        // since the call next animation in the callback won't be triggered again.
+                        // Just as a warning to the future-me for the case I am having memory leaks because
+                        // Sprites won't be removed since there is some shared pointer somewhere in a tweenable...
                     }
                     return _ease_cb(_alternating && _loop % 2 == 1 ? 0 : 1);
                 }
@@ -113,5 +119,4 @@ namespace dang
     {
         _finishedCB = finishedCB;
     }
-
 }
