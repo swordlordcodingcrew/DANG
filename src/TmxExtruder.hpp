@@ -11,6 +11,7 @@
 #include <forward_list>
 #include <vector>
 #include <memory>
+#include <bitset>
 //#include <src/path/Waypoint.hpp>
 
 namespace dang
@@ -78,6 +79,13 @@ namespace dang
         const uint16_t tile;
         const std::string bt; // behaviour tree name
 
+        // transformation flags
+        // reserved         x000
+        // antidiag         0x00 (probably not working)
+        // vertically       00x0
+        // horizontally     000x
+        const std::bitset<4> transform; // flip vertical, horizontal
+
         /*
         // TODO: to be considered
          rotation : number 	Rotation of the object in degrees clockwise.
@@ -87,8 +95,6 @@ namespace dang
         textAlignment : Alignment 	The alignment of a text object.
         wordWrap : bool 	Whether the text of a text object wraps based on the width of the object.
         textColor : color 	Color of a text object.
-        tileFlippedHorizontally : bool 	Whether the tmx_tile is flipped horizontally.
-        tileFlippedVertically : bool 	Whether the tmx_tile is flipped vertically.
         */
     };
 
