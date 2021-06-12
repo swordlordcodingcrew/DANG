@@ -2,6 +2,8 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
+#include <sstream>
+#include <malloc.h>
 #include "CollisionSpriteLayer.hpp"
 #include "Sprite.hpp"
 #include "CollisionSprite.hpp"
@@ -16,6 +18,8 @@ extern char _sbss, _end, __ltdc_start;
 
 #ifdef DANG_DEBUG_DRAW
 #include "32blit.hpp"
+#include "../../../fonts/hud_font_small.h"
+
 #endif
 
 namespace dang
@@ -96,6 +100,12 @@ namespace dang
                 blit::screen.line(tr, tl); // top -> left
             }
         }
+
+        std::stringstream stats;
+
+        //put arbitrary formatted data into the stream
+        stats << "active: " << _active_sprites.size() << " inactive: " << _inactive_sprites.size() << " heap: " << mallinfo().uordblks;
+        blit::screen.text(stats.str(), hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
 
         #ifdef TARGET_32BLIT_HW
         /*
