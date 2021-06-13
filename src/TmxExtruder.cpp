@@ -285,10 +285,8 @@ namespace dang
             duration += f.duration;
         }
 
-        TwAnim twa = TwAnim(frame_list, duration, ease_cb, loops, alternating, delay);
-        spTwAnim ret = std::make_shared<TwAnim>(twa);
-        return ret;
-
+        spTwAnim twa = std::make_shared<TwAnim>(frame_list, duration, ease_cb, loops, alternating, delay);
+        return twa;
     }
 
     const tmx_tileset* TmxExtruder::getTileset(const std::string &name)
