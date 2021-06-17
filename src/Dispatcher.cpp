@@ -88,7 +88,10 @@ namespace dang
 
         }
 
-        _event_list.clear();
+        if (!_event_list.empty())
+        {
+            _event_list.clear();
+        }
     }
 
 }
