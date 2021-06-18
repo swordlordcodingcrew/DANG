@@ -25,11 +25,11 @@ namespace dang
 //        std::cout << "destroying waypoint (" << _pos.x << "," << _pos.y << ")" << std::endl;
     }
 
-    wpWaypoint Waypoint::getParent() const
+/*    wpWaypoint Waypoint::getParent() const
     {
         return _parent;
     }
-
+*/
     std::vector<std::pair<wpWaypoint, Waypoint::connection>>& Waypoint::getNeighbours()
     {
         return _neighbours;
@@ -51,14 +51,14 @@ namespace dang
         _neighbours.clear();
     }
 
-    void Waypoint::setParent(wpWaypoint parent)
+/*    void Waypoint::setParent(wpWaypoint parent)
     {
         _parent = parent;
     }
-
-    float Waypoint::distanceTo(spWaypoint wp)
+*/
+    float Waypoint::distanceTo(spWaypoint waypoint)
     {
-        return _pos.squareDistance(wp->_pos);
+        return _pos.distance(waypoint->_pos);
     }
 
     void Waypoint::resetWaypoint()

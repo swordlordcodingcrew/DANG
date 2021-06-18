@@ -22,71 +22,73 @@ namespace dang
 
     bool SceneGraph::getPath(wpWaypoint start, wpWaypoint goal, std::vector<wpWaypoint>& path)
     {
+        bool ret = false;
         spWaypoint sp_goal = goal.lock();
-        if (!sp_goal)
+        if (sp_goal)
         {
-            return false;
-        }
+            wpWaypoint currentNode, childNode;
+            spWaypoint sp_curnode, sp_childnode;
+            float f, g, h;
 
-        wpWaypoint currentNode, childNode;
-        spWaypoint sp_curnode, sp_childnode;
-        float f, g, h;
+            std::make_heap(open.begin(), open.end(), CompareWaypoints());
+            pushOpen(start);
 
-        std::make_heap(open.begin(), open.end(), CompareWaypoints());
-        pushOpen(start);
-
-        while (!open.empty())
-        {
-            std::sort(open.begin(), open.end(), CompareWaypoints());
-
-            currentNode = open.front(); // pop n node from open for which f is minimal
-            sp_curnode = currentNode.lock();
-            if (sp_curnode)
+            while (!open.empty())
             {
-                popOpen(currentNode);
+                std::sort(open.begin(), open.end(), CompareWaypoints());
 
-                sp_curnode->setClosed(true);
-                closed.push_back(currentNode);
-
-                if (sp_curnode == sp_goal)
+                currentNode = open.front(); // pop n node from open for which f is minimal
+                sp_curnode = currentNode.lock();
+                if (sp_curnode)
                 {
-                    reconstructPath(currentNode, path);
-                    return true;
-                }
+                    popOpen(currentNode);
 
-                for (const auto& children : sp_curnode->getNeighbours())    // for each successor n' of n
-                {
-                    childNode = children.first;
-                    sp_childnode = childNode.lock();
-                    if (sp_childnode)
+                    sp_curnode->_closed = true;
+                    closed.push_back(currentNode);
+
+                    if (sp_curnode == sp_goal)
                     {
-                        g = sp_curnode->getG() + children.second.distance; // distance from start + distance between the two nodes
-                        if ((sp_childnode->isOpen() || sp_childnode->isClosed()) && sp_childnode->getG() <  g) // n' is already in opend or closed with a lower cost g(n')
-                        {
-                            continue; // consider next successor
-                        }
+                        reconstructPath(currentNode, path);
+                        ret = true;
+                        break;
+                    }
 
-                        h = distanceBetween(sp_childnode, sp_goal);
-                        f = g + h; // compute f(n')
-                        sp_childnode->setF(f);
-                        sp_childnode->setG(g);
-                        sp_childnode->setH(h);
-                        sp_childnode->setParent(currentNode);
-
-                        if (sp_childnode->isClosed())
+                    for (const auto& children : sp_curnode->getNeighbours())    // for each successor n' of n
+                    {
+                        childNode = children.first;
+                        sp_childnode = childNode.lock();
+                        if (sp_childnode)
                         {
-                            sp_childnode->setClosed(false);
-                        }
+                            g = sp_curnode->_g + children.second.distance; // distance from start + distance between the two nodes
+                            if ((sp_childnode->_open || sp_childnode->_closed) && sp_childnode->_g <  g) // n' is already in opend or closed with a lower cost g(n')
+                            {
+                                continue; // consider next successor
+                            }
 
-                        if (!sp_childnode->isOpen())
-                        {
-                            pushOpen(childNode);
+                            h = children.second.distance; //distanceBetween(sp_childnode, sp_goal);
+                            f = g + h; // compute f(n')
+                            sp_childnode->_f = f;
+                            sp_childnode->_g = g;
+                            sp_childnode->_h = h;
+                            sp_childnode->_parent = currentNode;
+
+                            if (sp_childnode->_closed)
+                            {
+                                sp_childnode->_closed = false;
+                            }
+
+                            if (!sp_childnode->_open)
+                            {
+                                pushOpen(childNode);
+                            }
                         }
                     }
                 }
             }
         }
-        return false;
+
+        resetAStar();
+        return ret;
     }
 
     void SceneGraph::reconstructPath(wpWaypoint wap, std::vector<wpWaypoint>& path)
@@ -96,14 +98,14 @@ namespace dang
 
         if (sp_wap)
         {
-            wpWaypoint parent = sp_wap->getParent();
+            wpWaypoint parent = sp_wap->_parent;
             spWaypoint sp_par;
             rpath.push_back(wap);
             while (!parent.expired())
             {
                 rpath.push_back(parent);
                 sp_par = parent.lock();
-                parent = sp_par->getParent();
+                parent = sp_par->_parent;
             }
 
             for (auto rit = std::rbegin(rpath); rit != std::rend(rpath); ++rit)
@@ -111,7 +113,6 @@ namespace dang
                 path.push_back(*rit);
             }
         }
-
 
     }
 
@@ -122,7 +123,7 @@ namespace dang
         {
             open.push_back(wap);
             std::push_heap(open.begin(), open.end(), CompareWaypoints());
-            sp_wap->setOpen(true);
+            sp_wap->_open = true;
         }
     }
 
@@ -133,7 +134,7 @@ namespace dang
         {
             std::pop_heap(open.begin(), open.end(), CompareWaypoints());
             open.pop_back();
-            sp_wap->setOpen(false);
+            sp_wap->_open = false;
         }
     }
 

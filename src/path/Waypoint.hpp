@@ -26,39 +26,16 @@ namespace dang
             uint32_t type;
         };
 
-
         Waypoint();
         Waypoint(uint32_t id, float x, float y, uint32_t type);
         virtual ~Waypoint();
 
-        void setParent(wpWaypoint parent);
-
-        wpWaypoint getParent() const;
-
         void addNeighbour(wpWaypoint child, connection& nc);
         void addNeighbour(wpWaypoint child, float distance, uint32_t type);
         wpWaypoint getNeighbour(size_t index);
+        std::vector<std::pair<wpWaypoint, connection>>& getNeighbours();
         const connection& getNeighbourConnection(size_t index);
         uint32_t getType() const { return _type; }
-
-        std::vector<std::pair<wpWaypoint, connection>>& getNeighbours();
-
-
-//        void setPosition(Vector2F& pos) { _pos = pos; };
-//        void setPosition(float x, float y) { _pos.x = x; _pos.y = y; }
-        void setF(float f) { _f = f; }
-        void setG(float g) { _g = g; }
-        void setH(float h) { _h = h; }
-        void setOpen(bool value) { _open = value; }
-        void setClosed(bool value) { _closed = value; }
-
-        inline float getX() const { return _pos.x; }
-        inline float getY() const { return _pos.y; }
-        inline float getF() const { return _f; }
-        inline float getG() const { return _g; }
-        inline float getH() const { return _h; }
-        inline bool isOpen() const { return _open; }
-        inline bool isClosed() const { return _closed; }
 
         float distanceTo(spWaypoint waypoint);
 
@@ -71,12 +48,23 @@ namespace dang
         const Vector2F _pos;
 
     protected:
+        /** this section is for the A* algo only and can only be accessed by the friend classes decloared below */
+
+        friend class SceneGraph;
+        friend struct CompareWaypoints;
+
+        /** A* params and helper A* params*/
+        float _f;
+        float _g;
+        float _h;
+        bool _open;
+        bool _closed;
+        wpWaypoint _parent;
+
+    protected:
 
         /** Clears the neighbours of the node. */
         void clearNeighbours();
-
-        /** Pointer to the parent node. */
-        wpWaypoint _parent;
 
         /**
             List of all the node's children.
@@ -86,12 +74,6 @@ namespace dang
         /** added value type */
         uint32_t _type;
 
-        /** A* params */
-        float _f;
-        float _g;
-        float _h;
-        bool _open;
-        bool _closed;
 
     };
 

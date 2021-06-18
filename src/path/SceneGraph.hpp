@@ -20,7 +20,7 @@ namespace dang
             {
                 if (auto spwap2 = wap2.lock())
                 {
-                    return spwap1->getF() < spwap2->getF();
+                    return spwap1->_f < spwap2->_f;
                 }
             }
             // this case should not happen
@@ -48,7 +48,6 @@ namespace dang
 
         // A* algo
         bool getPath(wpWaypoint start, wpWaypoint goal, std::vector<wpWaypoint>& path);
-        void resetAStar();
 
     protected:
 
@@ -56,6 +55,7 @@ namespace dang
         std::map<uint32_t, spWaypoint> _waypoints;
 
         /** A* stuff */
+        void resetAStar();
         void resetWaypoints();
         void pushOpen(wpWaypoint wap);
         void popOpen(wpWaypoint wap);
@@ -68,17 +68,15 @@ namespace dang
             @param[in] n1 A pointer referencing the source node.
             @param[in] n2 A pointer referencing the destination node.
             @see Node::distanceTo()
-        */
         inline float distanceBetween(spWaypoint wap1, spWaypoint wap2) const
         {
             return wap1->distanceTo(wap2);
         }
+*/
 
         /**
             @brief Builds the path from the goal found back up to the start and reorders the order such that
             the first entry is start. The function is used in getPath
-            @param[in] node The node from where to get the path.
-            @param[out] path The vector to fill with the nodes.
         */
         void reconstructPath(wpWaypoint wap, std::vector<wpWaypoint>& path);
 
