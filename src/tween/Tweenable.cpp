@@ -24,6 +24,7 @@ namespace dang
 
     Tweenable::~Tweenable()
     {
+        _finishedCB = nullptr;
     }
 
     Tweenable::Tweenable(uint32_t duration, EaseFn& ease_cb, int32_t loops, bool alternating, uint32_t delay)
