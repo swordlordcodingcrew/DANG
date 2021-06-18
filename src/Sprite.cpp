@@ -1,11 +1,9 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-21 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
 #include "Sprite.hpp"
 #include "TmxExtruder.hpp"
 #include "tween/Tweenable.hpp"
-#include "tween/TwAnim.hpp"
-#include "CollisionSpriteLayer.hpp"
 #include "Imagesheet.hpp"
 
 #include <32blit.hpp>
@@ -23,6 +21,8 @@ namespace dang
 
     Sprite::~Sprite()
     {
+        removeAnimation(true);
+        removeTweens(true);
     }
 
     Sprite::Sprite(const Sprite &sp)
