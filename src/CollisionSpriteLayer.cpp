@@ -75,6 +75,29 @@ namespace dang
 
 #ifdef DANG_DEBUG_DRAW
 
+    #ifdef TARGET_32BLIT_HW
+        // show memory stats
+        auto static_used = &_end - &_sbss;
+        auto heap_total = &__ltdc_start - &_end;
+        auto heap_used = mallinfo().uordblks;
+
+        auto total_ram = static_used + heap_total;
+
+        blit::screen.pen = blit::Pen(255, 0, 255, 255);
+        char buf[100];
+        snprintf(buf, sizeof(buf), "Mem: %i + %i / %i", static_used, heap_used, total_ram);
+        blit::screen.text(buf, hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
+    #else
+
+        // show amount of sprites and memory used
+        std::stringstream stats;
+
+        stats << "active: " << _active_sprites.size() << " inactive: " << _inactive_sprites.size() << " heap: " << mallinfo().uordblks;
+        blit::screen.text(stats.str(), hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
+
+        std::cout << "CSL.render() " << stats.str() << std::endl;
+
+        // show hotrects
         RectF vp = gear.getViewport();
 
         blit::screen.pen = blit::Pen(0, 0, 255, 255);
@@ -100,48 +123,8 @@ namespace dang
                 blit::screen.line(tr, tl); // top -> left
             }
         }
-
-        std::stringstream stats;
-
-        //put arbitrary formatted data into the stream
-        stats << "active: " << _active_sprites.size() << " inactive: " << _inactive_sprites.size() << " heap: " << mallinfo().uordblks;
-        blit::screen.text(stats.str(), hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
-
-        #ifdef TARGET_32BLIT_HW
-        /*
-        // memory stats
-
-        auto static_used = &_end - &_sbss;
-        auto heap_total = &__ltdc_start - &_end;
-        auto heap_used = mallinfo().uordblks;
-
-        auto total_ram = static_used + heap_total;
-
-        blit::screen.pen = blit::Pen(255, 0, 255, 255);
-        char buf[100];
-        snprintf(buf, sizeof(buf), "Mem: %i + %i / %i", static_used, heap_used, total_ram);
-        blit::screen.text(buf, hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
-         */
+        #endif
 #endif
-#endif
-
-#ifdef TARGET_32BLIT_HW
-
-        // memory stats
-
-        auto static_used = &_end - &_sbss;
-        auto heap_total = &__ltdc_start - &_end;
-        auto heap_used = mallinfo().uordblks;
-
-        auto total_ram = static_used + heap_total;
-
-        blit::screen.pen = blit::Pen(255, 0, 255, 255);
-        char buf[100];
-        snprintf(buf, sizeof(buf), "Mem: %i + %i / %i", static_used, heap_used, total_ram);
-        blit::screen.text(buf, hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
-
-#endif
-
     }
 
     // called on every move of every sprite
