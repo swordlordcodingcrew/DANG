@@ -92,6 +92,7 @@ namespace dang
         std::shared_ptr<BehaviourTree> _tree{nullptr};
         uint16_t _resume_index{};
         uint16_t _offset{};
+        bool    _set{false};
 
         friend class BehaviourTree;
         friend struct Node;
@@ -162,6 +163,7 @@ namespace dang
             state->_resume_index = index();
             assert(child_index < child_count());
             state->_offset = child_index;
+            state->_set = true;
         }
 
         /*!
@@ -170,6 +172,7 @@ namespace dang
         void clear_state(std::shared_ptr<TreeState>& state) const {
             state->_resume_index = 0;
             state->_offset = 0;
+            state->_set = false;
         }
 
     private:
@@ -227,6 +230,7 @@ namespace dang
 */
     BTNodeStatus succeeder(const std::shared_ptr<Sprite>& context, Node const &child, std::shared_ptr<TreeState>& state);
 
+//    using Leaf = std::function<BTNodeStatus(Sprite* context)>; //!< A Leaf function takes a Context & and returns a Status.
     using Leaf = std::function<BTNodeStatus(const std::shared_ptr<Sprite>& context)>; //!< A Leaf function takes a Context & and returns a Status.
 
     using BoolLeaf = std::function<bool(const std::shared_ptr<Sprite>& context)>;//BasicLeaf<bool, std::shared_ptr<SpriteContext>>; //!< A Leaf function returning bool returns SUCCESS on true and FAILURE on false. It is not possible to return RUNNING from such a function.

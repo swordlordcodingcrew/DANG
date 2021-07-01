@@ -110,6 +110,8 @@ namespace dang
 
     BTNodeStatus BehaviourTree::process(std::shared_ptr<TreeState>& state, const std::shared_ptr<Sprite>& context) const
     {
+        // bug fix for correct state handling
+        state->_set = false;
         // TODO redo assert with pointer?
         //assert(state->_tree_id == _id); // another tree's state used with this tree
         return _nodes.at(state->resume_index()).process(context, state);
@@ -153,7 +155,10 @@ namespace dang
             };
             auto status = process(context, generator, state);
             if (status == BTNodeStatus::RUNNING) {
-                self.save_state_at_child_index(state, i - 1);
+                if (!state->_set)
+                {
+                    self.save_state_at_child_index(state, i - 1);
+                }
             } else {
                 self.clear_state(state);
             }
