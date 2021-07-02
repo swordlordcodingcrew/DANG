@@ -235,8 +235,8 @@ function export32Blit(map, fileName) {
         }
         else if (layer.isObjectLayer)
         {
-            // check if this layser has points. If this is the case the layer is assumed to be the path-layer
-            if (layer.objects[0].shape == MapObject.Point)
+            // check if this layer has points. If this is the case the layer is assumed to be the path-layer
+            if (layer.objects.length > 0 && layer.objects[0].shape == MapObject.Point)
             {
                 bHasWaypoints = true; // so that we only link waypoints at the end if there really are...
                 file.writeLine("// layer with points - path layer");
@@ -370,7 +370,7 @@ function export32Blit(map, fileName) {
         var layer = map.layerAt(i);
         if (layer.isObjectLayer)
         {
-            if (layer.objects[0].shape != MapObject.Point)
+            if (layer.objects.length > 0 && layer.objects[0].shape != MapObject.Point)
             {
                 file.writeLine("    " + functionName + "_" + layer.name + ",");
             }
