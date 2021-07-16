@@ -40,7 +40,8 @@ namespace dang
         std::map<uint32_t, spWaypoint>& getWaypoints() { return _waypoints; }
 
         spWaypoint getWaypointWithType(const uint32_t type);
-        spWaypoint getNearestWaypoint(const Vector2F& pos);
+        spWaypoint findNearestWaypoint(const Vector2F& pos);
+        spWaypoint findNearestWaypointH(const RectF hotrect_abs);
         bool waypointReached(const RectF hotrect_abs, wpWaypoint goal);
 
         bool getRandomNextWaypoint(wpWaypoint start, std::vector<wpWaypoint>& path);

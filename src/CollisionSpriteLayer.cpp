@@ -44,27 +44,29 @@ namespace dang
         // then call update
         for (spSprite& spr : _active_sprites)
         {
-            if (gear.getActiveWorld().intersects(spr->getSizeRect()))
+            if (spr->getNTreeState() != nullptr)
             {
-                // TODO validate that we only handle active sprites
-                // check if sprite wants to run a behaviour tree
-                // it probably does if it has a tree state...
-                auto ts = spr->getTreeState();
-                if(ts != nullptr)
-                {
-                    // if there is a tree state, run from where it stopped last
-                    dang::BTNodeStatus s = gear.runBehaviourTree(spr);
+                gear.runNTree(spr);
+            }
 
-                    // TODO do something with the node status? like resetting the tree state or something when the tree run through?
+            // TODO validate that we only handle active sprites
+            // check if sprite wants to run a behaviour tree
+            // it probably does if it has a tree state...
+            auto ts = spr->getTreeState();
+            if(ts != nullptr)
+            {
+                // if there is a tree state, run from where it stopped last
+                dang::BTNodeStatus s = gear.runBehaviourTree(spr);
+
+                // TODO do something with the node status? like resetting the tree state or something when the tree run through?
 
 #ifdef DANG_DEBUG
                     std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::Status>>(s) << " and position: " << spr->_btTreeState->resume_index() << std::endl;
 #endif
-                }
-
-                // update sprite normally
-                spr->update(dt);
             }
+
+            // update sprite normally
+            spr->update(dt);
         }
 
     }
@@ -90,13 +92,17 @@ namespace dang
     #else
 
         // show amount of sprites and memory used
-        std::stringstream stats;
+/*        std::stringstream stats;
 
         stats << "active: " << _active_sprites.size() << " inactive: " << _inactive_sprites.size() << " heap: " << mallinfo().uordblks;
         blit::screen.text(stats.str(), hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
 
-        std::cout << "CSL.render() " << stats.str() << std::endl;
-
+        if (_dbg_mem < mallinfo().uordblks)
+        {
+            _dbg_mem = mallinfo().uordblks;
+            std::cout << "CSL.render() " << stats.str() << std::endl;
+        }
+*/
         // show hotrects
         RectF vp = gear.getViewport();
 

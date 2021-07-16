@@ -3,6 +3,7 @@
 
 // This file is based on beehive - https://github.com/crust/beehive
 
+#include <iostream>
 #include "bt.hpp"
 
 namespace dang
@@ -23,6 +24,10 @@ namespace dang
             auto status = child->process(context, state);
             if (status != BTNodeStatus::SUCCESS)
             {
+                if (status == BTNodeStatus::FAILURE)
+                {
+                    return status;
+                }
                 return status;
             }
         }
@@ -34,6 +39,7 @@ namespace dang
 */
     BTNodeStatus selector(const std::shared_ptr<Sprite>& context, Generator const &next_child, std::shared_ptr<TreeState>& state)
     {
+//        std::cout << "--- selector" << std::endl;
         while (auto const *child = next_child())
         {
             auto status = child->process(context, state);
@@ -114,7 +120,8 @@ namespace dang
         state->_set = false;
         // TODO redo assert with pointer?
         //assert(state->_tree_id == _id); // another tree's state used with this tree
-        return _nodes.at(state->resume_index()).process(context, state);
+//        return _nodes.at(state->resume_index()).process(context, state);
+        return _nodes.at(0).process(context, state);
     }
 
 /// @cond

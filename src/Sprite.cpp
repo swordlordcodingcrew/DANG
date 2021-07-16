@@ -212,4 +212,14 @@ namespace dang
     {
         return _btTreeState;
     }
+
+    void Sprite::setNTreeState(std::shared_ptr<NTreeState> ts)
+    {
+        _nTreeState = move(ts);
+    }
+
+    std::shared_ptr<NTreeState>& Sprite::getNTreeState()
+    {
+        return _nTreeState;
+    }
 }

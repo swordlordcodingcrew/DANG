@@ -174,7 +174,7 @@ namespace dang
         _waypoints.clear();
     }
 
-    spWaypoint SceneGraph::getNearestWaypoint(const Vector2F &pos)
+    spWaypoint SceneGraph::findNearestWaypoint(const Vector2F &pos)
     {
         float dist = FLT_MAX;
         spWaypoint ret;
@@ -188,6 +188,27 @@ namespace dang
             }
         }
         return ret;
+    }
+
+    spWaypoint SceneGraph::findNearestWaypointH(const RectF hotrect_abs)
+    {
+        float dist = FLT_MAX;
+        spWaypoint ret;
+        for (auto sp : _waypoints)
+        {
+            // point is within vertical extent of hotrect
+            if (hotrect_abs.containsV(sp.second->_pos))
+            {
+                float newdist = sp.second->_pos.squareDistance(hotrect_abs.center());
+                if (newdist < dist)
+                {
+                    dist = newdist;
+                    ret = sp.second;
+                }
+            }
+        }
+        return ret;
+
     }
 
     bool SceneGraph::waypointReached(const RectF hotrect_abs, wpWaypoint goal)

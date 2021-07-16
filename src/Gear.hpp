@@ -8,6 +8,7 @@
 #include <forward_list>
 #include "RectT.hpp"
 #include <memory>
+#include "bt/NTree.h"
 #include "bt/bt.hpp"
 
 namespace dang
@@ -22,6 +23,7 @@ namespace dang
 
     using spImagesheet = std::shared_ptr<Imagesheet>;
     using spBehaviourTree = std::shared_ptr<BehaviourTree>;
+    using spNTree = std::shared_ptr<NTree>;
 
     class Gear
     {
@@ -35,18 +37,24 @@ namespace dang
         void    render(uint32_t time);
         dang::BTNodeStatus    runBehaviourTree(std::shared_ptr<TreeState>& ts, const std::shared_ptr<Sprite>& s) const;
         dang::BTNodeStatus    runBehaviourTree(const std::shared_ptr<Sprite>& s) const;
+        BTNode::Status        runNTree(const std::shared_ptr<Sprite>& s) const;
 
 //        void                        addImagesheet(const std::string& key, std::shared_ptr<Imagesheet> is);
         void                        addImagesheet(std::shared_ptr<Imagesheet> is);
         spImagesheet                getImagesheet(const std::string& name) const;
         void                        addBehaviourTree(const std::string& name, spBehaviourTree bt);
         spBehaviourTree             getBehaviourTree(const std::string& name) const;
+        void                        addNTree(const std::string& name, spNTree tree);
+        spNTree                     getNTree(const std::string& name) const;
 
         void                        removeImagesheet(const std::string& name);
         void                        removeImagesheets();
 
         void                        removeBehaviourTree(const std::string& name);
         void                        removeBehaviourTrees();
+
+        void                        removeNTree(const std::string& name);
+        void                        removeNTrees();
 
         void                        addLayer(std::shared_ptr<Layer> layer);
         std::shared_ptr<Layer>      getLayerByName(const std::string& name);
@@ -73,6 +81,7 @@ namespace dang
 
         std::unordered_map<std::string, spImagesheet> _imagesheets;
         std::unordered_map<std::string, spBehaviourTree> _behaviourTree;
+        std::unordered_map<std::string, spNTree> _nTree;
         std::forward_list<std::shared_ptr<Layer>> _layers;
 
         // viewport handling

@@ -11,6 +11,12 @@ set(SOURCES
         src/path/SceneGraph.hpp
         src/path/Waypoint.cpp
         src/path/Waypoint.hpp
+        src/bt/BTNode.cpp
+        src/bt/BTNode.h
+        src/bt/NTree.cpp
+        src/bt/NTree.h
+        src/bt/NTreeState.cpp
+        src/bt/NTreeState.h
         src/bt/bt.cpp
         src/bt/bt.hpp
         src/tween/Tweenable.cpp
@@ -71,7 +77,7 @@ set(SOURCES
         src/snd/xm/play.c
         src/snd/xm/xm.h
         src/snd/xm/xm_internal.h
-)
+        src/bt/NTBuilder.cpp src/bt/NTBuilder.h)
 
 add_library(DANG STATIC ${SOURCES} )
 

@@ -101,7 +101,9 @@ namespace dang
     private:
         // may not be used in this layer type
         void    addSprite(spSprite spr) override {};
-
+#ifdef DANG_DEBUG_DRAW
+        int _dbg_mem{0};
+#endif
     };
 
 }

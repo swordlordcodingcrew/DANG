@@ -6,7 +6,8 @@
 #include "dang.hpp"
 #include "Vector2T.hpp"
 #include "RectT.hpp"
-#include "src/bt/bt.hpp"
+#include "bt/bt.hpp"
+#include "bt/NTreeState.h"
 
 #include <list>
 #include <memory>
@@ -145,6 +146,8 @@ namespace dang
         // ts pointer will get moved
         void setTreeState(std::shared_ptr<TreeState> ts);
         std::shared_ptr<TreeState>& getTreeState();
+        void setNTreeState(std::shared_ptr<NTreeState> ts);
+        std::shared_ptr<NTreeState>& getNTreeState();
 
 
         // TEST
@@ -176,6 +179,7 @@ namespace dang
 
     protected:  // variables
         std::shared_ptr<TreeState>      _btTreeState{nullptr};
+        std::shared_ptr<NTreeState>      _nTreeState{nullptr};
 
         //std::string name;     // to be implemented
         Vector2F      _size{0,0};
