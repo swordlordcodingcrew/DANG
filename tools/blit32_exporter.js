@@ -273,7 +273,13 @@ function export32Blit(map, fileName) {
                         }
                     }
 
-                    buf_pts += "    {" + o.id + ", " + o.x + "," + o.y + ", " + o.type + "},\n";
+                    waypointType = o.type;
+                    if(waypointType == "")
+                    {
+                        waypointType = "0x0";
+                    }
+
+                    buf_pts += "    {" + o.id + ", " + o.x + "," + o.y + ", " + waypointType + "},\n";
                     wap_len++;
                 }
 
@@ -408,6 +414,13 @@ function export32Blit(map, fileName) {
         file.writeLine("    .waypoints_len = " + functionName + "_waypoints_len,");
         file.writeLine("    .waypoint_connections = " + functionName + "_connections,");
         file.writeLine("    .waypoint_connections_len = " + functionName + "_connections_len");
+    }
+    else
+    {
+        file.writeLine("    .waypoints = nullptr,");
+        file.writeLine("    .waypoints_len = 0,");
+        file.writeLine("    .waypoint_connections = nullptr,");
+        file.writeLine("    .waypoint_connections_len = 0");
     }
 
     file.writeLine("};");
