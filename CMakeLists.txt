@@ -17,8 +17,8 @@ set(SOURCES
         src/bt/NTree.h
         src/bt/NTreeState.cpp
         src/bt/NTreeState.h
-        src/bt/bt.cpp
-        src/bt/bt.hpp
+#        src/bt/bt.cpp
+#        src/bt/bt.hpp
         src/tween/Tweenable.cpp
         src/tween/Tweenable.hpp
         src/tween/Ease.cpp

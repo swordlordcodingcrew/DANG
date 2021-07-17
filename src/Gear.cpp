@@ -58,55 +58,6 @@ namespace dang
         }
     }
 
-    dang::BTNodeStatus Gear::runBehaviourTree(std::shared_ptr<TreeState>& ts, const std::shared_ptr<Sprite>& s) const
-    {
-        auto tree = ts->getTree();
-        if(tree == nullptr)
-        {
-            // return fail, since we can't find a tree, something went miserably wrong
-            std::cout << "wanted to run behaviour tree but could not find one in the given tree state." << std::endl;
-            return BTNodeStatus::FAILURE;
-        }
-
-        if(s == nullptr)
-        {
-            // return fail, since we can't find a context object, something went miserably wrong
-            std::cout << "wanted to run behaviour tree but could not find the context object (sprite)." << std::endl;
-            return BTNodeStatus::FAILURE;
-        }
-
-        return tree->process(ts, s);
-    }
-
-    dang::BTNodeStatus Gear::runBehaviourTree(const std::shared_ptr<Sprite>& s) const
-    {
-        if(s == nullptr)
-        {
-            // return fail, since we can't find a context object, something went miserably wrong
-            std::cout << "wanted to run behaviour tree but could not find the context object (sprite)." << std::endl;
-            return BTNodeStatus::FAILURE;
-        }
-
-        auto ts = s->getTreeState();
-        if(ts == nullptr)
-        {
-            // return fail, since we can't find a tree state in the given sprite, something went miserably wrong
-            std::cout << "wanted to run behaviour tree but could not find the tree state in the given sprite." << std::endl;
-            return BTNodeStatus::FAILURE;
-        }
-
-        auto tree = ts->getTree();
-        if(tree == nullptr)
-        {
-            // return fail, since we can't find a tree, something went miserably wrong
-            std::cout << "wanted to run behaviour tree but could not find one in the given tree state." << std::endl;
-            return BTNodeStatus::FAILURE;
-        }
-
-
-        return tree->process(ts, s);
-    }
-
     BTNode::Status Gear::runNTree(const std::shared_ptr<Sprite>& s) const
     {
         assert(s != nullptr);
@@ -155,27 +106,10 @@ namespace dang
         }
     }
 
-    void Gear::addBehaviourTree(const std::string& name, std::shared_ptr<BehaviourTree> bt)
-    {
-        assert(!name.empty());
-        _behaviourTree[name] = move(bt);
-    }
-
     void Gear::addNTree(const std::string& name, std::shared_ptr<NTree> bt)
     {
         assert(!name.empty());
         _nTree[name] = move(bt);
-    }
-
-
-    void Gear::removeBehaviourTree(const std::string& key)
-    {
-        _behaviourTree.erase(key);
-    }
-
-    void Gear::removeBehaviourTrees()
-    {
-        _behaviourTree.clear();
     }
 
     void Gear::removeNTree(const std::string& key)
@@ -186,26 +120,6 @@ namespace dang
     void Gear::removeNTrees()
     {
         _nTree.clear();
-    }
-
-    std::shared_ptr<BehaviourTree> Gear::getBehaviourTree(const std::string &name) const
-    {
-        // there are no empty named behaviour trees
-        if(name.length() == 0)
-        {
-            return nullptr;
-        }
-
-        std::unordered_map<std::string, spBehaviourTree>::const_iterator it = _behaviourTree.find (name);
-
-        if ( it == _behaviourTree.end() )
-        {
-            return nullptr;
-        }
-        else
-        {
-            return it->second;
-        }
     }
 
     std::shared_ptr<NTree> Gear::getNTree(const std::string &name) const

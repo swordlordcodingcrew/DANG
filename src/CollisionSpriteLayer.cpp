@@ -49,7 +49,7 @@ namespace dang
                 gear.runNTree(spr);
             }
 
-            // TODO validate that we only handle active sprites
+/*            // TODO validate that we only handle active sprites
             // check if sprite wants to run a behaviour tree
             // it probably does if it has a tree state...
             auto ts = spr->getTreeState();
@@ -64,8 +64,8 @@ namespace dang
                     std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::Status>>(s) << " and position: " << spr->_btTreeState->resume_index() << std::endl;
 #endif
             }
-
-            // update sprite normally
+*/
+            // call update of sprite
             spr->update(dt);
         }
 
