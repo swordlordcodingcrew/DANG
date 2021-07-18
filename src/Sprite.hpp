@@ -149,19 +149,6 @@ namespace dang
         void setNTreeState(std::shared_ptr<NTreeState> ts);
         std::shared_ptr<NTreeState>& getNTreeState();
 
-
-        // TEST
-        bool is_hungry{true};
-        void eat_food() {};
-
-        bool has_food() const
-        {
-            return _has_food;
-        }
-
-        bool _has_food{true};
-        // ENDTEST
-
         Vector2F    getSize() { return _size; }
 
         uint8_t     getTransform() const { return _transform; }
@@ -178,7 +165,6 @@ namespace dang
         SpriteType                      _type_num{SpriteType::UNDEFINED};
 
     protected:  // variables
-        std::shared_ptr<TreeState>      _btTreeState{nullptr};
         std::shared_ptr<NTreeState>      _nTreeState{nullptr};
 
         //std::string name;     // to be implemented
