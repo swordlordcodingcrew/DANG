@@ -77,6 +77,7 @@ namespace dang
         TRIGGERS = 70,
         ROOM_TRIGGER = 71,
         WARP_ROOM_TRIGGER = 72,
+        LEVEL_TRIGGER = 73,
         TRIGGERS_END = 79,
 
         // 80 - 89 Mood stuff
