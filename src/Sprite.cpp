@@ -203,16 +203,6 @@ namespace dang
         return BTNodeStatus::FAILURE;
     }
 
-    void Sprite::setTreeState(std::shared_ptr<TreeState> ts)
-    {
-        _btTreeState = move(ts);
-    }
-
-    std::shared_ptr<TreeState>& Sprite::getTreeState()
-    {
-        return _btTreeState;
-    }
-
     void Sprite::setNTreeState(std::shared_ptr<NTreeState> ts)
     {
         _nTreeState = move(ts);

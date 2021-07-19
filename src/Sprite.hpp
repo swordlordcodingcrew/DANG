@@ -145,8 +145,6 @@ namespace dang
         static BTNodeStatus BTSleep1Sec(std::shared_ptr<Sprite> s);
 
         // ts pointer will get moved
-        void setTreeState(std::shared_ptr<TreeState> ts);
-        std::shared_ptr<TreeState>& getTreeState();
         void setNTreeState(std::shared_ptr<NTreeState> ts);
         std::shared_ptr<NTreeState>& getNTreeState();
 
