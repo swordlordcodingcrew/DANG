@@ -17,6 +17,10 @@ namespace dang
     class Imagesheet;
     class CollisionSpriteLayer;
 
+    using spImagesheet = std::shared_ptr<Imagesheet>;
+    using spNTree = std::shared_ptr<NTree>;
+    using spNTreeState = std::shared_ptr<NTreeState>;
+
     class CollisionSprite : public Sprite
     {
     public: // functions
@@ -36,10 +40,18 @@ namespace dang
         virtual CollisionSpriteLayer::eCollObjectType       getCOType() const { return _coll_object_type; }
         virtual void                                        setCOType(CollisionSpriteLayer::eCollObjectType type) { _coll_object_type = type; }
 
+        // ts pointer will get moved
+        void setNTreeState(spNTreeState ts);
+        spNTreeState& getNTreeState();
+
+
     protected:  // variables
         CollisionSpriteLayer::eCollObjectType       _coll_object_type{CollisionSpriteLayer::COT_DYNAMIC};
         RectF                                       _hotrect{0,0,0,0};
         CollisionSpriteLayer::eCollisionResponse    _coll_response{CollisionSpriteLayer::CR_SLIDE};
+
+        // behaviour tree is implemented in the collision layer
+        spNTreeState      _nTreeState{nullptr};
     };
 
 }

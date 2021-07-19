@@ -184,32 +184,4 @@ namespace dang
         return sr;
     }
 
-    // Behaviour Tree Stuff
-    BTNodeStatus Sprite::BTLoiter(std::shared_ptr<Sprite> s)
-    {
-//        std::cout << "loitering: " << s->_pos.x << std::endl;
-        return BTNodeStatus::SUCCESS;
-    }
-
-    BTNodeStatus Sprite::BTIsHeroAround(std::shared_ptr<Sprite> s)
-    {
-//        std::cout << "is hero around: " << s->_pos.x << std::endl;
-        return BTNodeStatus::SUCCESS;
-    }
-
-    BTNodeStatus Sprite::BTSleep1Sec(std::shared_ptr<Sprite> s)
-    {
-//        std::cout << "is sleeping 1 sec: " << s->_pos.x << std::endl;
-        return BTNodeStatus::FAILURE;
-    }
-
-    void Sprite::setNTreeState(std::shared_ptr<NTreeState> ts)
-    {
-        _nTreeState = move(ts);
-    }
-
-    std::shared_ptr<NTreeState>& Sprite::getNTreeState()
-    {
-        return _nTreeState;
-    }
 }

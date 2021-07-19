@@ -1,15 +1,15 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-21 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
 #pragma once
 
 #include "dang.hpp"
+#include "bt/NTree.h"
+
 #include <unordered_map>
 #include <forward_list>
 #include "RectT.hpp"
 #include <memory>
-#include "bt/NTree.h"
-#include "bt/bt.hpp"
 
 namespace dang
 {
@@ -17,13 +17,16 @@ namespace dang
     struct tmx_layer;
 
     class Sprite;
+    class CollisionSprite;
     class Layer;
     class Imagesheet;
-    class BehaviourTree;
 
     using spImagesheet = std::shared_ptr<Imagesheet>;
-    using spBehaviourTree = std::shared_ptr<BehaviourTree>;
     using spNTree = std::shared_ptr<NTree>;
+    using spNTreeState = std::shared_ptr<NTreeState>;
+    using spSprite = std::shared_ptr<Sprite>;
+    using spCollisionSprite = std::shared_ptr<CollisionSprite>;
+    using spLayer = std::shared_ptr<Layer>;
 
     class Gear
     {
@@ -35,9 +38,9 @@ namespace dang
 
         void    update(uint32_t dt);
         void    render(uint32_t time);
-        BTNode::Status        runNTree(const std::shared_ptr<Sprite>& s) const;
+        BTNode::Status        runNTree(const spCollisionSprite& s) const;
 
-        void                        addImagesheet(std::shared_ptr<Imagesheet> is);
+        void                        addImagesheet(spImagesheet is);
         spImagesheet                getImagesheet(const std::string& name) const;
         void                        addNTree(const std::string& name, spNTree tree);
         spNTree                     getNTree(const std::string& name) const;
@@ -48,9 +51,9 @@ namespace dang
         void                        removeNTree(const std::string& name);
         void                        removeNTrees();
 
-        void                        addLayer(std::shared_ptr<Layer> layer);
+        void                        addLayer(spLayer layer);
         std::shared_ptr<Layer>      getLayerByName(const std::string& name);
-        void                        removeLayer(std::shared_ptr<Layer> layer);
+        void                        removeLayer(const spLayer& layer);
         void                        removeLayers();
 
         RectF       getActiveWorld() const;
@@ -72,15 +75,13 @@ namespace dang
     protected:
 
         std::unordered_map<std::string, spImagesheet> _imagesheets;
-        std::unordered_map<std::string, spBehaviourTree> _behaviourTree;
         std::unordered_map<std::string, spNTree> _nTree;
-        std::forward_list<std::shared_ptr<Layer>> _layers;
+        std::forward_list<spLayer> _layers;
 
         // viewport handling
         RectF       _world{0,0,0,0};    // size of the world
         RectF       _viewport{0,0,0,0};     // part of world to be drawn
         Vector2F    _active_world_size{0,0}; // center equals to center of viewport. sprite within active world will be updated and - if in viewport - drawnd
-
 
     };
 }

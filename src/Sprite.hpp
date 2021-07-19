@@ -23,7 +23,6 @@ namespace dang
 {
     struct tmx_spriteobject;
 
-    class TreeState;
     class Imagesheet;
     class Tweenable;
     class TwAnim;
@@ -139,15 +138,6 @@ namespace dang
         float        getLastPosX() const { return _last_pos.x; }
         float        getLastPosY() const { return _last_pos.y; }
 
-        // Behaviour Tree functions
-        static BTNodeStatus BTLoiter(std::shared_ptr<Sprite> s);
-        static BTNodeStatus BTIsHeroAround(std::shared_ptr<Sprite> s);
-        static BTNodeStatus BTSleep1Sec(std::shared_ptr<Sprite> s);
-
-        // ts pointer will get moved
-        void setNTreeState(std::shared_ptr<NTreeState> ts);
-        std::shared_ptr<NTreeState>& getNTreeState();
-
         Vector2F    getSize() { return _size; }
 
         uint8_t     getTransform() const { return _transform; }
@@ -164,7 +154,6 @@ namespace dang
         SpriteType                      _type_num{SpriteType::UNDEFINED};
 
     protected:  // variables
-        std::shared_ptr<NTreeState>      _nTreeState{nullptr};
 
         //std::string name;     // to be implemented
         Vector2F      _size{0,0};

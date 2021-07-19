@@ -94,6 +94,15 @@ namespace dang
 
     }
 
+    void CollisionSprite::setNTreeState(std::shared_ptr<NTreeState> ts)
+    {
+        _nTreeState = move(ts);
+    }
+
+    std::shared_ptr<NTreeState>& CollisionSprite::getNTreeState()
+    {
+        return _nTreeState;
+    }
 
 
 }

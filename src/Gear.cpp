@@ -1,9 +1,6 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include <cassert>
-#include <algorithm>
-#include <iostream>
 #include "Gear.hpp"
 #include "Layer.hpp"
 #include "Sprite.hpp"
@@ -12,6 +9,11 @@
 #include "SpriteLayer.hpp"
 #include "TileLayer.hpp"
 #include "CollisionSpriteLayer.hpp"
+#include "CollisionSprite.hpp"
+
+#include <cassert>
+#include <algorithm>
+//#include <iostream>
 
 namespace dang
 {
@@ -41,7 +43,7 @@ namespace dang
 
     void Gear::render(uint32_t time)
     {
-        for (std::shared_ptr<Layer> l : _layers)
+        for (spLayer l : _layers)
         {
             if (l->_visible)
             {
@@ -52,17 +54,17 @@ namespace dang
 
     void Gear::update(uint32_t dt)
     {
-        for (std::shared_ptr<Layer> l : _layers)
+        for (spLayer l : _layers)
         {
             l->update(dt, *this);
         }
     }
 
-    BTNode::Status Gear::runNTree(const std::shared_ptr<Sprite>& s) const
+    BTNode::Status Gear::runNTree(const spCollisionSprite& s) const
     {
         assert(s != nullptr);
 
-        std::shared_ptr<NTreeState> ts = s->getNTreeState();
+        spNTreeState ts = s->getNTreeState();
         assert(ts != nullptr);
         assert(ts->_tree != nullptr);
 
@@ -106,7 +108,7 @@ namespace dang
         }
     }
 
-    void Gear::addNTree(const std::string& name, std::shared_ptr<NTree> bt)
+    void Gear::addNTree(const std::string& name, spNTree bt)
     {
         assert(!name.empty());
         _nTree[name] = move(bt);
@@ -122,7 +124,7 @@ namespace dang
         _nTree.clear();
     }
 
-    std::shared_ptr<NTree> Gear::getNTree(const std::string &name) const
+    spNTree Gear::getNTree(const std::string &name) const
     {
         // there are no empty named behaviour trees
         if(name.length() == 0)
@@ -142,7 +144,7 @@ namespace dang
         }
     }
 
-    void Gear::addLayer(std::shared_ptr<Layer> layer)
+    void Gear::addLayer(spLayer layer)
     {
         assert(layer != nullptr);
 
@@ -161,7 +163,7 @@ namespace dang
 
     }
 
-    void Gear::removeLayer(std::shared_ptr<Layer> layer)
+    void Gear::removeLayer(const spLayer& layer)
     {
         _layers.remove(layer);
     }
@@ -171,7 +173,7 @@ namespace dang
         _layers.clear();
     }
 
-    std::shared_ptr<Layer> Gear::getLayerByName(const std::string &name)
+    spLayer Gear::getLayerByName(const std::string &name)
     {
         auto layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
         {

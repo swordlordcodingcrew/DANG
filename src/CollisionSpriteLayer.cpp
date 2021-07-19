@@ -44,27 +44,16 @@ namespace dang
         // then call update
         for (spSprite& spr : _active_sprites)
         {
-            if (spr->getNTreeState() != nullptr)
+            spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            if (cspr->getNTreeState() != nullptr)
             {
-                gear.runNTree(spr);
-            }
-
-/*            // TODO validate that we only handle active sprites
-            // check if sprite wants to run a behaviour tree
-            // it probably does if it has a tree state...
-            auto ts = spr->getTreeState();
-            if(ts != nullptr)
-            {
-                // if there is a tree state, run from where it stopped last
-                dang::BTNodeStatus s = gear.runBehaviourTree(spr);
-
-                // TODO do something with the node status? like resetting the tree state or something when the tree run through?
+                gear.runNTree(cspr);
 
 #ifdef DANG_DEBUG
-                    std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::Status>>(s) << " and position: " << spr->_btTreeState->resume_index() << std::endl;
+                std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::NTreeState::internal_state>>(cspr->getNTreeState()->_internal_state) << " and node position: " << cspr->getNTreeState()->_node << std::endl;
 #endif
             }
-*/
+
             // call update of sprite
             spr->update(dt);
         }
