@@ -34,7 +34,7 @@ namespace dang
         RectF       getHotrect() const { return _hotrect; };
         RectF       getHotrectAbs() const;
         virtual void collide(const CollisionSpriteLayer::manifold &mf);
-        virtual CollisionSpriteLayer::eCollisionResponse    getCollisionResponse(spSprite other);
+        virtual CollisionSpriteLayer::eCollisionResponse    getCollisionResponse(const spCollisionSprite& other);
         void                                        setCollisionResponse(CollisionSpriteLayer::eCollisionResponse response) { _coll_response = response; };
 
         virtual CollisionSpriteLayer::eCollObjectType       getCOType() const { return _coll_object_type; }

@@ -84,7 +84,7 @@ namespace dang
         }
     }
 
-    CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(std::shared_ptr<dang::Sprite> other)
+    CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(const spCollisionSprite& other)
     {
         return _coll_response;
     }
