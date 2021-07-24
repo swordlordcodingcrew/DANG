@@ -11,6 +11,7 @@ namespace dang
     class NTBuilder;
     class NTree;
     class NTreeState;
+    using spNTreeState = std::shared_ptr<NTreeState>;
 
     /** path classes */
     class SceneGraph;
