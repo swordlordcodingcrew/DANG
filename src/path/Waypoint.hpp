@@ -11,17 +11,14 @@
 
 namespace dang
 {
-    class Waypoint;
-    using spWaypoint = std::shared_ptr<Waypoint>;
-    using wpWaypoint = std::weak_ptr<Waypoint>;
-
-
     class Waypoint
     {
     public:
 
         struct connection
         {
+            connection(Waypoint* n, float d, uint32_t t) : neighbour(n), distance(d), type(t) {}
+            Waypoint* neighbour;
             float distance;
             uint32_t type;
         };
@@ -30,14 +27,14 @@ namespace dang
         Waypoint(uint32_t id, float x, float y, uint32_t type);
         virtual ~Waypoint();
 
-        void addNeighbour(wpWaypoint child, connection& nc);
-        void addNeighbour(wpWaypoint child, float distance, uint32_t type);
-        wpWaypoint getNeighbour(size_t index);
-        std::vector<std::pair<wpWaypoint, connection>>& getNeighbours();
+        void addNeighbour(Waypoint* child, connection& nc);
+        void addNeighbour(Waypoint* child, float distance, uint32_t type);
+        const Waypoint* getNeighbour(size_t index) const;
+        const std::vector<connection>& getNeighbours() const;
         const connection& getNeighbourConnection(size_t index);
         uint32_t getType() const { return _type; }
 
-        float distanceTo(spWaypoint waypoint);
+        float distanceTo(Waypoint* waypoint);
 
         void resetWaypoint();
 
@@ -48,8 +45,7 @@ namespace dang
         const Vector2F _pos;
 
     protected:
-        /** this section is for the A* algo only and can only be accessed by the friend classes decloared below */
-
+        /** this section is for the A* algo only and can only be accessed by the friend classes declared below */
         friend class SceneGraph;
         friend struct CompareWaypoints;
 
@@ -59,21 +55,17 @@ namespace dang
         float _h;
         bool _open;
         bool _closed;
-        wpWaypoint _parent;
+        Waypoint* _parent{nullptr};
 
     protected:
-
         /** Clears the neighbours of the node. */
         void clearNeighbours();
 
-        /**
-            List of all the node's children.
-        */
-        std::vector<std::pair<wpWaypoint, connection>> _neighbours;
+        /** List of all the node's children. */
+        std::vector<connection> _neighbours;
 
-        /** added value type */
+        /** added value type (i.e. crate depot) */
         uint32_t _type;
-
 
     };
 

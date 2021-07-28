@@ -11,39 +11,34 @@ namespace dang
     Waypoint::Waypoint() :
             _f(0.0), _g(0.0), _h(0.0), _closed(false), _open(false), _pos(0, 0), _id(0), _type(0)
     {
-        _parent.reset();
     }
 
     Waypoint::Waypoint(uint32_t id, float x, float y, uint32_t type) :
         _f(0.0), _g(0.0), _h(0.0), _closed(false), _open(false),  _id(id), _pos(x, y), _type(type)
     {
-        _parent.reset();
     }
 
     Waypoint::~Waypoint()
     {
+        /** the deletion of the waypoints is handled in the sceneGraph class */
 //        std::cout << "destroying waypoint (" << _pos.x << "," << _pos.y << ")" << std::endl;
     }
 
-/*    wpWaypoint Waypoint::getParent() const
-    {
-        return _parent;
-    }
-*/
-    std::vector<std::pair<wpWaypoint, Waypoint::connection>>& Waypoint::getNeighbours()
+    const std::vector<Waypoint::connection>& Waypoint::getNeighbours() const
     {
         return _neighbours;
     }
 
-    void Waypoint::addNeighbour(wpWaypoint child, connection &conn)
+    void Waypoint::addNeighbour(Waypoint* child, connection &conn)
     {
-        _neighbours.push_back(std::make_pair(child, conn));
+        assert(child != nullptr);
+        _neighbours.emplace_back(child, conn.distance, conn.type);
     }
 
-    void Waypoint::addNeighbour(wpWaypoint child, float distance, uint32_t type)
+    void Waypoint::addNeighbour(Waypoint* child, float distance, uint32_t type)
     {
-        connection co = {distance, type};
-        _neighbours.push_back(std::make_pair(child, co));
+        assert(child != nullptr);
+        _neighbours.emplace_back(child, distance, type);
     }
 
     void Waypoint::clearNeighbours()
@@ -56,8 +51,9 @@ namespace dang
         _parent = parent;
     }
 */
-    float Waypoint::distanceTo(spWaypoint waypoint)
+    float Waypoint::distanceTo(Waypoint* waypoint)
     {
+        assert(waypoint != nullptr);
         return _pos.distance(waypoint->_pos);
     }
 
@@ -65,21 +61,19 @@ namespace dang
     {
         _open = _closed = false;
         _f = _g = _h = 0.0f;
-        _parent.reset();
+        _parent = nullptr;
     }
 
-    wpWaypoint Waypoint::getNeighbour(size_t index)
+    const Waypoint* Waypoint::getNeighbour(size_t index) const
     {
         assert(index < _neighbours.size());
-
-        return _neighbours[index].first;
+        return _neighbours[index].neighbour;
     }
 
     const Waypoint::connection& Waypoint::getNeighbourConnection(size_t index)
     {
         assert(index < _neighbours.size());
-
-        return _neighbours[index].second;
+        return _neighbours[index];
     }
 
 }

@@ -14,17 +14,9 @@ namespace dang
 {
     struct CompareWaypoints
     {
-        bool operator() (const wpWaypoint wap1, const wpWaypoint wap2) const
+        bool operator() (const Waypoint* wp1, const Waypoint* wp2) const
         {
-            if (auto spwap1 = wap1.lock())
-            {
-                if (auto spwap2 = wap2.lock())
-                {
-                    return spwap1->_f < spwap2->_f;
-                }
-            }
-            // this case should not happen
-            return false;
+            return wp1->_f < wp2->_f;
         }
     };
 
@@ -35,33 +27,39 @@ namespace dang
         SceneGraph();
         ~SceneGraph();
 
-        void addWaypoint(uint32_t id, spWaypoint wp);
+        void addWaypoint(uint32_t id, float x, float y, uint32_t type);
+        void addNeighbour(uint32_t wp_id, uint32_t neigh_id, uint32_t type);
         void clearWaypoints();
-        std::map<uint32_t, spWaypoint>& getWaypoints() { return _waypoints; }
+        const std::map<uint32_t, Waypoint>& getWaypoints() { return _waypoints; }
 
-        spWaypoint getWaypointWithType(const uint32_t type);
-        spWaypoint findNearestWaypoint(const Vector2F& pos);
-        spWaypoint findNearestWaypointH(const RectF hotrect_abs);
-        bool waypointReached(const RectF hotrect_abs, wpWaypoint goal);
+        const Waypoint* getWaypointWithType(const uint32_t type);
+        const Waypoint* findNearestWaypoint(const Vector2F& pos);
+        const Waypoint* findNearestWaypointH(const RectF& hotrect_abs);
+        bool waypointReached(const RectF& hotrect_abs, const Waypoint* goal);
 
-        bool getRandomNextWaypoint(wpWaypoint start, std::vector<wpWaypoint>& path);
-        uint32_t getConnectionType(wpWaypoint start, wpWaypoint goal);
+        bool getRandomNextWaypoint(const Waypoint* start, std::vector<const Waypoint*>& path);
+        bool getRandomPath(const Waypoint* start, std::vector<const Waypoint*>& path);
+        uint32_t getConnectionType(const Waypoint* start, const Waypoint* goal);
 
         // A* algo
-        bool getPath(wpWaypoint start, wpWaypoint goal, std::vector<wpWaypoint>& path);
+        bool getPath(Waypoint* start, const Waypoint* goal, std::vector<const Waypoint*>& path);
+
+        // DFS search algo to check, if graph has disconnected components
+        void dfsRecursion(const Waypoint* start, std::map<uint32_t, bool>& visited);
+        void dfs(const Waypoint* wp, std::map<uint32_t, bool>& visited);
 
     protected:
 
         /** container of the waypoints */
-        std::map<uint32_t, spWaypoint> _waypoints;
+        std::map<uint32_t, Waypoint> _waypoints;
 
         /** A* stuff */
         void resetAStar();
         void resetWaypoints();
-        void pushOpen(wpWaypoint wap);
-        void popOpen(wpWaypoint wap);
-        std::vector<wpWaypoint> open;
-        std::vector<wpWaypoint> closed;
+        void pushOpen(Waypoint* wap);
+        void popOpen(Waypoint* wap);
+        std::vector<Waypoint*> open;
+        std::vector<Waypoint*> closed;
 
         /**
             @brief Computes the distance between two nodes using the specified
@@ -79,7 +77,7 @@ namespace dang
             @brief Builds the path from the goal found back up to the start and reorders the order such that
             the first entry is start. The function is used in getPath
         */
-        void reconstructPath(wpWaypoint wap, std::vector<wpWaypoint>& path);
+        void reconstructPath(Waypoint* wap, std::vector<const Waypoint*>& path);
 
     };
 }

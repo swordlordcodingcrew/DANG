@@ -328,27 +328,55 @@ namespace dang
             const tmx_waypoint* twap = _level->waypoints + i;
             if (room_extent.contains({twap->x, twap->y}))
             {
-                spWaypoint spwap = std::make_shared<Waypoint>(twap->id, twap->x, twap->y, twap->type);
-                ret->addWaypoint(spwap->_id, spwap);
+                ret->addWaypoint(twap->id, twap->x, twap->y, twap->type);
+//                spWaypoint spwap = std::make_shared<Waypoint>(twap->id, twap->x, twap->y, twap->type);
+//                ret->addWaypoint(spwap->_id, spwap);
             }
         }
 
-        std::map<uint32_t, spWaypoint>& wapts = ret->getWaypoints();
+//        std::map<uint32_t, spWaypoint>& wapts = ret->getWaypoints();
 
         // second add the connections to the waypoints
         for (size_t j = 0; j < _level->waypoint_connections_len; ++j)
         {
             const tmx_waypoint_connection* twc = _level->waypoint_connections + j;
-            if (wapts.count(twc->waypoint_start_id) > 0 && wapts.count(twc->waypoint_goal_id) > 0)
+            ret->addNeighbour(twc->waypoint_start_id, twc->waypoint_goal_id, twc->connection_type);
+/*            if (wapts.count(twc->waypoint_start_id) > 0 && wapts.count(twc->waypoint_goal_id) > 0)
             {
                 spWaypoint start = wapts.at(twc->waypoint_start_id);
                 spWaypoint goal = wapts.at(twc->waypoint_goal_id);
                 float dist = start->distanceTo(goal);
                 start->addNeighbour(goal, dist, twc->connection_type);
             }
-        }
+*/        }
 
         return ret;
     }
+
+/*    void TmxExtruder::createSceneGraphs(RectF& room_extent)
+    {
+        spSceneGraph sg = createPaths(room_extent);
+        std::map<uint32_t, spWaypoint> wps = sg->getWaypoints();
+
+        // check how many isolated graphs
+        std::map<uint32_t, bool> _visited;
+
+        auto wpit = wps.begin();
+        _visited[wpit->first] = true;
+
+        // implement DFS
+        // https://algorithms.tutorialhorizon.com/graph-depth-first-search-using-recursion/
+        // https://algorithms.tutorialhorizon.com/graph-depth-first-search-in-disconnected-graph/
+
+        for (auto nwp : wpit->second->getNeighbours())
+        {
+
+        }
+
+
+
+
+    }
+*/
 
 }

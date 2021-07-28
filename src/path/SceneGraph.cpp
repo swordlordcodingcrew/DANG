@@ -5,6 +5,8 @@
 #include <cfloat>
 #include <iostream>
 #include <engine/engine.hpp>
+#include <cassert>
+#include <src/TmxExtruder.hpp>
 #include "SceneGraph.hpp"
 #include "src/Vector2T.hpp"
 
@@ -20,69 +22,62 @@ namespace dang
 
     }
 
-    bool SceneGraph::getPath(wpWaypoint start, wpWaypoint goal, std::vector<wpWaypoint>& path)
+    bool SceneGraph::getPath(Waypoint* start, const Waypoint* goal, std::vector<const Waypoint*>& path)
     {
-        bool ret = false;
-        spWaypoint sp_goal = goal.lock();
-        if (sp_goal)
+        assert(start != nullptr);
+        assert(goal != nullptr);
+
+        bool ret{false};
+
+        Waypoint* currentNode;
+        Waypoint* childNode;
+        float f, g, h;
+
+        std::make_heap(open.begin(), open.end(), CompareWaypoints());
+        pushOpen(start);
+
+        while (!open.empty())
         {
-            wpWaypoint currentNode, childNode;
-            spWaypoint sp_curnode, sp_childnode;
-            float f, g, h;
+            std::sort(open.begin(), open.end(), CompareWaypoints());
 
-            std::make_heap(open.begin(), open.end(), CompareWaypoints());
-            pushOpen(start);
+            currentNode = open.front(); // pop n node from open for which f is minimal
+            popOpen(currentNode);
 
-            while (!open.empty())
+            currentNode->_closed = true;
+            closed.push_back(currentNode);
+
+            if (currentNode == goal)
             {
-                std::sort(open.begin(), open.end(), CompareWaypoints());
+                reconstructPath(currentNode, path);
+                ret = true;
+                break;
+            }
 
-                currentNode = open.front(); // pop n node from open for which f is minimal
-                sp_curnode = currentNode.lock();
-                if (sp_curnode)
+            for (const Waypoint::connection& children : currentNode->getNeighbours())    // for each successor n' of n
+            {
+                childNode = children.neighbour;
+
+                g = currentNode->_g + children.distance; // distance from start + distance between the two nodes
+                if ((childNode->_open || childNode->_closed) && childNode->_g <  g) // n' is already in opend or closed with a lower cost g(n')
                 {
-                    popOpen(currentNode);
+                    continue; // consider next successor
+                }
 
-                    sp_curnode->_closed = true;
-                    closed.push_back(currentNode);
+                h = children.distance; //distanceBetween(sp_childnode, sp_goal);
+                f = g + h; // compute f(n')
+                childNode->_f = f;
+                childNode->_g = g;
+                childNode->_h = h;
+                childNode->_parent = currentNode;
 
-                    if (sp_curnode == sp_goal)
-                    {
-                        reconstructPath(currentNode, path);
-                        ret = true;
-                        break;
-                    }
+                if (childNode->_closed)
+                {
+                    childNode->_closed = false;
+                }
 
-                    for (const auto& children : sp_curnode->getNeighbours())    // for each successor n' of n
-                    {
-                        childNode = children.first;
-                        sp_childnode = childNode.lock();
-                        if (sp_childnode)
-                        {
-                            g = sp_curnode->_g + children.second.distance; // distance from start + distance between the two nodes
-                            if ((sp_childnode->_open || sp_childnode->_closed) && sp_childnode->_g <  g) // n' is already in opend or closed with a lower cost g(n')
-                            {
-                                continue; // consider next successor
-                            }
-
-                            h = children.second.distance; //distanceBetween(sp_childnode, sp_goal);
-                            f = g + h; // compute f(n')
-                            sp_childnode->_f = f;
-                            sp_childnode->_g = g;
-                            sp_childnode->_h = h;
-                            sp_childnode->_parent = currentNode;
-
-                            if (sp_childnode->_closed)
-                            {
-                                sp_childnode->_closed = false;
-                            }
-
-                            if (!sp_childnode->_open)
-                            {
-                                pushOpen(childNode);
-                            }
-                        }
-                    }
+                if (!childNode->_open)
+                {
+                    pushOpen(childNode);
                 }
             }
         }
@@ -91,69 +86,50 @@ namespace dang
         return ret;
     }
 
-    void SceneGraph::reconstructPath(wpWaypoint wap, std::vector<wpWaypoint>& path)
+    void SceneGraph::reconstructPath(Waypoint* wap, std::vector<const Waypoint*>& path)
     {
-        spWaypoint sp_wap = wap.lock();
-        std::vector<wpWaypoint> rpath;
+        assert(wap != nullptr);
+        std::vector<const Waypoint*> rpath;
 
-        if (sp_wap)
+        const Waypoint* parent = wap->_parent;
+        rpath.push_back(wap);
+        while (parent != nullptr)
         {
-            wpWaypoint parent = sp_wap->_parent;
-            spWaypoint sp_par;
-            rpath.push_back(wap);
-            while (!parent.expired())
-            {
-                rpath.push_back(parent);
-                sp_par = parent.lock();
-                parent = sp_par->_parent;
-            }
+            rpath.push_back(parent);
+            parent = parent->_parent;
+        }
 
-            for (auto rit = std::rbegin(rpath); rit != std::rend(rpath); ++rit)
-            {
-                path.push_back(*rit);
-            }
+        for (auto rit = std::rbegin(rpath); rit != std::rend(rpath); ++rit)
+        {
+            path.push_back(*rit);
         }
 
     }
 
-    void SceneGraph::pushOpen(wpWaypoint wap)
+    void SceneGraph::pushOpen(Waypoint* wap)
     {
-        spWaypoint sp_wap = wap.lock();
-        if (sp_wap)
-        {
-            open.push_back(wap);
-            std::push_heap(open.begin(), open.end(), CompareWaypoints());
-            sp_wap->_open = true;
-        }
+        open.push_back(wap);
+        std::push_heap(open.begin(), open.end(), CompareWaypoints());
+        wap->_open = true;
     }
 
-    void SceneGraph::popOpen(wpWaypoint wap)
+    void SceneGraph::popOpen(Waypoint* wap)
     {
-        spWaypoint sp_wap = wap.lock();
-        if (sp_wap)
-        {
-            std::pop_heap(open.begin(), open.end(), CompareWaypoints());
-            open.pop_back();
-            sp_wap->_open = false;
-        }
+        std::pop_heap(open.begin(), open.end(), CompareWaypoints());
+        open.pop_back();
+        wap->_open = false;
     }
 
     void SceneGraph::resetWaypoints()
     {
         for (const auto& wp : open)
         {
-            if (spWaypoint spwp = wp.lock())
-            {
-                spwp->resetWaypoint();
-            }
+            wp->resetWaypoint();
         }
 
         for (const auto& wp : closed)
         {
-            if (spWaypoint spwp = wp.lock())
-            {
-                spwp->resetWaypoint();
-            }
+            wp->resetWaypoint();
         }
     }
 
@@ -164,9 +140,24 @@ namespace dang
         closed.clear();
     }
 
-    void SceneGraph::addWaypoint(uint32_t id, spWaypoint wp)
+    void SceneGraph::addWaypoint(uint32_t id, float x, float y, uint32_t type)
     {
-        _waypoints[id] = wp;
+        _waypoints.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(id, x, y, type));
+//        _waypoints.emplace(id, Waypoint(id, x, y, type));
+    }
+
+    void SceneGraph::addNeighbour(uint32_t wp_id, uint32_t neigh_id, uint32_t type)
+    {
+        if (_waypoints.count(wp_id) == 0 || _waypoints.count(neigh_id) == 0)
+        {
+            // fail gracefully. The connection does not belong to this scenegraph
+            return;
+        }
+
+        Waypoint* wp = &_waypoints.at(wp_id);
+        Waypoint* neighbour = &_waypoints.at(neigh_id);
+        float dist = wp->distanceTo(neighbour);
+        wp->addNeighbour(neighbour, dist, type);
     }
 
     void SceneGraph::clearWaypoints()
@@ -174,36 +165,36 @@ namespace dang
         _waypoints.clear();
     }
 
-    spWaypoint SceneGraph::findNearestWaypoint(const Vector2F &pos)
+    const Waypoint* SceneGraph::findNearestWaypoint(const Vector2F &pos)
     {
         float dist = FLT_MAX;
-        spWaypoint ret;
-        for (auto sp : _waypoints)
+        const Waypoint* ret{nullptr};
+        for (const auto& sp : _waypoints)
         {
-            float newdist = sp.second->_pos.squareDistance(pos);
+            float newdist = sp.second._pos.squareDistance(pos);
             if (newdist < dist)
             {
                 dist = newdist;
-                ret = sp.second;
+                ret = &sp.second;
             }
         }
         return ret;
     }
 
-    spWaypoint SceneGraph::findNearestWaypointH(const RectF hotrect_abs)
+    const Waypoint* SceneGraph::findNearestWaypointH(const RectF& hotrect_abs)
     {
         float dist = FLT_MAX;
-        spWaypoint ret;
-        for (auto sp : _waypoints)
+        const Waypoint* ret{nullptr};
+        for (const auto& sp : _waypoints)
         {
             // point is within vertical extent of hotrect
-            if (hotrect_abs.containsV(sp.second->_pos))
+            if (hotrect_abs.containsV(sp.second._pos))
             {
-                float newdist = sp.second->_pos.squareDistance(hotrect_abs.center());
+                float newdist = sp.second._pos.squareDistance(hotrect_abs.center());
                 if (newdist < dist)
                 {
                     dist = newdist;
-                    ret = sp.second;
+                    ret = &sp.second;
                 }
             }
         }
@@ -211,69 +202,87 @@ namespace dang
 
     }
 
-    bool SceneGraph::waypointReached(const RectF hotrect_abs, wpWaypoint goal)
+    bool SceneGraph::waypointReached(const RectF& hotrect_abs, const Waypoint* goal)
     {
-        spWaypoint wp = goal.lock();
-        if (wp)
+        assert(goal != nullptr);
+        if (hotrect_abs.contains(goal->_pos))
         {
-            if (hotrect_abs.contains(wp->_pos))
+            // fine tuning. wp within 5 pixels of hotrect-center
+            if (std::abs(hotrect_abs.center().x - goal->_pos.x) < 2)
             {
-                // fine tuning. wp within 5 pixels of hotrect-center
-                if (std::abs(hotrect_abs.center().x - wp->_pos.x) < 2)
-                {
-                    return true;
-                }
+                return true;
             }
         }
         return false;
     }
 
-    bool SceneGraph::getRandomNextWaypoint(wpWaypoint start, std::vector<wpWaypoint> &path)
+    bool SceneGraph::getRandomNextWaypoint(const Waypoint* start, std::vector<const Waypoint*> &path)
     {
-        spWaypoint wp = start.lock();
-        if (wp)
+        if (start->getNeighbours().empty())
         {
-            size_t r = std::rand() % wp->getNeighbours().size();
+            return false;
+        }
+
+        size_t r = std::rand() % start->getNeighbours().size();
 //            std::cout << "next index " << r << " - connection type " << wp->getNeighbourConnection(r).type << std::endl;
-            path.push_back(wp->getNeighbour(r));
-            return true;
-        }
+        path.push_back(start->getNeighbour(r));
+        return true;
+    }
+
+    bool SceneGraph::getRandomPath(const Waypoint *start, std::vector<const Waypoint *> &path)
+    {
         return false;
     }
 
-    uint32_t SceneGraph::getConnectionType(wpWaypoint start, wpWaypoint goal)
+    uint32_t SceneGraph::getConnectionType(const Waypoint* start, const Waypoint* goal)
     {
-        spWaypoint st = start.lock();
-        spWaypoint go = goal.lock();
-        if (!st || !go)
+        if (start == nullptr || goal == nullptr)
         {
-            return 0;
+            return e_tmx_waypoint_connection::wpc_invalid;
         }
 
-        for (auto neigh : st->getNeighbours())
+        for (const auto& neigh : start->getNeighbours())
         {
-            if (neigh.first.lock() == go)
+            if (neigh.neighbour == goal)
             {
-                return neigh.second.type;
+                return neigh.type;
             }
         }
 
-        return 0;
+        return e_tmx_waypoint_connection::wpc_invalid;
     }
 
-    spWaypoint SceneGraph::getWaypointWithType(uint32_t type)
+    const Waypoint* SceneGraph::getWaypointWithType(uint32_t type)
     {
-        spWaypoint ret;
-        for (auto sp : _waypoints)
+        const Waypoint* ret{nullptr};
+        for (const auto& sp : _waypoints)
         {
-            if (sp.second->getType() == type)
+            if (sp.second.getType() == type)
             {
-                ret = sp.second;
+                ret = &(sp.second);
                 break;
             }
         }
         return ret;
     }
 
+    void SceneGraph::dfsRecursion(const Waypoint* start, std::map<uint32_t, bool>& visited)
+    {
+        dfs(start, visited);
+    }
+
+    void SceneGraph::dfs(const Waypoint* wp, std::map<uint32_t, bool> &visited)
+    {
+        visited[wp->_id] = true;
+        for (const auto & neigh : wp->getNeighbours())
+        {
+            const Waypoint* child = neigh.neighbour;
+            if (visited.count(child->_id) == 0)
+            {
+                dfs(child,visited);
+            }
+        }
+
+    }
 
 }
