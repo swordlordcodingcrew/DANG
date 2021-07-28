@@ -40,7 +40,7 @@ namespace dang
 
     NTree::~NTree()
     {
-        std::cout << "NTree destructor" << std::endl;
+//        std::cout << "NTree destructor" << std::endl;
         delete _root;
     }
 

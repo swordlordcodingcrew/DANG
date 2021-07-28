@@ -168,7 +168,7 @@ namespace dang
             _animation->finish(suppressCB);
             _animation->reset();
         }
-        return _animation;
+        return std::move(_animation);
     }
 
     spTweenable Sprite::swapAnimation(spTweenable new_anim, bool suppressCB)

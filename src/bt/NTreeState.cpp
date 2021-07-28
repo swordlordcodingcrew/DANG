@@ -12,7 +12,7 @@ namespace dang
 
     NTreeState::~NTreeState()
     {
-        std::cout << "NTreeState destructor" << std::endl;
+//        std::cout << "NTreeState destructor" << std::endl;
     }
 
 }
