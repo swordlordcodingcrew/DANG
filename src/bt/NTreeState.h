@@ -4,19 +4,17 @@
 #pragma once
 
 #include <memory>
-#include "BTNode.h"
+
+#include "../DangFwdDecl.h"
 
 namespace dang
 {
-    // forward declarations
-    class NTree;
-
-
     class NTreeState
     {
     public:
         NTreeState() = delete;
         explicit NTreeState(std::shared_ptr<NTree> tree);
+        virtual ~NTreeState();
 
         std::shared_ptr<NTree>  _tree{nullptr};
         const BTNode*           _node{nullptr};

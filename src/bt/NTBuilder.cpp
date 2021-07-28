@@ -3,7 +3,10 @@
 
 #include <cassert>
 #include <iostream>
+
 #include "NTBuilder.h"
+#include "NTreeState.h"
+#include "NTree.h"
 
 namespace dang
 {
@@ -11,8 +14,13 @@ namespace dang
     NTBuilder::NTBuilder()
     {
         _tree = std::make_shared<NTree>();
-
     }
+
+    NTBuilder::~NTBuilder()
+    {
+//        std::cout << "NTBuilder destructor" << std::endl;
+    }
+
 
     NTBuilder& NTBuilder::sequence()
     {
@@ -186,6 +194,7 @@ namespace dang
         assert(_composite_stack.empty());
         return std::move(_tree);
     }
+
 
 
 }

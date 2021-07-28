@@ -2,7 +2,9 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
+
 #include "NTree.h"
+#include "NTreeState.h"
 
 namespace dang
 {
@@ -38,6 +40,7 @@ namespace dang
 
     NTree::~NTree()
     {
+        std::cout << "NTree destructor" << std::endl;
         delete _root;
     }
 

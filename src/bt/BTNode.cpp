@@ -2,6 +2,8 @@
 // This file is part of the DANG game framework
 
 #include <cassert>
+#include <iostream>
+
 #include "BTNode.h"
 #include "NTreeState.h"
 
@@ -11,11 +13,13 @@ namespace dang
 
     BTNode::BTNode(Type type) : _type(type)
     {
+//        std::cout << "BTNode constructor" << std::endl;
     }
 
 
     BTNode::~BTNode()
     {
+//        std::cout << "BTNode destructor" << std::endl;
         delete _child;
         delete _sibling;
     }

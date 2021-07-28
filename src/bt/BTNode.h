@@ -7,15 +7,11 @@
 #include <cstdint>
 #include <memory>
 
+#include "../DangFwdDecl.h"
+
+
 namespace dang
 {
-    // forward declarations
-    class Sprite;
-    using spSprite = std::shared_ptr<Sprite>;
-    class NTreeState;
-    using spNTreeState = std::shared_ptr<NTreeState>;
-
-
     class BTNode
     {
 
@@ -28,7 +24,7 @@ namespace dang
             SUCCESS //!< Returns when the process has succeeded.
         };
 
-        ~BTNode();
+        virtual ~BTNode();
 
     protected:
         friend class NTree;

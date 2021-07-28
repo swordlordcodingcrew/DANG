@@ -3,26 +3,22 @@
 
 #pragma once
 
+#include "../DangFwdDecl.h"
 #include "BTNode.h"
-#include "NTreeState.h"
 
 namespace dang
 {
-    class NTreeState;
-    using spNTreeState = std::shared_ptr<NTreeState>;
-    using spNTree = std::shared_ptr<NTree>;
-
     class NTree
     {
     public:
-        static BTNode::Status process(const spSprite& spr, std::shared_ptr<NTreeState>& state);
+        static BTNode::Status process(const spSprite& spr, spNTreeState& state);
 
 //        static BTNode* addInverter(BTNode* node);
 //        static BTNode* addForwarder(BTNode* node);
 
     public:
         NTree();
-        ~NTree();
+        virtual ~NTree();
 
         const BTNode* getRoot() {return _root;}
 
