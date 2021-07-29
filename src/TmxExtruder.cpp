@@ -329,26 +329,15 @@ namespace dang
             if (room_extent.contains({twap->x, twap->y}))
             {
                 ret->addWaypoint(twap->id, twap->x, twap->y, twap->type);
-//                spWaypoint spwap = std::make_shared<Waypoint>(twap->id, twap->x, twap->y, twap->type);
-//                ret->addWaypoint(spwap->_id, spwap);
             }
         }
-
-//        std::map<uint32_t, spWaypoint>& wapts = ret->getWaypoints();
 
         // second add the connections to the waypoints
         for (size_t j = 0; j < _level->waypoint_connections_len; ++j)
         {
             const tmx_waypoint_connection* twc = _level->waypoint_connections + j;
             ret->addNeighbour(twc->waypoint_start_id, twc->waypoint_goal_id, twc->connection_type);
-/*            if (wapts.count(twc->waypoint_start_id) > 0 && wapts.count(twc->waypoint_goal_id) > 0)
-            {
-                spWaypoint start = wapts.at(twc->waypoint_start_id);
-                spWaypoint goal = wapts.at(twc->waypoint_goal_id);
-                float dist = start->distanceTo(goal);
-                start->addNeighbour(goal, dist, twc->connection_type);
-            }
-*/        }
+        }
 
         return ret;
     }

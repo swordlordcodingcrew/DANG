@@ -266,12 +266,12 @@ namespace dang
         return ret;
     }
 
-    void SceneGraph::dfsRecursion(const Waypoint* start, std::map<uint32_t, bool>& visited)
+    void SceneGraph::dfsRecursion(const Waypoint* start, std::unordered_map<uint32_t, bool>& visited)
     {
         dfs(start, visited);
     }
 
-    void SceneGraph::dfs(const Waypoint* wp, std::map<uint32_t, bool> &visited)
+    void SceneGraph::dfs(const Waypoint* wp, std::unordered_map<uint32_t, bool> &visited)
     {
         visited[wp->_id] = true;
         for (const auto & neigh : wp->getNeighbours())

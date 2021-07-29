@@ -4,30 +4,16 @@
 #pragma once
 
 #include "dang.hpp"
-#include "bt/NTree.h"
+#include "DangFwdDecl.h"
+#include "bt/BTNode.h"
+#include "RectT.hpp"
 
 #include <unordered_map>
 #include <forward_list>
-#include "RectT.hpp"
 #include <memory>
 
 namespace dang
 {
-    struct tmx_level;
-    struct tmx_layer;
-
-    class Sprite;
-    class CollisionSprite;
-    class Layer;
-    class Imagesheet;
-
-    using spImagesheet = std::shared_ptr<Imagesheet>;
-    using spNTree = std::shared_ptr<NTree>;
-    using spNTreeState = std::shared_ptr<NTreeState>;
-    using spSprite = std::shared_ptr<Sprite>;
-    using spCollisionSprite = std::shared_ptr<CollisionSprite>;
-    using spLayer = std::shared_ptr<Layer>;
-
     class Gear
     {
     public:

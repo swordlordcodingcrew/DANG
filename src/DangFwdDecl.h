@@ -10,6 +10,7 @@ namespace dang
     class BTNode;
     class NTBuilder;
     class NTree;
+    using spNTree = std::shared_ptr<NTree>;
     class NTreeState;
     using spNTreeState = std::shared_ptr<NTreeState>;
 
@@ -36,9 +37,13 @@ namespace dang
     using spImagesheet = std::shared_ptr<Imagesheet>;
     class Sprite;
     using spSprite = std::shared_ptr<Sprite>;
+    class Layer;
+    using spLayer = std::shared_ptr<Layer>;
 
     /** tmx extruder classes */
     struct tmx_spriteobject;
+    struct tmx_level;
+    struct tmx_layer;
 
 
 

@@ -30,7 +30,7 @@ namespace dang
         void addWaypoint(uint32_t id, float x, float y, uint32_t type);
         void addNeighbour(uint32_t wp_id, uint32_t neigh_id, uint32_t type);
         void clearWaypoints();
-        const std::map<uint32_t, Waypoint>& getWaypoints() { return _waypoints; }
+        const std::unordered_map<uint32_t, Waypoint>& getWaypoints() { return _waypoints; }
 
         const Waypoint* getWaypointWithType(const uint32_t type);
         const Waypoint* findNearestWaypoint(const Vector2F& pos);
@@ -45,13 +45,13 @@ namespace dang
         bool getPath(Waypoint* start, const Waypoint* goal, std::vector<const Waypoint*>& path);
 
         // DFS search algo to check, if graph has disconnected components
-        void dfsRecursion(const Waypoint* start, std::map<uint32_t, bool>& visited);
-        void dfs(const Waypoint* wp, std::map<uint32_t, bool>& visited);
+        void dfsRecursion(const Waypoint* start, std::unordered_map<uint32_t, bool>& visited);
+        void dfs(const Waypoint* wp, std::unordered_map<uint32_t, bool>& visited);
 
     protected:
 
         /** container of the waypoints */
-        std::map<uint32_t, Waypoint> _waypoints;
+        std::unordered_map<uint32_t, Waypoint> _waypoints;
 
         /** A* stuff */
         void resetAStar();

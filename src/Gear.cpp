@@ -10,6 +10,7 @@
 #include "TileLayer.hpp"
 #include "CollisionSpriteLayer.hpp"
 #include "CollisionSprite.hpp"
+#include "bt/NTree.h"
 
 #include <cassert>
 #include <algorithm>
