@@ -6,16 +6,12 @@
 #include <types/size.hpp>
 #include <graphics/surface.hpp>
 
-#include <vector>
-
 namespace dang
 {
     struct image_import
     {
         const uint8_t alpha{255};
         const blit::Size bounds{0,0};
-//        std::vector<uint8_t> data;
-//        std::vector<blit::Pen> palette;
         const blit::Pen* palette;
         const uint8_t* data;
     };

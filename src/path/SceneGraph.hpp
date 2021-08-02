@@ -4,11 +4,12 @@
 
 #pragma once
 
-#include <vector>
-#include <algorithm>
-#include <map>
-#include <src/RectT.hpp>
+#include "../DangFwdDecl.h"
+#include "../RectT.hpp"
 #include "Waypoint.hpp"
+
+#include <vector>
+#include <map>
 
 namespace dang
 {
@@ -30,7 +31,10 @@ namespace dang
         void addWaypoint(uint32_t id, float x, float y, uint32_t type);
         void addNeighbour(uint32_t wp_id, uint32_t neigh_id, uint32_t type);
         void clearWaypoints();
-        const std::unordered_map<uint32_t, Waypoint>& getWaypoints() { return _waypoints; }
+        const std::unordered_map<uint32_t, Waypoint>& getWaypoints() const { return _waypoints; }
+//        std::unordered_map<uint32_t, Waypoint>& getWaypoints() { return _waypoints; }
+        spSceneGraph split(const std::unordered_map<uint32_t, bool> &visited);
+
 
         const Waypoint* getWaypointWithType(const uint32_t type);
         const Waypoint* findNearestWaypoint(const Vector2F& pos);

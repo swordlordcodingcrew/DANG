@@ -37,6 +37,8 @@ namespace dang
 
 
     /** remaining classes */
+    class BaseHUDLayer;
+    using spBaseHUDLayer = std::shared_ptr<BaseHUDLayer>;
     class CollisionSprite;
     using spCollisionSprite = std::shared_ptr<CollisionSprite>;
     class CollisionSpriteLayer;
@@ -44,6 +46,7 @@ namespace dang
     class Gear;
     class Imagesheet;
     using spImagesheet = std::shared_ptr<Imagesheet>;
+    struct image_import;
     class Sprite;
     using spSprite = std::shared_ptr<Sprite>;
     class Layer;

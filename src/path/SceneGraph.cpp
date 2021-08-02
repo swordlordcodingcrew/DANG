@@ -266,6 +266,8 @@ namespace dang
         return ret;
     }
 
+
+
     void SceneGraph::dfsRecursion(const Waypoint* start, std::unordered_map<uint32_t, bool>& visited)
     {
         dfs(start, visited);
@@ -277,12 +279,27 @@ namespace dang
         for (const auto & neigh : wp->getNeighbours())
         {
             const Waypoint* child = neigh.neighbour;
-            if (visited.count(child->_id) == 0)
+            if (!visited.at(child->_id))
             {
                 dfs(child,visited);
             }
         }
 
+    }
+
+    spSceneGraph SceneGraph::split(const std::unordered_map<uint32_t, bool> &visited)
+    {
+        spSceneGraph ret = std::make_shared<SceneGraph>();
+        for (auto v : visited)
+        {
+            if (v.second)
+            {
+                Waypoint& wp = _waypoints[v.first];
+                ret->addWaypoint(wp._id, wp._pos.x, wp._pos.y, wp._type);
+                _waypoints.erase(v.first);
+            }
+        }
+        return ret;
     }
 
 }

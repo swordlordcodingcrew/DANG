@@ -16,6 +16,8 @@
 #include "BaseHUDLayer.hpp"
 #include "path/SceneGraph.hpp"
 
+#include <iostream>
+
 namespace dang
 {
 
@@ -318,54 +320,87 @@ namespace dang
 
     }
 
-    spSceneGraph TmxExtruder::createPaths(RectF &room_extent)
+    void TmxExtruder::createSceneGraphs(RectF &room_extent, std::vector<dang::spSceneGraph>& scene_graphs)
     {
-        spSceneGraph ret = std::make_shared<SceneGraph>();
+        spSceneGraph sg = std::make_shared<SceneGraph>();
 
-        // first add all the waypoints
+        //!< first add all the waypoints
         for (size_t i = 0; i < _level->waypoints_len; ++i)
         {
             const tmx_waypoint* twap = _level->waypoints + i;
             if (room_extent.contains({twap->x, twap->y}))
             {
-                ret->addWaypoint(twap->id, twap->x, twap->y, twap->type);
+                sg->addWaypoint(twap->id, twap->x, twap->y, twap->type);
             }
         }
 
-        // second add the connections to the waypoints
+        //!< if there are no waypoints, leave
+        if (sg->getWaypoints().empty())
+        {
+            return;
+        }
+
+        //!< second add the connections to the waypoints
         for (size_t j = 0; j < _level->waypoint_connections_len; ++j)
         {
             const tmx_waypoint_connection* twc = _level->waypoint_connections + j;
-            ret->addNeighbour(twc->waypoint_start_id, twc->waypoint_goal_id, twc->connection_type);
+            sg->addNeighbour(twc->waypoint_start_id, twc->waypoint_goal_id, twc->connection_type);
         }
 
-        return ret;
-    }
-
-/*    void TmxExtruder::createSceneGraphs(RectF& room_extent)
-    {
-        spSceneGraph sg = createPaths(room_extent);
-        std::map<uint32_t, spWaypoint> wps = sg->getWaypoints();
-
-        // check how many isolated graphs
-        std::map<uint32_t, bool> _visited;
-
-        auto wpit = wps.begin();
-        _visited[wpit->first] = true;
-
-        // implement DFS
-        // https://algorithms.tutorialhorizon.com/graph-depth-first-search-using-recursion/
-        // https://algorithms.tutorialhorizon.com/graph-depth-first-search-in-disconnected-graph/
-
-        for (auto nwp : wpit->second->getNeighbours())
+        //!< check if there are disconnected graphs, and if so, split them into separate scenegraphs (nasty work)
+        const std::unordered_map<uint32_t, Waypoint>& wps = sg->getWaypoints();
+        std::unordered_map<uint32_t, bool> visited;
+        for (const auto& wp : wps)
         {
+            visited[wp.first] = false;
+        }
 
+        sg->dfsRecursion(&wps.begin()->second, visited);
+        size_t nr = std::count_if(visited.begin(), visited.end(), [](auto a)
+        {
+            return a.second;
+        });
+
+        if (nr == wps.size())
+        {
+            scene_graphs.push_back(sg);
+            return;
+        }
+
+        std::cout << "disconnected graph" << std::endl;
+
+        scene_graphs.push_back(sg->split(visited));
+
+        bool wps_empty = wps.empty();
+        while (!wps_empty)
+        {
+            const std::unordered_map<uint32_t, Waypoint>& wpsx = sg->getWaypoints();
+
+            visited.clear();
+            for (const auto& wp : wpsx)
+            {
+                visited[wp.first] = false;
+            }
+
+            sg->dfsRecursion(&wpsx.begin()->second, visited);
+
+            scene_graphs.push_back(sg->split(visited));
+
+            wps_empty = wpsx.empty();
         }
 
 
-
+        //!< the waypoints in the split graphs have to be connected again
+        for (size_t j = 0; j < _level->waypoint_connections_len; ++j)
+        {
+            const tmx_waypoint_connection* twc = _level->waypoint_connections + j;
+            for (auto sgit : scene_graphs)
+            {
+                sgit->addNeighbour(twc->waypoint_start_id, twc->waypoint_goal_id, twc->connection_type);
+            }
+        }
 
     }
-*/
+
 
 }

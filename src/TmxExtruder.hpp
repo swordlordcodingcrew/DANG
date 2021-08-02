@@ -3,9 +3,11 @@
 
 #pragma once
 
+#include "DangFwdDecl.h"
+#include "RectT.hpp"
 #include "tween/Ease.hpp"
-#include "BaseHUDLayer.hpp"
-#include "ImageImport.h"
+//#include "BaseHUDLayer.hpp"
+//#include "ImageImport.h"
 
 #include <unordered_map>
 #include <forward_list>
@@ -236,8 +238,7 @@ namespace dang
         void                    fillHUDLayer(spHUDLayer layer, const std::string& name, bool addSprites, bool addToGear);
         spTileLayer             getTileLayer(const std::string& name, bool addToGear);
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
-        spSceneGraph            createPaths(RectF& room_extent);
-        void                    createSceneGraphs(RectF& room_extent /*, return the scenegraphs*/);
+        void                    createSceneGraphs(RectF& room_extent, std::vector<dang::spSceneGraph>& scene_graphs);
 
         const tmx_layer* getTmxLayer(const std::string &name);
         const tmx_tileset*  getTileset(const std::string &name);
