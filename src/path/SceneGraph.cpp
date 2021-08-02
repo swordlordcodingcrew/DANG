@@ -181,6 +181,21 @@ namespace dang
         return ret;
     }
 
+    float SceneGraph::findNearestWaypointDist(const Vector2F& pos)
+    {
+        float dist = FLT_MAX;
+        for (const auto& sp : _waypoints)
+        {
+            float newdist = sp.second._pos.distance(pos);
+            if (newdist < dist)
+            {
+                dist = newdist;
+            }
+        }
+        return dist;
+    }
+
+
     const Waypoint* SceneGraph::findNearestWaypointH(const RectF& hotrect_abs)
     {
         float dist = FLT_MAX;

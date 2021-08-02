@@ -38,6 +38,7 @@ namespace dang
 
         const Waypoint* getWaypointWithType(const uint32_t type);
         const Waypoint* findNearestWaypoint(const Vector2F& pos);
+        float findNearestWaypointDist(const Vector2F& pos);
         const Waypoint* findNearestWaypointH(const RectF& hotrect_abs);
         bool waypointReached(const RectF& hotrect_abs, const Waypoint* goal);
 
