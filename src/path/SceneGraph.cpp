@@ -246,7 +246,23 @@ namespace dang
 
     bool SceneGraph::getRandomPath(const Waypoint *start, std::vector<const Waypoint *> &path)
     {
-        return false;
+        if (_waypoints.size() < 2)
+        {
+            // fail gracefully if there is only one waypoint (or less) in the graph
+            return false;
+        }
+
+        const Waypoint* dest = getRandomWaypoint();
+        while (start == dest)
+        {
+            dest = getRandomWaypoint();
+        }
+
+        assert(dest != nullptr);
+
+        // alternatively to a const_cast we could fetch a non-const pointer form the _waypoint hashmap.
+        // this would cost more cycles than just casting it. So...
+        return getPath(const_cast<Waypoint*>(start), dest, path);
     }
 
     uint32_t SceneGraph::getConnectionType(const Waypoint* start, const Waypoint* goal)
@@ -312,6 +328,26 @@ namespace dang
                 Waypoint& wp = _waypoints[v.first];
                 ret->addWaypoint(wp._id, wp._pos.x, wp._pos.y, wp._type);
                 _waypoints.erase(v.first);
+            }
+        }
+        return ret;
+    }
+
+    const Waypoint *SceneGraph::getRandomWaypoint()
+    {
+        size_t r = std::rand() % _waypoints.size();
+        size_t i{0};
+        const Waypoint* ret{nullptr};
+        for (const auto& w : _waypoints)
+        {
+            ret = &w.second;
+            if (i == r)
+            {
+                break;
+            }
+            else
+            {
+                ++i;
             }
         }
         return ret;

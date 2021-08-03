@@ -58,6 +58,9 @@ namespace dang
         /** container of the waypoints */
         std::unordered_map<uint32_t, Waypoint> _waypoints;
 
+        /** get a reandom waypoint */
+        const Waypoint* getRandomWaypoint();
+
         /** A* stuff */
         void resetAStar();
         void resetWaypoints();
@@ -65,18 +68,6 @@ namespace dang
         void popOpen(Waypoint* wap);
         std::vector<Waypoint*> open;
         std::vector<Waypoint*> closed;
-
-        /**
-            @brief Computes the distance between two nodes using the specified
-            Node::distanceTo() method from T.
-            @param[in] n1 A pointer referencing the source node.
-            @param[in] n2 A pointer referencing the destination node.
-            @see Node::distanceTo()
-        inline float distanceBetween(spWaypoint wap1, spWaypoint wap2) const
-        {
-            return wap1->distanceTo(wap2);
-        }
-*/
 
         /**
             @brief Builds the path from the goal found back up to the start and reorders the order such that
