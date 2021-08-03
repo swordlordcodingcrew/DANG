@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <unordered_map>
 
 #include "../DangFwdDecl.h"
 
@@ -18,6 +19,7 @@ namespace dang
 
         std::shared_ptr<NTree>  _tree{nullptr};
         const BTNode*           _node{nullptr};
+        std::unordered_map<std::string, float>  _payload;
 
         enum class internal_state : uint8_t
         {

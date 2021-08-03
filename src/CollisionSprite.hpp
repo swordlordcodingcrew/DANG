@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "DangFwdDecl.h"
 #include "Sprite.hpp"
 #include "Vector2T.hpp"
 #include "RectT.hpp"
@@ -13,14 +14,6 @@
 
 namespace dang
 {
-    struct tmx_spriteobject;
-    class Imagesheet;
-    class CollisionSpriteLayer;
-
-    using spImagesheet = std::shared_ptr<Imagesheet>;
-    using spNTree = std::shared_ptr<NTree>;
-    using spNTreeState = std::shared_ptr<NTreeState>;
-
     class CollisionSprite : public Sprite
     {
     public: // functions

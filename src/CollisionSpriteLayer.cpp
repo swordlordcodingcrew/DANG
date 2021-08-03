@@ -572,7 +572,7 @@ namespace dang
      * as eyes the center of the viewer's hotrect is used
      * @param the viewer
      * @param target the point to be seen or not
-     * @return 0 for not visible. 1 visible on the right; -1 visible on the left
+     * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
      */
     float CollisionSpriteLayer::aaLoSH(const spCollisionSprite me, const spCollisionSprite target)
     {
@@ -615,8 +615,8 @@ namespace dang
             }
 
         }
-
-        return (dx_target > 0) ? 1 : -1;
+            return dx_target;
+//        return (dx_target > 0) ? 1 : -1;
     }
 
 

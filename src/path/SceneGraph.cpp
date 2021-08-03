@@ -231,7 +231,7 @@ namespace dang
         return false;
     }
 
-    bool SceneGraph::getRandomNextWaypoint(const Waypoint* start, std::vector<const Waypoint*> &path)
+    bool SceneGraph::getRandomNeighbourPath(const Waypoint* start, std::vector<const Waypoint*> &path)
     {
         if (start->getNeighbours().empty())
         {
@@ -263,6 +263,33 @@ namespace dang
         // alternatively to a const_cast we could fetch a non-const pointer form the _waypoint hashmap.
         // this would cost more cycles than just casting it. So...
         return getPath(const_cast<Waypoint*>(start), dest, path);
+    }
+
+    bool SceneGraph::getNearestNeighbourPathH(const Waypoint *start, float dist, std::vector<const Waypoint *> &path)
+    {
+        if (start->getNeighbours().empty())
+        {
+            return false;
+        }
+
+        float delta = FLT_MAX;
+        const Waypoint* goal{nullptr};
+        for (const auto& wpc : start->getNeighbours())
+        {
+            float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
+            float newdelta = dist - pos_delta;
+            if (newdelta < delta)
+            {
+                goal = wpc.neighbour;
+                delta = newdelta;
+            }
+        }
+        if (goal == nullptr)
+        {
+            return false;
+        }
+        path.push_back(goal);
+        return true;
     }
 
     uint32_t SceneGraph::getConnectionType(const Waypoint* start, const Waypoint* goal)
@@ -352,5 +379,6 @@ namespace dang
         }
         return ret;
     }
+
 
 }
