@@ -265,7 +265,7 @@ namespace dang
         return getPath(const_cast<Waypoint*>(start), dest, path);
     }
 
-    bool SceneGraph::getNearestNeighbourPathH(const Waypoint *start, float dist, std::vector<const Waypoint *> &path)
+    bool SceneGraph::getNearestNeighbourHPath(const Waypoint *start, float dist, std::vector<const Waypoint *> &path)
     {
         if (start->getNeighbours().empty())
         {
