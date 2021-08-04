@@ -272,18 +272,45 @@ namespace dang
             return false;
         }
 
-        float delta = FLT_MAX;
+        float delta{0};
         const Waypoint* goal{nullptr};
-        for (const auto& wpc : start->getNeighbours())
+        if (dist < 0)
         {
-            float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
-            float newdelta = dist - pos_delta;
-            if (newdelta < delta)
+            delta = FLT_MIN;
+            for (const auto& wpc : start->getNeighbours())
             {
-                goal = wpc.neighbour;
-                delta = newdelta;
+                float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
+                float y_delta = std::abs(start->_pos.y - wpc.neighbour->_pos.y);
+                if (pos_delta < 0 && y_delta < 10)
+                {
+                    float newdelta = std::abs(dist - pos_delta);
+                    if (newdelta > delta)
+                    {
+                        goal = wpc.neighbour;
+                        delta = newdelta;
+                    }
+                }
             }
         }
+        else if (dist > 0)
+        {
+            delta = FLT_MAX;
+            for (const auto& wpc : start->getNeighbours())
+            {
+                float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
+                float y_delta = std::abs(start->_pos.y - wpc.neighbour->_pos.y);
+                if (pos_delta > 0 && y_delta < 10)
+                {
+                    float newdelta = std::abs(dist - pos_delta);
+                    if (newdelta < delta)
+                    {
+                        goal = wpc.neighbour;
+                        delta = newdelta;
+                    }
+                }
+            }
+        }
+
         if (goal == nullptr)
         {
             return false;
