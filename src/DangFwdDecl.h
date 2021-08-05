@@ -34,6 +34,10 @@ namespace dang
     using spTwNull = std::shared_ptr<TwNull>;
     class TwSequence;
     using spTwSequence = std::shared_ptr<TwSequence>;
+    class TwVel;
+    using spTwVel = std::shared_ptr<TwVel>;
+    class TwVelY;
+    using spTwVelY = std::shared_ptr<TwVelY>;
 
 
     /** remaining classes */

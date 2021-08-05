@@ -115,8 +115,11 @@ namespace dang
 
     void Sprite::removeTween(const spTweenable& tw, bool suppressCB)
     {
-        tw->finish(suppressCB);
-        _tweens.remove(tw);
+        if (tw != nullptr)
+        {
+            tw->finish(suppressCB);
+            _tweens.remove(tw);
+        }
     }
 
     void Sprite::removeTweens(bool suppressCB)
