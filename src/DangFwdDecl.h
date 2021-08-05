@@ -41,6 +41,12 @@ namespace dang
 
 
     /** remaining classes */
+    class Layer;
+    using spLayer = std::shared_ptr<Layer>;
+    class SpriteLayer;
+    using spSpriteLayer = std::shared_ptr<SpriteLayer>;
+    class TileLayer;
+    using spTileLayer = std::shared_ptr<TileLayer>;
     class BaseHUDLayer;
     using spBaseHUDLayer = std::shared_ptr<BaseHUDLayer>;
     class CollisionSprite;
@@ -56,6 +62,7 @@ namespace dang
     class Layer;
     using spLayer = std::shared_ptr<Layer>;
     class Event;
+
 
     /** tmx extruder classes */
     struct tmx_spriteobject;

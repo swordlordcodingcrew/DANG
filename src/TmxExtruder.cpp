@@ -112,7 +112,7 @@ namespace dang
 
     }
 
-    void TmxExtruder::fillHUDLayer(spHUDLayer layer, const std::string& name, bool addSprites, bool addToGear)
+    void TmxExtruder::fillHUDLayer(spBaseHUDLayer layer, const std::string& name, bool addSprites, bool addToGear)
     {
         const tmx_layer* l = getTmxLayer(name);
 
