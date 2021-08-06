@@ -218,6 +218,11 @@ namespace dang
 
     bool SceneGraph::getRandomNextWaypoint(const Waypoint* start, std::vector<const Waypoint*> &path)
     {
+        if(start == nullptr)
+        {
+            return false;
+        }
+
         if (start->getNeighbours().empty())
         {
             return false;
