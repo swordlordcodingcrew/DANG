@@ -27,6 +27,8 @@ namespace dang
         Waypoint(uint32_t id, float x, float y, uint32_t type);
         virtual ~Waypoint();
 
+        Waypoint(const Waypoint& wp) = delete;  //!< copy constructor wouldn't work, since neighbours are raw pointers
+
         void addNeighbour(Waypoint* child, connection& nc);
         void addNeighbour(Waypoint* child, float distance, uint32_t type);
         const Waypoint* getNeighbour(size_t index) const;

@@ -572,7 +572,7 @@ namespace dang
      * as eyes the center of the viewer's hotrect is used
      * @param the viewer
      * @param target the point to be seen or not
-     * @return 0 for not visible. 1 visible on the right; -1 visible on the left
+     * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
      */
     float CollisionSpriteLayer::aaLoSH(const spCollisionSprite me, const spCollisionSprite target)
     {
@@ -590,6 +590,12 @@ namespace dang
         for (const spSprite &spr : _active_sprites)
         {
             const spCollisionSprite obst = std::dynamic_pointer_cast<CollisionSprite>(spr);
+
+            // me and target are not obstacles per se
+            if (spr == me || spr == target)
+            {
+                continue;
+            }
 
             // this is rather a philosophical condition. Might be removed
             if (obst->getCollisionResponse(me) == eCollisionResponse::CR_NONE)
@@ -609,14 +615,24 @@ namespace dang
             {
                 continue;
             }
-            else if (dx_obst < dx_target) // both on the same side and distance to obstacle smaller than targer -> obstacle
+            else if (dx_obst < 0) // both on the left side
             {
-                return 0;
+                if (dx_obst > dx_target)    // negative numbers: distance to obstacle greater than targer -> obstacle
+                {
+                    return 0;
+                }
+            }
+            else   // both on the rigt side
+            {
+                if (dx_obst < dx_target)    // distance to obstacle smaller than targer -> obstacle
+                {
+                    return 0;
+                }
             }
 
         }
-
-        return (dx_target > 0) ? 1 : -1;
+            return dx_target;
+//        return (dx_target > 0) ? 1 : -1;
     }
 
 

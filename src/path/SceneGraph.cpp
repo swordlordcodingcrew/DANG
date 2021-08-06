@@ -181,6 +181,21 @@ namespace dang
         return ret;
     }
 
+    float SceneGraph::findNearestWaypointDist(const Vector2F& pos)
+    {
+        float dist = FLT_MAX;
+        for (const auto& sp : _waypoints)
+        {
+            float newdist = sp.second._pos.distance(pos);
+            if (newdist < dist)
+            {
+                dist = newdist;
+            }
+        }
+        return dist;
+    }
+
+
     const Waypoint* SceneGraph::findNearestWaypointH(const RectF& hotrect_abs)
     {
         float dist = FLT_MAX;
@@ -216,7 +231,7 @@ namespace dang
         return false;
     }
 
-    bool SceneGraph::getRandomNextWaypoint(const Waypoint* start, std::vector<const Waypoint*> &path)
+    bool SceneGraph::getRandomNeighbourPath(const Waypoint* start, std::vector<const Waypoint*> &path)
     {
         if(start == nullptr)
         {
@@ -236,7 +251,77 @@ namespace dang
 
     bool SceneGraph::getRandomPath(const Waypoint *start, std::vector<const Waypoint *> &path)
     {
-        return false;
+        if (_waypoints.size() < 2)
+        {
+            // fail gracefully if there is only one waypoint (or less) in the graph
+            return false;
+        }
+
+        const Waypoint* dest = getRandomWaypoint();
+        while (start == dest)
+        {
+            dest = getRandomWaypoint();
+        }
+
+        assert(dest != nullptr);
+
+        // alternatively to a const_cast we could fetch a non-const pointer form the _waypoint hashmap.
+        // this would cost more cycles than just casting it. So...
+        return getPath(const_cast<Waypoint*>(start), dest, path);
+    }
+
+    bool SceneGraph::getNearestNeighbourHPath(const Waypoint *start, float dist, std::vector<const Waypoint *> &path)
+    {
+        if (start->getNeighbours().empty())
+        {
+            return false;
+        }
+
+        float delta{0};
+        const Waypoint* goal{nullptr};
+        if (dist < 0)
+        {
+            delta = FLT_MIN;
+            for (const auto& wpc : start->getNeighbours())
+            {
+                float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
+                float y_delta = std::abs(start->_pos.y - wpc.neighbour->_pos.y);
+                if (pos_delta < 0 && y_delta < 10)
+                {
+                    float newdelta = std::abs(dist - pos_delta);
+                    if (newdelta > delta)
+                    {
+                        goal = wpc.neighbour;
+                        delta = newdelta;
+                    }
+                }
+            }
+        }
+        else if (dist > 0)
+        {
+            delta = FLT_MAX;
+            for (const auto& wpc : start->getNeighbours())
+            {
+                float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
+                float y_delta = std::abs(start->_pos.y - wpc.neighbour->_pos.y);
+                if (pos_delta > 0 && y_delta < 10)
+                {
+                    float newdelta = std::abs(dist - pos_delta);
+                    if (newdelta < delta)
+                    {
+                        goal = wpc.neighbour;
+                        delta = newdelta;
+                    }
+                }
+            }
+        }
+
+        if (goal == nullptr)
+        {
+            return false;
+        }
+        path.push_back(goal);
+        return true;
     }
 
     uint32_t SceneGraph::getConnectionType(const Waypoint* start, const Waypoint* goal)
@@ -271,6 +356,8 @@ namespace dang
         return ret;
     }
 
+
+
     void SceneGraph::dfsRecursion(const Waypoint* start, std::unordered_map<uint32_t, bool>& visited)
     {
         dfs(start, visited);
@@ -282,12 +369,48 @@ namespace dang
         for (const auto & neigh : wp->getNeighbours())
         {
             const Waypoint* child = neigh.neighbour;
-            if (visited.count(child->_id) == 0)
+            if (!visited.at(child->_id))
             {
                 dfs(child,visited);
             }
         }
 
     }
+
+    spSceneGraph SceneGraph::split(const std::unordered_map<uint32_t, bool> &visited)
+    {
+        spSceneGraph ret = std::make_shared<SceneGraph>();
+        for (auto v : visited)
+        {
+            if (v.second)
+            {
+                Waypoint& wp = _waypoints[v.first];
+                ret->addWaypoint(wp._id, wp._pos.x, wp._pos.y, wp._type);
+                _waypoints.erase(v.first);
+            }
+        }
+        return ret;
+    }
+
+    const Waypoint *SceneGraph::getRandomWaypoint()
+    {
+        size_t r = std::rand() % _waypoints.size();
+        size_t i{0};
+        const Waypoint* ret{nullptr};
+        for (const auto& w : _waypoints)
+        {
+            ret = &w.second;
+            if (i == r)
+            {
+                break;
+            }
+            else
+            {
+                ++i;
+            }
+        }
+        return ret;
+    }
+
 
 }

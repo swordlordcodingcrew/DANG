@@ -81,6 +81,8 @@ namespace dang
         void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
+        float   aaLoSH(const spCollisionSprite me, const spCollisionSprite target);
+
     protected:
 
         void handleCollisionDetection(const Gear& gear);
@@ -92,7 +94,6 @@ namespace dang
         static void    touch(manifold& mf, bool for_me);
         static void    bounce(manifold& mf, bool for_me);
 
-        float   aaLoSH(const spCollisionSprite me, const spCollisionSprite target);
 
         std::unordered_set<spSprite> _handled;
         uint16_t                    _iteration{3};       // number of collision solving cycles

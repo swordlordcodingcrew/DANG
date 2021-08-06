@@ -3,24 +3,18 @@
 
 #pragma once
 
+#include "DangFwdDecl.h"
+#include "RectT.hpp"
 #include "tween/Ease.hpp"
-#include "BaseHUDLayer.hpp"
-#include "ImageImport.h"
 
 #include <unordered_map>
 #include <forward_list>
 #include <vector>
 #include <memory>
 #include <bitset>
-//#include <src/path/Waypoint.hpp>
 
 namespace dang
 {
-    class Imagesheet;
-    class SceneGraph;
-
-    using spSceneGraph = std::shared_ptr<SceneGraph>;
-
 
     struct tmx_tileset
     {
@@ -199,24 +193,6 @@ namespace dang
 */    };
 
 
-    // forward declarations
-    class Layer;
-    class SpriteLayer;
-    class CollisionSpriteLayer;
-    class TileLayer;
-    class Gear;
-    class TwAnim;
-
-    // using aliases
-    using spLayer = std::shared_ptr<Layer>;
-    using spSpriteLayer = std::shared_ptr<SpriteLayer>;
-    using spHUDLayer = std::shared_ptr<BaseHUDLayer>;
-    using spCollisionSpriteLayer = std::shared_ptr<CollisionSpriteLayer>;
-    using spTileLayer = std::shared_ptr<TileLayer>;
-    using spImagesheet = std::shared_ptr<Imagesheet>;
-    using spTwAnim = std::shared_ptr<TwAnim>;
-
-
     /**
      * tmx extruder class gets or extrudes objects from the tmx-derived include-file with the DANG Extruder pattern
      */
@@ -233,11 +209,10 @@ namespace dang
 
         spSpriteLayer           getSpriteLayer(const std::string& name, bool addSprites, bool addToGear);
         spCollisionSpriteLayer  getCollisionSpriteLayer(const std::string& name, bool addSprites, bool addToGear);
-        void                    fillHUDLayer(spHUDLayer layer, const std::string& name, bool addSprites, bool addToGear);
+        void                    fillHUDLayer(spBaseHUDLayer  layer, const std::string& name, bool addSprites, bool addToGear);
         spTileLayer             getTileLayer(const std::string& name, bool addToGear);
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
-        spSceneGraph            createPaths(RectF& room_extent);
-        void                    createSceneGraphs(RectF& room_extent /*, return the scenegraphs*/);
+        void                    createSceneGraphs(RectF& room_extent, std::vector<dang::spSceneGraph>& scene_graphs);
 
         const tmx_layer* getTmxLayer(const std::string &name);
         const tmx_tileset*  getTileset(const std::string &name);

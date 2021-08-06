@@ -34,9 +34,21 @@ namespace dang
     using spTwNull = std::shared_ptr<TwNull>;
     class TwSequence;
     using spTwSequence = std::shared_ptr<TwSequence>;
+    class TwVel;
+    using spTwVel = std::shared_ptr<TwVel>;
+    class TwVelY;
+    using spTwVelY = std::shared_ptr<TwVelY>;
 
 
     /** remaining classes */
+    class Layer;
+    using spLayer = std::shared_ptr<Layer>;
+    class SpriteLayer;
+    using spSpriteLayer = std::shared_ptr<SpriteLayer>;
+    class TileLayer;
+    using spTileLayer = std::shared_ptr<TileLayer>;
+    class BaseHUDLayer;
+    using spBaseHUDLayer = std::shared_ptr<BaseHUDLayer>;
     class CollisionSprite;
     using spCollisionSprite = std::shared_ptr<CollisionSprite>;
     class CollisionSpriteLayer;
@@ -44,11 +56,13 @@ namespace dang
     class Gear;
     class Imagesheet;
     using spImagesheet = std::shared_ptr<Imagesheet>;
+    struct image_import;
     class Sprite;
     using spSprite = std::shared_ptr<Sprite>;
     class Layer;
     using spLayer = std::shared_ptr<Layer>;
     class Event;
+
 
     /** tmx extruder classes */
     struct tmx_spriteobject;
