@@ -5,6 +5,7 @@
 
 #include "dang.hpp"
 #include "DangFwdDecl.h"
+#include "Layer.hpp"
 #include "bt/BTNode.h"
 #include "RectT.hpp"
 
@@ -39,6 +40,7 @@ namespace dang
 
         void                        addLayer(spLayer layer);
         std::shared_ptr<Layer>      getLayerByName(const std::string& name);
+        std::shared_ptr<Layer>      getLayerByTypename(Layer::E_TYPE type);
         void                        removeLayer(const spLayer& layer);
         void                        removeLayers();
 

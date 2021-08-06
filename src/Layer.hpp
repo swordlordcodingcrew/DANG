@@ -33,6 +33,7 @@ namespace dang
         virtual void    update(uint32_t dt, const Gear& gear) = 0;
         virtual void    render(const Gear& gear) = 0;
 
+        E_TYPE getType();
 
     protected:
         E_TYPE  _type{LT_UNDEFINED};

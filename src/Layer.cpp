@@ -15,5 +15,9 @@ namespace dang
 
     }
 
+    Layer::E_TYPE Layer::getType()
+    {
+        return _type;
+    }
 }
 
