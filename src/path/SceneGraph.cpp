@@ -222,8 +222,8 @@ namespace dang
         assert(goal != nullptr);
         if (hotrect_abs.contains(goal->_pos))
         {
-            // fine tuning. wp within 5 pixels of hotrect-center
-            if (std::abs(hotrect_abs.center().x - goal->_pos.x) < 2)
+            // fine tuning. wp within 2 pixels of hotrect-center
+            if (std::abs(hotrect_abs.center().x - goal->_pos.x) < 1)
             {
                 return true;
             }
