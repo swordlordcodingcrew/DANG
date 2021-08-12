@@ -52,6 +52,7 @@ namespace dang
         FLYING_CANNONBALL = 18,
         FLYING_CRATE = 19,
         FLYING_BOMB = 20,
+        PIG_BOSS = 30,
         EXPLOSION = 38,
         ENEMIES_END = 39,
 
@@ -77,6 +78,7 @@ namespace dang
         ROOM_TRIGGER = 71,
         WARP_ROOM_TRIGGER = 72,
         LEVEL_TRIGGER = 73,
+        BOSS_BATTLE_TRIGGER = 74,
         TRIGGERS_END = 79,
 
         // 80 - 89 Mood stuff

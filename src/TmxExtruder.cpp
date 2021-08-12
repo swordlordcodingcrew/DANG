@@ -141,7 +141,12 @@ namespace dang
                 const tmx_spriteobject* so = l->spriteobjects + j;
 
                 spImagesheet is = _gear->getImagesheet(so->tileset);
-                layer->addSprite(std::make_shared<Sprite>(so, is));
+                auto spr = std::make_shared<Sprite>(so, is);
+                if(spr->_type_name == "hud_boss" || spr->_type_name == "hud_boss_health")
+                {
+                    spr->_visible = false; // as long as no boss battle is running
+                }
+                layer->addSprite(spr);
             }
 
         }
