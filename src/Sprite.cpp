@@ -48,7 +48,7 @@ namespace dang
         }
     }
 
-    Sprite::Sprite(const tmx_spriteobject* so, std::shared_ptr<Imagesheet> is)
+    Sprite::Sprite(const tmx_spriteobject* so, const spImagesheet& is)
     {
         _id = so->id; // global
         _type_name = so->type;

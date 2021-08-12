@@ -372,7 +372,7 @@ namespace dang
             return;
         }
 
-        std::cout << "disconnected graph" << std::endl;
+//        std::cout << "disconnected graph" << std::endl;
 
         scene_graphs.push_back(sg->split(visited));
 

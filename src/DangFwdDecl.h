@@ -62,7 +62,7 @@ namespace dang
     class Layer;
     using spLayer = std::shared_ptr<Layer>;
     class Event;
-
+    class Dispatcher;
 
     /** tmx extruder classes */
     struct tmx_spriteobject;

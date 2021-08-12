@@ -2,19 +2,21 @@
 // This file is part of the DANG game framework
 // Inspired by https://github.com/Sahnvour/PathFinder
 
-#include <cfloat>
-#include <iostream>
-#include <engine/engine.hpp>
-#include <cassert>
-#include <src/TmxExtruder.hpp>
+#include "src/TmxExtruder.hpp"
+#include "src/Rand.hpp"
 #include "SceneGraph.hpp"
 #include "src/Vector2T.hpp"
+
+#include <cfloat>
+#include <iostream>
+//#include <engine/engine.hpp>
+#include <cassert>
+
 
 namespace dang
 {
     SceneGraph::SceneGraph()
     {
-        std::srand(blit::now());
     }
 
     SceneGraph::~SceneGraph()
@@ -222,8 +224,8 @@ namespace dang
         assert(goal != nullptr);
         if (hotrect_abs.contains(goal->_pos))
         {
-            // fine tuning. wp within 5 pixels of hotrect-center
-            if (std::abs(hotrect_abs.center().x - goal->_pos.x) < 2)
+            // fine tuning. wp within 2 pixels of hotrect-center
+            if (std::abs(hotrect_abs.center().x - goal->_pos.x) < 1)
             {
                 return true;
             }
@@ -243,7 +245,9 @@ namespace dang
             return false;
         }
 
-        size_t r = std::rand() % start->getNeighbours().size();
+        uint32_t r = Rand::get(0, start->getNeighbours().size()-1);
+
+//        size_t r = std::rand() % start->getNeighbours().size();
 //            std::cout << "next index " << r << " - connection type " << wp->getNeighbourConnection(r).type << std::endl;
         path.push_back(start->getNeighbour(r));
         return true;
@@ -265,7 +269,7 @@ namespace dang
 
         assert(dest != nullptr);
 
-        // alternatively to a const_cast we could fetch a non-const pointer form the _waypoint hashmap.
+        // alternatively to a const_cast we could fetch a non-const pointer from the _waypoint hashmap.
         // this would cost more cycles than just casting it. So...
         return getPath(const_cast<Waypoint*>(start), dest, path);
     }
@@ -394,7 +398,8 @@ namespace dang
 
     const Waypoint *SceneGraph::getRandomWaypoint()
     {
-        size_t r = std::rand() % _waypoints.size();
+        uint32_t r = Rand::get(0, _waypoints.size()-1);
+//        size_t r = std::rand() % _waypoints.size();
         size_t i{0};
         const Waypoint* ret{nullptr};
         for (const auto& w : _waypoints)

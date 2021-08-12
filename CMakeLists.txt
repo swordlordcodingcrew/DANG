@@ -77,7 +77,7 @@ set(SOURCES
         src/snd/xm/play.c
         src/snd/xm/xm.h
         src/snd/xm/xm_internal.h
-        src/bt/NTBuilder.cpp src/bt/NTBuilder.h src/DangFwdDecl.h)
+        src/bt/NTBuilder.cpp src/bt/NTBuilder.h src/DangFwdDecl.h src/Rand.cpp src/Rand.hpp)
 
 add_library(DANG STATIC ${SOURCES} )
 
