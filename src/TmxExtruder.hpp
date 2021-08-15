@@ -138,11 +138,11 @@ namespace dang
 
     enum e_tmx_waypoint_connection
     {
-        wpc_invalid = 0x0,
-        wpc_walk = 0x1,
-        wpc_jump = 0x2,
-        wpc_warp = 0x4
-
+        wpc_invalid = 0x00,
+        wpc_walk = 0x01,
+        wpc_jump = 0x02,
+        wpc_warp = 0x04,
+        wpc_block = 0x08
     };
 
     struct tmx_waypoint

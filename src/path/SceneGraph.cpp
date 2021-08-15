@@ -57,6 +57,12 @@ namespace dang
 
             for (const Waypoint::connection& children : currentNode->getNeighbours())    // for each successor n' of n
             {
+                // wpc_block counts as no connection
+                if (children.type == wpc_block)
+                {
+                    continue;
+                }
+
                 childNode = children.neighbour;
 
                 g = currentNode->_g + children.distance; // distance from start + distance between the two nodes
@@ -235,7 +241,7 @@ namespace dang
 
     bool SceneGraph::getRandomNeighbourPath(const Waypoint* start, std::vector<const Waypoint*> &path)
     {
-        if(start == nullptr)
+        if (start == nullptr)
         {
             return false;
         }
@@ -245,11 +251,26 @@ namespace dang
             return false;
         }
 
-        uint32_t r = Rand::get(0, start->getNeighbours().size()-1);
+        const Waypoint* wp{nullptr};
+        size_t iter{0};
+        while (wp == nullptr && iter < 100)
+        {
+            iter++;
+            uint32_t r = Rand::get(0, start->getNeighbours().size() - 1);
+            if (start->getNeighbourConnection(r).type != wpc_block)
+            {
+                wp = start->getNeighbour(r);
+            }
+        }
 
-//        size_t r = std::rand() % start->getNeighbours().size();
-//            std::cout << "next index " << r << " - connection type " << wp->getNeighbourConnection(r).type << std::endl;
-        path.push_back(start->getNeighbour(r));
+        if (wp == nullptr)
+        {
+            std::cout << "ERROR: waypoint is a dead-end" << std::endl;
+            return false;
+        }
+
+        path.push_back(wp);
+
         return true;
     }
 
@@ -288,15 +309,18 @@ namespace dang
             delta = FLT_MIN;
             for (const auto& wpc : start->getNeighbours())
             {
-                float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
-                float y_delta = std::abs(start->_pos.y - wpc.neighbour->_pos.y);
-                if (pos_delta < 0 && y_delta < 10)
+                if (wpc.type != wpc_block)
                 {
-                    float newdelta = std::abs(dist - pos_delta);
-                    if (newdelta > delta)
+                    float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
+                    float y_delta = std::abs(start->_pos.y - wpc.neighbour->_pos.y);
+                    if (pos_delta < 0 && y_delta < 10)
                     {
-                        goal = wpc.neighbour;
-                        delta = newdelta;
+                        float newdelta = std::abs(dist - pos_delta);
+                        if (newdelta > delta)
+                        {
+                            goal = wpc.neighbour;
+                            delta = newdelta;
+                        }
                     }
                 }
             }
@@ -306,15 +330,18 @@ namespace dang
             delta = FLT_MAX;
             for (const auto& wpc : start->getNeighbours())
             {
-                float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
-                float y_delta = std::abs(start->_pos.y - wpc.neighbour->_pos.y);
-                if (pos_delta > 0 && y_delta < 10)
+                if (wpc.type != wpc_block)
                 {
-                    float newdelta = std::abs(dist - pos_delta);
-                    if (newdelta < delta)
+                    float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
+                    float y_delta = std::abs(start->_pos.y - wpc.neighbour->_pos.y);
+                    if (pos_delta > 0 && y_delta < 10)
                     {
-                        goal = wpc.neighbour;
-                        delta = newdelta;
+                        float newdelta = std::abs(dist - pos_delta);
+                        if (newdelta < delta)
+                        {
+                            goal = wpc.neighbour;
+                            delta = newdelta;
+                        }
                     }
                 }
             }
@@ -409,10 +436,7 @@ namespace dang
             {
                 break;
             }
-            else
-            {
-                ++i;
-            }
+            ++i;
         }
         return ret;
     }

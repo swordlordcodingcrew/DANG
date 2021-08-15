@@ -273,6 +273,26 @@ function export32Blit(map, fileName) {
                         }
                     }
 
+                    for (var k = 0; k < 10; ++k)
+                    {
+                        var val = o.property("warp_" + k);
+                        if (val != undefined)
+                        {
+                            buf_conn += "    {" + o.id + ", " + val.id + ", 0x4},\n";
+                            conn_len++;
+                        }
+                    }
+
+                    for (var k = 0; k < 10; ++k)
+                    {
+                        var val = o.property("block_" + k);
+                        if (val != undefined)
+                        {
+                            buf_conn += "    {" + o.id + ", " + val.id + ", 0x8},\n";
+                            conn_len++;
+                        }
+                    }
+
                     waypointType = o.type;
                     if(waypointType == "")
                     {

@@ -33,7 +33,7 @@ namespace dang
         void addNeighbour(Waypoint* child, float distance, uint32_t type);
         const Waypoint* getNeighbour(size_t index) const;
         const std::vector<connection>& getNeighbours() const;
-        const connection& getNeighbourConnection(size_t index);
+        const connection& getNeighbourConnection(size_t index) const;
         uint32_t getType() const { return _type; }
 
         float distanceTo(Waypoint* waypoint);
