@@ -66,8 +66,8 @@ namespace dang
         const std::string type;
         const int32_t x;
         const int32_t y;
-        const int32_t width;
-        const int32_t height;
+        const int16_t width;
+        const int16_t height;
         const bool visible;
         const std::string tileset;
         const uint16_t tile;
@@ -101,7 +101,7 @@ namespace dang
         const uint8_t type; // 0 = tmx_tile, 1 = objects
         const float opacity;
         const bool visible;
-        const uint32_t z_order;   // the z-order of the layers
+        const uint8_t z_order;   // the z-order of the layers
 
         // tile layer vars
         const uint8_t tl_width;
@@ -150,14 +150,14 @@ namespace dang
         const uint32_t id;
         const float x;
         const float y;
-        const uint32_t type;     // see enum tmx_waypoint_type
+        const uint8_t type;     // see enum tmx_waypoint_type
     };
 
     struct tmx_waypoint_connection
     {
         const uint32_t waypoint_start_id;
         const uint32_t waypoint_goal_id;
-        const uint32_t connection_type;     // see enum tmx_waypoint_connection
+        const uint8_t connection_type;     // see enum tmx_waypoint_connection
     };
 
     struct tmx_level
@@ -207,7 +207,7 @@ namespace dang
         spImagesheet            getImagesheet(const std::string& name);
         void                    getImagesheets();
 
-        spSpriteLayer           getSpriteLayer(const std::string& name, bool addSprites, bool addToGear);
+        spSpriteLayer           getSpriteLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations);
         spCollisionSpriteLayer  getCollisionSpriteLayer(const std::string& name, bool addSprites, bool addToGear);
         void                    fillHUDLayer(spBaseHUDLayer  layer, const std::string& name, bool addSprites, bool addToGear);
         spTileLayer             getTileLayer(const std::string& name, bool addToGear);

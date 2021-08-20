@@ -125,6 +125,32 @@ namespace dang
 
     }
 
+    spSprite SpriteLayer::getSpriteByType(const std::string& name)
+    {
+        auto ret = std::find_if(_active_sprites.begin(), _active_sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
+        {
+            return first->_type_name == name;
+        });
+
+        if (ret != _active_sprites.end())
+        {
+            return (*ret);
+        }
+
+        ret = std::find_if(_inactive_sprites.begin(), _inactive_sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
+        {
+            return first->_type_name == name;
+        });
+
+        if (ret != _inactive_sprites.end())
+        {
+            return (*ret);
+        }
+
+        return nullptr;
+    }
+
+
     spSprite SpriteLayer::getSpriteById(uint16_t id)
     {
 
@@ -143,7 +169,7 @@ namespace dang
                 return first->_id == id;
             });
 
-        if (ret != _active_sprites.end())
+        if (ret != _inactive_sprites.end())
         {
             return (*ret);
         }

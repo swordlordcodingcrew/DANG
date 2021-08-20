@@ -22,6 +22,8 @@ namespace dang
         void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
+        virtual spSprite    getSpriteByType(const std::string& name);
+
         virtual void    addSprite(spSprite spr);
         virtual void    removeSprite(spSprite spr);
         virtual void    removeSpriteById(uint16_t id);

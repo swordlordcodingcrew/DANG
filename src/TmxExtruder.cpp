@@ -65,7 +65,7 @@ namespace dang
         return is;
     }
 
-    spSpriteLayer TmxExtruder::getSpriteLayer(const std::string& name, bool addSprites, bool addToGear)
+    spSpriteLayer TmxExtruder::getSpriteLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations)
     {
         const tmx_layer* l = getTmxLayer(name);
 
@@ -99,7 +99,19 @@ namespace dang
                 const tmx_spriteobject* so = l->spriteobjects + j;
 
                 spImagesheet is = _gear->getImagesheet(so->tileset);
-                sl->addSprite(std::make_shared<Sprite>(so, is));
+
+                auto sprite = std::make_shared<Sprite>(so, is);
+
+                if(autoFillAnimations && is != nullptr && !so->type.empty())
+                {
+                    auto animation = getAnimation(is->getName(), so->type);
+                    if(animation != nullptr)
+                    {
+                        sprite->setAnimation(animation);
+                    }
+                }
+
+                sl->addSprite(sprite);
             }
         }
 
