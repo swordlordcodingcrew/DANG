@@ -16,6 +16,7 @@ namespace dang
         NTreeState() = delete;
         explicit NTreeState(std::shared_ptr<NTree> tree);
         virtual ~NTreeState();
+        void    clearState();
 
         std::shared_ptr<NTree>  _tree{nullptr};
         const BTNode*           _node{nullptr};

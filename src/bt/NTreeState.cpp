@@ -15,4 +15,10 @@ namespace dang
 //        std::cout << "NTreeState destructor" << std::endl;
     }
 
+    void NTreeState::clearState()
+    {
+        _node = nullptr;
+        _internal_state = internal_state::FOUND;
+    }
+
 }
