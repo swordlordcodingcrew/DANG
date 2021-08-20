@@ -51,6 +51,7 @@ namespace dang
         BTNode* node = _composite_stack.top();
         _composite_stack.pop();
         _builder_pos = node->_parent;
+
         return *this;
     }
 
@@ -106,6 +107,13 @@ namespace dang
         return *this;
     }
 */
+
+    NTBuilder &NTBuilder::tree(const spNTree& tree)
+    {
+        preOrderCopy(tree->_root);
+    }
+
+
     BTNode* NTBuilder::inComposite()
     {
         if (_builder_pos->_parent == nullptr)
@@ -150,12 +158,12 @@ namespace dang
             _tree->_root = node;
             _builder_pos = _tree->_root;
         }
-        else if (_builder_pos->isDecorator())   // the leaf is attached to a decorator
+        else if (_builder_pos->isDecorator())   // the node is attached to a decorator
         {
             node->_parent = _builder_pos;
             _builder_pos->_child = node;
         }
-        else if (_builder_pos->isComposite())   // the leaf is attached directly to a composite
+        else if (_builder_pos->isComposite())   // the node is attached directly to a composite
         {
             node->_parent = _builder_pos;
             BTNode* nd = getLastSibling(_builder_pos);
@@ -172,7 +180,7 @@ namespace dang
         {
             BTNode* comp = inComposite();
 
-            assert(comp != nullptr);    // attaching a leaf to a leaf ist not allowed
+            assert(comp != nullptr);    // attaching a node to a leaf ist not allowed
 
             node->_parent = comp;
             BTNode* nd = getLastSibling(comp);
@@ -195,6 +203,23 @@ namespace dang
         return std::move(_tree);
     }
 
+    void NTBuilder::preOrderCopy(const BTNode *node)
+    {
+        if (node == nullptr)
+        {
+            return;
+        }
+
+        // copy the node and attach to the tree
+        BTNode* nn = new BTNode(*node);
+        nn->_sibling = nullptr;
+        nn->_child = nullptr;
+        attach(nn);
+
+        preOrderCopy(node->_child);
+
+        preOrderCopy(node->_sibling);
+    }
 
 
 }

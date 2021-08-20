@@ -35,8 +35,8 @@ namespace dang
         /** https://www.geeksforgeeks.org/left-child-right-sibling-representation-tree/ */
         NodeFunction    _process{nullptr};
         BTNode*         _parent{nullptr};
-        BTNode*         _child{nullptr};
-        BTNode*         _sibling{nullptr};
+        BTNode*         _child{nullptr};    // left
+        BTNode*         _sibling{nullptr};  // right
 
         enum class Type : uint8_t
         {

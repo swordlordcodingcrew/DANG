@@ -21,8 +21,9 @@ namespace dang
         NTBuilder& sequence();
         NTBuilder& selector();
         NTBuilder& leaf(LeafFunction func);
+        NTBuilder& tree(const spNTree& tree);
         NTBuilder& end();
-        std::shared_ptr<NTree>  build();
+        spNTree  build();
 
     protected:
         std::shared_ptr<NTree> _tree{nullptr};
@@ -33,6 +34,9 @@ namespace dang
         BTNode* inComposite();
         BTNode* getLastSibling(const BTNode* comp);
         void    attach(BTNode* node);
+
+        // helper function for copying a tree
+        void    preOrderCopy(const BTNode* node);
     };
 
 }
