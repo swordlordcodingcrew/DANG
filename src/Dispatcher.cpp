@@ -66,11 +66,32 @@ namespace dang
 
     void Dispatcher::queueEvent(std::unique_ptr<Event> e)
     {
-        _event_list.push_front(std::move(e));
+        // remove me after push
+        //_event_list_filler.push_front(std::move(e));
+
+        _events.push(std::move(e));
     }
 
     void Dispatcher::publishEvents()
     {
+        for(; !_events.empty(); _events.pop())
+        {
+            const auto& e = _events.front();
+
+            for (std::pair<const uint32_t , _subscriber_wrapper>& pair : _subscribers)
+            {
+                if ((pair.second.filt & e->_filter) > 0)
+                {
+                    pair.second.fn(*e);
+                }
+            }
+        }
+
+        // remove me after push
+
+        /*
+        _event_list.splice_after(_event_list.cbefore_begin(), _event_list_filler);
+
         for (const auto& e : _event_list)
         {
             for (std::pair<const uint32_t , _subscriber_wrapper>& pair : _subscribers)
@@ -90,8 +111,11 @@ namespace dang
 
         if (!_event_list.empty())
         {
+            //_event_list.remove_if([](const std::unique_ptr<Event>& e) { return e->_consumed; });
+
             _event_list.clear();
         }
+         */
     }
 
 }
