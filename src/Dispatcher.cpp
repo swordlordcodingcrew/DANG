@@ -55,8 +55,9 @@ namespace dang
         {
             // do nothing
         }
+        */
         return 0;
-*/    }
+    }
 
     void Dispatcher::removeSubscriber(const std::function<void(Event &)> &fn)
     {
