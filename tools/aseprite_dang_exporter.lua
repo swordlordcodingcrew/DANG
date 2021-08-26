@@ -61,6 +61,7 @@ io.output(f)
 -- set symbol name
 -- todo: choose something sensible here. like file name without path or such
 local symbol_name = outfile
+symbol_name = symbol_name:gsub(".png.h", "")
 if app.params["output_file"] == nil then
     -- this is a bit of a hack, since we assume that if output_file was not set
     -- with a parameter, symbol name will contain a full path otherwise
