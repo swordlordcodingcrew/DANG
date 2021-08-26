@@ -256,7 +256,8 @@ namespace dang
         while (wp == nullptr && iter < 100)
         {
             iter++;
-            uint32_t r = Rand::get(0, start->getNeighbours().size() - 1);
+            // some compilers seem to have a problem otherwise, explicit cast below
+            uint32_t r = Rand::get((uint32_t )0, start->getNeighbours().size() - 1);
             if (start->getNeighbourConnection(r).type != wpc_block)
             {
                 wp = start->getNeighbour(r);
@@ -425,7 +426,8 @@ namespace dang
 
     const Waypoint *SceneGraph::getRandomWaypoint()
     {
-        uint32_t r = Rand::get(0, _waypoints.size()-1);
+        // some compilers seem to have a problem otherwise, explicit cast below
+        uint32_t r = Rand::get((uint32_t )0, _waypoints.size()-1);
 //        size_t r = std::rand() % _waypoints.size();
         size_t i{0};
         const Waypoint* ret{nullptr};
