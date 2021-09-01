@@ -8,6 +8,17 @@
 #include "NTreeState.h"
 #include "NTree.h"
 
+#include "../dang.hpp"
+
+#ifdef DANG_DEBUG_PRINT
+
+#ifdef TARGET_32BLIT_HW
+#include "32blit.hpp"
+#endif
+
+#include <malloc.h>
+#endif
+
 namespace dang
 {
 
@@ -110,7 +121,9 @@ namespace dang
 
     NTBuilder &NTBuilder::tree(const spNTree& tree)
     {
+        BTNode* _pos = _builder_pos;
         preOrderCopy(tree->_root);
+        _builder_pos = _pos;
     }
 
 
@@ -153,6 +166,9 @@ namespace dang
 
     void NTBuilder::attach(BTNode* node)
     {
+//        assert(_builder_pos != nullptr);
+        assert(node != nullptr);
+
         if (_tree->_root == nullptr)   // first node to attach
         {
             _tree->_root = node;
@@ -205,6 +221,8 @@ namespace dang
 
     void NTBuilder::preOrderCopy(const BTNode *node)
     {
+        D_DEBUG_PRINT("NTBuilder, preOrderCopy: copy node (%d)\r\n", mallinfo().uordblks);
+
         if (node == nullptr)
         {
             return;
@@ -212,6 +230,7 @@ namespace dang
 
         // copy the node and attach to the tree
         BTNode* nn = new BTNode(*node);
+        nn->_parent = nullptr;
         nn->_sibling = nullptr;
         nn->_child = nullptr;
         attach(nn);
