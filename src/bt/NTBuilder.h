@@ -37,6 +37,7 @@ namespace dang
 
         // helper function for copying a tree
         void    preOrderCopy(const BTNode* node);
+        BTNode*    preOrderClone(const BTNode* root);
     };
 
 }

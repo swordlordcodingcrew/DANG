@@ -65,7 +65,7 @@ namespace dang
         if (result == 0)
         {
             mod_set = false;
-            D_DEBUG_PRINT("the data is not recognised as a module.")
+            D_DEBUG_PRINT("the data is not recognised as a module.");
         }
         else
         {
