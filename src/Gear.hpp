@@ -29,6 +29,7 @@ namespace dang
 
         void                        addImagesheet(spImagesheet is);
         spImagesheet                getImagesheet(const std::string& name) const;
+        const std::unordered_map<std::string, spImagesheet>& getImageSheets() { return _imagesheets; }
         void                        addNTree(const std::string& name, spNTree tree);
         spNTree                     getNTree(const std::string& name) const;
 
