@@ -121,9 +121,14 @@ namespace dang
 
     NTBuilder &NTBuilder::tree(const spNTree& tree)
     {
-        BTNode* _pos = _builder_pos;
-        preOrderCopy(tree->_root);
-        _builder_pos = _pos;
+//        BTNode* _pos = _builder_pos;
+        BTNode* clone = preOrderClone(tree->_root);
+        attach(clone);
+//        preOrderCopy(tree->_root);
+//        _builder_pos = _pos;
+        D_DEBUG_PRINT("NTBuilder, tree: copy done (%d)\r\n", mallinfo().uordblks);
+
+        return *this;
     }
 
 
@@ -221,12 +226,13 @@ namespace dang
 
     void NTBuilder::preOrderCopy(const BTNode *node)
     {
-        D_DEBUG_PRINT("NTBuilder, preOrderCopy: copy node (%d)\r\n", mallinfo().uordblks);
 
         if (node == nullptr)
         {
+            D_DEBUG_PRINT("NTBuilder, preOrderCopy: empty node (%d)\r\n", mallinfo().uordblks);
             return;
         }
+        D_DEBUG_PRINT("NTBuilder, preOrderCopy: copy node (%d)\r\n", mallinfo().uordblks);
 
         // copy the node and attach to the tree
         BTNode* nn = new BTNode(*node);
@@ -240,5 +246,33 @@ namespace dang
         preOrderCopy(node->_sibling);
     }
 
+
+    /**
+     * make a copy of a tree
+     * inspired: https://www.techcrashcourse.com/2016/06/c-program-to-create-duplicate-binary-tree.html
+     * @param root tree to clone
+     * @return cloned tree
+     */
+
+    BTNode* NTBuilder::preOrderClone(const BTNode *root)
+    {
+        if (root == nullptr)
+        {
+            return nullptr;
+        }
+
+        // copy the node and attach to the tree
+        BTNode* nn = new BTNode(*root);
+        nn->_parent = nullptr;
+        nn->_sibling = nullptr;
+        nn->_child = nullptr;
+
+        /* Recursively create clone of left and right sub tree */
+        nn->_child = preOrderClone(root->_child);
+        nn->_sibling = preOrderClone(root->_sibling);
+        /* Return root of cloned tree */
+        return nn;
+
+    }
 
 }
