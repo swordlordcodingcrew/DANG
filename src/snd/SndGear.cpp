@@ -87,9 +87,12 @@ namespace dang
         if (volume > 1) volume = 1;
         if (volume < 0) volume = 0;
 
+        D_DEBUG_PRINT("SndGear:releaseXM()\r\n");
         releaseXM();
 
-        xm_create_context(&xm_ctx, (const char*)mod, 11025);
+        D_DEBUG_PRINT("SndGear:xm_create_context()\r\n");
+        int ret = xm_create_context(&xm_ctx, (const char*)mod, 11025);
+        D_DEBUG_PRINT("SndGear:xm_create_context return value: %i\r\n", ret);
 
         if (xm_ctx == nullptr)
         {
@@ -176,6 +179,7 @@ namespace dang
 
             if (loop_count < 1)
             {
+                D_DEBUG_PRINT("SndGear:xm_generate_samples()\r\n");
                 xm_generate_samples(xm_ctx, buffer, 32);
 
                 /** Convert the sample data to 16-bit and write it to the buffer */
