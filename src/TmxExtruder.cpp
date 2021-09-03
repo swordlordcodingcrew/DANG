@@ -308,6 +308,33 @@ namespace dang
         return twa;
     }
 
+    spTwAnim TmxExtruder::getAnimation(const spImagesheet &is, const std::string &anim_name, EaseFn ease_cb,
+                                       int32_t loops, bool alternating, uint32_t delay)
+    {
+        if (_level == nullptr)
+        {
+            return nullptr;
+        }
+
+        const tmx_tileanimation* ta = getTileAnimation(is->getName(), anim_name);
+
+        if (ta == nullptr)
+        {
+            return nullptr;
+        }
+
+        std::vector<uint16_t> frame_list;
+        uint32_t duration = 0;
+        for (auto f : ta->frames)
+        {
+            frame_list.push_back(f.tileId);
+            duration += f.duration;
+        }
+
+        spTwAnim twa = std::make_shared<TwAnim>(is, frame_list, duration, ease_cb, loops, alternating, delay);
+        return twa;
+    }
+
     const tmx_tileset* TmxExtruder::getTileset(const std::string &name)
     {
         for (size_t i = 0; i < _level->tilesets_len; i++)
