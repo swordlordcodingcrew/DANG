@@ -37,6 +37,23 @@ namespace dang
     }
 
     /**
+     *
+     * @param indices range of image-indices relating to the imagesheet
+     * @param duration duration of loop.
+     * @param ease ease function
+     * @param loops number of loops
+     * @param alternating if true, the animation will reverse for every second loop
+     * @param delay delay until loop shall start. Is applied for each loop
+     */
+    TwAnim::TwAnim(const spImagesheet is, const std::vector<uint16_t> &indices, uint32_t duration, EaseFn ease_cb,
+                   int32_t loops, bool alternating, uint32_t delay)
+            : Tweenable(duration, ease_cb, loops, alternating, delay)
+    {
+        _indices = indices;
+        _imagesheet = is;
+    }
+
+    /**
      * This function updates the _img_index of the sprite which is stored in _the_object
      *
      * @param time needed for updating the tween
@@ -56,6 +73,18 @@ namespace dang
         }
 
         spr->_img_index = _indices[ind];
+    }
+
+    void TwAnim::init(void *obj)
+    {
+        Tweenable::init(obj);
+
+        if (_imagesheet != nullptr)
+        {
+            assert(obj != nullptr);
+            Sprite* spr = static_cast<Sprite*>(obj);
+            spr->_imagesheet = _imagesheet;
+        }
     }
 
 }
