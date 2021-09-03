@@ -29,63 +29,6 @@ namespace dang
     using spTweenable = std::shared_ptr<Tweenable>;
     using spTwAnim = std::shared_ptr<TwAnim>;
 
-    /**
-         * definition of _type_num of sprites.
-         */
-    enum class SpriteType : int8_t
-    {
-        UNDEFINED = 0,
-
-        // 1 - 9 king and associated stuff to king
-        KING = 1,
-        BUBBLE = 5,
-
-        // 10 - 39 enemies
-        ENEMIES = 10,
-        PIG_NORMAL = 11,
-        NORMAL_PIG_HIVE = 12,
-        PIG_BETTER = 13,
-        PIG_BOX = 14,
-        PIG_BOMB = 15,
-        PIG_CANNON = 16,
-        CANNON = 17,
-        FLYING_CANNONBALL = 18,
-        FLYING_CRATE = 19,
-        FLYING_BOMB = 20,
-        PIG_BOSS = 30,
-        EXPLOSION = 38,
-        ENEMIES_END = 39,
-
-        // 40 - 49 hotrects
-        HOTRECT = 40,
-        HOTRECT_PLATFORM = 41,
-
-        // 50 - 69 coins and rewards in general
-        REWARDS = 50,
-        COIN_SILVER = 51,
-        COIN_GOLD = 52,
-        GEM_BLUE = 53,
-        GEM_GREEN = 54,
-        GEM_RED = 55,
-        POTION_BLUE = 56,
-        POTION_RED = 57,
-        POTION_GREEN = 58,
-        PIG_REWARD = 59,
-        REWARDS_END = 69,
-
-        // 70 - 79 triggers
-        TRIGGERS = 70,
-        ROOM_TRIGGER = 71,
-        WARP_ROOM_TRIGGER = 72,
-        LEVEL_TRIGGER = 73,
-        BOSS_BATTLE_TRIGGER = 74,
-        TRIGGERS_END = 79,
-
-        // 80 - 89 Mood stuff
-        PIG_POOF = 81,
-        CANNON_MUZZLE = 82,
-    };
-
     class Sprite : public std::enable_shared_from_this<Sprite>
     {
     public: // functions
@@ -153,7 +96,7 @@ namespace dang
         int32_t                         _z_order{0};
         uint16_t                        _id{0};    // global
         std::string                     _type_name{""};
-        SpriteType                      _type_num{SpriteType::UNDEFINED};
+        uint8_t                         _type_num{0}; // 0 == undefined
 
     protected:  // variables
 
