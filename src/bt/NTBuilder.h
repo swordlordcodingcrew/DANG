@@ -20,6 +20,7 @@ namespace dang
 
         NTBuilder& sequence();
         NTBuilder& selector();
+        NTBuilder& inverter();
         NTBuilder& leaf(LeafFunction func);
         NTBuilder& tree(const spNTree& tree);
         NTBuilder& end();

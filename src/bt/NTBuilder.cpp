@@ -66,6 +66,15 @@ namespace dang
         return *this;
     }
 
+    NTBuilder &NTBuilder::inverter()
+    {
+        BTNode* node = new BTNode(BTNode::Type::DECORATOR);
+        node->_process = BTNode::inverter;
+        attach(node);
+
+        return *this;
+    }
+
     NTBuilder& NTBuilder::leaf(LeafFunction func)
     {
         BTNode* node = new BTNode(BTNode::Type::LEAF);
