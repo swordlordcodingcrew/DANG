@@ -129,13 +129,6 @@ namespace dang
         const uint16_t tileHeight = 0; // height of tiles
     };
 
-    enum e_tmx_waypoint_type
-    {
-        wp_none = 0x0,
-        wp_bombdepot = 0x1,
-        wp_cratedepot = 0x2
-    };
-
     enum e_tmx_waypoint_connection
     {
         wpc_invalid = 0x00,
