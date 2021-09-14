@@ -82,10 +82,7 @@ namespace dang
 
     void TileLayer::render(const Gear& gear)
     {
-        if (_imagesheet == nullptr)
-        {
-            return;
-        }
+        assert(_imagesheet != nullptr);
 
         if (blit::screen.sprites != _imagesheet->getSurface())
         {

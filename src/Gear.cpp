@@ -45,7 +45,7 @@ namespace dang
     {
         for (spLayer l : _layers)
         {
-            if (l->_visible)
+            if (l->visible())
             {
                 l->render(*this);
             }
@@ -56,7 +56,10 @@ namespace dang
     {
         for (spLayer l : _layers)
         {
-            l->update(dt, *this);
+            if (l->active())
+            {
+                l->update(dt, *this);
+            }
         }
     }
 

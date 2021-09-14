@@ -35,6 +35,10 @@ namespace dang
 
         E_TYPE getType();
 
+        bool visible() const { return _visible; }
+        bool active() const { return _active; }
+
+
     protected:
         E_TYPE  _type{LT_UNDEFINED};
 //        RectF           _size{0, 0, 1, 1};
@@ -44,6 +48,7 @@ namespace dang
         int32_t             _z_order{0};
         std::string         _name{""};
         bool                _visible{true};
+        bool                _active{true};
         const tmx_layer*    _tmx_layer{nullptr};
     };
 
