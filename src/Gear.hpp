@@ -21,45 +21,47 @@ namespace dang
         Gear();
         virtual ~Gear();
 
-        void    initLevel(const tmx_level* lvl, RectF& viewport);
+        void                initLevel(const tmx_level* lvl, RectF& viewport);
 
-        void    update(uint32_t dt);
-        void    render(uint32_t time);
-        BTNode::Status        runNTree(const spCollisionSprite& s) const;
+        void                update(uint32_t dt);
+        void                render(uint32_t time);
+        BTNode::Status      runNTree(const spCollisionSprite& s) const;
 
-        void                        addImagesheet(spImagesheet is);
-        spImagesheet                getImagesheet(const std::string& name) const;
-        const std::unordered_map<std::string, spImagesheet>& getImageSheets() { return _imagesheets; }
-        void                        addNTree(const std::string& name, spNTree tree);
-        spNTree                     getNTree(const std::string& name) const;
+        void                addImagesheet(spImagesheet is);
+        spImagesheet        getImagesheet(const std::string& name) const;
+        void                removeImagesheet(const std::string& name);
+        void                removeImagesheets();
+        const std::unordered_map<std::string, spImagesheet>& getImagesheets() { return _imagesheets; }
 
-        void                        removeImagesheet(const std::string& name);
-        void                        removeImagesheets();
+        void                addNTree(const std::string& name, spNTree tree);
+        spNTree             getNTree(const std::string& name) const;
+        void                removeNTree(const std::string& name);
+        void                removeNTrees();
 
-        void                        removeNTree(const std::string& name);
-        void                        removeNTrees();
+        void                addLayer(spLayer layer);
+        spLayer             getLayerByName(const std::string& name);
+        spLayer             getLayerByTypename(Layer::E_TYPE type);
+        void                removeLayer(const spLayer& layer);
+        void                removeLayers();
+        void                setLayerVisibility(const std::string& name, bool visible);
+        void                setLayersVisibility(bool visible);
+        void                setLayerActive(const std::string& name, bool active);
+        void                setLayersActive(bool active);
 
-        void                        addLayer(spLayer layer);
-        std::shared_ptr<Layer>      getLayerByName(const std::string& name);
-        std::shared_ptr<Layer>      getLayerByTypename(Layer::E_TYPE type);
-        void                        removeLayer(const spLayer& layer);
-        void                        removeLayers();
 
-        RectF       getActiveWorld() const;
-        Vector2F    getActiveWorldSize() const { return _active_world_size; };
-        void        setActiveWorldSize(Vector2F& aws) {_active_world_size = aws; };
-        void        setActiveWorldSize(float w, float h) {_active_world_size.w = w; _active_world_size.h = h; };
+        RectF               getActiveWorld() const;
+        Vector2F            getActiveWorldSize() const { return _active_world_size; };
+        void                setActiveWorldSize(Vector2F& aws) {_active_world_size = aws; };
+        void                setActiveWorldSize(float w, float h) {_active_world_size.w = w; _active_world_size.h = h; };
 
-        RectF  getViewport() const { return _viewport; }
-        void   setViewport(const RectF& vp);
-        void   setViewportPos(const Vector2F& pos);
-
-        void   follow(const Vector2F& dest);
+        RectF               getViewport() const { return _viewport; }
+        void                setViewport(const RectF& vp);
+        void                setViewportPos(const Vector2F& pos);
+        void                follow(const Vector2F& dest);
 
         RectF  getWorld() const { return _world;}
         void   setWorld(const RectF& world) {_world = world; };
 
-        const std::unordered_map<std::string, spImagesheet>& getImagesheets() { return _imagesheets; };
 
     protected:
 

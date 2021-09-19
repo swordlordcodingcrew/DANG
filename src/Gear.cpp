@@ -176,12 +176,60 @@ namespace dang
         _layers.clear();
     }
 
+    void Gear::setLayerVisibility(const std::string &name, bool visible)
+    {
+        auto layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
+        {
+            return (val->_name == name);
+        });
+
+        assert(layer_it != _layers.end());
+
+        (*layer_it)->_visible = visible;
+    }
+
+    void Gear::setLayersVisibility(bool visible)
+    {
+        for (auto& lit : _layers)
+        {
+            (*lit)._visible = visible;
+        }
+    }
+
+    void Gear::setLayerActive(const std::string &name, bool active)
+    {
+        auto layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
+        {
+            return (val->_name == name);
+        });
+
+        assert(layer_it != _layers.end());
+
+        (*layer_it)->_active = active;
+
+    }
+
+    void Gear::setLayersActive(bool active)
+    {
+        for (auto& lit : _layers)
+        {
+            (*lit)._active = active;
+        }
+
+    }
+
     spLayer Gear::getLayerByName(const std::string &name)
     {
         auto layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
         {
             return (val->_name == name);
         });
+
+        if (layer_it == _layers.end())
+        {
+            return nullptr;
+        }
+
         return (*layer_it);
     }
 
@@ -191,6 +239,12 @@ namespace dang
         {
             return (val->getType() == type);
         });
+
+        if (layer_it == _layers.end())
+        {
+            return nullptr;
+        }
+
         return (*layer_it);
     }
 
