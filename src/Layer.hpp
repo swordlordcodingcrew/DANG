@@ -38,6 +38,8 @@ namespace dang
         bool visible() const { return _visible; }
         bool active() const { return _active; }
 
+        void setVisibility(bool visible) { _visible = visible; }
+        void setActive(bool active) { _active = active; }
 
     protected:
         E_TYPE  _type{LT_UNDEFINED};
