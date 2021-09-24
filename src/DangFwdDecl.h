@@ -61,6 +61,8 @@ namespace dang
     using spSprite = std::shared_ptr<Sprite>;
     class Layer;
     using spLayer = std::shared_ptr<Layer>;
+    class MessageLayer;
+    using spMessageLayer = std::shared_ptr<MessageLayer>;
     class Event;
     class Dispatcher;
 
