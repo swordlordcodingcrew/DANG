@@ -9,7 +9,6 @@
 #include <32blit.hpp>
 
 #include <algorithm>
-#include <src/bt/bt.hpp>
 
 #include <iostream>
 

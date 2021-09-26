@@ -6,7 +6,6 @@
 #include "dang.hpp"
 #include "Vector2T.hpp"
 #include "RectT.hpp"
-#include "bt/bt.hpp"
 #include "bt/NTreeState.h"
 
 #include <list>
