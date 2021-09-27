@@ -11,8 +11,6 @@
 
 #pragma once
 
-#define DANG_DEBUG_PRINT
-
 #ifdef DANG_DEBUG_PRINT
 #ifdef TARGET_32BLIT_HW
         #define D_DEBUG_PRINT(...) blit::debugf(__VA_ARGS__)

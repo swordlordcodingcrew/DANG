@@ -5,6 +5,9 @@ project(dang)
 set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# if you want to see dang debug info drawn, enable this
+#add_definitions(-DDANG_DEBUG_PRINT)
+
 set(SOURCES
         src/dang.hpp
         src/path/SceneGraph.cpp
@@ -17,8 +20,6 @@ set(SOURCES
         src/bt/NTree.h
         src/bt/NTreeState.cpp
         src/bt/NTreeState.h
-#        src/bt/bt.cpp
-#        src/bt/bt.hpp
         src/tween/Tweenable.cpp
         src/tween/Tweenable.hpp
         src/tween/Ease.cpp
@@ -79,7 +80,11 @@ set(SOURCES
         src/snd/xm/play.c
         src/snd/xm/xm.h
         src/snd/xm/xm_internal.h
-        src/bt/NTBuilder.cpp src/bt/NTBuilder.h src/DangFwdDecl.h src/Rand.cpp src/Rand.hpp)
+        src/bt/NTBuilder.cpp
+        src/bt/NTBuilder.h
+        src/DangFwdDecl.h
+        src/Rand.cpp
+        src/Rand.hpp)
 
 add_library(DANG STATIC ${SOURCES} )
 
