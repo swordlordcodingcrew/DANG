@@ -9,17 +9,14 @@
 #include "CollisionSprite.hpp"
 #include "Gear.hpp"
 
+
+#ifdef DANG_DEBUG_DRAW
 #ifdef TARGET_32BLIT_HW
 #include "32blit.hpp"
 #include <malloc.h>
 #include "../../../fonts/hud_font_small.h"
 extern char _sbss, _end, __ltdc_start;
 #endif
-
-#ifdef DANG_DEBUG_DRAW
-#include "32blit.hpp"
-#include "../../../fonts/hud_font_small.h"
-
 #endif
 
 namespace dang
@@ -632,7 +629,92 @@ namespace dang
 
         }
             return dx_target;
-//        return (dx_target > 0) ? 1 : -1;
+    }
+
+    /**
+     * General Line-of-Sight (LoS).
+     * As eyes the center of the viewer's hotrect is used. To keep the algo simple, the destination is also
+     * a point (center of hotrect). Like that the calulation is reduced to check if the line segment me - target
+     * intersects with another hotrect.
+     * See answer of Alejo in https://stackoverflow.com/questions/99353/how-to-test-if-a-line-segment-intersects-an-axis-aligned-rectange-in-2d
+     * meaning:
+     * The original poster wanted to DETECT an intersection between a line segment and a polygon. There was no need to LOCATE the intersection, if there is one. If that's how you meant it, you can do less work than Liang-Barsky or Cohen-Sutherland:
+     *
+     * Let the segment endpoints be p1=(x1 y1) and p2=(x2 y2).
+     * Let the rectangle's corners be (xBL yBL) and (xTR yTR).
+     *
+     * Then all you have to do is
+     *
+     * A. Check if all four corners of the rectangle are on the same side of the line. The implicit equation for a line through p1 and p2 is:
+     *
+     * F(x y) = (y2-y1)*x + (x1-x2)*y + (x2*y1-x1*y2)
+     *
+     * If F(x y) = 0, (x y) is ON the line.
+     * If F(x y) > 0, (x y) is "above" the line.
+     * If F(x y) < 0, (x y) is "below" the line.
+     *
+     * Substitute all four corners into F(x y). If they're all negative or all positive, there is no intersection. If some are positive and some negative, go to step B.
+     *
+     * B. Project the endpoint onto the x axis, and check if the segment's shadow intersects the polygon's shadow. Repeat on the y axis:
+     *
+     * If (x1 > xTR and x2 > xTR), no intersection (line is to right of rectangle).
+     * If (x1 < xBL and x2 < xBL), no intersection (line is to left of rectangle).
+     * If (y1 > yTR and y2 > yTR), no intersection (line is above rectangle).
+     * If (y1 < yBL and y2 < yBL), no intersection (line is below rectangle).
+     * else, there is an intersection. Do Cohen-Sutherland or whatever code was mentioned in the other answers to your question.
+     *
+     * You can, of course, do B first, then A.
+     *
+     * @param me the viewer
+     * @param target the point to be seen or not
+     * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
+     */
+    float CollisionSpriteLayer::loS(const spCollisionSprite me, const spCollisionSprite target)
+    {
+        Vector2F p1 = me->getHotrectAbs().center();
+        Vector2F p2 = target->getHotrectAbs().center();
+        bool    intersection{false};
+
+        for (const spSprite& spr : _active_sprites)
+        {
+            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>(spr);
+
+            if (other == nullptr)
+            {
+                continue;
+            }
+
+            if ((me == other)
+                || (target == other)
+                || (me->getCollisionResponse(other) == CR_NONE || other->getCollisionResponse(me) == CR_NONE))
+            {
+                continue;
+            }
+
+            RectF r = other->getHotrectAbs();
+            float f_tl = (p2.y - p1.y) * r.tl().x + (p1.x - p2.x) * r.tl().y + (p2.x *p1.y - p1.x * p2.y);
+            float f_tr = (p2.y - p1.y) * r.tr().x + (p1.x - p2.x) * r.tr().y + (p2.x *p1.y - p1.x * p2.y);
+            float f_bl = (p2.y - p1.y) * r.bl().x + (p1.x - p2.x) * r.bl().y + (p2.x *p1.y - p1.x * p2.y);
+            float f_br = (p2.y - p1.y) * r.br().x + (p1.x - p2.x) * r.br().y + (p2.x *p1.y - p1.x * p2.y);
+
+            if ((f_tl > 0 && f_tr > 0 && f_bl > 0 && f_br > 0) || (f_tl < 0 && f_tr < 0 && f_bl < 0 && f_br < 0))
+            {
+                // no intersection, go to next sprite
+                continue;
+            }
+
+            if (p1.x > r.right() && p2.x > r.right()) { continue; }   // no intersection (line is to right of rectangle).
+            if (p1.x < r.left() && p2.x < r.left()) { continue; }   // no intersection (line is to left of rectangle).
+            if (p1.y > r.bottom() && p2.y > r.bottom()) { continue; }   // no intersection (line is below rectangle).
+            if (p1.y < r.top() && p2.y < r.top()) { continue; }     // no intersection (line is below rectangle).
+
+            // there is an intersection -> target not visible
+            return 0;
+        }
+
+        float dist = p1.distance(p2);
+        return p2.x >= p1.x ? -dist : dist;
+
     }
 
 

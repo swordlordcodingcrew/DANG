@@ -82,6 +82,7 @@ namespace dang
         void    render(const Gear& gear) override;
 
         float   aaLoSH(const spCollisionSprite me, const spCollisionSprite target);
+        float   loS(const spCollisionSprite me, const spCollisionSprite target);
 
     protected:
 
