@@ -9,9 +9,12 @@
 #include "bt/BTNode.h"
 #include "RectT.hpp"
 
+#include <32blit.hpp>
+
 #include <unordered_map>
 #include <forward_list>
 #include <memory>
+#include <functional>
 
 namespace dang
 {
@@ -62,6 +65,8 @@ namespace dang
         RectF  getWorld() const { return _world;}
         void   setWorld(const RectF& world) {_world = world; };
 
+        void fade(const blit::Pen &col, uint8_t fade_step, const std::function<void(void)>& cb);
+        bool fading() const { return _fade_overlay; }
 
     protected:
 
@@ -73,6 +78,21 @@ namespace dang
         RectF       _world{0,0,0,0};    // size of the world
         RectF       _viewport{0,0,0,0};     // part of world to be drawn
         Vector2F    _active_world_size{0,0}; // center equals to center of viewport. sprite within active world will be updated and - if in viewport - drawnd
+
+        // fading params & funcs
+        bool        _fade_overlay{false};
+        blit::Pen   _fade_colour{0,0, 0, 0};
+        uint8_t     _fade_step{8};
+        std::function<void (void)> _faded_cb{nullptr};
+        void        fadeForward();
+        enum FADE_STATE : uint8_t
+        {
+            NONE,
+            FADE_TO_COL,
+            FADE_TO_TRANS,
+            END_OF_FADE
+        };
+        FADE_STATE _fade_state{NONE};
 
     };
 }

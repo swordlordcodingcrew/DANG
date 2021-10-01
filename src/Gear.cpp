@@ -50,6 +50,13 @@ namespace dang
                 l->render(*this);
             }
         }
+
+        if (_fade_overlay)
+        {
+            blit::screen.pen = _fade_colour;
+            blit::screen.rectangle({0,0, blit::screen.bounds.w, blit::screen.bounds.h});
+        }
+
     }
 
     void Gear::update(uint32_t dt)
@@ -60,6 +67,11 @@ namespace dang
             {
                 l->update(dt, *this);
             }
+        }
+
+        if (_fade_overlay)
+        {
+            fadeForward();
         }
     }
 
@@ -301,6 +313,67 @@ namespace dang
 
         setViewportPos(pos);
 
+    }
+
+    void Gear::fade(const blit::Pen &col, uint8_t fade_step, const std::function<void (void)>& cb)
+    {
+        if (_fade_overlay)
+        {
+            // already fading
+            return;
+        }
+
+        _fade_overlay = true;
+        _fade_step = fade_step > 0 ? fade_step : 8;
+        _fade_colour = col;
+        _fade_colour.a = 0;
+        _faded_cb = cb;
+        _fade_state = NONE;
+
+    }
+
+    void Gear::fadeForward()
+    {
+        switch (_fade_state)
+        {
+            case NONE:
+            {
+                _fade_state = FADE_TO_COL;
+                break;
+            }
+            case FADE_TO_COL:
+            {
+                if (_fade_colour.a < 255)
+                {
+                    _fade_colour.a = _fade_colour.a + _fade_step > 255 ? 255 : _fade_colour.a + _fade_step;
+                }
+                else
+                {
+                    if (_faded_cb)
+                    {
+                        _faded_cb();
+                    }
+                    _fade_state = FADE_TO_TRANS;
+                }
+                break;
+            }
+            case FADE_TO_TRANS:
+            {
+                if (_fade_colour.a > 0)
+                {
+                    _fade_colour.a = _fade_colour.a - _fade_step < 0 ? 0 : _fade_colour.a - _fade_step;
+                }
+                else
+                {
+                    _fade_state = END_OF_FADE;
+                    _fade_overlay = false;
+                    _fade_step = 8;
+                    _fade_colour = {0,0,0, 0};
+                    _faded_cb = nullptr;
+                }
+                break;
+            }
+        }
     }
 
 }
