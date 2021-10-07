@@ -77,13 +77,12 @@ namespace dang
 
     void TwAnim::init(void *obj)
     {
-        Tweenable::init(obj);
-
         if (_imagesheet != nullptr)
         {
             assert(obj != nullptr);
             Sprite* spr = static_cast<Sprite*>(obj);
             spr->_imagesheet = _imagesheet;
+            spr->_img_index = _indices[0];
         }
     }
 
