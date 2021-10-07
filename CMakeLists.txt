@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 17)
 # if you want to see dang debug info drawn, enable this
 #add_definitions(-DDANG_DEBUG_PRINT)
 
+add_compile_options("-Wextra" "-Wdouble-promotion" "-fexceptions" "-Wattributes")
+
 set(SOURCES
         src/dang.hpp
         src/path/SceneGraph.cpp
