@@ -379,7 +379,7 @@ namespace dang
         const Waypoint* ret{nullptr};
         for (const auto& sp : _waypoints)
         {
-            if (sp.second.getType() == type)
+            if (sp.second.getType() & type)
             {
                 ret = &(sp.second);
                 break;
