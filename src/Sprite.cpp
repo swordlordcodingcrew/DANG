@@ -59,6 +59,7 @@ namespace dang
         _img_index = so->tile;
         _imagesheet = is;
         _last_pos = _pos;
+        _z_order = so->z_order;
 
         if(so->transform.test(0))
         {

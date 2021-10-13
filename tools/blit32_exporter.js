@@ -346,12 +346,18 @@ function export32Blit(map, fileName) {
                         sBT = o.property("bt");
                     }
 
+                    zOrder = 0;
+                    if (o.property("z_order") != undefined)
+                    {
+                        zOrder = o.property("z_order");
+                    }
+
                     var sTransform = "0b0"; // this is prefix and bit 3
                     sTransform += o.FlippedAntiDiagonally ? "1" : "0"; // not sure that one works...
                     sTransform += o.tileFlippedVertically ? "1" : "0";
                     sTransform += o.tileFlippedHorizontally ? "1" : "0";
 
-                    buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + ",\"" + sBT + "\"," + sTransform + "}";
+                    buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + ",\"" + sBT + "\"," + zOrder + "," + sTransform + "}";
 
                     // add separator except at the end
                     if (j < objects.length - 1)

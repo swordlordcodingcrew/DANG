@@ -72,6 +72,7 @@ namespace dang
         const std::string tileset;
         const uint16_t tile;
         const std::string bt; // behaviour tree name
+        const int16_t z_order;
 
         // transformation flags
         // reserved         x000
