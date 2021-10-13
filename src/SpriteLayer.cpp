@@ -190,4 +190,32 @@ namespace dang
             });
     }
 
+    void SpriteLayer::removeSpritesByTypeNum(uint8_t type_num)
+    {
+        for (auto it = _active_sprites.begin(); it != _active_sprites.end(); )
+        {
+            if ((*it)->_type_num == type_num)
+            {
+                it = _active_sprites.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+        for (auto it = _inactive_sprites.begin(); it != _inactive_sprites.end(); )
+        {
+            if ((*it)->_type_num == type_num)
+            {
+                it = _inactive_sprites.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+    }
+
 }
