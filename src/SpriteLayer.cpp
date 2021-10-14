@@ -117,11 +117,18 @@ namespace dang
 #ifdef DANG_DEBUG
             std::cout << "merge active:" << splice_list.size() << std::endl;
 #endif
-            _active_sprites.merge(splice_list, [] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
+
+            _active_sprites.merge(splice_list);
+            _active_sprites.sort([] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
+                 {
+                     return first->_z_order < second->_z_order;
+                 });
+
+/*            _active_sprites.merge(splice_list, [] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
             {
                 return first->_z_order < second->_z_order;
             });
-        }
+*/        }
 
     }
 
@@ -217,5 +224,20 @@ namespace dang
         }
 
     }
+
+    void SpriteLayer::sortSprites()
+    {
+        _inactive_sprites.sort([](const spSprite & first, const spSprite & second)
+            {
+                return first->_z_order < second->_z_order;
+            });
+
+        _active_sprites.sort([](const spSprite & first, const spSprite & second)
+            {
+                return first->_z_order < second->_z_order;
+            });
+
+    }
+
 
 }

@@ -29,6 +29,7 @@ namespace dang
         virtual void    removeSpriteById(uint16_t id);
         virtual spSprite    getSpriteById(uint16_t id);
         virtual void    removeSpritesByTypeNum(uint8_t type_num);
+        void            sortSprites();
 
     protected:
         explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};
