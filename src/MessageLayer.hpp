@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <functional>
+#include <engine/input.hpp>
 
 namespace dang
 {
@@ -23,7 +24,8 @@ namespace dang
         void    render(const Gear& gear) override;
 
         void    setText(const std::string_view& txt);
-        void    setTtl(uint32_t ttl_ms, std::function<void (void)> cb);
+        void    setTtl(uint32_t ttl_ms, std::function<void (blit::Button btn)> cb);
+        void    setButtons(blit::Button ok, blit::Button cancel);
 
     protected:
         MessageLayer();
@@ -33,10 +35,12 @@ namespace dang
         blit::Rect _whitishRect{0,0,0,0};
 
         uint32_t _ttl{0};
-        std::function<void (void)> _ttl_cb{nullptr};
+        std::function<void (blit::Button)> _ttl_cb{nullptr};
 
         uint32_t _start_ms{0};
 
+        blit::Button _ok{blit::Button::X};
+        blit::Button _cancel{blit::Button::Y};
     };
 
 }

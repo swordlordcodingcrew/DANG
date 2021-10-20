@@ -24,11 +24,11 @@ namespace dang
 
     void MessageLayer::update(uint32_t dt, const Gear &gear)
     {
-        if (blit::buttons.pressed & blit::Button::B)
+        if (blit::buttons.pressed & (_ok | _cancel))
         {
             if (_ttl_cb != nullptr)
             {
-                _ttl_cb();
+                _ttl_cb(blit::buttons.pressed & _ok ? _ok : _cancel);
             }
         }
 
@@ -36,7 +36,7 @@ namespace dang
         {
             if (_ttl_cb != nullptr)
             {
-                _ttl_cb();
+                _ttl_cb(_cancel);
             }
         }
     }
@@ -82,11 +82,17 @@ namespace dang
         _whitishRect = {34, 26, blit::screen.bounds.w - 68, int32_t(8 + _text.size() * 10) };
     }
 
-    void MessageLayer::setTtl(uint32_t ttl_ms, std::function<void (void)> cb)
+    void MessageLayer::setTtl(uint32_t ttl_ms, std::function<void (blit::Button btn)> cb)
     {
         _start_ms = blit::now();
         _ttl = ttl_ms;
         _ttl_cb = cb;
+    }
+
+    void MessageLayer::setButtons(blit::Button ok, blit::Button cancel)
+    {
+        _ok = ok;
+        _cancel = cancel;
     }
 
 
