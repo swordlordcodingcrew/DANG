@@ -34,15 +34,19 @@ namespace dang
     void SpriteLayer::render(const Gear &gear)
     {
         RectF vp = gear.getViewport();
+        int32_t vpx = std::floor(vp.tl().x);
+        int32_t vpy = std::floor(vp.tl().y);
 
         for (std::shared_ptr<Sprite>& spr : _active_sprites)
         {
             if (spr->_visible && spr->_imagesheet != nullptr)
             {
-                RectF dr = vp.intersection(spr->getSizeRect());
-                if (dr.area() != 0)
+//                RectF dr = vp.intersection(spr->getSizeRect());
+//                if (dr.area() != 0)
+                if (vp.intersects(spr->getSizeRect()))
                 {
-                    if (blit::screen.sprites != spr->_imagesheet->getSurface())
+                    spr->render(vpx, vpy);
+/*                    if (blit::screen.sprites != spr->_imagesheet->getSurface())
                     {
                         blit::screen.sprites = spr->_imagesheet->getSurface();
                     }
@@ -53,7 +57,7 @@ namespace dang
 //                    blit::Point dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
 
                     blit::screen.blit_sprite(spr->getBlitRect(), dp, spr->_transform);
-                }
+*/                }
             }
         }
     }

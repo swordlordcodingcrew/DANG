@@ -51,6 +51,7 @@ namespace dang
         void coreUpdate(uint32_t dt);
 
         virtual void update(uint32_t dt);
+        virtual void render(int32_t vpx, int32_t vpy);
 
         // simple image
         void setImagesheet(std::shared_ptr<Imagesheet> is) { _imagesheet = is; }

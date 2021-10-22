@@ -157,6 +157,14 @@ namespace dang
         return RectF(_pos.x, _pos.y, _size.x, _size.y);
     }
 
+    void Sprite::render(int32_t vpx, int32_t vpy)
+    {
+        blit::screen.sprites = _imagesheet->getSurface();
+        blit::Point dp;
+        dp.x  = int32_t(std::floor(_pos.x) - vpx);
+        dp.y  = int32_t(std::floor(_pos.y) - vpy);
+        blit::screen.blit_sprite(getBlitRect(), dp, _transform);
+    }
 
     void Sprite::setAnimation(spTweenable twa)
     {
@@ -186,5 +194,6 @@ namespace dang
         blit::Rect sr = _imagesheet->getBlitRect(_img_index);
         return sr;
     }
+
 
 }
