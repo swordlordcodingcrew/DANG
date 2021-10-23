@@ -10,6 +10,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_compile_options("-Wextra" "-Wdouble-promotion" "-fexceptions" "-Wattributes")
 
+#add_subdirectory(src/snd/xmp_lite_4_5_0)
+
 set(SOURCES
         src/dang.hpp
         src/path/SceneGraph.cpp
@@ -89,6 +91,7 @@ set(SOURCES
         src/Rand.hpp)
 
 add_library(DANG STATIC ${SOURCES} )
+#target_link_libraries(DANG xmp_lite)
 
 # make sure to link the 32blit supplied stdlibs when compiling for the 32blit HW
 # variable pic_stdlibs is set by the 32blit cmake configuration

@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <vector>
 #include "32blit.hpp"
+//#include "src/snd/xmp_lite_4_5_0/xmp.h"
 
 extern "C"
 {
@@ -27,6 +28,8 @@ namespace dang
         static void playXM(const uint8_t* mod, uint32_t len, float volume);
         static void stopXM();
 
+        static void playSnd(const uint8_t* mod, uint32_t len, float volume);
+        static void stopSnd();
 
     protected:
 
@@ -50,6 +53,9 @@ namespace dang
         };
 
     protected:
+        /** xmp stuff */
+//        static xmp_context _ctx;
+
         /** mod stuff */
         static float clip(float value);
         static pocketmod_context mod_ctx;
