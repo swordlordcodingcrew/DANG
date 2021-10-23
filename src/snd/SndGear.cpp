@@ -159,10 +159,13 @@ namespace dang
                 channel.wave_buffer[2*i + 1] = output1;
             }
 
+            // Mods are looped for now
+            /*
             if (pocketmod_loop_count(&mod_ctx) > 0)
             {
                 stopMod();
             };
+             */
         }
         else
         {
