@@ -14,10 +14,10 @@ namespace dang
 {
     bool SndGear::mod_set = false;
     bool SndGear::xm_set = false;
+    bool SndGear::_xmp_set = false;
     uint8_t SndGear::chan = 0;
     pocketmod_context SndGear::mod_ctx;
     xm_context_t* SndGear::xm_ctx;
-    //xmp_context SndGear::_ctx;
     std::vector<SndGear::sfx_struct> SndGear::_sfx_container(7, {nullptr, 0, 0, 0, 0});
 
 
@@ -234,33 +234,6 @@ namespace dang
         value = value < -1.0f ? -1.0f : value;
         value = value > +1.0f ? +1.0f : value;
         return value;
-    }
-
-    void SndGear::playSnd(const uint8_t *mod, uint32_t len, float volume)
-    {
-/*        if (volume > 1) volume = 1;
-        if (volume < 0) volume = 0;
-
-        D_DEBUG_PRINT("SndGear: free context\r\n");
-//        xmp_free_context(_ctx);
-
-        D_DEBUG_PRINT("SndGear:xmp_create_context()\r\n");
-        _ctx = xmp_create_context();
-*/
-/*        if (xm_ctx == nullptr)
-        {
-            xm_set = false;
-            D_DEBUG_PRINT("the data is not recognised as an xm module.");
-        }
-        else
-        {
-            xm_set = true;
-            blit::channels[dang::SndGear::getMusicChan()].waveforms = blit::Waveform::WAVE; // Set type to WAVE
-            blit::channels[dang::SndGear::getMusicChan()].wave_buffer_callback = &SndGear::xm_buff_cb;  // Set callback address
-            blit::channels[dang::SndGear::getMusicChan()].volume = volume * 0xffff;
-            blit::channels[dang::SndGear::getMusicChan()].trigger_attack();
-        }
-*/
     }
 
 

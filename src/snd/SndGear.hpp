@@ -7,7 +7,6 @@
 #include <cstdint>
 #include <vector>
 #include "32blit.hpp"
-//#include "src/snd/xmp_lite_4_5_0/xmp.h"
 
 extern "C"
 {
@@ -28,9 +27,6 @@ namespace dang
         static void playXM(const uint8_t* mod, uint32_t len, float volume);
         static void stopXM();
 
-        static void playSnd(const uint8_t* mod, uint32_t len, float volume);
-        static void stopSnd();
-
     protected:
 
         static void sfx_buff_cb(blit::AudioChannel &channel);
@@ -42,6 +38,7 @@ namespace dang
 
         static bool mod_set;
         static bool xm_set;
+        static bool _xmp_set;
 
         struct sfx_struct
         {
@@ -53,9 +50,6 @@ namespace dang
         };
 
     protected:
-        /** xmp stuff */
-//        static xmp_context _ctx;
-
         /** mod stuff */
         static float clip(float value);
         static pocketmod_context mod_ctx;
