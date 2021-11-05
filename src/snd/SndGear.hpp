@@ -23,6 +23,7 @@ namespace dang
         static uint8_t playSfx(const uint8_t* sfx, const uint32_t len, float volume);
         static void playMod(const uint8_t* mod, const uint32_t len, float volume);
         static void stopMod();
+        static void changeModVolume(float volume);
 
         static void playXM(const uint8_t* mod, uint32_t len, float volume);
         static void stopXM();

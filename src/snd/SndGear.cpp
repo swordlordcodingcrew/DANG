@@ -78,6 +78,17 @@ namespace dang
         }
     }
 
+    void SndGear::changeModVolume(float volume)
+    {
+        if (volume > 1) volume = 1;
+        if (volume < 0) volume = 0;
+
+        if (mod_set)
+        {
+            blit::channels[dang::SndGear::getMusicChan()].volume = volume * 0xffff;
+        }
+    }
+
     void SndGear::playXM(const uint8_t *mod, uint32_t len, float volume)
     {
         if (mod_set)
