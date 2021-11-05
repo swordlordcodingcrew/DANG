@@ -28,6 +28,9 @@ namespace dang
         static void playXM(const uint8_t* mod, uint32_t len, float volume);
         static void stopXM();
 
+        static void playRumble(const uint8_t len);
+        static void updateRumble();
+
     protected:
 
         static void sfx_buff_cb(blit::AudioChannel &channel);
@@ -40,6 +43,8 @@ namespace dang
         static bool mod_set;
         static bool xm_set;
         static bool _xmp_set;
+
+        static uint8_t _rumbleLen;
 
         struct sfx_struct
         {

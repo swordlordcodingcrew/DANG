@@ -15,6 +15,7 @@ namespace dang
     bool SndGear::mod_set = false;
     bool SndGear::xm_set = false;
     bool SndGear::_xmp_set = false;
+    uint8_t SndGear::_rumbleLen = 0;
     uint8_t SndGear::chan = 0;
     pocketmod_context SndGear::mod_ctx;
     xm_context_t* SndGear::xm_ctx;
@@ -247,5 +248,28 @@ namespace dang
         return value;
     }
 
+    void SndGear::playRumble(const uint8_t len)
+    {
+        if(_rumbleLen > len)
+        {
+            return;
+        }
+        else
+        {
+            _rumbleLen = len;
+        }
+    }
 
+    void SndGear::updateRumble()
+    {
+        if(_rumbleLen > 0)
+        {
+            _rumbleLen--;
+            blit::vibration = 0.6f;
+        }
+        else
+        {
+            blit::vibration = 0;
+        }
+    }
 }

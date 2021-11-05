@@ -14,6 +14,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <src/snd/SndGear.hpp>
 //#include <iostream>
 
 namespace dang
@@ -61,6 +62,9 @@ namespace dang
 
     void Gear::update(uint32_t dt)
     {
+        // let it rumble
+        SndGear::updateRumble();
+
         for (spLayer l : _layers)
         {
             if (l->active())
