@@ -3,26 +3,30 @@
 
 #pragma once
 
+#include "DangFwdDecl.h"
+#include "RectT.hpp"
+#include "tween/Ease.hpp"
+
 #include <unordered_map>
 #include <forward_list>
 #include <vector>
 #include <memory>
-#include "tween/Ease.hpp"
+#include <bitset>
 
 namespace dang
 {
-    class Imagesheet;
 
     struct tmx_tileset
     {
-        std::string name; // this name is the reference to the image
-        uint16_t tileCount;
-        uint16_t tileWidth;
-        uint16_t tileHeight;
-        uint16_t imageWidth;
-        uint16_t imageHeight;
-        uint16_t cols;
-        uint16_t rows;
+        const std::string name; // this name is the reference to the image
+        const image_import* image;  // ref to image
+        const uint16_t tileCount;
+        const uint16_t tileWidth;
+        const uint16_t tileHeight;
+        const uint16_t imageWidth;
+        const uint16_t imageHeight;
+        const uint16_t cols;
+        const uint16_t rows;
 
         /*
         TODO: to be considered
@@ -35,39 +39,47 @@ namespace dang
 
     struct tmx_tile
     {
-        uint16_t id;
-        uint16_t tileset;
+        const uint16_t id;
+//        const uint16_t tileset;
         // 32blit transform code
-        uint8_t transform;
+        const uint8_t transform;
     };
 
     struct tmx_frame
     {
-        uint16_t tileId; // relative to the tileset
-        uint16_t duration;
+        const uint16_t tileId; // relative to the tileset
+        const uint16_t duration;
     };
 
     struct tmx_tileanimation
     {
-        std::string tileset; // reference to the tileset id
-        uint16_t tile; // reference to the tile
-        std::string name; // name of the animation to be referenced in the source
-        std::vector<tmx_frame> frames;
+        const std::string tileset; // reference to the tileset id
+        const uint16_t tile; // reference to the tile
+        const std::string name; // name of the animation to be referenced in the source
+        const std::vector<tmx_frame> frames;
     };
 
     struct tmx_spriteobject
     {
-        uint16_t id; // global
-        std::string name;
-        std::string type;
-        //std::string shape;
-        int32_t x;
-        int32_t y;
-        int32_t width;
-        int32_t height;
-        bool visible;
-        uint16_t tileset;
-        uint16_t tile;
+        const uint16_t id; // global
+        const std::string name;
+        const std::string type;
+        const int32_t x;
+        const int32_t y;
+        const int16_t width;
+        const int16_t height;
+        const bool visible;
+        const std::string tileset;
+        const uint16_t tile;
+        const std::string bt; // behaviour tree name
+        const int16_t z_order;
+
+        // transformation flags
+        // reserved         x000
+        // antidiag         0x00 (probably not working)
+        // vertically       00x0
+        // horizontally     000x
+        const std::bitset<4> transform; // flip vertical, horizontal
 
         /*
         // TODO: to be considered
@@ -78,8 +90,6 @@ namespace dang
         textAlignment : Alignment 	The alignment of a text object.
         wordWrap : bool 	Whether the text of a text object wraps based on the width of the object.
         textColor : color 	Color of a text object.
-        tileFlippedHorizontally : bool 	Whether the tmx_tile is flipped horizontally.
-        tileFlippedVertically : bool 	Whether the tmx_tile is flipped vertically.
         */
     };
 
@@ -88,81 +98,84 @@ namespace dang
 
     struct tmx_layer
     {
-        std::string name;
-        float opacity;
-        bool visible;
-        uint8_t type; // 0 = tmx_tile, 1 = objects
+        const std::string name;
+        const uint8_t type; // 0 = tmx_tile, 1 = objects
+        const float opacity;
+        const bool visible;
+        const uint8_t z_order;   // the z-order of the layers
+
+        // tile layer vars
+        const uint8_t tl_width;
+        const uint8_t tl_height;
+        const std::string tl_tileset;
+        const tmx_tile* tl_tiles;
+        const size_t tl_tiles_len;
+
+        // object layer vars
+        const tmx_spriteobject* spriteobjects;
+        const size_t spriteobejcts_len;
+
         // TODO: to be considered
         //offset : point 	Offset in pixels that is applied when this tmx_layer is rendered.
-        //z_order : uint    the z-order of the layers
         //map : TileMap 	Map that this tmx_layer is part of (or null in case of a standalone tmx_layer).
-    };
-
-
-    struct tmx_tilelayer : tmx_layer
-    {
-        uint8_t width;
-        uint8_t height;
-        std::vector<tmx_tile> tiles;
-
-        tmx_tilelayer(std::string n, uint32_t size, tmx_tile _tiles[], uint8_t w, uint8_t h) : tmx_layer()
-        {
-            name = n;
-            width = w;
-            height = h;
-            type = 0;
-            tiles.assign(_tiles, _tiles + size);
-        };
-    };
-
-    struct tmx_objectlayer : tmx_layer
-    {
-        std::vector<tmx_spriteobject> so;
-
-        tmx_objectlayer(std::string n, uint16_t size, tmx_spriteobject _so[]) : tmx_layer()
-        {
-            name = n;
-            type = 1;
-            so.assign(_so, _so + size);
-        };
-
-        tmx_objectlayer(tmx_spriteobject _so) : tmx_layer()
-        {
-            type = 1;
-            so.push_back(_so);
-        };
     };
 
 
     struct tmx_world
     {
-        uint16_t width = 0; // width in tiles
-        uint16_t height = 0; // height in tiles
+        const uint16_t width = 0; // width in tiles
+        const uint16_t height = 0; // height in tiles
 
-        uint16_t tileWidth = 0; // width of tiles
-        uint16_t tileHeight = 0; // height of tiles
+        const uint16_t tileWidth = 0; // width of tiles
+        const uint16_t tileHeight = 0; // height of tiles
+    };
+
+    enum e_tmx_waypoint_connection
+    {
+        wpc_invalid = 0x00,
+        wpc_walk = 0x01,
+        wpc_jump = 0x02,
+        wpc_warp = 0x04,
+        wpc_block = 0x08
+    };
+
+    struct tmx_waypoint
+    {
+        const uint32_t id;
+        const float x;
+        const float y;
+        const uint8_t type;     // see enum tmx_waypoint_type
+    };
+
+    struct tmx_waypoint_connection
+    {
+        const uint32_t waypoint_start_id;
+        const uint32_t waypoint_goal_id;
+        const uint8_t connection_type;     // see enum tmx_waypoint_connection
     };
 
     struct tmx_level
     {
-        tmx_world w;
+        const tmx_world* w;
+        const tmx_tileset* tilesets;
+        const size_t tilesets_len;
 
-        /**
-         * lookup-table for the spritesheets / imagesheets.
-         * Loading the image must be done on a per level base in the game
-         * further info such as cols and rows is stored in the tileset with the same name
-         */
-        std::unordered_map<std::string, const uint8_t*> images;
-        std::unordered_map<uint8_t, tmx_tileset> tilesets;
-        std::unordered_map<std::string, tmx_tileanimation> tileanimation;
+        const tmx_tileanimation* tileanimations;
+        const size_t tileanimations_len;
 
-        std::vector<std::shared_ptr<tmx_layer>> layers;
+        const tmx_layer* layers;
+        const size_t layers_len;
+
+        const tmx_waypoint* waypoints;
+        const size_t waypoints_len;
+
+        const tmx_waypoint_connection* waypoint_connections;
+        const size_t waypoint_connections_len;
+
+/*        std::vector<std::shared_ptr<tmx_layer>> layers;
 
         // TODO: sprites should know on which tmx_layer they belong...
         std::forward_list<std::shared_ptr<tmx_spriteobject>> sprites;
-
-//        bool debug = false;
-
 
         std::shared_ptr<tmx_spriteobject> addSprite(tmx_spriteobject* s)
         {
@@ -171,23 +184,7 @@ namespace dang
 
             return s_p;
         }
-    };
-
-    // forward declarations
-    class Layer;
-    class SpriteLayer;
-    class CollisionSpriteLayer;
-    class TileLayer;
-    class Gear;
-    class TwAnim;
-
-    // using aliases
-    using spLayer = std::shared_ptr<Layer>;
-    using spSpriteLayer = std::shared_ptr<SpriteLayer>;
-    using spCollisionSpriteLayer = std::shared_ptr<CollisionSpriteLayer>;
-    using spTileLayer = std::shared_ptr<TileLayer>;
-    using spImagesheet = std::shared_ptr<Imagesheet>;
-    using spTwAnim = std::shared_ptr<TwAnim>;
+*/    };
 
 
     /**
@@ -198,25 +195,28 @@ namespace dang
 
     public:
         TmxExtruder() = default;
-        explicit TmxExtruder(tmx_level* lvl);
+        explicit TmxExtruder(const tmx_level* lvl, Gear* gear);
         ~TmxExtruder() = default;
 
         spImagesheet            getImagesheet(const std::string& name);
-        void                    getImagesheets(Gear& gear);
+        void                    getImagesheets();
 
-        spSpriteLayer           getSpriteLayer(const std::string& name, Gear& gear, bool addSprites, bool addToGear);
-        spCollisionSpriteLayer  getCollisionSpriteLayer(const std::string& name, Gear& gear, bool addSprites, bool addToGear);
-        spTileLayer             getTileLayer(const std::string& name, Gear& gear, bool addToGear);
+        spSpriteLayer           getSpriteLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations);
+        spCollisionSpriteLayer  getCollisionSpriteLayer(const std::string& name, bool addSprites, bool addToGear);
+        void                    fillHUDLayer(spBaseHUDLayer  layer, const std::string& name, bool addSprites, bool addToGear);
+        spTileLayer             getTileLayer(const std::string& name, bool addToGear);
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
+        spTwAnim                getAnimation(const spImagesheet &is, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
+        void                    createSceneGraphs(RectF& room_extent, std::vector<dang::spSceneGraph>& scene_graphs);
 
-        const std::vector<tmx_spriteobject>& getSOList(spSpriteLayer sl);
+        const tmx_layer* getTmxLayer(const std::string &name);
+        const tmx_tileset*  getTileset(const std::string &name);
+        const tmx_tileanimation* getTileAnimation(const std::string &tileset, const std::string& name);
 
-        const std::shared_ptr<tmx_objectlayer>     getTmxObjectLayer(const std::string &name);
-        const std::shared_ptr<tmx_tilelayer>     getTmxTileLayer(const std::string &name);
-
+        dang::Gear*  _gear{nullptr};
 
     protected:
-        tmx_level*  _level{nullptr};
+        const tmx_level*  _level{nullptr};
     };
 
 }

@@ -1,4 +1,4 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-21 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
 #include <algorithm>
@@ -7,23 +7,6 @@
 
 namespace dang
 {
-
-/*    void Dispatcher::publishEvent(Event &e)
-    {
-        for (std::pair<const unsigned int, _subscriber_wrapper>& pair : _subscribers)
-        {
-            if ((pair.second.filt & e._filter) > 0)
-            {
-                pair.second.fn(e);
-
-                if (e._consumend)
-                {
-                    break; // for-loop
-                }
-            }
-        }
-    }
-*/
     void Dispatcher::removeSubscriber(uint32_t index)
     {
         _subscribers.erase(index);
@@ -55,8 +38,9 @@ namespace dang
         {
             // do nothing
         }
+        */
         return 0;
-*/    }
+    }
 
     void Dispatcher::removeSubscriber(const std::function<void(Event &)> &fn)
     {
@@ -66,29 +50,22 @@ namespace dang
 
     void Dispatcher::queueEvent(std::unique_ptr<Event> e)
     {
-        _event_list.push_front(std::move(e));
+        _events.push(std::move(e));
     }
 
     void Dispatcher::publishEvents()
     {
-        for (const auto& e : _event_list)
+        for(; !_events.empty(); _events.pop())
         {
+            const auto& e = _events.front();
+
             for (std::pair<const uint32_t , _subscriber_wrapper>& pair : _subscribers)
             {
                 if ((pair.second.filt & e->_filter) > 0)
                 {
                     pair.second.fn(*e);
-
-                    if (e->_consumend)
-                    {
-                        break; // for-loop
-                    }
                 }
             }
-
         }
-
-        _event_list.clear();
     }
-
 }

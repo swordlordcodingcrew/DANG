@@ -26,10 +26,10 @@ namespace dang
 #endif
     }
 
-    CollisionSprite::CollisionSprite(const tmx_spriteobject &so, const std::shared_ptr<Imagesheet> is)
+    CollisionSprite::CollisionSprite(const tmx_spriteobject* so, const spImagesheet& is)
     : Sprite(so, is)
     {
-        _hotrect = {0, 0, float(so.width), float(so.height)};
+        _hotrect = {0, 0, float(so->width), float(so->height)};
     }
 
 
@@ -84,7 +84,7 @@ namespace dang
         }
     }
 
-    CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(std::shared_ptr<dang::Sprite> other)
+    CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(const spCollisionSprite& other)
     {
         return _coll_response;
     }
@@ -94,6 +94,15 @@ namespace dang
 
     }
 
+    void CollisionSprite::setNTreeState(std::shared_ptr<NTreeState> ts)
+    {
+        _nTreeState = move(ts);
+    }
+
+    std::shared_ptr<NTreeState>& CollisionSprite::getNTreeState()
+    {
+        return _nTreeState;
+    }
 
 
 }

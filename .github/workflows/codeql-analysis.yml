@@ -25,10 +25,12 @@ jobs:
         # a pull request then we can checkout the head.
         fetch-depth: 2
 
-    # If this run was triggered by a pull request event, then checkout
-    # the head of the pull request instead of the merge commit.
-    - run: git checkout HEAD^2
-      if: ${{ github.event_name == 'pull_request' }}
+      # Check out the 32Blit API so headers files can be found
+    - name: Checkout 32Blit API
+      uses: actions/checkout@v2
+      with:
+        repository: 32blit/32blit-sdk
+        path: 32blit-sdk
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -36,6 +38,12 @@ jobs:
       # Override language selection by uncommenting this and choosing your languages
       # with:
       #   languages: go, javascript, csharp, python, cpp, java
+
+    - run: |
+        pwd
+        ls -alh
+        ls -alh ..
+
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)

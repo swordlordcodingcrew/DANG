@@ -28,6 +28,14 @@ do
   FILENAME=${ARR[-1]}
 
 #  python3 -m ttblit --debug  pack --force --config ${CMAKE_CURRENT_SOURCE_DIR}/${FILE} --output ${CMAKE_CURRENT_BINARY_DIR}
-  python3 -m ttblit image --input_file $SOURCE --input_type image --output_file rsrc/$FILENAME.h --output_format c_header --symbol_name $NAME
-  echo "rsrc/$FILENAME.h"
+
+  #PALETTEFILE=$(echo "$SOURCE" | sed 's/.png/.gpl/')
+  #if [ -f "$PALETTEFILE" ]; then
+
+    # switched to our own aseprite exporter
+    ~/dev/apps/aseprite/aseprite -b -v $SOURCE -script-param symbol_name=$NAME -script-param output_file=rsrc/gfx/$FILENAME.h -script ~/.config/aseprite/scripts/aseprite_dang_exporter.lua
+    #~/data/development/aseprite/build/bin/aseprite -b -v $SOURCE -script-param symbol_name=$NAME -script-param output_file=rsrc/gfx/$FILENAME.h -script ~/.config/aseprite/scripts/aseprite_dang_exporter.lua
+    #python3 -m ttblit image --input_file $SOURCE --input_type image --output_file rsrc/gfx/$FILENAME.h --output_format c_header --symbol_name $NAME --force
+    echo "rsrc/gfx/$FILENAME.h"
+
 done

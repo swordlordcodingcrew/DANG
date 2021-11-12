@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <assert.h>
+#include <32blit.hpp>
 #include "dang.hpp"
 #include "TileLayer.hpp"
 #include "Gear.hpp"
@@ -47,17 +48,24 @@ namespace dang
      * @param tilelayer from the tmx level
      * @param is imagesheet containing all tile images. Multiple imagesheets is not supported
      */
-    TileLayer::TileLayer(const tmx_tileset &tileset, std::shared_ptr<tmx_tilelayer> ttl, std::shared_ptr<Imagesheet> is, const RectF &vp)
+    TileLayer::TileLayer(const tmx_tileset* tileset, const tmx_layer* ttl, std::shared_ptr<Imagesheet> is, const RectF &vp)
             : Layer(Layer::LT_TILELAYER)
     {
-        _tiles = ttl->tiles;
+        // the tiles are copied to the vector
+        for (size_t i = 0; i < ttl->tl_tiles_len; i++)
+        {
+            const tmx_tile* tile = ttl->tl_tiles + i;
+            _tiles.emplace_back(*tile);
+//            _tiles = ttl->tiles;
+        }
+
         _imagesheet = is;
 
-        _tilesize.w = tileset.tileWidth;
-        _tilesize.h = tileset.tileHeight;
+        _tilesize.w = tileset->tileWidth;
+        _tilesize.h = tileset->tileHeight;
 
-        _worldsize_tu.w = ttl->width;
-        _worldsize_tu.h = ttl->height;
+        _worldsize_tu.w = ttl->tl_width;
+        _worldsize_tu.h = ttl->tl_height;
         _worldsize.w = _worldsize_tu.w * _tilesize.w;
         _worldsize.h = _worldsize_tu.h * _tilesize.h;
 
@@ -74,17 +82,13 @@ namespace dang
 
     void TileLayer::render(const Gear& gear)
     {
-        if (_imagesheet == nullptr)
+        assert(_imagesheet != nullptr);
+
+        if (blit::screen.sprites != _imagesheet->getSurface())
         {
-            return;
+            blit::screen.sprites = _imagesheet->getSurface();
         }
 
-        gear.set_surface_cb(_imagesheet);
-/*        if (blit::screen.sprites != _imagesheet.get())
-        {
-            blit::screen.sprites = _imagesheet.get();
-        }
-*/
         PointF vp = gear.getViewport().tl();
         PointU vp_tu{0,0};
         vp_tu.x = int32_t(vp.x) / _tilesize.x;
@@ -94,21 +98,16 @@ namespace dang
         vp_end_tu.x = std::min(vp_end_tu.x, _worldsize_tu.w-1);
         vp_end_tu.y = std::min(vp_end_tu.y, _worldsize_tu.h-1);
 
-        for (int32_t x = vp_tu.x; x <= vp_end_tu.x; x++)
+        for (uint32_t x = vp_tu.x; x <= vp_end_tu.x; x++)
         {
-            for (int32_t y = vp_tu.y; y <= vp_end_tu.y; y++)
+            for (uint32_t y = vp_tu.y; y <= vp_end_tu.y; y++)
             {
                 size_t index = x + (y * _worldsize_tu.w);
                 dang::tmx_tile t = _tiles.at(index);
 
-/*                uint8_t transform = (t.isFlippedHorizontally ? blit::SpriteTransform::HORIZONTAL : uint8_t(0)) |
-                                    (t.isFlippedVertically ? blit::SpriteTransform::VERTICAL : uint8_t(0)) |
-                                    (t.isFlippedAntiDiagonally ? blit::SpriteTransform::XYSWAP : uint8_t(0));
-*/
-                Vector2I  dp(x * _tilesize.w - int32_t(vp.x), y * _tilesize.h - int32_t(vp.y));
-                gear.blit_sprite_cb(_imagesheet->getRect(t.id), dp, t.transform);
-//                blit::Point p(x * _tilesize.w - int32_t(vp.x), y * _tilesize.h - int32_t(vp.y));
-//                blit::screen.blit_sprite(_imagesheet->getRect(t.id), p, transform);
+                blit::Point  dp(x * _tilesize.w - int32_t(std::floor(vp.x)), y * _tilesize.h - int32_t(std::floor(vp.y)));
+                blit::screen.blit_sprite(_imagesheet->getBlitRect(t.id), dp, t.transform);
+
             }
         }
     }

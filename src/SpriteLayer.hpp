@@ -9,6 +9,8 @@
 
 namespace dang
 {
+    class Sprite;
+
     using spSprite = std::shared_ptr<Sprite>;
 
     class SpriteLayer : public Layer
@@ -20,10 +22,14 @@ namespace dang
         void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
+        virtual spSprite    getSpriteByType(const std::string& name);
+
         virtual void    addSprite(spSprite spr);
         virtual void    removeSprite(spSprite spr);
         virtual void    removeSpriteById(uint16_t id);
         virtual spSprite    getSpriteById(uint16_t id);
+        virtual void    removeSpritesByTypeNum(uint8_t type_num);
+        void            sortSprites();
 
     protected:
         explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};

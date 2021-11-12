@@ -61,6 +61,16 @@ namespace dang
             return p.x >= x && p.y >= y && p.x < x + w && p.y < y + h;
         }
 
+        bool containsH(const Vector2T<T> &p) const
+        {
+            return p.x >= x && p.x < x + w;
+        }
+
+        bool containsV(const Vector2T<T> &p) const
+        {
+            return p.y >= y && p.y < y + h;
+        }
+
         bool contains(const RectT<T> &r) const
         {
             return r.x >= x && r.y >= y && r.x + r.w < x + w && r.y + r.h < y + h;
@@ -148,6 +158,26 @@ namespace dang
         Vector2T<T> center() const
         {
             return Vector2T<T>(x + w / 2, y + h / 2);
+        }
+
+        T top() const
+        {
+            return y;
+        }
+
+        T bottom() const
+        {
+            return y + h;
+        }
+
+        T left() const
+        {
+            return x;
+        }
+
+        T right() const
+        {
+            return x + w;
         }
     };
 

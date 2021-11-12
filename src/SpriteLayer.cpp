@@ -2,6 +2,7 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
+#include <32blit.hpp>
 #include "Gear.hpp"
 #include "SpriteLayer.hpp"
 #include "Sprite.hpp"
@@ -33,20 +34,30 @@ namespace dang
     void SpriteLayer::render(const Gear &gear)
     {
         RectF vp = gear.getViewport();
+        int32_t vpx = std::floor(vp.tl().x);
+        int32_t vpy = std::floor(vp.tl().y);
 
         for (std::shared_ptr<Sprite>& spr : _active_sprites)
         {
             if (spr->_visible && spr->_imagesheet != nullptr)
             {
-                RectF dr = vp.intersection(spr->getSizeRect());
-                if (dr.area() != 0)
+//                RectF dr = vp.intersection(spr->getSizeRect());
+//                if (dr.area() != 0)
+                if (vp.intersects(spr->getSizeRect()))
                 {
-                    gear.set_surface_cb(spr->_imagesheet);
-                    RectU sr = spr->_imagesheet->getRect(spr->_img_index);
-                    Vector2F vec = spr->getPos() - vp.tl();
-                    Vector2I dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
-                    gear.blit_sprite_cb(sr, dp, spr->_transform);
-                }
+                    spr->render(vpx, vpy);
+/*                    if (blit::screen.sprites != spr->_imagesheet->getSurface())
+                    {
+                        blit::screen.sprites = spr->_imagesheet->getSurface();
+                    }
+                    blit::Point dp;
+                    dp.x  = int32_t(std::floor(spr->getPos().x) - std::floor(vp.tl().x));
+                    dp.y  = int32_t(std::floor(spr->getPos().y) - std::floor(vp.tl().y));
+
+//                    blit::Point dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
+
+                    blit::screen.blit_sprite(spr->getBlitRect(), dp, spr->_transform);
+*/                }
             }
         }
     }
@@ -110,13 +121,46 @@ namespace dang
 #ifdef DANG_DEBUG
             std::cout << "merge active:" << splice_list.size() << std::endl;
 #endif
-            _active_sprites.merge(splice_list, [] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
+
+            _active_sprites.merge(splice_list);
+            _active_sprites.sort([] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
+                 {
+                     return first->_z_order < second->_z_order;
+                 });
+
+/*            _active_sprites.merge(splice_list, [] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
             {
                 return first->_z_order < second->_z_order;
             });
-        }
+*/        }
 
     }
+
+    spSprite SpriteLayer::getSpriteByType(const std::string& name)
+    {
+        auto ret = std::find_if(_active_sprites.begin(), _active_sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
+        {
+            return first->_type_name == name;
+        });
+
+        if (ret != _active_sprites.end())
+        {
+            return (*ret);
+        }
+
+        ret = std::find_if(_inactive_sprites.begin(), _inactive_sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
+        {
+            return first->_type_name == name;
+        });
+
+        if (ret != _inactive_sprites.end())
+        {
+            return (*ret);
+        }
+
+        return nullptr;
+    }
+
 
     spSprite SpriteLayer::getSpriteById(uint16_t id)
     {
@@ -136,7 +180,7 @@ namespace dang
                 return first->_id == id;
             });
 
-        if (ret != _active_sprites.end())
+        if (ret != _inactive_sprites.end())
         {
             return (*ret);
         }
@@ -156,5 +200,48 @@ namespace dang
                 return spr->_id == id;
             });
     }
+
+    void SpriteLayer::removeSpritesByTypeNum(uint8_t type_num)
+    {
+        for (auto it = _active_sprites.begin(); it != _active_sprites.end(); )
+        {
+            if ((*it)->_type_num == type_num)
+            {
+                it = _active_sprites.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+        for (auto it = _inactive_sprites.begin(); it != _inactive_sprites.end(); )
+        {
+            if ((*it)->_type_num == type_num)
+            {
+                it = _inactive_sprites.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+    }
+
+    void SpriteLayer::sortSprites()
+    {
+        _inactive_sprites.sort([](const spSprite & first, const spSprite & second)
+            {
+                return first->_z_order < second->_z_order;
+            });
+
+        _active_sprites.sort([](const spSprite & first, const spSprite & second)
+            {
+                return first->_z_order < second->_z_order;
+            });
+
+    }
+
 
 }

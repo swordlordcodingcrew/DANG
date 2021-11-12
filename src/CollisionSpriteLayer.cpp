@@ -2,10 +2,22 @@
 // This file is part of the DANG game framework
 
 #include <iostream>
+#include <sstream>
+#include <malloc.h>
 #include "CollisionSpriteLayer.hpp"
 #include "Sprite.hpp"
 #include "CollisionSprite.hpp"
 #include "Gear.hpp"
+
+
+#ifdef DANG_DEBUG_DRAW
+#ifdef TARGET_32BLIT_HW
+#include "32blit.hpp"
+#include <malloc.h>
+#include "../../../fonts/hud_font_small.h"
+extern char _sbss, _end, __ltdc_start;
+#endif
+#endif
 
 namespace dang
 {
@@ -29,10 +41,18 @@ namespace dang
         // then call update
         for (spSprite& spr : _active_sprites)
         {
-            if (gear.getActiveWorld().intersects(spr->getSizeRect()))
+            spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            if (cspr->getNTreeState() != nullptr)
             {
-                spr->update(dt);
+                gear.runNTree(cspr);
+
+#ifdef DANG_DEBUG
+                std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::NTreeState::internal_state>>(cspr->getNTreeState()->_internal_state) << " and node position: " << cspr->getNTreeState()->_node << std::endl;
+#endif
             }
+
+            // call update of sprite
+            spr->update(dt);
         }
 
     }
@@ -43,8 +63,36 @@ namespace dang
 
 #ifdef DANG_DEBUG_DRAW
 
+    #ifdef TARGET_32BLIT_HW
+        // show memory stats
+        auto static_used = &_end - &_sbss;
+        auto heap_total = &__ltdc_start - &_end;
+        auto heap_used = mallinfo().uordblks;
+
+        auto total_ram = static_used + heap_total;
+
+        blit::screen.pen = blit::Pen(255, 0, 255, 255);
+        char buf[100];
+        snprintf(buf, sizeof(buf), "Mem: %i + %i / %i", static_used, heap_used, total_ram);
+        blit::screen.text(buf, hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
+    #else
+
+        // show amount of sprites and memory used
+/*        std::stringstream stats;
+
+        stats << "active: " << _active_sprites.size() << " inactive: " << _inactive_sprites.size() << " heap: " << mallinfo().uordblks;
+        blit::screen.text(stats.str(), hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
+
+        if (_dbg_mem < mallinfo().uordblks)
+        {
+            _dbg_mem = mallinfo().uordblks;
+            std::cout << "CSL.render() " << stats.str() << std::endl;
+        }
+*/
+        // show hotrects
         RectF vp = gear.getViewport();
 
+        blit::screen.pen = blit::Pen(0, 0, 255, 255);
         for (std::shared_ptr<Sprite>& spr : _active_sprites)
         {
             RectF dr = vp.intersection(spr->getSizeRect());
@@ -56,19 +104,19 @@ namespace dang
                 hr.x -= vp.tl().x;
                 hr.y -= vp.tl().y;
 
-                Vector2I tl(int32_t(hr.tl().x), int32_t(hr.tl().y));
-                Vector2I bl(int32_t(hr.bl().x), int32_t(hr.bl().y));
-                Vector2I br(int32_t(hr.br().x), int32_t(hr.br().y));
-                Vector2I tr(int32_t(hr.tr().x), int32_t(hr.tr().y));
+                blit::Point tl(int32_t(hr.tl().x), int32_t(hr.tl().y));
+                blit::Point bl(int32_t(hr.bl().x), int32_t(hr.bl().y));
+                blit::Point br(int32_t(hr.br().x), int32_t(hr.br().y));
+                blit::Point tr(int32_t(hr.tr().x), int32_t(hr.tr().y));
 
-                gear.line_cb(tl, bl, 0, 0, 255, 255); // left -> bottom
-                gear.line_cb(bl, br, 0, 0, 255, 255); // bottom -> right
-                gear.line_cb(br, tr, 0, 0, 255, 255); // right -> top
-                gear.line_cb(tr, tl, 0, 0, 255, 255); // top -> left
+                blit::screen.line(tl, bl); // left -> bottom
+                blit::screen.line(bl, br); // bottom -> right
+                blit::screen.line(br, tr); // right -> top
+                blit::screen.line(tr, tl); // top -> left
             }
         }
+        #endif
 #endif
-
     }
 
     // called on every move of every sprite
@@ -513,6 +561,159 @@ namespace dang
         // or co-linear and not intersecting
         // or not intersecting
         return std::numeric_limits<float>::infinity();
+
+    }
+
+    /**
+     * Axis Aligned Line-of-Sight (aaLoS). The calculation is done on the horizontal axis (the H).
+     * as eyes the center of the viewer's hotrect is used
+     * @param the viewer
+     * @param target the point to be seen or not
+     * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
+     */
+    float CollisionSpriteLayer::aaLoSH(const spCollisionSprite me, const spCollisionSprite target)
+    {
+        Vector2F me_p = me->getHotrectAbs().center();
+        RectF target_hr = target->getHotrectAbs();
+
+        // target too high / too low, ergo not visible
+        if (me_p.y > target_hr.bottom() || me_p.y < target_hr.top())
+        {
+            return 0;
+        }
+
+        float dx_target = std::min(me_p.x - target_hr.left(), me_p.x - target_hr.right());
+
+        for (const spSprite &spr : _active_sprites)
+        {
+            const spCollisionSprite obst = std::dynamic_pointer_cast<CollisionSprite>(spr);
+
+            // me and target are not obstacles per se
+            if (spr == me || spr == target)
+            {
+                continue;
+            }
+
+            // this is rather a philosophical condition. Might be removed
+            if (obst->getCollisionResponse(me) == eCollisionResponse::CR_NONE)
+            {
+                continue;
+            }
+
+            // obstacle too high / too low, ergo not an obstacle
+            if (me_p.y > obst->getHotrectAbs().bottom() || me_p.y < obst->getHotrectAbs().top())
+            {
+                continue;
+            }
+
+            float dx_obst = std::min(me_p.x - obst->getHotrectAbs().left(), me_p.x - obst->getHotrectAbs().right());
+
+            if (dx_obst * dx_target < 0) // if not the same sign (not both obstacle and target on the left or both on the right), no obstacle
+            {
+                continue;
+            }
+            else if (dx_obst < 0) // both on the left side
+            {
+                if (dx_obst > dx_target)    // negative numbers: distance to obstacle greater than targer -> obstacle
+                {
+                    return 0;
+                }
+            }
+            else   // both on the rigt side
+            {
+                if (dx_obst < dx_target)    // distance to obstacle smaller than targer -> obstacle
+                {
+                    return 0;
+                }
+            }
+
+        }
+            return dx_target;
+    }
+
+    /**
+     * General Line-of-Sight (LoS).
+     * As eyes the center of the viewer's hotrect is used. To keep the algo simple, the destination is also
+     * a point (center of hotrect). Like that the calulation is reduced to check if the line segment me - target
+     * intersects with another hotrect.
+     * See answer of Alejo in https://stackoverflow.com/questions/99353/how-to-test-if-a-line-segment-intersects-an-axis-aligned-rectange-in-2d
+     * meaning:
+     * The original poster wanted to DETECT an intersection between a line segment and a polygon. There was no need to LOCATE the intersection, if there is one. If that's how you meant it, you can do less work than Liang-Barsky or Cohen-Sutherland:
+     *
+     * Let the segment endpoints be p1=(x1 y1) and p2=(x2 y2).
+     * Let the rectangle's corners be (xBL yBL) and (xTR yTR).
+     *
+     * Then all you have to do is
+     *
+     * A. Check if all four corners of the rectangle are on the same side of the line. The implicit equation for a line through p1 and p2 is:
+     *
+     * F(x y) = (y2-y1)*x + (x1-x2)*y + (x2*y1-x1*y2)
+     *
+     * If F(x y) = 0, (x y) is ON the line.
+     * If F(x y) > 0, (x y) is "above" the line.
+     * If F(x y) < 0, (x y) is "below" the line.
+     *
+     * Substitute all four corners into F(x y). If they're all negative or all positive, there is no intersection. If some are positive and some negative, go to step B.
+     *
+     * B. Project the endpoint onto the x axis, and check if the segment's shadow intersects the polygon's shadow. Repeat on the y axis:
+     *
+     * If (x1 > xTR and x2 > xTR), no intersection (line is to right of rectangle).
+     * If (x1 < xBL and x2 < xBL), no intersection (line is to left of rectangle).
+     * If (y1 > yTR and y2 > yTR), no intersection (line is above rectangle).
+     * If (y1 < yBL and y2 < yBL), no intersection (line is below rectangle).
+     * else, there is an intersection. Do Cohen-Sutherland or whatever code was mentioned in the other answers to your question.
+     *
+     * You can, of course, do B first, then A.
+     *
+     * @param me the viewer
+     * @param target the point to be seen or not
+     * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
+     */
+    float CollisionSpriteLayer::loS(const spCollisionSprite me, const spCollisionSprite target)
+    {
+        Vector2F p1 = me->getHotrectAbs().center();
+        Vector2F p2 = target->getHotrectAbs().center();
+        bool    intersection{false};
+
+        for (const spSprite& spr : _active_sprites)
+        {
+            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>(spr);
+
+            if (other == nullptr)
+            {
+                continue;
+            }
+
+            if ((me == other)
+                || (target == other)
+                || (me->getCollisionResponse(other) == CR_NONE || other->getCollisionResponse(me) == CR_NONE))
+            {
+                continue;
+            }
+
+            RectF r = other->getHotrectAbs();
+            float f_tl = (p2.y - p1.y) * r.tl().x + (p1.x - p2.x) * r.tl().y + (p2.x *p1.y - p1.x * p2.y);
+            float f_tr = (p2.y - p1.y) * r.tr().x + (p1.x - p2.x) * r.tr().y + (p2.x *p1.y - p1.x * p2.y);
+            float f_bl = (p2.y - p1.y) * r.bl().x + (p1.x - p2.x) * r.bl().y + (p2.x *p1.y - p1.x * p2.y);
+            float f_br = (p2.y - p1.y) * r.br().x + (p1.x - p2.x) * r.br().y + (p2.x *p1.y - p1.x * p2.y);
+
+            if ((f_tl > 0 && f_tr > 0 && f_bl > 0 && f_br > 0) || (f_tl < 0 && f_tr < 0 && f_bl < 0 && f_br < 0))
+            {
+                // no intersection, go to next sprite
+                continue;
+            }
+
+            if (p1.x > r.right() && p2.x > r.right()) { continue; }   // no intersection (line is to right of rectangle).
+            if (p1.x < r.left() && p2.x < r.left()) { continue; }   // no intersection (line is to left of rectangle).
+            if (p1.y > r.bottom() && p2.y > r.bottom()) { continue; }   // no intersection (line is below rectangle).
+            if (p1.y < r.top() && p2.y < r.top()) { continue; }     // no intersection (line is below rectangle).
+
+            // there is an intersection -> target not visible
+            return 0;
+        }
+
+        float dist = p1.distance(p2);
+        return p2.x >= p1.x ? -dist : dist;
 
     }
 

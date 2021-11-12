@@ -6,9 +6,17 @@
 #include "dang.hpp"
 #include "Vector2T.hpp"
 #include "RectT.hpp"
+#include "bt/NTreeState.h"
 
 #include <list>
 #include <memory>
+
+
+// forward declaration
+namespace blit
+{
+    struct Rect;
+}
 
 namespace dang
 {
@@ -25,7 +33,7 @@ namespace dang
     public: // functions
         Sprite();
         Sprite(const Sprite& sp);
-        Sprite(const tmx_spriteobject& so, std::shared_ptr<Imagesheet> is);
+        Sprite(const tmx_spriteobject* so, const spImagesheet& is);
         virtual ~Sprite();
 
         // tween stuff
@@ -41,12 +49,15 @@ namespace dang
 
         void updateTweens(uint32_t dt);
         void coreUpdate(uint32_t dt);
+
         virtual void update(uint32_t dt);
+        virtual void render(int32_t vpx, int32_t vpy);
 
         // simple image
         void setImagesheet(std::shared_ptr<Imagesheet> is) { _imagesheet = is; }
         void setSize(SizeF& s) {_size = s; }
         void setSize(float w, float h) {_size.w = w; _size.h = h; }
+        blit::Rect getBlitRect();
 
         // pos, vel, acc, gravity
         Vector2F    getPos() { return _pos; }
@@ -77,7 +88,6 @@ namespace dang
         uint8_t     getTransform() const { return _transform; }
         RectF       getSizeRect();      // return size of sprite
 
-
     public: // variables
         bool                            _visible{true};
         uint16_t                        _img_index{0};  // index to the image of the imagesheet. (equals tmx_tile of tmx_spriteobject?)
@@ -85,8 +95,8 @@ namespace dang
         uint8_t                         _transform{0};      // transform for blitting
         int32_t                         _z_order{0};
         uint16_t                        _id{0};    // global
-        std::string                     _type{""};
-        int32_t                         _type_num{0};
+        std::string                     _type_name{""};
+        uint8_t                         _type_num{0}; // 0 == undefined
 
     protected:  // variables
 

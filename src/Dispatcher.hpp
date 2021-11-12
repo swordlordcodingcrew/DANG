@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <forward_list>
 #include <functional>
+#include <queue>
 
 namespace dang
 {
@@ -43,7 +44,8 @@ namespace dang
 
         std::unordered_map<uint32_t, _subscriber_wrapper> _subscribers;
         uint32_t _index{0};
-        std::forward_list<std::unique_ptr<Event>> _event_list;
+
+        std::queue<std::unique_ptr<Event>> _events;
     };
 
 }

@@ -2,11 +2,28 @@ cmake_minimum_required(VERSION 3.8)
 project(dang)
 
 # specify the C++ standard
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# if you want to see dang debug info drawn, enable this
+#add_definitions(-DDANG_DEBUG_PRINT)
+
+add_compile_options("-Wextra" "-Wdouble-promotion" "-fexceptions" "-Wattributes")
+
+#add_subdirectory(src/snd/xmp_lite_4_5_0)
 
 set(SOURCES
         src/dang.hpp
+        src/path/SceneGraph.cpp
+        src/path/SceneGraph.hpp
+        src/path/Waypoint.cpp
+        src/path/Waypoint.hpp
+        src/bt/BTNode.cpp
+        src/bt/BTNode.h
+        src/bt/NTree.cpp
+        src/bt/NTree.h
+        src/bt/NTreeState.cpp
+        src/bt/NTreeState.h
         src/tween/Tweenable.cpp
         src/tween/Tweenable.hpp
         src/tween/Ease.cpp
@@ -21,6 +38,11 @@ set(SOURCES
         src/tween/TwVel.hpp
         src/tween/TwAcc.cpp
         src/tween/TwAcc.hpp
+        src/tween/TwAccX.cpp
+        src/tween/TwAccY.cpp
+        src/tween/TwAccY.hpp
+        src/tween/TwVelY.cpp
+        src/tween/TwVelY.hpp
         src/tween/TwSequence.cpp
         src/tween/TwSequence.hpp
         src/Imagesheet.cpp
@@ -35,8 +57,14 @@ set(SOURCES
         src/TileLayer.hpp
         src/SpriteLayer.cpp
         src/SpriteLayer.hpp
+        src/SimpleImageLayer.cpp
+        src/SimpleImageLayer.hpp
+        src/MessageLayer.cpp
+        src/MessageLayer.hpp
         src/CollisionSpriteLayer.cpp
         src/CollisionSpriteLayer.hpp
+        src/BaseHUDLayer.cpp
+        src/BaseHUDLayer.hpp
         src/Vector2T.hpp
         src/RectT.hpp
         src/CollisionSprite.cpp
@@ -51,9 +79,14 @@ set(SOURCES
         src/snd/SndGear.cpp
         src/snd/SndGear.hpp
         src/snd/wave.h
-)
+        src/bt/NTBuilder.cpp
+        src/bt/NTBuilder.h
+        src/DangFwdDecl.h
+        src/Rand.cpp
+        src/Rand.hpp)
 
 add_library(DANG STATIC ${SOURCES} )
+#target_link_libraries(DANG xmp_lite)
 
 # make sure to link the 32blit supplied stdlibs when compiling for the 32blit HW
 # variable pic_stdlibs is set by the 32blit cmake configuration
@@ -64,3 +97,14 @@ endif()
 
 #target_include_directories(DANG PUBLIC src)
 target_include_directories (DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(32BLIT_LOC "../32blit-sdk/32blit")
+include_directories(32blit-sdk/32blit)
+
+target_include_directories (DANG PUBLIC ${32BLIT_LOC})
+#target_include_directories (DANG PUBLIC ${32BLIT_LOC}/audio)
+#target_include_directories (DANG PUBLIC ${32BLIT_LOC}/engine)
+#target_include_directories (DANG PUBLIC ${32BLIT_LOC}/graphics)
+#target_include_directories (DANG PUBLIC ${32BLIT_LOC}/math)
+#target_include_directories (DANG PUBLIC ${32BLIT_LOC}/types)
+

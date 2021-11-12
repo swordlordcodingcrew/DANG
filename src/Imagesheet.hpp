@@ -3,18 +3,25 @@
 
 #pragma once
 
-#include "dang.hpp"
 #include "RectT.hpp"
 
 #include <string>
 
+namespace blit
+{
+    struct Surface;
+    struct Rect;
+}
+
 namespace dang
 {
+    struct image_import;
+
     class Imagesheet
     {
     public:
-        Imagesheet();
-        Imagesheet(const std::string& name, const uint8_t *data, SizeU& imgsheet_size, uint16_t cols = 1, uint16_t rows = 1);
+        Imagesheet() = delete;
+        Imagesheet(const std::string& name, const image_import* ii, uint16_t cols = 1, uint16_t rows = 1);
         ~Imagesheet();
 
         void setCols(uint16_t cols);
@@ -23,27 +30,24 @@ namespace dang
 
         bool getRect(RectU &r, uint16_t col, uint16_t row);
         bool getRect(RectU &r, uint16_t index = 0);
-        RectU getRect(const uint16_t index);
+        RectU getRect(uint16_t index);
+        blit::Rect getBlitRect(const uint16_t index);
 
-        const uint8_t* getData() { return _data; }
-
-        SizeU getImagesheetSize() { return _imgsheet_size; }
-        uint32_t getImagesheetSizeW() const { return _imgsheet_size.w; }
-        uint32_t getImagesheetSizeH() const { return _imgsheet_size.h; }
+        SizeU getImagesheetSize();
+        uint32_t getImagesheetSizeW() const;
+        uint32_t getImagesheetSizeH() const;
 
         const std::string&  getName() { return _name; }
 
-        void setSurface(void* surface) {_surface = surface; }
-        void* getSurface() { return _surface; }
+        blit::Surface* getSurface() { return _surface; }
 
     protected:
-        const std::string _name{};
-        const uint8_t*    _data{nullptr};
-        void*         _surface{nullptr};
-        uint16_t    _cols{1};
-        uint16_t    _rows{1};
-        SizeU      _img_size{0,0};
-        SizeU      _imgsheet_size{0,0};
+        const std::string       _name{};
+        const image_import*     _image_import{nullptr};
+        blit::Surface*          _surface{nullptr};
+        uint16_t                _cols{1};
+        uint16_t                _rows{1};
+        SizeU                   _img_size{0,0};
 
         void        update_image_size();
     };

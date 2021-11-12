@@ -6,6 +6,8 @@
 
 #include <cstdint>
 #include <vector>
+#include "32blit.hpp"
+#include "RumbleFormat.hpp"
 
 struct pocketmod_context;
 
@@ -14,10 +16,18 @@ namespace dang
     class SndGear
     {
     public:
-        static void setMod(const uint8_t* mod, const uint32_t len);
-        static int16_t setSfx(const uint8_t* sfx, const uint32_t len);
-        static uint32_t fillWaveBufferWithMod(int16_t wave_buffer[64]);
-        static uint32_t fillWaveBufferWithSfx(int16_t wave_buffer[64], uint8_t ch);
+        static uint8_t playSfx(const uint8_t* sfx, const uint32_t len, float volume);
+        static void playMod(const uint8_t* mod, const uint32_t len, float volume);
+        static void stopMod();
+        static void changeModVolume(float volume);
+
+        static void playRumbleTrack(const std::vector<float>* rt, uint8_t loops);
+        static void updateRumble();
+
+    protected:
+
+        static void sfx_buff_cb(blit::AudioChannel &channel);
+        static void mod_buff_cb(blit::AudioChannel &channel);
 
         static uint8_t getMusicChan() { return 0; }
 
@@ -32,13 +42,25 @@ namespace dang
             uint32_t loops;
         };
 
-    protected:
-        static uint8_t chan;
-        static float clip(float value);
-        static pocketmod_context context;
-        static std::vector<sfx_struct> _sfx_container;
+        struct rumble_track_struct
+        {
+            const std::vector<float>* rt;
+            uint16_t pos;
+            uint8_t loops;
+        };
 
+    protected:
+        /** mod stuff */
+        static float clip(float value);
+        static pocketmod_context mod_ctx;
+
+        /** sfx */
+        static std::vector<sfx_struct> _sfx_container;
+        static uint8_t chan;
+        // round robin
         static uint8_t getSfxChan() { return chan++ % 7 + 1; }
+
+        static rumble_track_struct _current_rumble_track;
     };
 
 }
