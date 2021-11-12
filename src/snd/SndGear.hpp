@@ -8,11 +8,6 @@
 #include <vector>
 #include "32blit.hpp"
 
-extern "C"
-{
-#include <src/snd/xm/xm.h>
-}
-
 struct pocketmod_context;
 
 namespace dang
@@ -25,9 +20,6 @@ namespace dang
         static void stopMod();
         static void changeModVolume(float volume);
 
-        static void playXM(const uint8_t* mod, uint32_t len, float volume);
-        static void stopXM();
-
         static void playRumble(const uint8_t len);
         static void updateRumble();
 
@@ -35,14 +27,10 @@ namespace dang
 
         static void sfx_buff_cb(blit::AudioChannel &channel);
         static void mod_buff_cb(blit::AudioChannel &channel);
-        static void xm_buff_cb(blit::AudioChannel &channel);
 
-        static void releaseXM();
         static uint8_t getMusicChan() { return 0; }
 
         static bool mod_set;
-        static bool xm_set;
-        static bool _xmp_set;
 
         static uint8_t _rumbleLen;
 
@@ -59,9 +47,6 @@ namespace dang
         /** mod stuff */
         static float clip(float value);
         static pocketmod_context mod_ctx;
-
-        /** xm stuff */
-        static xm_context_t* xm_ctx;
 
         /** sfx */
         static std::vector<sfx_struct> _sfx_container;

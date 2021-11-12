@@ -13,12 +13,9 @@
 namespace dang
 {
     bool SndGear::mod_set = false;
-    bool SndGear::xm_set = false;
-    bool SndGear::_xmp_set = false;
     uint8_t SndGear::_rumbleLen = 0;
     uint8_t SndGear::chan = 0;
     pocketmod_context SndGear::mod_ctx;
-    xm_context_t* SndGear::xm_ctx;
     std::vector<SndGear::sfx_struct> SndGear::_sfx_container(7, {nullptr, 0, 0, 0, 0});
 
 
@@ -54,11 +51,6 @@ namespace dang
 
     void SndGear::playMod(const uint8_t* mod, const uint32_t len, float volume)
     {
-        if (xm_set)
-        {
-            return;
-        }
-
         if (volume > 1) volume = 1;
         if (volume < 0) volume = 0;
 
@@ -87,38 +79,6 @@ namespace dang
         if (mod_set)
         {
             blit::channels[dang::SndGear::getMusicChan()].volume = volume * 0xffff;
-        }
-    }
-
-    void SndGear::playXM(const uint8_t *mod, uint32_t len, float volume)
-    {
-        if (mod_set)
-        {
-            return;
-        }
-
-        if (volume > 1) volume = 1;
-        if (volume < 0) volume = 0;
-
-        D_DEBUG_PRINT("SndGear:releaseXM()\r\n");
-        releaseXM();
-
-        D_DEBUG_PRINT("SndGear:xm_create_context()\r\n");
-        int ret = xm_create_context(&xm_ctx, (const char*)mod, 11025);
-        D_DEBUG_PRINT("SndGear:xm_create_context return value: %i\r\n", ret);
-
-        if (xm_ctx == nullptr)
-        {
-            xm_set = false;
-            D_DEBUG_PRINT("the data is not recognised as an xm module.");
-        }
-        else
-        {
-            xm_set = true;
-            blit::channels[dang::SndGear::getMusicChan()].waveforms = blit::Waveform::WAVE; // Set type to WAVE
-            blit::channels[dang::SndGear::getMusicChan()].wave_buffer_callback = &SndGear::xm_buff_cb;  // Set callback address
-            blit::channels[dang::SndGear::getMusicChan()].volume = volume * 0xffff;
-            blit::channels[dang::SndGear::getMusicChan()].trigger_attack();
         }
     }
 
@@ -185,59 +145,11 @@ namespace dang
         }
     }
 
-    void SndGear::xm_buff_cb(blit::AudioChannel &channel)
-    {
-        if (xm_set)
-        {
-            float buffer[64];
-            int16_t output1, output2;
-            uint32_t loop_count = xm_get_loop_count(xm_ctx);
-
-            if (loop_count < 1)
-            {
-                D_DEBUG_PRINT("SndGear:xm_generate_samples()\r\n");
-                xm_generate_samples(xm_ctx, buffer, 32);
-
-                /** Convert the sample data to 16-bit and write it to the buffer */
-                for (int i = 0; i < 32; i++)
-                {
-                    output1 = (int16_t) (clip(buffer[2*i]) * 0x7fff);
-                    output2 = (int16_t) (clip(buffer[2*i+1]) * 0x7fff);
-                    channel.wave_buffer[2*i] = output1;
-                    channel.wave_buffer[2*i + 1] = output2;
-                }
-            }
-            else
-            {
-                stopXM();
-            }
-        }
-        else
-        {
-            stopXM();
-        }
-    }
 
     void SndGear::stopMod()
     {
         blit::channels[dang::SndGear::getMusicChan()].off();
         blit::channels[dang::SndGear::getMusicChan()].wave_buffer_callback = nullptr;
-    }
-
-    void SndGear::stopXM()
-    {
-        blit::channels[dang::SndGear::getMusicChan()].off();
-        blit::channels[dang::SndGear::getMusicChan()].wave_buffer_callback = nullptr;
-        dang::SndGear::releaseXM();
-    }
-
-    void SndGear::releaseXM()
-    {
-        if (xm_set)
-        {
-            xm_free_context(xm_ctx);
-            xm_set = false;
-        }
     }
 
     /* Clip a floating point sample to the [-1, +1] range */
