@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <vector>
 #include "32blit.hpp"
+#include "RumbleFormat.hpp"
 
 struct pocketmod_context;
 
@@ -20,7 +21,7 @@ namespace dang
         static void stopMod();
         static void changeModVolume(float volume);
 
-        static void playRumble(const uint8_t len);
+        static void playRumbleTrack(const std::vector<float>* rt, uint8_t loops);
         static void updateRumble();
 
     protected:
@@ -32,8 +33,6 @@ namespace dang
 
         static bool mod_set;
 
-        static uint8_t _rumbleLen;
-
         struct sfx_struct
         {
             const uint8_t* sfx;
@@ -41,6 +40,13 @@ namespace dang
             uint8_t chan;
             uint32_t pos;
             uint32_t loops;
+        };
+
+        struct rumble_track_struct
+        {
+            const std::vector<float>* rt;
+            uint16_t pos;
+            uint8_t loops;
         };
 
     protected:
@@ -53,6 +59,8 @@ namespace dang
         static uint8_t chan;
         // round robin
         static uint8_t getSfxChan() { return chan++ % 7 + 1; }
+
+        static rumble_track_struct _current_rumble_track;
     };
 
 }

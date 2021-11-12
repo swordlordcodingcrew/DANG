@@ -13,7 +13,9 @@
 namespace dang
 {
     bool SndGear::mod_set = false;
-    uint8_t SndGear::_rumbleLen = 0;
+
+    SndGear::rumble_track_struct SndGear::_current_rumble_track{nullptr, 0, 0};
+
     uint8_t SndGear::chan = 0;
     pocketmod_context SndGear::mod_ctx;
     std::vector<SndGear::sfx_struct> SndGear::_sfx_container(7, {nullptr, 0, 0, 0, 0});
@@ -160,24 +162,51 @@ namespace dang
         return value;
     }
 
-    void SndGear::playRumble(const uint8_t len)
+    void SndGear::playRumbleTrack(const std::vector<float>* rt, uint8_t loops)
     {
-        if(_rumbleLen > len)
-        {
-            return;
-        }
-        else
-        {
-            _rumbleLen = len;
-        }
+        // just overwrite when there is already one
+        _current_rumble_track = {rt, 0, loops};
     }
 
     void SndGear::updateRumble()
     {
-        if(_rumbleLen > 0)
+        if(_current_rumble_track.rt != nullptr)
         {
-            _rumbleLen--;
-            blit::vibration = 0.6f;
+            auto size = _current_rumble_track.rt->size();
+            if(size > _current_rumble_track.pos)
+            {
+                // play next note
+                blit::vibration = _current_rumble_track.rt->at(_current_rumble_track.pos);
+                // and pos++
+                _current_rumble_track.pos++;
+
+                // check if loop
+                if(_current_rumble_track.pos >= size)
+                {
+                    if(_current_rumble_track.loops > 0)
+                    {
+                        _current_rumble_track.pos = 0;
+                        _current_rumble_track.loops--;
+                    }
+                    else
+                    {
+                        // reset
+                        _current_rumble_track.rt = nullptr;
+                        _current_rumble_track.pos = 0;
+                        _current_rumble_track.loops = 0;
+                    }
+                }
+            }
+            else
+            {
+                // reached the end
+                blit::vibration = 0;
+
+                // reset
+                _current_rumble_track.rt = nullptr;
+                _current_rumble_track.pos = 0;
+                _current_rumble_track.loops = 0;
+            }
         }
         else
         {
