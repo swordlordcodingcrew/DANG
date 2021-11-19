@@ -173,6 +173,7 @@ namespace dang
         if(_current_rumble_track.rt != nullptr)
         {
             auto size = _current_rumble_track.rt->size();
+
             if(size > _current_rumble_track.pos)
             {
                 // play next note
@@ -190,6 +191,9 @@ namespace dang
                     }
                     else
                     {
+                        // reached the end
+                        blit::vibration = 0;
+
                         // reset
                         _current_rumble_track.rt = nullptr;
                         _current_rumble_track.pos = 0;
@@ -208,9 +212,6 @@ namespace dang
                 _current_rumble_track.loops = 0;
             }
         }
-        else
-        {
-            blit::vibration = 0;
-        }
+
     }
 }
