@@ -43,8 +43,8 @@ namespace dang
             {
 //                RectF dr = vp.intersection(spr->getSizeRect());
 //                if (dr.area() != 0)
-//                if (vp.intersects(spr->getSizeRect()))
-//                {
+                if (vp.intersects(spr->getSizeRect()))
+                {
                     spr->render(vpx, vpy);
 /*                    if (blit::screen.sprites != spr->_imagesheet->getSurface())
                     {
@@ -57,7 +57,8 @@ namespace dang
 //                    blit::Point dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
 
                     blit::screen.blit_sprite(spr->getBlitRect(), dp, spr->_transform);
-*///                }
+*/
+                }
             }
         }
     }
