@@ -102,12 +102,11 @@ namespace dang
 
         if (!splice_list.empty())
         {
-            std::cout << "merge active:" << splice_list.size() << std::endl;
-#ifdef DANG_DEBUG
-            std::cout << "merge active:" << splice_list.size() << std::endl;
-#endif
+            D_DEBUG_PRINT("merge active=%u", splice_list.size());
 
             _active_sprites.merge(splice_list);
+
+            // TODO: might be optimized: use of a manual bubble sort with a swap each cycle
             _active_sprites.sort([] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
                  {
                      return first->_z_order < second->_z_order;
