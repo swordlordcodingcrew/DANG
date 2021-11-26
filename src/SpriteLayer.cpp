@@ -39,26 +39,9 @@ namespace dang
 
         for (std::shared_ptr<Sprite>& spr : _active_sprites)
         {
-            if (spr->_visible && spr->_imagesheet != nullptr)
+            if (spr->_visible && spr->_imagesheet != nullptr && vp.intersects(spr->getSizeRect()))
             {
-//                RectF dr = vp.intersection(spr->getSizeRect());
-//                if (dr.area() != 0)
-                if (vp.intersects(spr->getSizeRect()))
-                {
-                    spr->render(vpx, vpy);
-/*                    if (blit::screen.sprites != spr->_imagesheet->getSurface())
-                    {
-                        blit::screen.sprites = spr->_imagesheet->getSurface();
-                    }
-                    blit::Point dp;
-                    dp.x  = int32_t(std::floor(spr->getPos().x) - std::floor(vp.tl().x));
-                    dp.y  = int32_t(std::floor(spr->getPos().y) - std::floor(vp.tl().y));
-
-//                    blit::Point dp = {int32_t(std::floor(vec.x)), int32_t(std::floor(vec.y))};
-
-                    blit::screen.blit_sprite(spr->getBlitRect(), dp, spr->_transform);
-*/
-                }
+                spr->render(vpx, vpy);
             }
         }
     }
