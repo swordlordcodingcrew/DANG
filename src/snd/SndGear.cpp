@@ -152,6 +152,7 @@ namespace dang
     {
         blit::channels[dang::SndGear::getMusicChan()].off();
         blit::channels[dang::SndGear::getMusicChan()].wave_buffer_callback = nullptr;
+        mod_set = false;
     }
 
     /* Clip a floating point sample to the [-1, +1] range */

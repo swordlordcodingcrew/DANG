@@ -20,6 +20,7 @@ namespace dang
         static void playMod(const uint8_t* mod, const uint32_t len, float volume);
         static void stopMod();
         static void changeModVolume(float volume);
+        static bool modPlaying() { return mod_set; }
 
         static void playRumbleTrack(const std::vector<float>* rt, uint8_t loops);
         static void updateRumble();
