@@ -88,7 +88,7 @@ namespace dang
             }
             else
             {
-                if (_loop + 1 < _loops)     // next loop
+                if (_loop + 1 < (uint32_t)_loops)     // next loop
                 {
                     _loop++;
                     _progress = 0;

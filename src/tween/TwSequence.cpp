@@ -35,7 +35,7 @@ namespace dang
             if (_index == _tw_seq.size())       // the last tw has finished
             {
                 _loop++;
-                if (_loops < 0 || _loop < _loops)   // endless loop of twseq or not yet finished looping
+                if (_loops < 0 || _loop < (uint32_t)_loops)   // endless loop of twseq or not yet finished looping
                 {
                     _index = 0;
                 }
