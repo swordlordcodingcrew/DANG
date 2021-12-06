@@ -21,6 +21,9 @@ namespace dang
     class Waypoint;
     using wpWaypoint = std::weak_ptr<Waypoint>;
     using spWaypoint = std::shared_ptr<Waypoint>;
+    class Wavepoint;
+    using spWavepoint = std::shared_ptr<Wavepoint>;
+
 
     /** snd classes */
     // todo

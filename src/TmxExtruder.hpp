@@ -144,7 +144,7 @@ namespace dang
         const uint32_t id;
         const float x;
         const float y;
-        const uint8_t type;     // see enum tmx_waypoint_type
+        const uint8_t type;
     };
 
     struct tmx_waypoint_connection
@@ -152,6 +152,17 @@ namespace dang
         const uint32_t waypoint_start_id;
         const uint32_t waypoint_goal_id;
         const uint8_t connection_type;     // see enum tmx_waypoint_connection
+    };
+
+    struct tmx_wavepoint
+    {
+        const uint32_t id;
+        const float x;
+        const float y;
+        const float duration;
+        const uint8_t orientation;
+        const float delay;
+        const uint32_t next_wavepoint_id;
     };
 
     struct tmx_level
@@ -172,19 +183,10 @@ namespace dang
         const tmx_waypoint_connection* waypoint_connections;
         const size_t waypoint_connections_len;
 
-/*        std::vector<std::shared_ptr<tmx_layer>> layers;
+        const tmx_wavepoint* wavepoints;
+        const size_t wavepoints_len;
 
-        // TODO: sprites should know on which tmx_layer they belong...
-        std::forward_list<std::shared_ptr<tmx_spriteobject>> sprites;
-
-        std::shared_ptr<tmx_spriteobject> addSprite(tmx_spriteobject* s)
-        {
-            std::shared_ptr<tmx_spriteobject> s_p = std::make_shared<tmx_spriteobject>(*s);
-            sprites.push_front(s_p);
-
-            return s_p;
-        }
-*/    };
+    };
 
 
     /**
@@ -208,6 +210,7 @@ namespace dang
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
         spTwAnim                getAnimation(const spImagesheet &is, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
         void                    createSceneGraphs(RectF& room_extent, std::vector<dang::spSceneGraph>& scene_graphs);
+        void                    createWaves(RectF& room_extent, std::unordered_map<uint32_t, dang::Wavepoint>& waves);
 
         const tmx_layer* getTmxLayer(const std::string &name);
         const tmx_tileset*  getTileset(const std::string &name);

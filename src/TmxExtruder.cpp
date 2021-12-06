@@ -15,6 +15,7 @@
 #include "CollisionSprite.hpp"
 #include "BaseHUDLayer.hpp"
 #include "path/SceneGraph.hpp"
+#include "path/Wavepoint.hpp"
 
 #include <iostream>
 
@@ -445,6 +446,30 @@ namespace dang
             }
         }
 
+    }
+
+    void TmxExtruder::createWaves(RectF &room_extent, std::unordered_map<uint32_t, dang::Wavepoint> &waves)
+    {
+        // first add all the wavepoints
+        for (size_t i = 0; i < _level->wavepoints_len; ++i)
+        {
+            const tmx_wavepoint* w = _level->wavepoints + i;
+            if (room_extent.contains({w->x, w->y}))
+            {
+                Wavepoint wp(w->id, Vector2F(w->x, w->y), w->next_wavepoint_id, uint32_t(w->duration*1000), w->orientation, uint32_t(w->delay*1000));
+                waves[w->id] = wp;
+            }
+        }
+
+        // resolve id to pointer
+        for (auto& wit : waves)
+        {
+            uint32_t id = wit.second._next_id;
+            if (waves.count(id) > 0)
+            {
+                wit.second._next = &waves[id];
+            }
+        }
     }
 
 
