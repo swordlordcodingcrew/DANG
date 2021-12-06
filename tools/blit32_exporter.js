@@ -40,6 +40,7 @@ tiled.extendMenu("File", [
 function export32Blit(map, fileName) {
 
     var bHasWaypoints = false;
+    var bHasWavepoints = false;
 
     var file = new TextFile(fileName, TextFile.WriteOnly);
 
@@ -145,7 +146,7 @@ function export32Blit(map, fileName) {
     file.writeLine("static const size_t " + functionName + "_tileanimations_len = " + animationId + ";");
     file.writeLine("");
 
-// Layers =============================================================================================================
+// Layers ==============================================================================================================
 // flip possibilities in 32blit
 //       NONE = 0b000,          0
 //       HORIZONTAL = 0b001,    1
@@ -235,11 +236,13 @@ function export32Blit(map, fileName) {
         }
         else if (layer.isObjectLayer)
         {
-            // check if this layer has points. If this is the case the layer is assumed to be the path-layer
-            if (layer.objects.length > 0 && layer.objects[0].shape == MapObject.Point)
+            // check if the layer is a paths- or waves definition layer
+            // this is checked by means of the magic words "_paths" and "_waves" in the name of the layer..
+            if (layer.name.includes("_paths"))
+//            if (layer.objects.length > 0 && layer.objects[0].shape == MapObject.Point)
             {
                 bHasWaypoints = true; // so that we only link waypoints at the end if there really are...
-                file.writeLine("// layer with points - path layer");
+                file.writeLine("// path layer");
 
                 objects = layer.objects
 
@@ -314,6 +317,60 @@ function export32Blit(map, fileName) {
                 file.writeLine("");
                 file.writeLine("static const size_t " + functionName + "_connections_len = " + conn_len + ";")
                 file.writeLine("");
+            }
+            else if (layer.name.includes("_waves"))
+            {
+                bHasWavepoints = true; // so that we only link wavapoints at the end if there really are...
+                file.writeLine("// wave layer");
+
+                objects = layer.objects
+
+                var wap_len = 0;
+                var buf_pts = "static const dang::tmx_wavepoint " + functionName + "_wavepoints[] = {\n";
+
+                for (var j = 0; j < objects.length; ++j)
+                {
+                    var o = objects[j];
+
+                    // next id
+                    var next = o.property("next");
+                    var next_id = 0;
+                    if (next != undefined)
+                    {
+                        next_id = next.id;
+                    }
+
+                    // duration
+                    var duration = o.property("duration");
+                    if (duration == undefined)
+                    {
+                        duration = 0;
+                    }
+
+                    // orientation
+                    var orientation = o.property("orientation");
+                    if (orientation == undefined)
+                    {
+                        orientation = 0;
+                    }
+
+                    // delay
+                    var delay = o.property("delay");
+                    if (delay == undefined)
+                    {
+                        delay = 0;
+                    }
+
+                    buf_pts += "    {" + o.id + ", " + o.x + "," + o.y + ", " + duration + ", " + Math.trunc(orientation) + ", " + delay + ", " + next_id + "},\n";
+                    wap_len++;
+                }
+
+                buf_pts += "};";
+                file.writeLine(buf_pts);
+                file.writeLine("");
+                file.writeLine("static const size_t " + functionName + "_wavepoints_len = " + wap_len + ";")
+                file.writeLine("");
+
             }
             else
             {
@@ -421,7 +478,7 @@ function export32Blit(map, fileName) {
     //offset : point 	Offset in pixels that is applied when this layer is rendered.
     //map : TileMap 	Map that this layer is part of (or null in case of a standalone layer).
 
-// Level ==============================================================================================================
+// Level ===============================================================================================================
 
     file.writeLine("// Level ---------------------------------------------------");
     file.writeLine("");
@@ -439,14 +496,25 @@ function export32Blit(map, fileName) {
         file.writeLine("    .waypoints = " + functionName + "_waypoints,");
         file.writeLine("    .waypoints_len = " + functionName + "_waypoints_len,");
         file.writeLine("    .waypoint_connections = " + functionName + "_connections,");
-        file.writeLine("    .waypoint_connections_len = " + functionName + "_connections_len");
+        file.writeLine("    .waypoint_connections_len = " + functionName + "_connections_len,");
     }
     else
     {
         file.writeLine("    .waypoints = nullptr,");
         file.writeLine("    .waypoints_len = 0,");
         file.writeLine("    .waypoint_connections = nullptr,");
-        file.writeLine("    .waypoint_connections_len = 0");
+        file.writeLine("    .waypoint_connections_len = 0,");
+    }
+
+    // only have the following lines if
+    if (bHasWavepoints) {
+        file.writeLine("    .wavepoints = " + functionName + "_wavepoints,");
+        file.writeLine("    .wavepoints_len = " + functionName + "_wavepoints_len");
+    }
+    else
+    {
+        file.writeLine("    .wavepoints = nullptr,");
+        file.writeLine("    .wavepoints_len = 0");
     }
 
     file.writeLine("};");

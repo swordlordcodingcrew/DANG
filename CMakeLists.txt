@@ -83,7 +83,9 @@ set(SOURCES
         src/bt/NTBuilder.h
         src/DangFwdDecl.h
         src/Rand.cpp
-        src/Rand.hpp)
+        src/Rand.hpp
+        src/path/Wavepoint.cpp
+        src/path/Wavepoint.hpp)
 
 add_library(DANG STATIC ${SOURCES} )
 #target_link_libraries(DANG xmp_lite)
