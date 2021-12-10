@@ -58,6 +58,7 @@ namespace dang
         void setSize(SizeF& s) {_size = s; }
         void setSize(float w, float h) {_size.w = w; _size.h = h; }
         blit::Rect getBlitRect();
+        blit::Rect getBlitRect(const uint16_t& img_index); // override where we can ask for a specific image
 
         // pos, vel, acc, gravity
         Vector2F    getPos() { return _pos; }

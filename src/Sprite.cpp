@@ -200,5 +200,10 @@ namespace dang
         return sr;
     }
 
+    blit::Rect Sprite::getBlitRect(const uint16_t& img_index)
+    {
+        blit::Rect sr = _imagesheet->getBlitRect(img_index);
+        return sr;
+    }
 
 }
