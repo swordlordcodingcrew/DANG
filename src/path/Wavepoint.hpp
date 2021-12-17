@@ -6,6 +6,7 @@
 #include <src/Vector2T.hpp>
 #include <cstdint>
 #include <memory>
+#include <string>
 
 namespace dang
 {
@@ -17,16 +18,19 @@ namespace dang
     {
     public:
         Wavepoint() = default;
-        Wavepoint(uint32_t id, Vector2F pos, uint32_t next_id, uint32_t duration, uint8_t orientation, uint32_t delay);
+        Wavepoint(uint32_t id, std::string type, Vector2F pos, uint32_t next_id, uint32_t duration, uint8_t orientation, uint32_t delay);
 
         spTwPos     getTween() const;
         uint8_t     getTransform() const;
         bool        endPoint() const { return _next == nullptr; }
         const Wavepoint* next() const { return _next; };
         uint32_t    id() const { return _id; }
+        const Vector2F& pos() const { return _pos; }
+        const std::string& type() const { return _type; }
 
     protected:
         friend class TmxExtruder;
+        std::string   _type;
         Wavepoint*    _next{nullptr};
         uint32_t      _next_id{0};
         uint32_t      _id{0};
