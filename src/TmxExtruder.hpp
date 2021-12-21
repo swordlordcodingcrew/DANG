@@ -103,6 +103,7 @@ namespace dang
         const float opacity;
         const bool visible;
         const uint8_t z_order;   // the z-order of the layers
+        const Vector2F position;
 
         // tile layer vars
         const uint8_t tl_width;
@@ -116,7 +117,6 @@ namespace dang
         const size_t spriteobejcts_len;
 
         // TODO: to be considered
-        //offset : point 	Offset in pixels that is applied when this tmx_layer is rendered.
         //map : TileMap 	Map that this tmx_layer is part of (or null in case of a standalone tmx_layer).
     };
 

@@ -86,12 +86,11 @@ namespace dang
         sl->_z_order = l->z_order;
         sl->_visible = l->visible;
         sl->_tmx_layer = l;
+        sl->_position = l->position;
 
         // to be considered whether useful
         // sl->spriteobjects = l->spriteobjects
 
-        // TODO js-exporter: implement position
-        // sl->_position = position
 
         if (addSprites)
         {
@@ -143,9 +142,7 @@ namespace dang
         layer->_z_order = l->z_order;
         layer->_visible = l->visible;
         layer->_tmx_layer = l;
-
-        // TODO js-exporter: implement position
-        // sl->_position = position
+        layer->_position = l->position;
 
         if (addSprites)
         {
@@ -190,9 +187,7 @@ namespace dang
         sl->_z_order = l->z_order;
         sl->_visible = l->visible;
         sl->_tmx_layer = l;
-
-        // TODO js-exporter: implement position
-        // tl->_position = position
+        sl->_position = l->position;
 
         if (addSprites)
         {
@@ -250,9 +245,7 @@ namespace dang
         tl->_z_order = l->z_order;
         tl->_visible = l->visible;
         tl->_tmx_layer = l;
-
-        // TODO js-exporter: implement position
-        // tl->_position = position
+        tl->_position = l->position;
 
         if (addToGear)
         {
@@ -282,7 +275,7 @@ namespace dang
         return nullptr;
     }
 
-    [[depracated("use getAnimation with param 'const spImagesheet &is' instead")]]
+    [[deprecated("use getAnimation with param 'const spImagesheet &is' instead")]]
     spTwAnim TmxExtruder::getAnimation(const std::string &is_name, const std::string &anim_name, EaseFn ease_cb,
                                        int32_t loops, bool alternating, uint32_t delay)
     {

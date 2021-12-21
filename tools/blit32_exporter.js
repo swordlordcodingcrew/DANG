@@ -223,6 +223,7 @@ function export32Blit(map, fileName) {
             file.writeLine("    .opacity = " + layer.opacity + ",");
             file.writeLine("    .visible = " + layer.visible + ",");
             file.writeLine("    .z_order = " + i + ",");
+            file.writeLine("    .position = {" + layer.offset.x + "," + layer.offset.y + "},");
             file.writeLine("    .tl_width = " + layer.width + ",");
             file.writeLine("    .tl_height = " + layer.height + ",");
             file.writeLine("    .tl_tileset = \"" + layer.tileAt(0,0).tileset.name + "\",");
@@ -437,6 +438,7 @@ function export32Blit(map, fileName) {
                 file.writeLine("    .opacity = " + layer.opacity + ",");
                 file.writeLine("    .visible = " + layer.visible + ",");
                 file.writeLine("    .z_order = " + i + ",");
+                file.writeLine("    .position = {" + layer.offset.x + "," + layer.offset.y + "},");
                 file.writeLine("    .tl_width = 0,");
                 file.writeLine("    .tl_height = 0,");
                 file.writeLine("    .tl_tileset = \"\",");
