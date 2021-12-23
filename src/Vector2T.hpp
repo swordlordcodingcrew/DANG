@@ -8,6 +8,8 @@
 
 #include <cmath>
 
+#include <sstream>
+
 namespace dang
 {
     template <typename T>
@@ -189,6 +191,15 @@ namespace dang
     {
         return (left.x != right.x) || (left.y != right.y);
     }
+
+    template <typename T>
+    std::ostream&     operator<<(std::ostream& os, const Vector2T<T>& vect)
+    {
+        os << vect.x << ","  << vect.y;
+
+        return os;
+    }
+
 
     typedef Vector2T<int>          Vector2I;
     typedef Vector2T<unsigned int> Vector2U;

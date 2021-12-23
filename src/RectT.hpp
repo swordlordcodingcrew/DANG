@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <cstdint>
 
+#include <sstream>
+
 namespace dang
 {
     template <typename T>
@@ -221,6 +223,13 @@ namespace dang
         return RectT<T>(right.x * left, right.y * left, right.w * left, right.h * left);
     }
 
+    template <typename T>
+    std::ostream&     operator<<(std::ostream& os, const RectT<T>& rect)
+    {
+        os << rect.x << ","  << rect.y << ","  << rect.w << "," << rect.h;
+
+        return os;
+    }
 
     typedef RectT<int32_t>      RectI;
     typedef RectT<uint32_t>     RectU;
