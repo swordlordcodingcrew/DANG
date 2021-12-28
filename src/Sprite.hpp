@@ -76,6 +76,10 @@ namespace dang
         void        setPosY(float y) {_pos.y = y; }
         void        setVelX(float x) {_vel.x = x; }
         void        setVelY(float y) {_vel.y = y; }
+        void        setVelTowardsPoint(const Vector2F& target);
+        void        setVelTowardsPoint(const Vector2F& target, const float speedx, const float speedy);
+        void        setVelRelToRadAngle(const double angle);
+        void        setVelRelToRadAngle(const double angle, const float speedx, const float speedy);
         void        setAccX(float x) {_acc.x = x; }
         void        setAccY(float y) {_acc.y = y; }
 

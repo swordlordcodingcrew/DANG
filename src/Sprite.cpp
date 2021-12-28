@@ -206,4 +206,36 @@ namespace dang
         return sr;
     }
 
+    // configures speed so that the sprite targets "target" (aka move directly to)
+    void Sprite::setVelTowardsPoint(const Vector2F& target)
+    {
+        setVelTowardsPoint(target, _vel.x, _vel.y);
+    }
+
+    void Sprite::setVelTowardsPoint(const Vector2F& target, const float speedx, const float speedy)
+    {
+        auto sourcex = _pos.x;
+        auto sourcey = _pos.y;
+
+        auto targetx = target.x;
+        auto targety = target.y;
+
+        // auto aim hero
+        auto angle_rad = atan2(targetx - sourcex, targety - sourcey);
+
+        setVelRelToRadAngle(angle_rad, speedx, speedy);
+    }
+
+    void Sprite::setVelRelToRadAngle(const double angle)
+    {
+        setVelRelToRadAngle(angle, _vel.x, _vel.y);
+    }
+
+    void Sprite::setVelRelToRadAngle(const double angle, const float speedx, const float speedy)
+    {
+        setVelX(speedx * sin(angle) * 1);
+        setVelY(speedy * cos(angle) * 1);
+    }
+
+
 }
