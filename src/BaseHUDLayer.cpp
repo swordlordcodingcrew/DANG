@@ -29,7 +29,8 @@ namespace dang
 
     void BaseHUDLayer::render(const Gear &gear)
     {
-        RectF vp = {0, 0, gear.getViewport().w, gear.getViewport().h};
+        RectF vp = {0, 0, float(blit::screen.bounds.w), float(blit::screen.bounds.h)};
+//        RectF vp = {0, 0, gear.getViewport().w, gear.getViewport().h};
 
         for (std::shared_ptr<Sprite>& spr : _sprites)
         {
