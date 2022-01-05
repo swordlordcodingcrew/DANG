@@ -233,8 +233,8 @@ namespace dang
 
     void Sprite::setVelRelToRadAngle(const double angle, const float speedx, const float speedy)
     {
-        setVelX(speedx * sin(angle) * 1);
-        setVelY(speedy * cos(angle) * 1);
+        setVelX(speedx * (float)sin(angle) * 1);
+        setVelY(speedy * (float)cos(angle) * 1);
     }
 
 
