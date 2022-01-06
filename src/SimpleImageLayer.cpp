@@ -41,9 +41,8 @@ namespace dang
         blit::screen.pen = _backgroundColour;
         blit::screen.rectangle(_displayRect);
 
-        blit::screen.sprites = _is->getSurface();
         blit::Rect sr = _is->getBlitRect(0);
 
-        blit::screen.blit_sprite(sr, _dp, 0);
+        blit::screen.blit(_is->getSurface(), sr, _dp, 0);
     }
 }

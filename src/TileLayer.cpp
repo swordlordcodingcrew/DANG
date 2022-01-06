@@ -84,11 +84,6 @@ namespace dang
     {
         assert(_imagesheet != nullptr);
 
-        if (blit::screen.sprites != _imagesheet->getSurface())
-        {
-            blit::screen.sprites = _imagesheet->getSurface();
-        }
-
         PointF vp = gear.getViewport().tl();
         PointU vp_tu{0,0};
         vp_tu.x = int32_t(vp.x) / _tilesize.x;
@@ -106,7 +101,7 @@ namespace dang
                 dang::tmx_tile t = _tiles.at(index);
 
                 blit::Point  dp(x * _tilesize.w - int32_t(std::floor(vp.x)), y * _tilesize.h - int32_t(std::floor(vp.y)));
-                blit::screen.blit_sprite(_imagesheet->getBlitRect(t.id), dp, t.transform);
+                blit::screen.blit(_imagesheet->getSurface(), _imagesheet->getBlitRect(t.id), dp, t.transform);
 
             }
         }

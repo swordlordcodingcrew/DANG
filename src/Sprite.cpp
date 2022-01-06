@@ -159,16 +159,10 @@ namespace dang
 
     void Sprite::render(int32_t vpx, int32_t vpy)
     {
-        // TODO: change blit_sprite below to the new API where we can supply the surface
-        // once its pulled :)
-        if (blit::screen.sprites != _imagesheet->getSurface())
-        {
-            blit::screen.sprites = _imagesheet->getSurface();
-        }
         blit::Point dp;
         dp.x  = int32_t(std::floor(_pos.x) - vpx);
         dp.y  = int32_t(std::floor(_pos.y) - vpy);
-        blit::screen.blit_sprite(getBlitRect(), dp, _transform);
+        blit::screen.blit(_imagesheet->getSurface(), getBlitRect(), dp, _transform);
     }
 
     void Sprite::setAnimation(spTweenable twa)
