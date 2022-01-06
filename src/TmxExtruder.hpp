@@ -106,8 +106,8 @@ namespace dang
         const Vector2F position;
 
         // tile layer vars
-        const uint8_t tl_width;
-        const uint8_t tl_height;
+        const uint16_t tl_width;
+        const uint16_t tl_height;
         const std::string tl_tileset;
         const tmx_tile* tl_tiles;
         const size_t tl_tiles_len;
