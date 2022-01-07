@@ -96,7 +96,7 @@ namespace dang
     public: // variables
         bool                            _visible{true};
         uint16_t                        _img_index{0};  // index to the image of the imagesheet. (equals tmx_tile of tmx_spriteobject?)
-        std::shared_ptr<Imagesheet>     _imagesheet{nullptr};
+        spImagesheet                    _imagesheet{nullptr};
         uint8_t                         _transform{0};      // transform for blitting
         int32_t                         _z_order{0};
         uint16_t                        _id{0};    // global
@@ -119,6 +119,16 @@ namespace dang
         // tween depot
         std::list<spTweenable> _tweens;
         spTweenable _animation;
+
+    protected:      // tree
+        std::weak_ptr<Sprite>   _parent;
+        spSprite                _child{nullptr};    // left
+        spSprite                _sibling{nullptr};  // right
+
+    public:         // tree
+        void        addSprite(spSprite s);
+        void        removeSprite(spSprite s);
+
 
     };
 

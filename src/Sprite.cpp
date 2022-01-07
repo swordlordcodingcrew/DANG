@@ -231,5 +231,74 @@ namespace dang
         setVelY(speedy * (float)cos(angle) * 1);
     }
 
+    /** adds a sprite as child to this sprite
+     *
+     * @param s sprite to be added as child
+     */
+    void Sprite::addSprite(spSprite s)
+    {
+        s->_parent = shared_from_this();
+        if (_child == nullptr)  // first child
+        {
+            _child = s;
+            s->_sibling = nullptr;
+        }
+        else
+        {
+            // go through siblings until z_order is correct
+            spSprite sp = _child;
+            if (sp->_z_order <= s->_z_order)
+            {
+                s->_sibling = _child;
+                _child = s;
+            }
+            else
+            {
+                while (sp->_z_order > s->_z_order && sp->_sibling != nullptr)
+                {
+                    sp = sp->_sibling;
+                }
+                s->_sibling = sp->_sibling;
+                sp->_sibling = s;
+            }
+
+        }
+    }
+
+    /**
+     * removes child-sprite from this sprite
+     * @param s sprite to be removed
+     */
+    void Sprite::removeSprite(spSprite s)
+    {
+        if (_child == nullptr)
+        {
+            return;
+        }
+
+        if (_child == s)
+        {
+            _child = s->_sibling;
+        }
+
+        spSprite sp = _child;
+        while (sp->_sibling != nullptr)
+        {
+            if (sp->_sibling == s)
+            {
+                sp->_sibling = s->_sibling;
+                break;
+            }
+            else
+            {
+                sp = sp->_sibling;
+            }
+        }
+
+        s->_sibling = nullptr;
+        s->_parent.reset();
+
+    }
+
 
 }
