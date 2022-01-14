@@ -3,17 +3,21 @@
 
 #include <iostream>
 #include <32blit.hpp>
+#include <cassert>
 #include "Gear.hpp"
 #include "SpriteLayer.hpp"
 #include "Sprite.hpp"
 #include "Layer.hpp"
 #include "Imagesheet.hpp"
+#include "SpriteIterator.hpp"
 
 namespace dang
 {
     dang::SpriteLayer::SpriteLayer() : Layer(Layer::LT_SPRITELAYER)
     {
-
+        _root = std::make_shared<Sprite>();
+        _root->_visible = false;
+        _root->setPos({0,0});
     }
 
     void SpriteLayer::update(uint32_t dt, const Gear &gear)
@@ -215,11 +219,11 @@ namespace dang
 
     void SpriteLayer::sortSprites()
     {
-        _inactive_sprites.sort([](const spSprite & first, const spSprite & second)
+/*        _inactive_sprites.sort([](const spSprite & first, const spSprite & second)
             {
                 return first->_z_order < second->_z_order;
             });
-
+*/
         _active_sprites.sort([](const spSprite & first, const spSprite & second)
             {
                 return first->_z_order < second->_z_order;
@@ -227,5 +231,115 @@ namespace dang
 
     }
 
+    void SpriteLayer::addSpriteT(spSprite s)
+    {
+        assert(s != nullptr);
+        _inactive_sprites.push_front(s);
+    }
 
+    void SpriteLayer::removeSpriteT(spSprite s)
+    {
+        assert(s != nullptr);
+        s->removeMeFromTree();
+        _inactive_sprites.remove(s);
+    }
+
+    void SpriteLayer::updateT(uint32_t dt, const Gear &gear)
+    {
+        // core update and update active sprites
+        coreUpdateT(dt, gear);
+
+        // then call update
+        for (SpriteIterator it = begin(); it != end(); it++)
+        {
+            if (gear.getActiveWorld().intersects((*it)->getSizeRect()))
+            {
+                (*it)->update(dt);
+            }
+        }
+    }
+
+    void SpriteLayer::coreUpdateT(uint32_t dt, const Gear &gear)
+    {
+        // add inactive sprites becoming active
+        auto sli = _inactive_sprites.begin();
+        while (sli != _inactive_sprites.end())
+        {
+            if ((*sli)->_remove_me)
+            {
+                sli = _inactive_sprites.erase(sli);
+            }
+            else
+            {
+                if (gear.getActiveWorld().intersects((*sli)->getSizeRect()))
+                {
+                    _root->addSprite(*sli);
+                    sli = _inactive_sprites.erase(sli);
+                }
+                else
+                {
+                    sli++;
+                }
+            }
+        }
+
+        // update active sprites (tree) or put them into the inactive sprite list
+        auto sti = begin();
+        while (sti != end())
+        {
+            if ((*sti)->_remove_me)
+            {
+                sti = erase(sti);
+            }
+            else
+            {
+                if (gear.getActiveWorld().intersects((*sti)->getSizeRect()))
+                {
+                    (*sti)->coreUpdate(dt);
+                    sti++;
+                }
+                else
+                {
+                    _inactive_sprites.push_front(*sti);
+                    sti = erase(sti);
+                }
+            }
+        }
+    }
+
+    void SpriteLayer::renderT(const Gear &gear)
+    {
+        RectF vp = gear.getViewport();
+        int32_t vpx = std::floor(vp.tl().x);
+        int32_t vpy = std::floor(vp.tl().y);
+
+        for (std::shared_ptr<Sprite>& spr : _active_sprites)
+        {
+            if (spr->_visible && spr->_imagesheet != nullptr && vp.intersects(spr->getSizeRect()))
+            {
+                spr->render(vpx, vpy);
+            }
+        }
+
+    }
+
+    SpriteIterator SpriteLayer::begin()
+    {
+        return SpriteIterator(_root, _root);
+    }
+
+    SpriteIterator SpriteLayer::end()
+    {
+        return SpriteIterator(nullptr, _root);
+    }
+
+    SpriteIterator SpriteLayer::erase(SpriteIterator pos)
+    {
+        spSprite s = (*pos);
+        pos++;
+
+        s->removeMeFromTree();
+
+        return pos;
+    }
 }

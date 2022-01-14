@@ -21,9 +21,12 @@ extern char _sbss, _end, __ltdc_start;
 
 namespace dang
 {
-    CollisionSpriteLayer::CollisionSpriteLayer() : SpriteLayer(LT_COLLISIONSPRITELAYER)
+    CollisionSpriteLayer::CollisionSpriteLayer()
     {
-
+        _type = LT_COLLISIONSPRITELAYER;
+        _root = std::make_shared<CollisionSprite>();
+        _root->_visible = false;
+        _root->setPos({0,0});
     }
 
     void CollisionSpriteLayer::addCollisionSprite(spCollisionSprite cspr)

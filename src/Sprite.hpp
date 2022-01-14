@@ -22,11 +22,13 @@ namespace dang
 {
     struct tmx_spriteobject;
 
+    class SpriteIterator;
     class Imagesheet;
     class Tweenable;
     class TwAnim;
     using spTweenable = std::shared_ptr<Tweenable>;
     using spTwAnim = std::shared_ptr<TwAnim>;
+
 
     class Sprite : public std::enable_shared_from_this<Sprite>
     {
@@ -102,6 +104,7 @@ namespace dang
         uint16_t                        _id{0};    // global
         std::string                     _type_name{""};
         uint8_t                         _type_num{0}; // 0 == undefined
+        bool                            _remove_me{false};  // if set to true, this sprite will be removed from the layer
 
     protected:  // variables
 
@@ -121,13 +124,17 @@ namespace dang
         spTweenable _animation;
 
     protected:      // tree
+        friend class SpriteIterator;
+        friend class SpriteLayer;
         std::weak_ptr<Sprite>   _parent;
         spSprite                _child{nullptr};    // left
-        spSprite                _sibling{nullptr};  // right
+        spSprite                _next_sibling{nullptr};  // right
+        std::weak_ptr<Sprite>   _prev_sibling;
+
 
     public:         // tree
         void        addSprite(spSprite s);
-        void        removeSprite(spSprite s);
+        void        removeMeFromTree();
 
 
     };

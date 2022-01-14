@@ -241,7 +241,8 @@ namespace dang
         if (_child == nullptr)  // first child
         {
             _child = s;
-            s->_sibling = nullptr;
+            s->_next_sibling = nullptr;
+            s->_prev_sibling.reset();
         }
         else
         {
@@ -249,55 +250,57 @@ namespace dang
             spSprite sp = _child;
             if (sp->_z_order <= s->_z_order)
             {
-                s->_sibling = _child;
+                // first position
+                s->_next_sibling = _child;
+                _child->_prev_sibling = s;
                 _child = s;
+                _child->_prev_sibling.reset();
             }
             else
             {
-                while (sp->_z_order > s->_z_order && sp->_sibling != nullptr)
+                while (sp->_z_order > s->_z_order && sp->_next_sibling != nullptr)
                 {
-                    sp = sp->_sibling;
+                    sp = sp->_next_sibling;
                 }
-                s->_sibling = sp->_sibling;
-                sp->_sibling = s;
+
+                s->_next_sibling = sp->_next_sibling;
+                s->_prev_sibling = sp;
+                sp->_next_sibling = s;
             }
 
         }
     }
 
     /**
-     * removes child-sprite from this sprite
-     * @param s sprite to be removed
+     * removes this sprite from the tree (and its children)
      */
-    void Sprite::removeSprite(spSprite s)
+    void Sprite::removeMeFromTree()
     {
-        if (_child == nullptr)
+        spSprite par = _parent.lock();
+        if (par != nullptr)
         {
-            return;
-        }
-
-        if (_child == s)
-        {
-            _child = s->_sibling;
-        }
-
-        spSprite sp = _child;
-        while (sp->_sibling != nullptr)
-        {
-            if (sp->_sibling == s)
+            spSprite prev = _prev_sibling.lock();
+            if (prev == nullptr)
             {
-                sp->_sibling = s->_sibling;
-                break;
+                // first child
+                par->_child = _next_sibling;
+                par->_child->_prev_sibling.reset();
             }
             else
             {
-                sp = sp->_sibling;
+                prev->_next_sibling = _next_sibling;
+                _next_sibling->_prev_sibling = prev;
             }
+
+            _parent.reset();
+            _next_sibling.reset();
+            _prev_sibling.reset();
         }
-
-        s->_sibling = nullptr;
-        s->_parent.reset();
-
+        else
+        {
+            // sprite is not in a tree;
+            // (and the root sprite cannot be removed
+        }
     }
 
 

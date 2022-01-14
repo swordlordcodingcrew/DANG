@@ -10,8 +10,8 @@
 namespace dang
 {
     class Sprite;
-
     using spSprite = std::shared_ptr<Sprite>;
+    class SpriteIterator;
 
     class SpriteLayer : public Layer
     {
@@ -31,6 +31,7 @@ namespace dang
         virtual void    removeSpritesByTypeNum(uint8_t type_num);
         void            sortSprites();
 
+
     protected:
         explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};
 
@@ -41,6 +42,20 @@ namespace dang
         // inactive sprites
         std::list<spSprite> _inactive_sprites;
 
+    public:         // tree
+        virtual void    addSpriteT(spSprite s);
+        virtual void    removeSpriteT(spSprite s);
+        void            updateT(uint32_t dt, const Gear& gear);
+        void            renderT(const Gear& gear);
+
+        SpriteIterator  begin();
+        SpriteIterator  end();
+        SpriteIterator  erase(SpriteIterator pos);
+
+    protected:      // tree
+        virtual void coreUpdateT(uint32_t dt, const Gear& gear);
+
+        spSprite    _root{nullptr};
     };
 
 }
