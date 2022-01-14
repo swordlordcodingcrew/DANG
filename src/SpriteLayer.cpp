@@ -20,7 +20,7 @@ namespace dang
         _root->setPos({0,0});
     }
 
-    void SpriteLayer::update(uint32_t dt, const Gear &gear)
+/*    void SpriteLayer::update(uint32_t dt, const Gear &gear)
     {
         // core update and update active sprites
         coreUpdate(dt, gear);
@@ -34,8 +34,8 @@ namespace dang
             }
         }
     }
-
-    void SpriteLayer::render(const Gear &gear)
+*/
+/*    void SpriteLayer::render(const Gear &gear)
     {
         RectF vp = gear.getViewport();
         int32_t vpx = std::floor(vp.tl().x);
@@ -49,17 +49,17 @@ namespace dang
             }
         }
     }
+*/
 
-
-    void SpriteLayer::addSprite(std::shared_ptr<Sprite> spr)
+/*    void SpriteLayer::addSprite(std::shared_ptr<Sprite> spr)
     {
         if (spr != nullptr)
         {
             _inactive_sprites.push_front(spr);
         }
     }
-
-    void SpriteLayer::removeSprite(std::shared_ptr<Sprite> spr)
+*/
+/*    void SpriteLayer::removeSprite(std::shared_ptr<Sprite> spr)
     {
         if (spr != nullptr)
         {
@@ -67,8 +67,8 @@ namespace dang
             _inactive_sprites.remove(spr);
         }
     }
-
-    void SpriteLayer::coreUpdate(uint32_t dt, const Gear &gear)
+*/
+/*    void SpriteLayer::coreUpdate(uint32_t dt, const Gear &gear)
     {
         std::list<spSprite> splice_list;
 
@@ -116,16 +116,13 @@ namespace dang
                      return first->_z_order < second->_z_order;
                  });
 
-/*            _active_sprites.merge(splice_list, [] (const std::shared_ptr<Sprite> &first, const std::shared_ptr<Sprite> &second)
-            {
-                return first->_z_order < second->_z_order;
-            });
-*/        }
+        }
 
     }
-
+*/
     spSprite SpriteLayer::getSpriteByType(const std::string& name)
     {
+/*
         auto ret = std::find_if(_active_sprites.begin(), _active_sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
         {
             return first->_type_name == name;
@@ -145,14 +142,14 @@ namespace dang
         {
             return (*ret);
         }
-
+*/
         return nullptr;
     }
 
 
     spSprite SpriteLayer::getSpriteById(uint16_t id)
     {
-
+/*
         auto ret = std::find_if(_active_sprites.begin(), _active_sprites.end(), [&] (const std::shared_ptr<Sprite> &first)
             {
                 return first->_id == id;
@@ -172,13 +169,13 @@ namespace dang
         {
             return (*ret);
         }
-
+*/
         return nullptr;
     }
 
     void SpriteLayer::removeSpriteById(uint16_t id)
     {
-        _active_sprites.remove_if([&] (const std::shared_ptr<Sprite> &spr)
+/*        _active_sprites.remove_if([&] (const std::shared_ptr<Sprite> &spr)
             {
               return spr->_id == id;
             });
@@ -187,11 +184,11 @@ namespace dang
             {
                 return spr->_id == id;
             });
-    }
+*/    }
 
     void SpriteLayer::removeSpritesByTypeNum(uint8_t type_num)
     {
-        for (auto it = _active_sprites.begin(); it != _active_sprites.end(); )
+/*        for (auto it = _active_sprites.begin(); it != _active_sprites.end(); )
         {
             if ((*it)->_type_num == type_num)
             {
@@ -214,40 +211,35 @@ namespace dang
                 ++it;
             }
         }
-
+*/
     }
 
-    void SpriteLayer::sortSprites()
+/*    void SpriteLayer::sortSprites()
     {
-/*        _inactive_sprites.sort([](const spSprite & first, const spSprite & second)
-            {
-                return first->_z_order < second->_z_order;
-            });
-*/
         _active_sprites.sort([](const spSprite & first, const spSprite & second)
             {
                 return first->_z_order < second->_z_order;
             });
 
     }
-
-    void SpriteLayer::addSpriteT(spSprite s)
+*/
+    void SpriteLayer::addSprite(spSprite s)
     {
         assert(s != nullptr);
         _inactive_sprites.push_front(s);
     }
 
-    void SpriteLayer::removeSpriteT(spSprite s)
+    void SpriteLayer::removeSprite(spSprite s)
     {
         assert(s != nullptr);
         s->removeMeFromTree();
         _inactive_sprites.remove(s);
     }
 
-    void SpriteLayer::updateT(uint32_t dt, const Gear &gear)
+    void SpriteLayer::update(uint32_t dt, const Gear &gear)
     {
         // core update and update active sprites
-        coreUpdateT(dt, gear);
+        coreUpdate(dt, gear);
 
         // then call update
         for (SpriteIterator it = begin(); it != end(); it++)
@@ -259,7 +251,7 @@ namespace dang
         }
     }
 
-    void SpriteLayer::coreUpdateT(uint32_t dt, const Gear &gear)
+    void SpriteLayer::coreUpdate(uint32_t dt, const Gear &gear)
     {
         // add inactive sprites becoming active
         auto sli = _inactive_sprites.begin();
@@ -307,20 +299,19 @@ namespace dang
         }
     }
 
-    void SpriteLayer::renderT(const Gear &gear)
+    void SpriteLayer::render(const Gear &gear)
     {
         RectF vp = gear.getViewport();
         int32_t vpx = std::floor(vp.tl().x);
         int32_t vpy = std::floor(vp.tl().y);
 
-        for (std::shared_ptr<Sprite>& spr : _active_sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
         {
-            if (spr->_visible && spr->_imagesheet != nullptr && vp.intersects(spr->getSizeRect()))
+            if ((*it)->_visible && (*it)->_imagesheet != nullptr && vp.intersects((*it)->getSizeRect()))
             {
-                spr->render(vpx, vpy);
+                (*it)->render(vpx, vpy);
             }
         }
-
     }
 
     SpriteIterator SpriteLayer::begin()

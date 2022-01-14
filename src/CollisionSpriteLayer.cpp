@@ -6,6 +6,7 @@
 #include <malloc.h>
 #include "CollisionSpriteLayer.hpp"
 #include "Sprite.hpp"
+#include "SpriteIterator.hpp"
 #include "CollisionSprite.hpp"
 #include "Gear.hpp"
 
@@ -42,9 +43,10 @@ namespace dang
         handleCollisionDetection(gear);
 
         // then call update
-        for (spSprite& spr : _active_sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
+//        for (spSprite& spr : _active_sprites)
         {
-            spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>((*it));
             if (cspr->getNTreeState() != nullptr)
             {
                 gear.runNTree(cspr);
@@ -55,7 +57,7 @@ namespace dang
             }
 
             // call update of sprite
-            spr->update(dt);
+            cspr->update(dt);
         }
 
     }
@@ -131,9 +133,11 @@ namespace dang
 
         while (_iteration > 0)
         {
-            for (const spSprite &spr : _active_sprites)
+            for (SpriteIterator it = begin(); it != end(); it++)
+//            for (const spSprite &spr : _active_sprites)
             {
-                const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>(spr);
+                const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>((*it));
+//                const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>(spr);
 
                 // pointer anomaly, should not happen (but who knows..)
                 if (me == nullptr)
@@ -155,7 +159,7 @@ namespace dang
 
                 // find possible collisions
                 std::forward_list<manifold> projected_mfs;
-                projectCollisions(me, _active_sprites, projected_mfs);
+                projectCollisions(me, projected_mfs);
 
                 while (!projected_mfs.empty())
                 {
@@ -315,11 +319,11 @@ namespace dang
     }
 
 
-    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, const std::list<spSprite>& sprites, std::forward_list<manifold>& mf_list)
+    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, std::forward_list<manifold>& mf_list)
     {
-        for (const spSprite& spr : sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
         {
-            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>((*it));
 
             if (other == nullptr)
             {
@@ -587,12 +591,13 @@ namespace dang
 
         float dx_target = std::min(me_p.x - target_hr.left(), me_p.x - target_hr.right());
 
-        for (const spSprite &spr : _active_sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
+//        for (const spSprite &spr : _active_sprites)
         {
-            const spCollisionSprite obst = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            const spCollisionSprite obst = std::dynamic_pointer_cast<CollisionSprite>(*it);
 
             // me and target are not obstacles per se
-            if (spr == me || spr == target)
+            if (obst == me || obst == target)
             {
                 continue;
             }
@@ -678,9 +683,10 @@ namespace dang
         Vector2F p2 = target->getHotrectAbs().center();
         bool    intersection{false};
 
-        for (const spSprite& spr : _active_sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
+//        for (const spSprite& spr : _active_sprites)
         {
-            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>(*it);
 
             if (other == nullptr)
             {

@@ -19,17 +19,17 @@ namespace dang
         SpriteLayer();
         ~SpriteLayer() override = default;
 
-        void    update(uint32_t dt, const Gear& gear) override;
-        void    render(const Gear& gear) override;
+        void    update(uint32_t dt, const Gear& gear);
+        void    render(const Gear& gear);
 
         virtual spSprite    getSpriteByType(const std::string& name);
 
-        virtual void    addSprite(spSprite spr);
-        virtual void    removeSprite(spSprite spr);
+        virtual void    addSprite(spSprite s);
+        virtual void    removeSprite(spSprite s);
         virtual void    removeSpriteById(uint16_t id);
         virtual spSprite    getSpriteById(uint16_t id);
         virtual void    removeSpritesByTypeNum(uint8_t type_num);
-        void            sortSprites();
+//        void            sortSprites();
 
 
     protected:
@@ -37,25 +37,17 @@ namespace dang
 
         virtual void coreUpdate(uint32_t dt, const Gear& gear);
         // sprites inside active area
-        std::list<spSprite> _active_sprites;
+//        std::list<spSprite> _active_sprites;
+        spSprite    _root{nullptr};
 
         // inactive sprites
         std::list<spSprite> _inactive_sprites;
 
     public:         // tree
-        virtual void    addSpriteT(spSprite s);
-        virtual void    removeSpriteT(spSprite s);
-        void            updateT(uint32_t dt, const Gear& gear);
-        void            renderT(const Gear& gear);
-
         SpriteIterator  begin();
         SpriteIterator  end();
         SpriteIterator  erase(SpriteIterator pos);
 
-    protected:      // tree
-        virtual void coreUpdateT(uint32_t dt, const Gear& gear);
-
-        spSprite    _root{nullptr};
     };
 
 }

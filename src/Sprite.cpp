@@ -288,8 +288,15 @@ namespace dang
             }
             else
             {
-                prev->_next_sibling = _next_sibling;
-                _next_sibling->_prev_sibling = prev;
+                if (_next_sibling != nullptr)
+                {
+                    prev->_next_sibling = _next_sibling;
+                    _next_sibling->_prev_sibling = prev;
+                }
+                else
+                {
+                    prev->_prev_sibling.reset();
+                }
             }
 
             _parent.reset();

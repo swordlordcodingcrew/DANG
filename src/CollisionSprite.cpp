@@ -21,6 +21,7 @@ namespace dang
 
     CollisionSprite::~CollisionSprite()
     {
+//        std::cout << "Collision sprite destroyed. Type=" << _type_name << std::endl;
 #ifdef DANG_DEBUG
         std::cout << "Collision sprite destroyed" << std::endl;
 #endif
@@ -83,6 +84,47 @@ namespace dang
                 break;
         }
     }
+
+/*    void CollisionSprite::slide(const CollisionSpriteLayer::manifold &mf)
+    {
+        if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
+        {
+            if (mf.me.get() == this)
+            {
+                if (mf.normalMe.x * mf.me->getPosDelta().x > 0)
+                {
+                    _pos.x = mf.touchMe.x;
+                }
+                else if (mf.normalMe.y * mf.me->getPosDelta().y > 0)
+                {
+                    _pos.y = mf.touchMe.y;
+                }
+            }
+            else
+            {
+                if (mf.normalOther.x * mf.other->getPosDelta().x > 0)
+                {
+                    _pos.x = mf.touchOther.x;
+                }
+                else if (mf.normalOther.y * mf.other->getPosDelta().y > 0)
+                {
+                    _pos.y = mf.touchOther.y;
+                }
+            }
+        }
+    }
+
+    void touch(const CollisionSpriteLayer::manifold &mf)
+    {
+
+    }
+
+    void bounce(const CollisionSpriteLayer::manifold &mf)
+    {
+
+    }
+
+*/
 
     CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(const spCollisionSprite& other)
     {
