@@ -146,11 +146,6 @@ namespace dang
         float dt10ms = dt / 100.0f;
         _vel += (_gravity + _acc) * dt10ms;
         _pos += _vel * dt10ms;
-        spSprite par = _parent.lock();
-        if (par != nullptr)
-        {
-            _pos += par->_pos;
-        }
     }
 
     void Sprite::update(uint32_t dt)
