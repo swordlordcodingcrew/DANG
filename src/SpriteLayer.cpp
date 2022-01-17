@@ -226,14 +226,14 @@ namespace dang
     void SpriteLayer::addSprite(spSprite s)
     {
         assert(s != nullptr);
-        _inactive_sprites.push_front(s);
+        _root->addSprite(s);
     }
 
     void SpriteLayer::removeSprite(spSprite s)
     {
         assert(s != nullptr);
-        s->removeMeFromTree();
-        _inactive_sprites.remove(s);
+//        s->removeMeFromTree();
+        s->_remove_me = true;
     }
 
     void SpriteLayer::update(uint32_t dt, const Gear &gear)
@@ -244,7 +244,7 @@ namespace dang
         // then call update
         for (SpriteIterator it = begin(); it != end(); it++)
         {
-            if (gear.getActiveWorld().intersects((*it)->getSizeRect()))
+            if ((*it)->_active)
             {
                 (*it)->update(dt);
             }
@@ -253,29 +253,7 @@ namespace dang
 
     void SpriteLayer::coreUpdate(uint32_t dt, const Gear &gear)
     {
-        // add inactive sprites becoming active
-        auto sli = _inactive_sprites.begin();
-        while (sli != _inactive_sprites.end())
-        {
-            if ((*sli)->_remove_me)
-            {
-                sli = _inactive_sprites.erase(sli);
-            }
-            else
-            {
-                if (gear.getActiveWorld().intersects((*sli)->getSizeRect()))
-                {
-                    _root->addSprite(*sli);
-                    sli = _inactive_sprites.erase(sli);
-                }
-                else
-                {
-                    sli++;
-                }
-            }
-        }
-
-        // update active sprites (tree) or put them into the inactive sprite list
+        // update active sprites (tree) or set to inactive if outside active world
         auto sti = begin();
         while (sti != end())
         {
@@ -285,16 +263,26 @@ namespace dang
             }
             else
             {
-                if (gear.getActiveWorld().intersects((*sti)->getSizeRect()))
+                if ((*sti)->_parent.expired())
                 {
+                    // root element. Always in
                     (*sti)->coreUpdate(dt);
-                    sti++;
                 }
                 else
                 {
-                    _inactive_sprites.push_front(*sti);
-                    sti = erase(sti);
+                    bool in_active_world = gear.getActiveWorld().intersects((*sti)->getSizeRect());
+                    if (in_active_world)
+                    {
+                        (*sti)->coreUpdate(dt);
+                        (*sti)->_active = true;
+                    }
+                    else if (!in_active_world && (*sti)->_active == true)
+                    {
+                        (*sti)->coreUpdate(dt);
+                        (*sti)->_active = false;
+                    }
                 }
+                sti++;
             }
         }
     }
@@ -307,7 +295,7 @@ namespace dang
 
         for (SpriteIterator it = begin(); it != end(); it++)
         {
-            if ((*it)->_visible && (*it)->_imagesheet != nullptr && vp.intersects((*it)->getSizeRect()))
+            if ((*it)->_visible && (*it)->_active && (*it)->_imagesheet != nullptr && vp.intersects((*it)->getSizeRect()))
             {
                 (*it)->render(vpx, vpy);
             }

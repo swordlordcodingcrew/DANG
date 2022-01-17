@@ -38,6 +38,10 @@ namespace dang
         Sprite(const tmx_spriteobject* so, const spImagesheet& is);
         virtual ~Sprite();
 
+        // tree
+        void    addSprite(spSprite s);
+        void    removeMeFromTree();
+
         // tween stuff
         void addTween(spTweenable tw);
         void removeTween(const spTweenable& tw, bool suppressCB);
@@ -97,6 +101,7 @@ namespace dang
 
     public: // variables
         bool                            _visible{true};
+        bool                            _active{true};
         uint16_t                        _img_index{0};  // index to the image of the imagesheet. (equals tmx_tile of tmx_spriteobject?)
         spImagesheet                    _imagesheet{nullptr};
         uint8_t                         _transform{0};      // transform for blitting
@@ -130,12 +135,6 @@ namespace dang
         spSprite                _child{nullptr};    // left
         spSprite                _next_sibling{nullptr};  // right
         std::weak_ptr<Sprite>   _prev_sibling;
-
-
-    public:         // tree
-        void        addSprite(spSprite s);
-        void        removeMeFromTree();
-
 
     };
 

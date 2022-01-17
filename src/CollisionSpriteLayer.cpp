@@ -47,19 +47,21 @@ namespace dang
 //        for (spSprite& spr : _active_sprites)
         {
             spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>((*it));
-            if (cspr->getNTreeState() != nullptr)
+            if (cspr->_active)
             {
-                gear.runNTree(cspr);
+                if (cspr->getNTreeState() != nullptr)
+                {
+                    gear.runNTree(cspr);
 
 #ifdef DANG_DEBUG
-                std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::NTreeState::internal_state>>(cspr->getNTreeState()->_internal_state) << " and node position: " << cspr->getNTreeState()->_node << std::endl;
+                    std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::NTreeState::internal_state>>(cspr->getNTreeState()->_internal_state) << " and node position: " << cspr->getNTreeState()->_node << std::endl;
 #endif
+                }
+
+                // call update of sprite
+                cspr->update(dt);
             }
-
-            // call update of sprite
-            cspr->update(dt);
         }
-
     }
 
     void CollisionSpriteLayer::render(const Gear &gear)
@@ -145,6 +147,10 @@ namespace dang
                     continue;
                 }
 
+                if (!me->_active)
+                {
+                    continue;
+                }
  //               if (!gear.getActiveWorld().intersects(me->getSizeRect()))
  //               {
  //                   continue;

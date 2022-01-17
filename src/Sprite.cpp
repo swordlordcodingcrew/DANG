@@ -146,6 +146,11 @@ namespace dang
         float dt10ms = dt / 100.0f;
         _vel += (_gravity + _acc) * dt10ms;
         _pos += _vel * dt10ms;
+        spSprite par = _parent.lock();
+        if (par != nullptr)
+        {
+            _pos += par->_pos;
+        }
     }
 
     void Sprite::update(uint32_t dt)
@@ -238,34 +243,66 @@ namespace dang
     void Sprite::addSprite(spSprite s)
     {
         s->_parent = shared_from_this();
+
         if (_child == nullptr)  // first child
         {
+            D_DEBUG_PRINT("add sprite as first child\n");
             _child = s;
-            s->_next_sibling = nullptr;
-            s->_prev_sibling.reset();
+            _child->_next_sibling = nullptr;
+            _child->_prev_sibling.reset();
         }
         else
         {
             // go through siblings until z_order is correct
             spSprite sp = _child;
-            if (sp->_z_order <= s->_z_order)
+            if (sp->_z_order >= s->_z_order)
             {
                 // first position
-                s->_next_sibling = _child;
-                _child->_prev_sibling = s;
+                D_DEBUG_PRINT("add sprite at first position\n");
                 _child = s;
+                _child->_next_sibling = sp;
                 _child->_prev_sibling.reset();
+
+                sp->_prev_sibling = _child;
             }
             else
             {
-                while (sp->_z_order > s->_z_order && sp->_next_sibling != nullptr)
+                while (sp->_next_sibling != nullptr)
                 {
+                    if (sp->_z_order >= s->_z_order)
+                    {
+                        break;
+                    }
                     sp = sp->_next_sibling;
                 }
 
-                s->_next_sibling = sp->_next_sibling;
-                s->_prev_sibling = sp;
-                sp->_next_sibling = s;
+                if (sp->_next_sibling == nullptr)
+                {
+                    // last sibling
+                    D_DEBUG_PRINT("add sprite at last position\n");
+                    sp->_next_sibling = s;
+                    s->_prev_sibling = sp;
+                    s->_next_sibling = nullptr;
+                }
+                else
+                {
+                    // somewhere in between
+                    D_DEBUG_PRINT("add sprite in between\n");
+                    spSprite prev = sp->_prev_sibling.lock();
+                    if (prev != nullptr)
+                    {
+                        prev->_next_sibling = s;
+
+                        s->_next_sibling = sp;
+                        s->_prev_sibling = prev;
+
+                        sp->_prev_sibling = s;
+                    }
+                    else
+                    {
+                        D_DEBUG_PRINT("could not add sprite error\n");
+                    }
+                }
             }
 
         }
@@ -283,8 +320,18 @@ namespace dang
             if (prev == nullptr)
             {
                 // first child
-                par->_child = _next_sibling;
-                par->_child->_prev_sibling.reset();
+                if (_next_sibling == nullptr)
+                {
+                    // only child
+                    par->_child = nullptr;
+                    D_DEBUG_PRINT("remove only child\n");
+                }
+                else
+                {
+                    par->_child = _next_sibling;
+                    par->_child->_prev_sibling.reset();
+                    D_DEBUG_PRINT("remove first child\n");
+                }
             }
             else
             {
@@ -292,10 +339,13 @@ namespace dang
                 {
                     prev->_next_sibling = _next_sibling;
                     _next_sibling->_prev_sibling = prev;
+                    D_DEBUG_PRINT("remove a middle sibling");
+
                 }
                 else
                 {
                     prev->_prev_sibling.reset();
+                    D_DEBUG_PRINT("remove last sibling");
                 }
             }
 
@@ -306,7 +356,7 @@ namespace dang
         else
         {
             // sprite is not in a tree;
-            // (and the root sprite cannot be removed
+            // (and the root sprite cannot be removed)
         }
     }
 

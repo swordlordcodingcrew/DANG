@@ -63,21 +63,21 @@ namespace dang
         }
         else
         {
-            spSprite s = _current->_parent.lock();
-            while (s != nullptr)
+            spSprite par = _current->_parent.lock();
+            while (par != nullptr)
             {
-                if (s->_next_sibling == nullptr)
+                if (par->_next_sibling == nullptr)
                 {
-                    s = s->_parent.lock();
+                    par = par->_parent.lock();
                 }
                 else
                 {
-                    _current = s->_next_sibling;
+                    _current = par->_next_sibling;
                     break;
                 }
             }
 
-            if (s == nullptr)
+            if (par == nullptr)
             {
                 _current = nullptr;
             }

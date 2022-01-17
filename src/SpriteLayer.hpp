@@ -40,9 +40,6 @@ namespace dang
 //        std::list<spSprite> _active_sprites;
         spSprite    _root{nullptr};
 
-        // inactive sprites
-        std::list<spSprite> _inactive_sprites;
-
     public:         // tree
         SpriteIterator  begin();
         SpriteIterator  end();
