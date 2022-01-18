@@ -270,7 +270,7 @@ namespace dang
                 }
                 else
                 {
-                    bool in_active_world = gear.getActiveWorld().intersects((*sti)->getSizeRect());
+                    bool in_active_world = gear.getActiveWorld().intersects((*sti)->getSizeRectG());
                     if (in_active_world)
                     {
                         (*sti)->coreUpdate(dt);
@@ -295,7 +295,7 @@ namespace dang
 
         for (SpriteIterator it = begin(); it != end(); it++)
         {
-            if ((*it)->_visible && (*it)->_active && (*it)->_imagesheet != nullptr && vp.intersects((*it)->getSizeRect()))
+            if ((*it)->_visible && (*it)->_active && (*it)->_imagesheet != nullptr && vp.intersects((*it)->getSizeRectG()))
             {
                 (*it)->render(vpx, vpy);
             }

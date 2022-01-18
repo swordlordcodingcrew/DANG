@@ -100,14 +100,15 @@ namespace dang
         RectF vp = gear.getViewport();
 
         blit::screen.pen = blit::Pen(0, 0, 255, 255);
-        for (std::shared_ptr<Sprite>& spr : _active_sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
+//        for (std::shared_ptr<Sprite>& spr : _active_sprites)
         {
-            RectF dr = vp.intersection(spr->getSizeRect());
+            spCollisionSprite cspr = std::static_pointer_cast<CollisionSprite>(*it);
+            RectF dr = vp.intersection(cspr->getSizeRect());
 
             if (dr.area() != 0)
             {
-                spCollisionSprite cspr = std::static_pointer_cast<CollisionSprite>(spr);
-                RectF hr = cspr->getHotrectAbs();
+                RectF hr = cspr->getHotrectGlob();
                 hr.x -= vp.tl().x;
                 hr.y -= vp.tl().y;
 
@@ -346,14 +347,20 @@ namespace dang
             manifold mf = {};
 
             RectF meRect = me->getHotrect();
-            meRect.x += me->getLastPos().x;
-            meRect.y += me->getLastPos().y;
-            Vector2F deltaMe = me->getPosDelta();
+//            meRect.x += me->getLastPos().x;
+//            meRect.y += me->getLastPos().y;
+//            Vector2F deltaMe = me->getPosDelta();
+            meRect.x += me->_last_pos_g.x;
+            meRect.y += me->_last_pos_g.y;
+            Vector2F deltaMe = me->_pos_g - me->_last_pos_g;
 
             RectF otherRect = other->getHotrect();
-            otherRect.x += other->getLastPos().x;
-            otherRect.y += other->getLastPos().y;
-            Vector2F deltaOther = other->getPosDelta();
+//            otherRect.x += other->getLastPos().x;
+//            otherRect.y += other->getLastPos().y;
+//            Vector2F deltaOther = other->getPosDelta();
+            otherRect.x += other->_last_pos_g.x;
+            otherRect.y += other->_last_pos_g.y;
+            Vector2F deltaOther = other->_pos_g - other->_last_pos_g;
 
             Vector2F delta = deltaMe - deltaOther;
             RectF rMink = otherRect.minkowskiDiff(meRect);
@@ -409,8 +416,10 @@ namespace dang
                 }
 
 
-                mf.touchMe = me->getLastPos() + mf.deltaMe;
-                mf.touchOther = other->getLastPos() + mf.deltaOther;
+//                mf.touchMe = me->getLastPos() + mf.deltaMe;
+//                mf.touchOther = other->getLastPos() + mf.deltaOther;
+                mf.touchMe = me->_last_pos_g + mf.deltaMe;
+                mf.touchOther = other->_last_pos_g + mf.deltaOther;
 
                 // ti is not valid in this context since the rect overlap already
                 mf.ti = 0;
@@ -426,11 +435,13 @@ namespace dang
 
                     mf.overlaps = false;
                     mf.deltaMe = deltaMe * mf.ti;
-                    mf.touchMe = me->getLastPos() + mf.deltaMe;
+//                    mf.touchMe = me->getLastPos() + mf.deltaMe;
+                    mf.touchMe = me->_last_pos_g + mf.deltaMe;
                     mf.normalMe = -mf.normalOther;
 
                     mf.deltaOther = deltaOther * mf.ti;
-                    mf.touchOther = other->getLastPos() + mf.deltaOther;
+//                    mf.touchOther = other->getLastPos() + mf.deltaOther;
+                    mf.touchOther = other->_last_pos_g + mf.deltaOther;
 
                     mf_list.push_front(mf);
                 }
@@ -586,6 +597,7 @@ namespace dang
      */
     float CollisionSpriteLayer::aaLoSH(const spCollisionSprite me, const spCollisionSprite target)
     {
+        // TODO: use global pos
         Vector2F me_p = me->getHotrectAbs().center();
         RectF target_hr = target->getHotrectAbs();
 
@@ -685,6 +697,7 @@ namespace dang
      */
     float CollisionSpriteLayer::loS(const spCollisionSprite me, const spCollisionSprite target)
     {
+        // TODO: use global pos
         Vector2F p1 = me->getHotrectAbs().center();
         Vector2F p2 = target->getHotrectAbs().center();
         bool    intersection{false};

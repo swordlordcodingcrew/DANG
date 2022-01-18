@@ -98,6 +98,7 @@ namespace dang
 
         uint8_t     getTransform() const { return _transform; }
         RectF       getSizeRect();      // return size of sprite
+        RectF       getSizeRectG();      // return size of sprite in global coords
 
     public: // variables
         bool                            _visible{true};
@@ -111,6 +112,9 @@ namespace dang
         uint8_t                         _type_num{0}; // 0 == undefined
         bool                            _remove_me{false};  // if set to true, this sprite will be removed from the layer
 
+        Vector2F    _pos_g{0,0};  // global position
+        Vector2F    _last_pos_g{0,0};  // global position
+
     protected:  // variables
 
         //std::string name;     // to be implemented
@@ -120,6 +124,7 @@ namespace dang
         Vector2F     _vel{0,0};
         Vector2F     _acc{0,0};
         Vector2F     _gravity{0,0};
+
 
         Vector2F    _last_pos{0,0};     // used e.g. for collision detection
 //        uint32_t    _last_update_time{0};

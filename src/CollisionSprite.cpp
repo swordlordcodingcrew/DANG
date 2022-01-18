@@ -39,6 +39,11 @@ namespace dang
         return RectF(_hotrect.x + _pos.x, _hotrect.y + _pos.y, _hotrect.w, _hotrect.h);
     }
 
+    RectF CollisionSprite::getHotrectGlob() const
+    {
+        return RectF(_hotrect.x + _pos_g.x, _hotrect.y + _pos_g.y, _hotrect.w, _hotrect.h);
+    }
+
     void CollisionSprite::collide(const CollisionSpriteLayer::manifold &mf)
     {
         switch (_coll_response)
@@ -145,6 +150,7 @@ namespace dang
     {
         return _nTreeState;
     }
+
 
 
 }

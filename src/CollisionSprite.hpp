@@ -26,6 +26,7 @@ namespace dang
 
         RectF       getHotrect() const { return _hotrect; };
         RectF       getHotrectAbs() const;
+        RectF       getHotrectGlob() const;
         virtual CollisionSpriteLayer::eCollObjectType       getCOType() const { return _coll_object_type; }
         virtual void                                        setCOType(CollisionSpriteLayer::eCollObjectType type) { _coll_object_type = type; }
 

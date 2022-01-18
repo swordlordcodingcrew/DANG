@@ -140,12 +140,18 @@ namespace dang
     void Sprite::coreUpdate(uint32_t dt)
     {
         _last_pos = _pos;
+        _last_pos_g = _pos_g;
         updateTweens(dt);
 
         // dt in 10 ms
         float dt10ms = dt / 100.0f;
         _vel += (_gravity + _acc) * dt10ms;
         _pos += _vel * dt10ms;
+        spSprite par = _parent.lock();
+        if (par != nullptr)
+        {
+            _pos_g = _pos + par->_pos_g;
+        }
     }
 
     void Sprite::update(uint32_t dt)
@@ -157,11 +163,16 @@ namespace dang
         return RectF(_pos.x, _pos.y, _size.x, _size.y);
     }
 
+    RectF Sprite::getSizeRectG()
+    {
+        return RectF(_pos_g.x, _pos_g.y, _size.x, _size.y);
+    }
+
     void Sprite::render(int32_t vpx, int32_t vpy)
     {
         blit::Point dp;
-        dp.x  = int32_t(std::floor(_pos.x) - vpx);
-        dp.y  = int32_t(std::floor(_pos.y) - vpy);
+        dp.x  = int32_t(std::floor(_pos_g.x) - vpx);
+        dp.y  = int32_t(std::floor(_pos_g.y) - vpy);
         blit::screen.blit(_imagesheet->getSurface(), getBlitRect(), dp, _transform);
     }
 
@@ -299,8 +310,10 @@ namespace dang
                     }
                 }
             }
-
         }
+        s->_pos_g = s->_pos + _pos;
+        s->_last_pos = s->_pos;
+        s->_last_pos_g = s->_pos_g;
     }
 
     /**
