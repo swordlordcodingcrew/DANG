@@ -58,7 +58,7 @@ namespace dang
             if (dr.area() != 0)
             {
                 spCollisionSprite cspr = std::static_pointer_cast<CollisionSprite>(spr);
-                RectF hr = cspr->getHotrectAbs();
+                RectF hr = cspr->getHotrectL();
                 hr.x -= vp.tl().x;
                 hr.y -= vp.tl().y;
 

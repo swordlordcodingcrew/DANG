@@ -59,8 +59,8 @@ namespace dang
         virtual void update(uint32_t dt);
         virtual void render(int32_t vpx, int32_t vpy);
 
-        // simple image
-        void setImagesheet(std::shared_ptr<Imagesheet> is) { _imagesheet = is; }
+        // image
+        void setImagesheet(spImagesheet is) { _imagesheet = is; }
         void setSize(SizeF& s) {_size = s; }
         void setSize(float w, float h) {_size.w = w; _size.h = h; }
         blit::Rect getBlitRect();
@@ -89,10 +89,17 @@ namespace dang
         void        setAccX(float x) {_acc.x = x; }
         void        setAccY(float y) {_acc.y = y; }
 
-        float        getPosX() const { return _pos.x; }
-        float        getPosY() const { return _pos.y; }
-        float        getLastPosX() const { return _last_pos.x; }
-        float        getLastPosY() const { return _last_pos.y; }
+        Vector2F    getPosG() { return _pos_g; }
+        Vector2F    getLastPosG() { return _last_pos_g; }
+        float       getPosX() const { return _pos.x; }
+        float       getPosY() const { return _pos.y; }
+        float       getLastPosX() const { return _last_pos.x; }
+        float       getLastPosY() const { return _last_pos.y; }
+
+        float        getPosGX() const { return _pos_g.x; }
+        float        getPosGY() const { return _pos_g.y; }
+        float        getLastPosGX() const { return _last_pos_g.x; }
+        float        getLastPosGY() const { return _last_pos_g.y; }
 
         Vector2F    getSize() { return _size; }
 
@@ -112,8 +119,6 @@ namespace dang
         uint8_t                         _type_num{0}; // 0 == undefined
         bool                            _remove_me{false};  // if set to true, this sprite will be removed from the layer
 
-        Vector2F    _pos_g{0,0};  // global position
-        Vector2F    _last_pos_g{0,0};  // global position
 
     protected:  // variables
 
@@ -124,6 +129,9 @@ namespace dang
         Vector2F     _vel{0,0};
         Vector2F     _acc{0,0};
         Vector2F     _gravity{0,0};
+
+        Vector2F    _pos_g{0,0};  // global position
+        Vector2F    _last_pos_g{0,0};  // global position
 
 
         Vector2F    _last_pos{0,0};     // used e.g. for collision detection

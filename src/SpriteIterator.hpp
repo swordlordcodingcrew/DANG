@@ -39,12 +39,6 @@ namespace dang
     protected:
         friend class SpriteLayer;
 
-        // nodePtr is the current location in the tree. we can move
-        // freely about the tree using left, right, and parent.
-        // tree is the address of the stree object associated
-        // with this iterator. it is used only to access the
-        // root pointer, which is needed for ++ and --
-        // when the iterator value is end()
         spSprite _current;
         spSprite _root;
 

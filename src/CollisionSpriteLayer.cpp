@@ -44,7 +44,6 @@ namespace dang
 
         // then call update
         for (SpriteIterator it = begin(); it != end(); it++)
-//        for (spSprite& spr : _active_sprites)
         {
             spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>((*it));
             if (cspr->_active)
@@ -137,10 +136,8 @@ namespace dang
         while (_iteration > 0)
         {
             for (SpriteIterator it = begin(); it != end(); it++)
-//            for (const spSprite &spr : _active_sprites)
             {
                 const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>((*it));
-//                const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>(spr);
 
                 // pointer anomaly, should not happen (but who knows..)
                 if (me == nullptr)
@@ -152,17 +149,12 @@ namespace dang
                 {
                     continue;
                 }
- //               if (!gear.getActiveWorld().intersects(me->getSizeRect()))
- //               {
- //                   continue;
- //               }
 
                 // if collisions sprite type RIGID no active collision detection is processed or sprite is already handled
                 if (me->getCOType() == CollisionSpriteLayer::COT_RIGID || _handled.count(me) > 0)
                 {
                     continue;
                 }
-
 
                 // find possible collisions
                 std::forward_list<manifold> projected_mfs;
@@ -350,17 +342,17 @@ namespace dang
 //            meRect.x += me->getLastPos().x;
 //            meRect.y += me->getLastPos().y;
 //            Vector2F deltaMe = me->getPosDelta();
-            meRect.x += me->_last_pos_g.x;
-            meRect.y += me->_last_pos_g.y;
-            Vector2F deltaMe = me->_pos_g - me->_last_pos_g;
+            meRect.x += me->getLastPosGX();
+            meRect.y += me->getLastPosGY();
+            Vector2F deltaMe = me->getPosG() - me->getLastPosG();
 
             RectF otherRect = other->getHotrect();
 //            otherRect.x += other->getLastPos().x;
 //            otherRect.y += other->getLastPos().y;
 //            Vector2F deltaOther = other->getPosDelta();
-            otherRect.x += other->_last_pos_g.x;
-            otherRect.y += other->_last_pos_g.y;
-            Vector2F deltaOther = other->_pos_g - other->_last_pos_g;
+            otherRect.x += other->getLastPosGX();
+            otherRect.y += other->getLastPosGY();
+            Vector2F deltaOther = other->getPosG() - other->getLastPosG();
 
             Vector2F delta = deltaMe - deltaOther;
             RectF rMink = otherRect.minkowskiDiff(meRect);
@@ -418,10 +410,10 @@ namespace dang
 
 //                mf.touchMe = me->getLastPos() + mf.deltaMe;
 //                mf.touchOther = other->getLastPos() + mf.deltaOther;
-                mf.touchMe = me->_last_pos_g + mf.deltaMe;
-                mf.touchOther = other->_last_pos_g + mf.deltaOther;
+                mf.touchMe = me->getLastPosG() + mf.deltaMe;
+                mf.touchOther = other->getLastPosG() + mf.deltaOther;
 
-                // ti is not valid in this context since the rect overlap already
+                // ti is not valid in this context since the rects overlap already
                 mf.ti = 0;
 
                 mf_list.push_front(mf);
@@ -436,12 +428,12 @@ namespace dang
                     mf.overlaps = false;
                     mf.deltaMe = deltaMe * mf.ti;
 //                    mf.touchMe = me->getLastPos() + mf.deltaMe;
-                    mf.touchMe = me->_last_pos_g + mf.deltaMe;
+                    mf.touchMe = me->getLastPosG() + mf.deltaMe;
                     mf.normalMe = -mf.normalOther;
 
                     mf.deltaOther = deltaOther * mf.ti;
 //                    mf.touchOther = other->getLastPos() + mf.deltaOther;
-                    mf.touchOther = other->_last_pos_g + mf.deltaOther;
+                    mf.touchOther = other->getLastPosG() + mf.deltaOther;
 
                     mf_list.push_front(mf);
                 }
@@ -597,9 +589,8 @@ namespace dang
      */
     float CollisionSpriteLayer::aaLoSH(const spCollisionSprite me, const spCollisionSprite target)
     {
-        // TODO: use global pos
-        Vector2F me_p = me->getHotrectAbs().center();
-        RectF target_hr = target->getHotrectAbs();
+        Vector2F me_p = me->getHotrectG().center();
+        RectF target_hr = target->getHotrectG();
 
         // target too high / too low, ergo not visible
         if (me_p.y > target_hr.bottom() || me_p.y < target_hr.top())
@@ -610,7 +601,6 @@ namespace dang
         float dx_target = std::min(me_p.x - target_hr.left(), me_p.x - target_hr.right());
 
         for (SpriteIterator it = begin(); it != end(); it++)
-//        for (const spSprite &spr : _active_sprites)
         {
             const spCollisionSprite obst = std::dynamic_pointer_cast<CollisionSprite>(*it);
 
@@ -627,12 +617,12 @@ namespace dang
             }
 
             // obstacle too high / too low, ergo not an obstacle
-            if (me_p.y > obst->getHotrectAbs().bottom() || me_p.y < obst->getHotrectAbs().top())
+            if (me_p.y > obst->getHotrectG().bottom() || me_p.y < obst->getHotrectG().top())
             {
                 continue;
             }
 
-            float dx_obst = std::min(me_p.x - obst->getHotrectAbs().left(), me_p.x - obst->getHotrectAbs().right());
+            float dx_obst = std::min(me_p.x - obst->getHotrectG().left(), me_p.x - obst->getHotrectG().right());
 
             if (dx_obst * dx_target < 0) // if not the same sign (not both obstacle and target on the left or both on the right), no obstacle
             {
@@ -691,19 +681,16 @@ namespace dang
      *
      * You can, of course, do B first, then A.
      *
-     * @param me the viewer
-     * @param target the point to be seen or not
+     * @param me the viewer (center of hotrect)
+     * @param target the point to be seen or not (hotrect)
      * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
      */
     float CollisionSpriteLayer::loS(const spCollisionSprite me, const spCollisionSprite target)
     {
-        // TODO: use global pos
-        Vector2F p1 = me->getHotrectAbs().center();
-        Vector2F p2 = target->getHotrectAbs().center();
-        bool    intersection{false};
+        Vector2F p1 = me->getHotrectG().center();
+        Vector2F p2 = target->getHotrectG().center();
 
         for (SpriteIterator it = begin(); it != end(); it++)
-//        for (const spSprite& spr : _active_sprites)
         {
             const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>(*it);
 
@@ -719,7 +706,7 @@ namespace dang
                 continue;
             }
 
-            RectF r = other->getHotrectAbs();
+            RectF r = other->getHotrectG();
             float f_tl = (p2.y - p1.y) * r.tl().x + (p1.x - p2.x) * r.tl().y + (p2.x *p1.y - p1.x * p2.y);
             float f_tr = (p2.y - p1.y) * r.tr().x + (p1.x - p2.x) * r.tr().y + (p2.x *p1.y - p1.x * p2.y);
             float f_bl = (p2.y - p1.y) * r.bl().x + (p1.x - p2.x) * r.bl().y + (p2.x *p1.y - p1.x * p2.y);
@@ -731,10 +718,10 @@ namespace dang
                 continue;
             }
 
-            if (p1.x > r.right() && p2.x > r.right()) { continue; }   // no intersection (line is to right of rectangle).
-            if (p1.x < r.left() && p2.x < r.left()) { continue; }   // no intersection (line is to left of rectangle).
+            if (p1.x > r.right() && p2.x > r.right()) { continue; }   // no intersection (line is to the right of rectangle).
+            if (p1.x < r.left() && p2.x < r.left()) { continue; }   // no intersection (line is to the left of rectangle).
             if (p1.y > r.bottom() && p2.y > r.bottom()) { continue; }   // no intersection (line is below rectangle).
-            if (p1.y < r.top() && p2.y < r.top()) { continue; }     // no intersection (line is below rectangle).
+            if (p1.y < r.top() && p2.y < r.top()) { continue; }     // no intersection (line is above rectangle).
 
             // there is an intersection -> target not visible
             return 0;

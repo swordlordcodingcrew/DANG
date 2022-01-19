@@ -99,7 +99,6 @@ namespace dang
                     ++tw;
                 }
             }
-
         }
 
         // special case animation. There can be only one

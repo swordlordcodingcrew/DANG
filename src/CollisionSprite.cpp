@@ -27,19 +27,34 @@ namespace dang
 #endif
     }
 
-    CollisionSprite::CollisionSprite(const tmx_spriteobject* so, const spImagesheet& is)
-    : Sprite(so, is)
+    CollisionSprite::CollisionSprite(const tmx_spriteobject* so, const spImagesheet& is) : Sprite(so, is)
     {
         _hotrect = {0, 0, float(so->width), float(so->height)};
     }
 
+    /**
+     *
+     * @return hotrect relative to (0,0) of the image
+     */
+    RectF CollisionSprite::getHotrect() const
+    {
+        return _hotrect;
+    }
 
-    RectF CollisionSprite::getHotrectAbs() const
+    /**
+     *
+     * @return hotrect in local coords of the sprite
+     */
+    RectF CollisionSprite::getHotrectL() const
     {
         return RectF(_hotrect.x + _pos.x, _hotrect.y + _pos.y, _hotrect.w, _hotrect.h);
     }
 
-    RectF CollisionSprite::getHotrectGlob() const
+    /**
+     *
+     * @return hotrect with global coords of the layer
+     */
+    RectF CollisionSprite::getHotrectG() const
     {
         return RectF(_hotrect.x + _pos_g.x, _hotrect.y + _pos_g.y, _hotrect.w, _hotrect.h);
     }
@@ -150,7 +165,5 @@ namespace dang
     {
         return _nTreeState;
     }
-
-
 
 }

@@ -24,9 +24,9 @@ namespace dang
 
         void        update(uint32_t dt) override;
 
-        RectF       getHotrect() const { return _hotrect; };
-        RectF       getHotrectAbs() const;
-        RectF       getHotrectGlob() const;
+        RectF       getHotrect() const;
+        RectF       getHotrectL() const;
+        RectF       getHotrectG() const;
         virtual CollisionSpriteLayer::eCollObjectType       getCOType() const { return _coll_object_type; }
         virtual void                                        setCOType(CollisionSpriteLayer::eCollObjectType type) { _coll_object_type = type; }
 

@@ -6,13 +6,11 @@
 
 namespace dang
 {
-    SpriteIterator::SpriteIterator()
-            : _current(nullptr), _root(nullptr)
+    SpriteIterator::SpriteIterator() : _current(nullptr), _root(nullptr)
     {
     }
 
-    SpriteIterator::SpriteIterator(const spSprite cur, const spSprite root)
-            : _current(cur), _root(root)
+    SpriteIterator::SpriteIterator(const spSprite cur, const spSprite root) : _current(cur), _root(root)
     {
     }
 
@@ -31,11 +29,7 @@ namespace dang
     // the value pointed to by nodePtr
     const spSprite& SpriteIterator::operator* () const
     {
-/*        if (_current == nullptr)
-        {
-            throw UnderflowException{};
-        }
-*/        return _current;
+        return _current;
     }
 
     // preincrement. move forward to next node
@@ -45,13 +39,6 @@ namespace dang
         {
             // ++ from end(). get the root of the tree
             _current = _root;
-
-            // error! ++ requested for an empty tree
-/*            if (_current == nullptr)
-            {
-                throw UnderflowException { };
-            }
-*/
         }
         else if (_current->_child != nullptr)
         {
@@ -87,7 +74,6 @@ namespace dang
     }
 
     // postincrement
-
     SpriteIterator  SpriteIterator::operator++ (int)
     {
         auto saved = *this;
