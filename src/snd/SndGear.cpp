@@ -45,7 +45,7 @@ namespace dang
         blit::channels[ch].waveforms = blit::Waveform::WAVE; // Set type to WAVE
         blit::channels[ch].wave_buffer_callback = &SndGear::sfx_buff_cb;  // Set callback address
         blit::channels[ch].volume = volume * 0xffff;
-        blit::channels[ch].user_data = (void*)ch;
+        blit::channels[ch].user_data = reinterpret_cast<void*>(ch);
         blit::channels[ch].trigger_attack();
 
         return ch;
