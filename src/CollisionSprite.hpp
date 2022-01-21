@@ -31,9 +31,9 @@ namespace dang
         virtual void                                        setCOType(CollisionSpriteLayer::eCollObjectType type) { _coll_object_type = type; }
 
         virtual void collide(const CollisionSpriteLayer::manifold &mf);
-//        virtual void slide(const CollisionSpriteLayer::manifold &mf);
-//        virtual void touch(const CollisionSpriteLayer::manifold &mf);
-//        virtual void bounce(const CollisionSpriteLayer::manifold &mf);
+        virtual void slide(const CollisionSpriteLayer::manifold &mf);
+        virtual void touch(const CollisionSpriteLayer::manifold &mf);
+        virtual void bounce(const CollisionSpriteLayer::manifold &mf);
 
         virtual CollisionSpriteLayer::eCollisionResponse    getCollisionResponse(const spCollisionSprite& other);
         void                                        setCollisionResponse(CollisionSpriteLayer::eCollisionResponse response) { _coll_response = response; };

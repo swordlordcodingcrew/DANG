@@ -177,13 +177,13 @@ namespace dang
                         switch (cr_me)
                         {
                             case CR_TOUCH:
-                                touch(mf, true);
+                                me->touch(mf);
                                 break;
                             case CR_SLIDE:
-                                slide(mf, true);
+                                me->slide(mf);
                                 break;
                             case CR_BOUNCE:
-                                bounce(mf, true);
+                                me->bounce(mf);
                                 break;
                             default:
                                 break;
@@ -192,13 +192,13 @@ namespace dang
                         switch (cr_other)
                         {
                             case CR_TOUCH:
-                                touch(mf, false);
+                                mf.other->touch(mf);
                                 break;
                             case CR_SLIDE:
-                                slide(mf, false);
+                                mf.other->slide(mf);
                                 break;
                             case CR_BOUNCE:
-                                bounce(mf, false);
+                                mf.other->bounce(mf);
                                 break;
                             default:
                                 break;
@@ -239,7 +239,7 @@ namespace dang
         } // while loop
     }
 
-    void CollisionSpriteLayer::slide(manifold &mf, bool for_me)
+/*    void CollisionSpriteLayer::slide(manifold &mf, bool for_me)
     {
         if (for_me)
         {
@@ -316,7 +316,7 @@ namespace dang
             }
         }
     }
-
+*/
 
     void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, std::forward_list<manifold>& mf_list)
     {

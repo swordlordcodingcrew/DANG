@@ -105,7 +105,7 @@ namespace dang
         }
     }
 
-/*    void CollisionSprite::slide(const CollisionSpriteLayer::manifold &mf)
+    void CollisionSprite::slide(const CollisionSpriteLayer::manifold &mf)
     {
         if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
         {
@@ -134,17 +134,53 @@ namespace dang
         }
     }
 
-    void touch(const CollisionSpriteLayer::manifold &mf)
+    void CollisionSprite::touch(const CollisionSpriteLayer::manifold &mf)
     {
-
+        if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
+        {
+            if (mf.me.get() == this)
+            {
+                _pos = mf.touchMe;
+            }
+            else
+            {
+                _pos = mf.touchOther;
+            }
+        }
     }
 
-    void bounce(const CollisionSpriteLayer::manifold &mf)
+    void CollisionSprite::bounce(const CollisionSpriteLayer::manifold &mf)
     {
-
+        if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
+        {
+            if (mf.me.get() == this)
+            {
+                if (mf.normalMe.x != 0)
+                {
+                    float d_bounce = _pos.x - _last_pos.x - mf.deltaMe.x;
+                    _pos.x = mf.touchMe.x - d_bounce;
+                }
+                else
+                {
+                    float d_bounce = _pos.y - _last_pos.y - mf.deltaMe.y;
+                    _pos.y = mf.touchMe.y - d_bounce;
+                }
+            }
+            else    // for the other
+            {
+                if (mf.normalOther.x != 0)
+                {
+                    float d_bounce = _pos.x - _last_pos.x - mf.deltaOther.x;
+                    _pos.x = mf.touchOther.x - d_bounce;
+                }
+                else
+                {
+                    float d_bounce = _pos.y - _last_pos.y - mf.deltaOther.y;
+                    _pos.y = mf.touchOther.y - d_bounce;
+                }
+            }
+        }
     }
-
-*/
 
     CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(const spCollisionSprite& other)
     {
