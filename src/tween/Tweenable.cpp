@@ -77,7 +77,7 @@ namespace dang
 //            std::cout << "x=" << x << " , _start_time=" << st << " , time=" << time << std::endl;
             assert(x >= 0 || x <= 1);
 
-            return (_alternating && _loop % 2 == 1 ? 1 - x : x);
+            return _ease_cb(_alternating && _loop % 2 == 1 ? 1 - x : x);
         }
         else    // ease finished
         {
@@ -85,6 +85,7 @@ namespace dang
             {
                 _loop = (_loop + 1) % 2;
                 _progress = 0;
+                return _ease_cb(_alternating && _loop % 2 == 1 ? 1 : 0);
             }
             else
             {
