@@ -86,7 +86,9 @@ set(SOURCES
         src/path/Wavepoint.cpp
         src/path/Wavepoint.hpp
         src/SpriteIterator.cpp
-        src/SpriteIterator.hpp)
+        src/SpriteIterator.hpp
+        src/tween/TwPosSpline.cpp
+        src/tween/TwPosSpline.h)
 
 add_library(DANG STATIC ${SOURCES} )
 #target_link_libraries(DANG xmp_lite)
