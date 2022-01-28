@@ -362,7 +362,7 @@ function export32Blit(map, fileName) {
                         delay = 0;
                     }
 
-                    buf_pts += "    {" + o.id + ", \"" + o.type + "\", " + o.x + "," + o.y + ", " + duration + ", " + Math.trunc(orientation) + ", " + delay + ", " + next_id + "},\n";
+                    buf_pts += "    {" + o.id + ", \"" + o.name + "\", \"" + o.type + "\", " + o.x + "," + o.y + ", " + duration + ", " + Math.trunc(orientation) + ", " + delay + ", " + next_id + "},\n";
                     wap_len++;
                 }
 

@@ -22,11 +22,13 @@ namespace dang
 {
     struct tmx_spriteobject;
 
+    class SpriteIterator;
     class Imagesheet;
     class Tweenable;
     class TwAnim;
     using spTweenable = std::shared_ptr<Tweenable>;
     using spTwAnim = std::shared_ptr<TwAnim>;
+
 
     class Sprite : public std::enable_shared_from_this<Sprite>
     {
@@ -35,6 +37,10 @@ namespace dang
         Sprite(const Sprite& sp);
         Sprite(const tmx_spriteobject* so, const spImagesheet& is);
         virtual ~Sprite();
+
+        // tree
+        void    addSprite(spSprite s);
+        void    removeMeFromTree();
 
         // tween stuff
         void addTween(spTweenable tw);
@@ -53,8 +59,8 @@ namespace dang
         virtual void update(uint32_t dt);
         virtual void render(int32_t vpx, int32_t vpy);
 
-        // simple image
-        void setImagesheet(std::shared_ptr<Imagesheet> is) { _imagesheet = is; }
+        // image
+        void setImagesheet(spImagesheet is) { _imagesheet = is; }
         void setSize(SizeF& s) {_size = s; }
         void setSize(float w, float h) {_size.w = w; _size.h = h; }
         blit::Rect getBlitRect();
@@ -83,18 +89,27 @@ namespace dang
         void        setAccX(float x) {_acc.x = x; }
         void        setAccY(float y) {_acc.y = y; }
 
-        float        getPosX() const { return _pos.x; }
-        float        getPosY() const { return _pos.y; }
-        float        getLastPosX() const { return _last_pos.x; }
-        float        getLastPosY() const { return _last_pos.y; }
+        Vector2F    getPosG() { return _pos_g; }
+        Vector2F    getLastPosG() { return _last_pos_g; }
+        float       getPosX() const { return _pos.x; }
+        float       getPosY() const { return _pos.y; }
+        float       getLastPosX() const { return _last_pos.x; }
+        float       getLastPosY() const { return _last_pos.y; }
+
+        float        getPosGX() const { return _pos_g.x; }
+        float        getPosGY() const { return _pos_g.y; }
+        float        getLastPosGX() const { return _last_pos_g.x; }
+        float        getLastPosGY() const { return _last_pos_g.y; }
 
         Vector2F    getSize() { return _size; }
 
         uint8_t     getTransform() const { return _transform; }
         RectF       getSizeRect();      // return size of sprite
+        RectF       getSizeRectG();      // return size of sprite in global coords
 
     public: // variables
         bool                            _visible{true};
+        bool                            _active{true};
         uint16_t                        _img_index{0};  // index to the image of the imagesheet. (equals tmx_tile of tmx_spriteobject?)
         spImagesheet                    _imagesheet{nullptr};
         uint8_t                         _transform{0};      // transform for blitting
@@ -102,6 +117,8 @@ namespace dang
         uint16_t                        _id{0};    // global
         std::string                     _type_name{""};
         uint8_t                         _type_num{0}; // 0 == undefined
+        bool                            _remove_me{false};  // if set to true, this sprite will be removed from the layer
+
 
     protected:  // variables
 
@@ -113,6 +130,10 @@ namespace dang
         Vector2F     _acc{0,0};
         Vector2F     _gravity{0,0};
 
+        Vector2F    _pos_g{0,0};  // global position
+        Vector2F    _last_pos_g{0,0};  // global position
+
+
         Vector2F    _last_pos{0,0};     // used e.g. for collision detection
 //        uint32_t    _last_update_time{0};
 
@@ -121,14 +142,12 @@ namespace dang
         spTweenable _animation;
 
     protected:      // tree
+        friend class SpriteIterator;
+        friend class SpriteLayer;
         std::weak_ptr<Sprite>   _parent;
         spSprite                _child{nullptr};    // left
-        spSprite                _sibling{nullptr};  // right
-
-    public:         // tree
-        void        addSprite(spSprite s);
-        void        removeSprite(spSprite s);
-
+        spSprite                _next_sibling{nullptr};  // right
+        std::weak_ptr<Sprite>   _prev_sibling;
 
     };
 

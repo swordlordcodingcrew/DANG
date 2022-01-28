@@ -21,21 +21,42 @@ namespace dang
 
     CollisionSprite::~CollisionSprite()
     {
+//        std::cout << "Collision sprite destroyed. Type=" << _type_name << std::endl;
 #ifdef DANG_DEBUG
         std::cout << "Collision sprite destroyed" << std::endl;
 #endif
     }
 
-    CollisionSprite::CollisionSprite(const tmx_spriteobject* so, const spImagesheet& is)
-    : Sprite(so, is)
+    CollisionSprite::CollisionSprite(const tmx_spriteobject* so, const spImagesheet& is) : Sprite(so, is)
     {
         _hotrect = {0, 0, float(so->width), float(so->height)};
     }
 
+    /**
+     *
+     * @return hotrect relative to (0,0) of the image
+     */
+    RectF CollisionSprite::getHotrect() const
+    {
+        return _hotrect;
+    }
 
-    RectF CollisionSprite::getHotrectAbs() const
+    /**
+     *
+     * @return hotrect in local coords of the sprite
+     */
+    RectF CollisionSprite::getHotrectL() const
     {
         return RectF(_hotrect.x + _pos.x, _hotrect.y + _pos.y, _hotrect.w, _hotrect.h);
+    }
+
+    /**
+     *
+     * @return hotrect with global coords of the layer
+     */
+    RectF CollisionSprite::getHotrectG() const
+    {
+        return RectF(_hotrect.x + _pos_g.x, _hotrect.y + _pos_g.y, _hotrect.w, _hotrect.h);
     }
 
     void CollisionSprite::collide(const CollisionSpriteLayer::manifold &mf)
@@ -84,6 +105,83 @@ namespace dang
         }
     }
 
+    void CollisionSprite::slide(const CollisionSpriteLayer::manifold &mf)
+    {
+        if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
+        {
+            if (mf.me.get() == this)
+            {
+                if (mf.normalMe.x * mf.me->getPosDelta().x > 0)
+                {
+                    _pos.x = mf.touchMe.x;
+                }
+                else if (mf.normalMe.y * mf.me->getPosDelta().y > 0)
+                {
+                    _pos.y = mf.touchMe.y;
+                }
+            }
+            else
+            {
+                if (mf.normalOther.x * mf.other->getPosDelta().x > 0)
+                {
+                    _pos.x = mf.touchOther.x;
+                }
+                else if (mf.normalOther.y * mf.other->getPosDelta().y > 0)
+                {
+                    _pos.y = mf.touchOther.y;
+                }
+            }
+        }
+    }
+
+    void CollisionSprite::touch(const CollisionSpriteLayer::manifold &mf)
+    {
+        if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
+        {
+            if (mf.me.get() == this)
+            {
+                _pos = mf.touchMe;
+            }
+            else
+            {
+                _pos = mf.touchOther;
+            }
+        }
+    }
+
+    void CollisionSprite::bounce(const CollisionSpriteLayer::manifold &mf)
+    {
+        if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
+        {
+            if (mf.me.get() == this)
+            {
+                if (mf.normalMe.x != 0)
+                {
+                    float d_bounce = _pos.x - _last_pos.x - mf.deltaMe.x;
+                    _pos.x = mf.touchMe.x - d_bounce;
+                }
+                else
+                {
+                    float d_bounce = _pos.y - _last_pos.y - mf.deltaMe.y;
+                    _pos.y = mf.touchMe.y - d_bounce;
+                }
+            }
+            else    // for the other
+            {
+                if (mf.normalOther.x != 0)
+                {
+                    float d_bounce = _pos.x - _last_pos.x - mf.deltaOther.x;
+                    _pos.x = mf.touchOther.x - d_bounce;
+                }
+                else
+                {
+                    float d_bounce = _pos.y - _last_pos.y - mf.deltaOther.y;
+                    _pos.y = mf.touchOther.y - d_bounce;
+                }
+            }
+        }
+    }
+
     CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(const spCollisionSprite& other)
     {
         return _coll_response;
@@ -103,6 +201,5 @@ namespace dang
     {
         return _nTreeState;
     }
-
 
 }

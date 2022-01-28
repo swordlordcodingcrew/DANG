@@ -24,14 +24,20 @@ namespace dang
 
         void        update(uint32_t dt) override;
 
-        RectF       getHotrect() const { return _hotrect; };
-        RectF       getHotrectAbs() const;
+        RectF       getHotrect() const;
+        RectF       getHotrectL() const;
+        RectF       getHotrectG() const;
+        virtual CollisionSpriteLayer::eCollObjectType       getCOType() const { return _coll_object_type; }
+        virtual void                                        setCOType(CollisionSpriteLayer::eCollObjectType type) { _coll_object_type = type; }
+
         virtual void collide(const CollisionSpriteLayer::manifold &mf);
+        virtual void slide(const CollisionSpriteLayer::manifold &mf);
+        virtual void touch(const CollisionSpriteLayer::manifold &mf);
+        virtual void bounce(const CollisionSpriteLayer::manifold &mf);
+
         virtual CollisionSpriteLayer::eCollisionResponse    getCollisionResponse(const spCollisionSprite& other);
         void                                        setCollisionResponse(CollisionSpriteLayer::eCollisionResponse response) { _coll_response = response; };
 
-        virtual CollisionSpriteLayer::eCollObjectType       getCOType() const { return _coll_object_type; }
-        virtual void                                        setCOType(CollisionSpriteLayer::eCollObjectType type) { _coll_object_type = type; }
 
         // ts pointer will get moved
         void setNTreeState(spNTreeState ts);

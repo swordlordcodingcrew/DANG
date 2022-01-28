@@ -49,6 +49,8 @@ namespace dang
     using spTwVel = std::shared_ptr<TwVel>;
     class TwVelY;
     using spTwVelY = std::shared_ptr<TwVelY>;
+    class TwPosSpline;
+    using spTwPosSpline = std::shared_ptr<TwPosSpline>;
 
 
     /** remaining classes */

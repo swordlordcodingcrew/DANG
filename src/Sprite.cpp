@@ -99,7 +99,6 @@ namespace dang
                     ++tw;
                 }
             }
-
         }
 
         // special case animation. There can be only one
@@ -140,12 +139,18 @@ namespace dang
     void Sprite::coreUpdate(uint32_t dt)
     {
         _last_pos = _pos;
+        _last_pos_g = _pos_g;
         updateTweens(dt);
 
         // dt in 10 ms
         float dt10ms = dt / 100.0f;
         _vel += (_gravity + _acc) * dt10ms;
         _pos += _vel * dt10ms;
+        spSprite par = _parent.lock();
+        if (par != nullptr)
+        {
+            _pos_g = _pos + par->_pos_g;
+        }
     }
 
     void Sprite::update(uint32_t dt)
@@ -157,11 +162,16 @@ namespace dang
         return RectF(_pos.x, _pos.y, _size.x, _size.y);
     }
 
+    RectF Sprite::getSizeRectG()
+    {
+        return RectF(_pos_g.x, _pos_g.y, _size.x, _size.y);
+    }
+
     void Sprite::render(int32_t vpx, int32_t vpy)
     {
         blit::Point dp;
-        dp.x  = int32_t(std::floor(_pos.x) - vpx);
-        dp.y  = int32_t(std::floor(_pos.y) - vpy);
+        dp.x  = int32_t(std::floor(_pos_g.x) - vpx);
+        dp.y  = int32_t(std::floor(_pos_g.y) - vpy);
         blit::screen.blit(_imagesheet->getSurface(), getBlitRect(), dp, _transform);
     }
 
@@ -238,66 +248,123 @@ namespace dang
     void Sprite::addSprite(spSprite s)
     {
         s->_parent = shared_from_this();
+
         if (_child == nullptr)  // first child
         {
+            D_DEBUG_PRINT("add sprite as first child\n");
             _child = s;
-            s->_sibling = nullptr;
+            _child->_next_sibling = nullptr;
+            _child->_prev_sibling.reset();
         }
         else
         {
             // go through siblings until z_order is correct
             spSprite sp = _child;
-            if (sp->_z_order <= s->_z_order)
+            if (sp->_z_order >= s->_z_order)
             {
-                s->_sibling = _child;
+                // first position
+                D_DEBUG_PRINT("add sprite at first position\n");
                 _child = s;
+                _child->_next_sibling = sp;
+                _child->_prev_sibling.reset();
+
+                sp->_prev_sibling = _child;
             }
             else
             {
-                while (sp->_z_order > s->_z_order && sp->_sibling != nullptr)
+                while (sp->_next_sibling != nullptr)
                 {
-                    sp = sp->_sibling;
+                    if (sp->_z_order >= s->_z_order)
+                    {
+                        break;
+                    }
+                    sp = sp->_next_sibling;
                 }
-                s->_sibling = sp->_sibling;
-                sp->_sibling = s;
-            }
 
+                if (sp->_next_sibling == nullptr)
+                {
+                    // last sibling
+                    D_DEBUG_PRINT("add sprite at last position\n");
+                    sp->_next_sibling = s;
+                    s->_prev_sibling = sp;
+                    s->_next_sibling = nullptr;
+                }
+                else
+                {
+                    // somewhere in between
+                    D_DEBUG_PRINT("add sprite in between\n");
+                    spSprite prev = sp->_prev_sibling.lock();
+                    if (prev != nullptr)
+                    {
+                        prev->_next_sibling = s;
+
+                        s->_next_sibling = sp;
+                        s->_prev_sibling = prev;
+
+                        sp->_prev_sibling = s;
+                    }
+                    else
+                    {
+                        D_DEBUG_PRINT("could not add sprite error\n");
+                    }
+                }
+            }
         }
+        s->_pos_g = s->_pos + _pos;
+        s->_last_pos = s->_pos;
+        s->_last_pos_g = s->_pos_g;
     }
 
     /**
-     * removes child-sprite from this sprite
-     * @param s sprite to be removed
+     * removes this sprite from the tree (and its children)
      */
-    void Sprite::removeSprite(spSprite s)
+    void Sprite::removeMeFromTree()
     {
-        if (_child == nullptr)
+        spSprite par = _parent.lock();
+        if (par != nullptr)
         {
-            return;
-        }
-
-        if (_child == s)
-        {
-            _child = s->_sibling;
-        }
-
-        spSprite sp = _child;
-        while (sp->_sibling != nullptr)
-        {
-            if (sp->_sibling == s)
+            spSprite prev = _prev_sibling.lock();
+            if (prev == nullptr)
             {
-                sp->_sibling = s->_sibling;
-                break;
+                // first child
+                if (_next_sibling == nullptr)
+                {
+                    // only child
+                    par->_child = nullptr;
+                    D_DEBUG_PRINT("remove only child\n");
+                }
+                else
+                {
+                    par->_child = _next_sibling;
+                    par->_child->_prev_sibling.reset();
+                    D_DEBUG_PRINT("remove first child\n");
+                }
             }
             else
             {
-                sp = sp->_sibling;
+                if (_next_sibling != nullptr)
+                {
+                    prev->_next_sibling = _next_sibling;
+                    _next_sibling->_prev_sibling = prev;
+                    D_DEBUG_PRINT("remove a middle sibling");
+
+                }
+                else
+                {
+                    prev->_prev_sibling.reset();
+                    D_DEBUG_PRINT("remove last sibling");
+                }
             }
+
+            _parent.reset();
+            _next_sibling.reset();
+            _prev_sibling.reset();
         }
-
-        s->_sibling = nullptr;
-        s->_parent.reset();
-
+        else
+        {
+            // sprite is not in a tree;
+            // (and the root sprite cannot be removed)
+        }
     }
 
 

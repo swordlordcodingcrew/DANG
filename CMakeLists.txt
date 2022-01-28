@@ -7,10 +7,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 # if you want to see dang debug info drawn, enable this
 #add_definitions(-DDANG_DEBUG_PRINT)
+#add_definitions(-DDANG_DEBUG_DRAW)
 
 add_compile_options("-Wextra" "-Wdouble-promotion" "-fexceptions" "-Wattributes")
-
-#add_subdirectory(src/snd/xmp_lite_4_5_0)
 
 set(SOURCES
         src/dang.hpp
@@ -91,7 +90,11 @@ set(SOURCES
         src/Rand.cpp
         src/Rand.hpp
         src/path/Wavepoint.cpp
-        src/path/Wavepoint.hpp)
+        src/path/Wavepoint.hpp
+        src/SpriteIterator.cpp
+        src/SpriteIterator.hpp
+        src/tween/TwPosSpline.cpp
+        src/tween/TwPosSpline.h)
 
 add_library(DANG STATIC ${SOURCES} )
 #target_link_libraries(DANG xmp_lite)

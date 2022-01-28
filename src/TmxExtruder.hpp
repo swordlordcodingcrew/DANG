@@ -157,6 +157,7 @@ namespace dang
     struct tmx_wavepoint
     {
         const uint32_t id;
+        const std::string name;
         const std::string type;
         const float x;
         const float y;

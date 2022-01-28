@@ -6,6 +6,7 @@
 #include <malloc.h>
 #include "CollisionSpriteLayer.hpp"
 #include "Sprite.hpp"
+#include "SpriteIterator.hpp"
 #include "CollisionSprite.hpp"
 #include "Gear.hpp"
 
@@ -21,9 +22,12 @@ extern char _sbss, _end, __ltdc_start;
 
 namespace dang
 {
-    CollisionSpriteLayer::CollisionSpriteLayer() : SpriteLayer(LT_COLLISIONSPRITELAYER)
+    CollisionSpriteLayer::CollisionSpriteLayer()
     {
-
+        _type = LT_COLLISIONSPRITELAYER;
+        _root = std::make_shared<CollisionSprite>();
+        _root->_visible = false;
+        _root->setPos({0,0});
     }
 
     void CollisionSpriteLayer::addCollisionSprite(spCollisionSprite cspr)
@@ -39,22 +43,24 @@ namespace dang
         handleCollisionDetection(gear);
 
         // then call update
-        for (spSprite& spr : _active_sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
         {
-            spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>(spr);
-            if (cspr->getNTreeState() != nullptr)
+            spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>((*it));
+            if (cspr->_active)
             {
-                gear.runNTree(cspr);
+                if (cspr->getNTreeState() != nullptr)
+                {
+                    gear.runNTree(cspr);
 
 #ifdef DANG_DEBUG
-                std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::NTreeState::internal_state>>(cspr->getNTreeState()->_internal_state) << " and node position: " << cspr->getNTreeState()->_node << std::endl;
+                    std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::NTreeState::internal_state>>(cspr->getNTreeState()->_internal_state) << " and node position: " << cspr->getNTreeState()->_node << std::endl;
 #endif
+                }
+
+                // call update of sprite
+                cspr->update(dt);
             }
-
-            // call update of sprite
-            spr->update(dt);
         }
-
     }
 
     void CollisionSpriteLayer::render(const Gear &gear)
@@ -93,14 +99,15 @@ namespace dang
         RectF vp = gear.getViewport();
 
         blit::screen.pen = blit::Pen(0, 0, 255, 255);
-        for (std::shared_ptr<Sprite>& spr : _active_sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
+//        for (std::shared_ptr<Sprite>& spr : _active_sprites)
         {
-            RectF dr = vp.intersection(spr->getSizeRect());
+            spCollisionSprite cspr = std::static_pointer_cast<CollisionSprite>(*it);
+            RectF dr = vp.intersection(cspr->getSizeRect());
 
             if (dr.area() != 0)
             {
-                spCollisionSprite cspr = std::static_pointer_cast<CollisionSprite>(spr);
-                RectF hr = cspr->getHotrectAbs();
+                RectF hr = cspr->getHotrectGlob();
                 hr.x -= vp.tl().x;
                 hr.y -= vp.tl().y;
 
@@ -128,9 +135,9 @@ namespace dang
 
         while (_iteration > 0)
         {
-            for (const spSprite &spr : _active_sprites)
+            for (SpriteIterator it = begin(); it != end(); it++)
             {
-                const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>(spr);
+                const spCollisionSprite me = std::dynamic_pointer_cast<CollisionSprite>((*it));
 
                 // pointer anomaly, should not happen (but who knows..)
                 if (me == nullptr)
@@ -138,10 +145,10 @@ namespace dang
                     continue;
                 }
 
- //               if (!gear.getActiveWorld().intersects(me->getSizeRect()))
- //               {
- //                   continue;
- //               }
+                if (!me->_active)
+                {
+                    continue;
+                }
 
                 // if collisions sprite type RIGID no active collision detection is processed or sprite is already handled
                 if (me->getCOType() == CollisionSpriteLayer::COT_RIGID || _handled.count(me) > 0)
@@ -149,10 +156,9 @@ namespace dang
                     continue;
                 }
 
-
                 // find possible collisions
                 std::forward_list<manifold> projected_mfs;
-                projectCollisions(me, _active_sprites, projected_mfs);
+                projectCollisions(me, projected_mfs);
 
                 while (!projected_mfs.empty())
                 {
@@ -171,13 +177,13 @@ namespace dang
                         switch (cr_me)
                         {
                             case CR_TOUCH:
-                                touch(mf, true);
+                                me->touch(mf);
                                 break;
                             case CR_SLIDE:
-                                slide(mf, true);
+                                me->slide(mf);
                                 break;
                             case CR_BOUNCE:
-                                bounce(mf, true);
+                                me->bounce(mf);
                                 break;
                             default:
                                 break;
@@ -186,13 +192,13 @@ namespace dang
                         switch (cr_other)
                         {
                             case CR_TOUCH:
-                                touch(mf, false);
+                                mf.other->touch(mf);
                                 break;
                             case CR_SLIDE:
-                                slide(mf, false);
+                                mf.other->slide(mf);
                                 break;
                             case CR_BOUNCE:
-                                bounce(mf, false);
+                                mf.other->bounce(mf);
                                 break;
                             default:
                                 break;
@@ -233,7 +239,7 @@ namespace dang
         } // while loop
     }
 
-    void CollisionSpriteLayer::slide(manifold &mf, bool for_me)
+/*    void CollisionSpriteLayer::slide(manifold &mf, bool for_me)
     {
         if (for_me)
         {
@@ -310,13 +316,13 @@ namespace dang
             }
         }
     }
+*/
 
-
-    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, const std::list<spSprite>& sprites, std::forward_list<manifold>& mf_list)
+    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, std::forward_list<manifold>& mf_list)
     {
-        for (const spSprite& spr : sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
         {
-            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>((*it));
 
             if (other == nullptr)
             {
@@ -333,14 +339,20 @@ namespace dang
             manifold mf = {};
 
             RectF meRect = me->getHotrect();
-            meRect.x += me->getLastPos().x;
-            meRect.y += me->getLastPos().y;
-            Vector2F deltaMe = me->getPosDelta();
+//            meRect.x += me->getLastPos().x;
+//            meRect.y += me->getLastPos().y;
+//            Vector2F deltaMe = me->getPosDelta();
+            meRect.x += me->getLastPosGX();
+            meRect.y += me->getLastPosGY();
+            Vector2F deltaMe = me->getPosG() - me->getLastPosG();
 
             RectF otherRect = other->getHotrect();
-            otherRect.x += other->getLastPos().x;
-            otherRect.y += other->getLastPos().y;
-            Vector2F deltaOther = other->getPosDelta();
+//            otherRect.x += other->getLastPos().x;
+//            otherRect.y += other->getLastPos().y;
+//            Vector2F deltaOther = other->getPosDelta();
+            otherRect.x += other->getLastPosGX();
+            otherRect.y += other->getLastPosGY();
+            Vector2F deltaOther = other->getPosG() - other->getLastPosG();
 
             Vector2F delta = deltaMe - deltaOther;
             RectF rMink = otherRect.minkowskiDiff(meRect);
@@ -396,10 +408,12 @@ namespace dang
                 }
 
 
-                mf.touchMe = me->getLastPos() + mf.deltaMe;
-                mf.touchOther = other->getLastPos() + mf.deltaOther;
+//                mf.touchMe = me->getLastPos() + mf.deltaMe;
+//                mf.touchOther = other->getLastPos() + mf.deltaOther;
+                mf.touchMe = me->getLastPosG() + mf.deltaMe;
+                mf.touchOther = other->getLastPosG() + mf.deltaOther;
 
-                // ti is not valid in this context since the rect overlap already
+                // ti is not valid in this context since the rects overlap already
                 mf.ti = 0;
 
                 mf_list.push_front(mf);
@@ -413,11 +427,13 @@ namespace dang
 
                     mf.overlaps = false;
                     mf.deltaMe = deltaMe * mf.ti;
-                    mf.touchMe = me->getLastPos() + mf.deltaMe;
+//                    mf.touchMe = me->getLastPos() + mf.deltaMe;
+                    mf.touchMe = me->getLastPosG() + mf.deltaMe;
                     mf.normalMe = -mf.normalOther;
 
                     mf.deltaOther = deltaOther * mf.ti;
-                    mf.touchOther = other->getLastPos() + mf.deltaOther;
+//                    mf.touchOther = other->getLastPos() + mf.deltaOther;
+                    mf.touchOther = other->getLastPosG() + mf.deltaOther;
 
                     mf_list.push_front(mf);
                 }
@@ -573,8 +589,8 @@ namespace dang
      */
     float CollisionSpriteLayer::aaLoSH(const spCollisionSprite me, const spCollisionSprite target)
     {
-        Vector2F me_p = me->getHotrectAbs().center();
-        RectF target_hr = target->getHotrectAbs();
+        Vector2F me_p = me->getHotrectG().center();
+        RectF target_hr = target->getHotrectG();
 
         // target too high / too low, ergo not visible
         if (me_p.y > target_hr.bottom() || me_p.y < target_hr.top())
@@ -584,12 +600,12 @@ namespace dang
 
         float dx_target = std::min(me_p.x - target_hr.left(), me_p.x - target_hr.right());
 
-        for (const spSprite &spr : _active_sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
         {
-            const spCollisionSprite obst = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            const spCollisionSprite obst = std::dynamic_pointer_cast<CollisionSprite>(*it);
 
             // me and target are not obstacles per se
-            if (spr == me || spr == target)
+            if (obst == me || obst == target)
             {
                 continue;
             }
@@ -601,12 +617,12 @@ namespace dang
             }
 
             // obstacle too high / too low, ergo not an obstacle
-            if (me_p.y > obst->getHotrectAbs().bottom() || me_p.y < obst->getHotrectAbs().top())
+            if (me_p.y > obst->getHotrectG().bottom() || me_p.y < obst->getHotrectG().top())
             {
                 continue;
             }
 
-            float dx_obst = std::min(me_p.x - obst->getHotrectAbs().left(), me_p.x - obst->getHotrectAbs().right());
+            float dx_obst = std::min(me_p.x - obst->getHotrectG().left(), me_p.x - obst->getHotrectG().right());
 
             if (dx_obst * dx_target < 0) // if not the same sign (not both obstacle and target on the left or both on the right), no obstacle
             {
@@ -665,19 +681,18 @@ namespace dang
      *
      * You can, of course, do B first, then A.
      *
-     * @param me the viewer
-     * @param target the point to be seen or not
+     * @param me the viewer (center of hotrect)
+     * @param target the point to be seen or not (hotrect)
      * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
      */
     float CollisionSpriteLayer::loS(const spCollisionSprite me, const spCollisionSprite target)
     {
-        Vector2F p1 = me->getHotrectAbs().center();
-        Vector2F p2 = target->getHotrectAbs().center();
-        bool    intersection{false};
+        Vector2F p1 = me->getHotrectG().center();
+        Vector2F p2 = target->getHotrectG().center();
 
-        for (const spSprite& spr : _active_sprites)
+        for (SpriteIterator it = begin(); it != end(); it++)
         {
-            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>(spr);
+            const spCollisionSprite other = std::dynamic_pointer_cast<CollisionSprite>(*it);
 
             if (other == nullptr)
             {
@@ -691,7 +706,7 @@ namespace dang
                 continue;
             }
 
-            RectF r = other->getHotrectAbs();
+            RectF r = other->getHotrectG();
             float f_tl = (p2.y - p1.y) * r.tl().x + (p1.x - p2.x) * r.tl().y + (p2.x *p1.y - p1.x * p2.y);
             float f_tr = (p2.y - p1.y) * r.tr().x + (p1.x - p2.x) * r.tr().y + (p2.x *p1.y - p1.x * p2.y);
             float f_bl = (p2.y - p1.y) * r.bl().x + (p1.x - p2.x) * r.bl().y + (p2.x *p1.y - p1.x * p2.y);
@@ -703,10 +718,10 @@ namespace dang
                 continue;
             }
 
-            if (p1.x > r.right() && p2.x > r.right()) { continue; }   // no intersection (line is to right of rectangle).
-            if (p1.x < r.left() && p2.x < r.left()) { continue; }   // no intersection (line is to left of rectangle).
+            if (p1.x > r.right() && p2.x > r.right()) { continue; }   // no intersection (line is to the right of rectangle).
+            if (p1.x < r.left() && p2.x < r.left()) { continue; }   // no intersection (line is to the left of rectangle).
             if (p1.y > r.bottom() && p2.y > r.bottom()) { continue; }   // no intersection (line is below rectangle).
-            if (p1.y < r.top() && p2.y < r.top()) { continue; }     // no intersection (line is below rectangle).
+            if (p1.y < r.top() && p2.y < r.top()) { continue; }     // no intersection (line is above rectangle).
 
             // there is an intersection -> target not visible
             return 0;
