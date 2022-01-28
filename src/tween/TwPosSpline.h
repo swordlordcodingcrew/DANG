@@ -10,6 +10,7 @@ namespace dang
 {
     class Sprite;
     using spSprite = std::shared_ptr<Sprite>;
+    class Wavepoint;
 
     class TwPosSpline : public Tweenable
     {
@@ -17,6 +18,7 @@ namespace dang
         TwPosSpline() = default;
         TwPosSpline(const TwPosSpline& tw) = default;
         TwPosSpline(const std::vector<Vector2F>& spline_points, uint32_t duration, EaseFn ease_cb, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
+        TwPosSpline(const Wavepoint* wp, uint32_t duration, EaseFn ease_cb, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         void    init(void* obj) override;
         void    update(void* obj, uint32_t dt) override;
 

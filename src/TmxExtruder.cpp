@@ -449,7 +449,7 @@ namespace dang
             const tmx_wavepoint* w = _level->wavepoints + i;
             if (room_extent.contains({w->x, w->y}))
             {
-                Wavepoint wp(w->id, w->type, Vector2F(w->x, w->y), w->next_wavepoint_id, uint32_t(w->duration*1000), w->orientation, uint32_t(w->delay*1000));
+                Wavepoint wp(w->id, w->name, w->type, Vector2F(w->x, w->y), w->next_wavepoint_id, uint32_t(w->duration*1000), w->orientation, uint32_t(w->delay*1000));
                 waves[w->id] = wp;
             }
         }

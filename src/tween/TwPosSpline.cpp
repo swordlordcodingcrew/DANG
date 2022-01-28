@@ -3,6 +3,7 @@
 
 #include "TwPosSpline.h"
 #include "../Sprite.hpp"
+#include "../path/Wavepoint.hpp"
 
 #include <cassert>
 #include <iostream>
@@ -22,10 +23,24 @@ namespace dang
     TwPosSpline::TwPosSpline(const std::vector<Vector2F> &spline_points, uint32_t duration, EaseFn ease_cb, int32_t loops, bool alternating, uint32_t delay)
         : Tweenable(duration, ease_cb, loops, alternating, delay)
     {
-        assert(spline_points.size() > 0);
+        assert(spline_points.size() > 1);
         for (const auto& p : spline_points)
         {
             addPoint(p);
+        }
+    }
+
+    TwPosSpline::TwPosSpline(const Wavepoint *wp, uint32_t duration, EaseFn ease_cb, int32_t loops, bool alternating, uint32_t delay)
+            : Tweenable(duration, ease_cb, loops, alternating, delay)
+    {
+        assert(wp != nullptr);
+        assert(wp->next() != nullptr);
+
+        addPoint(wp->pos());
+        while (!wp->endPoint())
+        {
+            wp = wp->next();
+            addPoint(wp->pos());
         }
     }
 
@@ -126,7 +141,6 @@ namespace dang
 
         }
     }
-
 
 }
 
