@@ -18,6 +18,12 @@ set(SOURCES
         src/path/SceneGraph.hpp
         src/path/Waypoint.cpp
         src/path/Waypoint.hpp
+        src/bulletml/BMLNode.cpp
+        src/bulletml/BMLNode.h
+        src/bulletml/BMLState.cpp
+        src/bulletml/BMLState.h
+        src/bulletml/BMLTree.cpp
+        src/bulletml/BMLTree.h
         src/bt/BTNode.cpp
         src/bt/BTNode.h
         src/bt/NTree.cpp
