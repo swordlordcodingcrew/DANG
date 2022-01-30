@@ -38,41 +38,11 @@ namespace dang
         return (Type::DECORATOR == _type);
     }
 
-    BMLNode::Status   BMLNode::forwarder(const spSprite& spr, const BMLNode* node, spBMLState& state)
+    BMLNode::Status BMLNode::sequence(const spSprite &spr, const BMLNode* node, spBMLState &state)
     {
         assert(node->_child != nullptr);
 
-        BMLNode::Status ret{Status::FAILURE};
-        BMLNode* next_node = node->_child;
-
-        ret = next_node->_process(spr, node->_child, state);
-
-        return ret;
-    }
-
-    BMLNode::Status   BMLNode::inverter(const spSprite& spr, const BMLNode* node, spBMLState& state)
-    {
-        assert(node->_child != nullptr);
-
-        BMLNode::Status ret{Status::FAILURE};
-        BMLNode* next_node = node->_child;
-
-        ret = next_node->_process(spr, node->_child, state);
-
-        // apply inverter only when not seeking, not state set and not running
-        if (state->_internal_state == BMLState::internal_state::FOUND && ret != Status::RUNNING)
-        {
-            ret = (ret == Status::FAILURE ? Status::SUCCESS : Status::FAILURE);
-        }
-
-        return ret;
-    }
-
-    BMLNode::Status BMLNode::selector(const spSprite &spr, const BMLNode* node, spBMLState& state)
-    {
-        assert(node->_child != nullptr);
-
-        BMLNode::Status ret{Status::FAILURE};
+        Status ret{Status::FAILURE};
 
         BMLNode* next_node = node->_child;
         while (next_node != nullptr)
@@ -81,7 +51,7 @@ namespace dang
 
             if (state->_internal_state == BMLState::internal_state::FOUND)
             {
-                if (ret == Status::SUCCESS)
+                if (ret == Status::FAILURE)
                 {
                     break;
                 }
@@ -92,16 +62,28 @@ namespace dang
             }
 
             next_node = next_node->_sibling;
+
         }
 
         return ret;
     }
 
-    BMLNode::Status BMLNode::sequence(const spSprite &spr, const BMLNode* node, spBMLState &state)
+    BMLNode::Status BMLNode::repeat(const spSprite &spr, const BMLNode* node, spBMLState &state)
     {
         assert(node->_child != nullptr);
 
         Status ret{Status::FAILURE};
+
+        /*
+         * TODO implement iterator, checking current round from state and max rounds from _value
+        //auto addr = static_cast<const void*>(node);
+        auto it = state->_payload.find("test");
+        if(it != state->_payload.end())
+        {
+
+        }
+        it->second
+        */
 
         BMLNode* next_node = node->_child;
         while (next_node != nullptr)

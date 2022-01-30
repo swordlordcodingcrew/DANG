@@ -23,6 +23,8 @@ set(SOURCES
         src/bulletml/BMLState.h
         src/bulletml/BMLTree.cpp
         src/bulletml/BMLTree.h
+        src/bulletml/BMLBuilder.cpp
+        src/bulletml/BMLBuilder.h
         src/bt/BTNode.cpp
         src/bt/BTNode.h
         src/bt/NTree.cpp

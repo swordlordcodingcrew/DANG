@@ -29,14 +29,16 @@ namespace dang
     protected:
         friend class BMLTree;
         friend class BMLBuilder;
-        using NodeFunction = std::function<BMLNode::Status (const spSprite&, const BMLNode*, spBMLState&)>;
+        using SequenceFunction = std::function<BMLNode::Status (const spSprite&, const BMLNode*, spBMLState&)>;
 
 
         /** https://www.geeksforgeeks.org/left-child-right-sibling-representation-tree/ */
-        NodeFunction    _process{nullptr};
-        BMLNode*         _parent{nullptr};
-        BMLNode*         _child{nullptr};    // left
-        BMLNode*         _sibling{nullptr};  // right
+        SequenceFunction    _process{nullptr};
+        BMLNode*            _parent{nullptr};
+        BMLNode*            _child{nullptr};    // left
+        BMLNode*            _sibling{nullptr};  // right
+
+        uint16_t            _value{0}; // generic value to store things like number of repeats
 
         enum class Type : uint8_t
         {
@@ -53,14 +55,19 @@ namespace dang
         bool            isDecorator() const;
 
         /** static behoviour tree elements */
-        static BMLNode::Status   forwarder(const spSprite& spr, const BMLNode* node, spBMLState& state);
-        static BMLNode::Status   inverter(const spSprite& spr, const BMLNode* node, spBMLState& state);
-        static BMLNode::Status   selector(const spSprite& spr, const BMLNode* node, spBMLState& state);
         static BMLNode::Status   sequence(const spSprite& spr, const BMLNode* node, spBMLState& state);
+        static BMLNode::Status   repeat(const spSprite& spr, const BMLNode* node, spBMLState& state);
 
+        // sequence -> action
+        // Contents - (repeat | fire | fireRef | changeSpeed | changeDirection | accel | wait | vanish | action | actionRef)*
+
+        //sequence -> repeat
+        // Contents - times, (action | actionRef)
+
+        // leaf -> wait
     };
 
-    using NodeFunction = std::function<BMLNode::Status (const spSprite&, const BMLNode*, spBMLState&)>;
-    using LeafFunction = std::function<BMLNode::Status (const spSprite&)>;
+    using SequenceFunction = std::function<BMLNode::Status (const spSprite&, const BMLNode*, spBMLState&)>;
+    using ActionFunction = std::function<BMLNode::Status (const spSprite&)>;
 
 }

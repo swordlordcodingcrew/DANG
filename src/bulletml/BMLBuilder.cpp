@@ -21,7 +21,6 @@
 
 namespace dang
 {
-
     BMLBuilder::BMLBuilder()
     {
         _tree = std::make_shared<BMLTree>();
@@ -31,7 +30,6 @@ namespace dang
     {
 //        std::cout << "NTBuilder destructor" << std::endl;
     }
-
 
     BMLBuilder& BMLBuilder::sequence()
     {
@@ -45,10 +43,11 @@ namespace dang
         return *this;
     }
 
-    BMLBuilder &BMLBuilder::selector()
+    BMLBuilder& BMLBuilder::repeat(const uint16_t times)
     {
         BMLNode* node = new BMLNode(BMLNode::Type::COMPOSITE);
-        node->_process = BMLNode::selector;
+        node->_process = BMLNode::repeat;
+        node->_value = times;
 
         _composite_stack.push(node);
 
@@ -66,16 +65,7 @@ namespace dang
         return *this;
     }
 
-    BMLBuilder &BMLBuilder::inverter()
-    {
-        BMLNode* node = new BMLNode(BMLNode::Type::DECORATOR);
-        node->_process = BMLNode::inverter;
-        attach(node);
-
-        return *this;
-    }
-
-    BMLBuilder& BMLBuilder::leaf(LeafFunction func)
+    BMLBuilder& BMLBuilder::action(ActionFunction func)
     {
         BMLNode* node = new BMLNode(BMLNode::Type::LEAF);
         node->_process = [func](const spSprite& spr, const BMLNode* node, spBMLState& state)
@@ -116,17 +106,6 @@ namespace dang
 
         return *this;
     }
-
-/*    NTBuilder& NTBuilder::leaf(NodeFunction func)
-    {
-        BTNode* node = new BTNode(BTNode::Type::LEAF);
-        node->_process = func;
-
-        attach(node);
-
-        return *this;
-    }
-*/
 
     BMLBuilder &BMLBuilder::tree(const spBMLTree& tree)
     {

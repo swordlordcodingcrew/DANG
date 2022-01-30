@@ -18,10 +18,9 @@ namespace dang
         BMLBuilder();
         virtual ~BMLBuilder();
 
-        BMLBuilder& sequence();
-        BMLBuilder& selector();
-        BMLBuilder& inverter();
-        BMLBuilder& leaf(LeafFunction func);
+        BMLBuilder& repeat(const uint16_t times); // sequence, with n repeat
+        BMLBuilder& sequence(); // sequence, action_group, sort of
+        BMLBuilder& action(ActionFunction func);
         BMLBuilder& tree(const spBMLTree& tree);
         BMLBuilder& end();
         spBMLTree  build();
