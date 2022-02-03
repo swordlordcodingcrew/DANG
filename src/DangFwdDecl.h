@@ -7,13 +7,21 @@
 
 namespace dang
 {
-    /** bt classe */
+    /** bt classe - Behaviour Tree */
     class BTNode;
     class NTBuilder;
     class NTree;
     using spNTree = std::shared_ptr<NTree>;
     class NTreeState;
     using spNTreeState = std::shared_ptr<NTreeState>;
+
+    /** bml classe - Bullet ML */
+    class BMLNode;
+    class BMLBuilder;
+    class BMLTree;
+    using spBMLTree = std::shared_ptr<BMLTree>;
+    class BMLState;
+    using spBMLState = std::shared_ptr<BMLState>;
 
     /** path classes */
     class SceneGraph;
