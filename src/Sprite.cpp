@@ -58,8 +58,10 @@ namespace dang
         _visible = so->visible;
         _img_index = so->tile;
         _imagesheet = is;
-        _last_pos = _pos;
         _z_order = so->z_order;
+        _last_pos = _pos;
+        _pos_g = _pos;
+        _last_pos_g = _pos;
 
         if(so->transform.test(0))
         {
