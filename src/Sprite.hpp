@@ -39,8 +39,8 @@ namespace dang
         virtual ~Sprite();
 
         // tree
-        void    addSprite(spSprite s);
-        void    removeMeFromTree();
+        virtual void    addSprite(spSprite s);
+        virtual void    removeMeFromTree();
 
         // tween stuff
         void addTween(spTweenable tw);
