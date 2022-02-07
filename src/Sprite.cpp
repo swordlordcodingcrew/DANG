@@ -369,5 +369,27 @@ namespace dang
         }
     }
 
+    Vector2F Sprite::getPosG()
+    {
+        spSprite s = _parent.lock();
+        _pos_g = _pos;
+        if (s != nullptr)
+        {
+            _pos_g += s->getPosG();
+        }
+        return _pos_g;
+    }
+
+    Vector2F Sprite::getLastPosG()
+    {
+        spSprite s = _parent.lock();
+        _last_pos_g = _last_pos;
+        if (s != nullptr)
+        {
+            _last_pos_g += s->getLastPosG();
+        }
+        return _last_pos_g;
+    }
+
 
 }

@@ -89,8 +89,8 @@ namespace dang
         void        setAccX(float x) {_acc.x = x; }
         void        setAccY(float y) {_acc.y = y; }
 
-        Vector2F    getPosG() { return _pos_g; }
-        Vector2F    getLastPosG() { return _last_pos_g; }
+        Vector2F    getPosG();
+        Vector2F    getLastPosG();
         float       getPosX() const { return _pos.x; }
         float       getPosY() const { return _pos.y; }
         float       getLastPosX() const { return _last_pos.x; }

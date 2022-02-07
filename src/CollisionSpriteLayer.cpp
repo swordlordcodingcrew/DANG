@@ -341,17 +341,19 @@ namespace dang
             RectF meRect = me->getHotrect();
 //            meRect.x += me->getLastPos().x;
 //            meRect.y += me->getLastPos().y;
+//            meRect.x += me->getLastPosGX();
+//            meRect.y += me->getLastPosGY();
+            meRect.addToPos(me->getLastPosG());
 //            Vector2F deltaMe = me->getPosDelta();
-            meRect.x += me->getLastPosGX();
-            meRect.y += me->getLastPosGY();
             Vector2F deltaMe = me->getPosG() - me->getLastPosG();
 
             RectF otherRect = other->getHotrect();
 //            otherRect.x += other->getLastPos().x;
 //            otherRect.y += other->getLastPos().y;
+//            otherRect.x += other->getLastPosGX();
+//            otherRect.y += other->getLastPosGY();
+            otherRect.addToPos(other->getLastPosG());
 //            Vector2F deltaOther = other->getPosDelta();
-            otherRect.x += other->getLastPosGX();
-            otherRect.y += other->getLastPosGY();
             Vector2F deltaOther = other->getPosG() - other->getLastPosG();
 
             Vector2F delta = deltaMe - deltaOther;
