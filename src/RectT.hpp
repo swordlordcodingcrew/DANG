@@ -125,6 +125,11 @@ namespace dang
             h += 2 * v;
         }
 
+        void addToPos(const Vector2T<T> p)
+        {
+            x += p.x;
+            y += p.y;
+        }
 
         Vector2T<T> clamp(Vector2T<T> p) const
         {
