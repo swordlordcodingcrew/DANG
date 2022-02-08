@@ -322,9 +322,11 @@ namespace dang
      */
     void Sprite::removeMeFromTree()
     {
+        D_DEBUG_PRINT("removeMeFromTree\n");
         spSprite par = _parent.lock();
         if (par != nullptr)
         {
+            D_DEBUG_PRINT("removeMeFromTree: spr locked\n");
             spSprite prev = _prev_sibling.lock();
             if (prev == nullptr)
             {
@@ -333,13 +335,13 @@ namespace dang
                 {
                     // only child
                     par->_child = nullptr;
-                    D_DEBUG_PRINT("remove only child\n");
+                    D_DEBUG_PRINT("removeMeFromTree: remove only child\n");
                 }
                 else
                 {
                     par->_child = _next_sibling;
                     par->_child->_prev_sibling.reset();
-                    D_DEBUG_PRINT("remove first child\n");
+                    D_DEBUG_PRINT("removeMeFromTree: remove first child\n");
                 }
             }
             else
@@ -348,13 +350,12 @@ namespace dang
                 {
                     prev->_next_sibling = _next_sibling;
                     _next_sibling->_prev_sibling = prev;
-                    D_DEBUG_PRINT("remove a middle sibling");
-
+                    D_DEBUG_PRINT("removeMeFromTree: remove a middle sibling\n");
                 }
                 else
                 {
-                    prev->_prev_sibling.reset();
-                    D_DEBUG_PRINT("remove last sibling");
+                    prev->_next_sibling.reset();
+                    D_DEBUG_PRINT("removeMeFromTree: remove last sibling\n");
                 }
             }
 
