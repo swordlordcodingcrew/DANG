@@ -61,6 +61,7 @@ namespace dang
                 cspr->update(dt);
             }
         }
+
     }
 
     void CollisionSpriteLayer::render(const Gear &gear)

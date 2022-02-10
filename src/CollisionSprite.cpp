@@ -131,6 +131,12 @@ namespace dang
                     _pos.y = mf.touchOther.y;
                 }
             }
+
+            spSprite par = _parent.lock();
+            if (par != nullptr)
+            {
+                _pos_g = _pos + par->getPosG();
+            }
         }
     }
 
@@ -147,6 +153,13 @@ namespace dang
                 _pos = mf.touchOther;
             }
         }
+
+        spSprite par = _parent.lock();
+        if (par != nullptr)
+        {
+            _pos_g = _pos + par->getPosG();
+        }
+
     }
 
     void CollisionSprite::bounce(const CollisionSpriteLayer::manifold &mf)
@@ -180,6 +193,13 @@ namespace dang
                 }
             }
         }
+
+        spSprite par = _parent.lock();
+        if (par != nullptr)
+        {
+            _pos_g = _pos + par->getPosG();
+        }
+
     }
 
     CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(const spCollisionSprite& other)
