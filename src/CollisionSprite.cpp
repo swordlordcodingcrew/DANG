@@ -16,7 +16,11 @@ namespace dang
     CollisionSprite::CollisionSprite(const CollisionSprite &cs)
     : Sprite(cs), _coll_object_type(cs._coll_object_type), _hotrect(cs._hotrect), _coll_response(cs._coll_response)
     {
-
+        // clone the BT as well, but with a new state object
+        if(cs._nTreeState != nullptr && cs._nTreeState->_tree != nullptr)
+        {
+            setNTreeState(std::make_shared<dang::NTreeState>(cs._nTreeState->_tree));
+        }
     }
 
     CollisionSprite::~CollisionSprite()
