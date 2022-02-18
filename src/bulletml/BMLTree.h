@@ -20,6 +20,8 @@ namespace dang
         BMLTree();
         virtual ~BMLTree();
 
+        uint8_t _nodeCount{0};
+
         const BMLNode* getRoot() {return _root;}
 
     protected:

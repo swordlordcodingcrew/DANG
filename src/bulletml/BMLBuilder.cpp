@@ -162,6 +162,10 @@ namespace dang
 //        assert(_builder_pos != nullptr);
         assert(node != nullptr);
 
+        _tree->_nodeCount++;
+        node->_id = _tree->_nodeCount;
+        std::cout << "BMLBuilder attach " << std::to_string(node->_id) << std::endl;
+
         if (_tree->_root == nullptr)   // first node to attach
         {
             _tree->_root = node;
@@ -189,7 +193,7 @@ namespace dang
         {
             BMLNode* comp = inComposite();
 
-            assert(comp != nullptr);    // attaching a node to a leaf ist not allowed
+            assert(comp != nullptr);    // attaching a node to a leaf is not allowed
 
             node->_parent = comp;
             BMLNode* nd = getLastSibling(comp);
@@ -203,7 +207,6 @@ namespace dang
             }
         }
         _builder_pos = node;
-
     }
 
     std::shared_ptr<BMLTree> BMLBuilder::build()

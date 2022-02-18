@@ -40,10 +40,31 @@ namespace dang
 
     BMLNode::Status BMLNode::sequence(const spSprite &spr, const BMLNode* node, spBMLState &state)
     {
-        assert(node->_child != nullptr);
+        std::cout << "BMLNode sequence " << std::to_string(node->_id) << std::endl;
 
+        assert(node->_child != nullptr);
         Status ret{Status::FAILURE};
 
+        // TODO check if there is some need to check SEEKING
+
+        // at every consequent run, jump here
+        auto it = state->_payload.find( std::to_string(node->_id) + ".runcount");
+        if(it != state->_payload.end())
+        {
+            // run once, lets quit otherwise
+            auto val = it->second;
+            if(val > 0)
+            {
+                return Status::SUCCESS;
+            }
+        }
+        else
+        {
+            state->_payload[std::to_string(node->_id) + ".runcount"] = 0;
+        }
+
+        // execute every child node/leaf
+        // TODO should only run first child on first run, second on the next run
         BMLNode* next_node = node->_child;
         while (next_node != nullptr)
         {
@@ -62,29 +83,45 @@ namespace dang
             }
 
             next_node = next_node->_sibling;
-
         }
 
-        return ret;
+        // ran once, lets not come back
+        state->_payload[std::to_string(node->_id) + ".runcount"] = 1;
+        return Status::SUCCESS;
+
+        // TODO validate if always returning success of status of nodes?
+        // return ret;
     }
 
     BMLNode::Status BMLNode::repeat(const spSprite &spr, const BMLNode* node, spBMLState &state)
     {
-        assert(node->_child != nullptr);
+        std::cout << "BMLNode repeat " << std::to_string(node->_id) << std::endl;
 
+        assert(node->_child != nullptr);
         Status ret{Status::FAILURE};
 
-        /*
-         * TODO implement iterator, checking current round from state and max rounds from _value
-        //auto addr = static_cast<const void*>(node);
-        auto it = state->_payload.find("test");
+        uint16_t runCount = 1;
+
+        auto it = state->_payload.find( std::to_string(node->_id) + ".runcount");
         if(it != state->_payload.end())
         {
+            auto val = it->second + 1;
+            runCount = val;
 
+            // TODO not sure this is correct here, probably check with SEEKING
+            if(runCount >= node->_value)
+            {
+                std::cout << "BMLNode repeat ended " << node->_value << std::endl;
+                return Status::SUCCESS;
+            }
         }
-        it->second
-        */
 
+        state->_payload[std::to_string(node->_id) + ".runcount"] = runCount;
+
+        std::cout << "BMLNode repeat run count " << std::to_string(runCount) << " of " << node->_value << std::endl;
+
+        // execute every child node/leaf
+        // TODO should only run first child on first run, second on the next run
         BMLNode* next_node = node->_child;
         while (next_node != nullptr)
         {
@@ -103,10 +140,18 @@ namespace dang
             }
 
             next_node = next_node->_sibling;
-
         }
 
-        return ret;
+        // repeat n times in the next n rounds, quit otherwise
+        if(runCount >= node->_value)
+        {
+            std::cout << "BMLNode repeat ended " << node->_value << std::endl;
+            return Status::SUCCESS;
+        }
+        else
+        {
+            return Status::RUNNING;
+        }
     }
 
 }

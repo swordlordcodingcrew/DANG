@@ -24,6 +24,8 @@ namespace dang
             SUCCESS //!< Returns when the process has succeeded.
         };
 
+        uint8_t _id{0};
+
         virtual ~BMLNode();
 
     protected:
