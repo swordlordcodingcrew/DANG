@@ -56,6 +56,17 @@ namespace dang
         return *this;
     }
 
+    BMLBuilder& BMLBuilder::wait(const uint16_t times)
+    {
+        BMLNode* node = new BMLNode(BMLNode::Type::LEAF);
+        node->_process = BMLNode::wait;
+        node->_value = times;
+
+        attach(node);
+
+        return *this;
+    }
+
     BMLBuilder &BMLBuilder::end()
     {
         BMLNode* node = _composite_stack.top();

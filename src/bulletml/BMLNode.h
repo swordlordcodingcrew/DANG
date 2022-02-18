@@ -59,6 +59,7 @@ namespace dang
         /** static behoviour tree elements */
         static BMLNode::Status   sequence(const spSprite& spr, const BMLNode* node, spBMLState& state);
         static BMLNode::Status   repeat(const spSprite& spr, const BMLNode* node, spBMLState& state);
+        static BMLNode::Status   wait(const spSprite& spr, const BMLNode* node, spBMLState& state);
 
         // sequence -> action
         // Contents - (repeat | fire | fireRef | changeSpeed | changeDirection | accel | wait | vanish | action | actionRef)*

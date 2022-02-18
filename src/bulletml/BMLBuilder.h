@@ -18,6 +18,7 @@ namespace dang
         BMLBuilder();
         virtual ~BMLBuilder();
 
+        BMLBuilder& wait(const uint16_t times); // leaf, with n "repeats" aka wait loops
         BMLBuilder& repeat(const uint16_t times); // sequence, with n repeat
         BMLBuilder& sequence(); // sequence, action_group, sort of
         BMLBuilder& action(ActionFunction func);

@@ -93,6 +93,45 @@ namespace dang
         // return ret;
     }
 
+    BMLNode::Status BMLNode::wait(const spSprite& spr, const BMLNode* node, spBMLState& state)
+    {
+        std::cout << "BMLNode wait " << std::to_string(node->_id) << std::endl;
+
+        Status ret{Status::FAILURE};
+
+        uint16_t runCount = 1;
+
+        auto it = state->_payload.find( std::to_string(node->_id) + ".runcount");
+        if(it != state->_payload.end())
+        {
+            auto val = it->second + 1;
+            runCount = val;
+
+            // TODO not sure this is correct here, probably check with SEEKING
+            if(runCount >= node->_value)
+            {
+                std::cout << "BMLNode wait ended " << node->_value << std::endl;
+                return Status::SUCCESS;
+            }
+        }
+
+        state->_payload[std::to_string(node->_id) + ".runcount"] = runCount;
+
+        std::cout << "BMLNode wait run count " << std::to_string(runCount) << " of " << node->_value << std::endl;
+
+        // repeat n times in the next n rounds, quit otherwise
+        if(runCount >= node->_value)
+        {
+            std::cout << "BMLNode wait ended " << node->_value << std::endl;
+            return Status::SUCCESS;
+        }
+        else
+        {
+            return Status::RUNNING;
+        }
+    }
+
+
     BMLNode::Status BMLNode::repeat(const spSprite &spr, const BMLNode* node, spBMLState &state)
     {
         std::cout << "BMLNode repeat " << std::to_string(node->_id) << std::endl;
