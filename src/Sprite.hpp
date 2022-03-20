@@ -41,6 +41,7 @@ namespace dang
         // tree
         virtual void    addSprite(spSprite s);
         virtual void    removeMeFromTree();
+        virtual void    markRemove() { _remove_from_layer = true; }
 
         // tween stuff
         void addTween(spTweenable tw);
@@ -64,7 +65,7 @@ namespace dang
         void setSize(SizeF& s) {_size = s; }
         void setSize(float w, float h) {_size.w = w; _size.h = h; }
         blit::Rect getBlitRect();
-        blit::Rect getBlitRect(const uint16_t& img_index); // override where we can ask for a specific image
+        blit::Rect getBlitRect(const uint16_t img_index); // override where we can ask for a specific image
 
         // pos, vel, acc, gravity
         Vector2F    getPos() { return _pos; }
@@ -73,13 +74,13 @@ namespace dang
         Vector2F    getVel() { return _vel; }
         Vector2F    getAcc() { return _acc; }
         Vector2F    getGravity() { return _gravity; }
-        void        setPos(const Vector2F& pos) { _pos = pos; }
+        virtual void        setPos(const Vector2F& pos) { _pos = pos; }
         void        setVel(const Vector2F& vel) { _vel = vel; }
         void        setAcc(const Vector2F& acc) { _acc = acc; }
         void        setGravity(const Vector2F& g) {_gravity = g; };
 
-        void        setPosX(float x) {_pos.x = x; }
-        void        setPosY(float y) {_pos.y = y; }
+        virtual void        setPosX(float x) {_pos.x = x; }
+        virtual void        setPosY(float y) {_pos.y = y; }
         void        setVelX(float x) {_vel.x = x; }
         void        setVelY(float y) {_vel.y = y; }
         void        setVelTowardsPoint(const Vector2F& target);
@@ -108,19 +109,20 @@ namespace dang
         RectF       getSizeRectG();      // return size of sprite in global coords
 
     public: // variables
-        bool                            _visible{true};
-        bool                            _active{true};
-        uint16_t                        _img_index{0};  // index to the image of the imagesheet. (equals tmx_tile of tmx_spriteobject?)
-        spImagesheet                    _imagesheet{nullptr};
-        uint8_t                         _transform{0};      // transform for blitting
-        int32_t                         _z_order{0};
-        uint16_t                        _id{0};    // global
-        std::string                     _type_name{""};
-        uint8_t                         _type_num{0}; // 0 == undefined
-        bool                            _remove_me{false};  // if set to true, this sprite will be removed from the layer
+        bool           _visible{true};
+        bool           _active{true};
+        uint16_t       _img_index{0};  // index to the image of the imagesheet. (equals tmx_tile of tmx_spriteobject?)
+        spImagesheet   _imagesheet{nullptr};
+        uint8_t        _transform{0};      // transform for blitting
+        int32_t        _z_order{0};
+        uint16_t       _id{0};    // global
+        std::string    _type_name{""};
+        uint8_t        _type_num{0}; // 0 == undefined
 
 
     protected:  // variables
+
+        bool          _remove_from_layer{false};  // if set to true, this sprite will be removed from the layer
 
         //std::string name;     // to be implemented
         Vector2F      _size{0,0};
@@ -144,6 +146,7 @@ namespace dang
     protected:      // tree
         friend class SpriteIterator;
         friend class SpriteLayer;
+        friend class CollisionSpriteLayer;
         std::weak_ptr<Sprite>   _parent;
         spSprite                _child{nullptr};    // left
         spSprite                _next_sibling{nullptr};  // right

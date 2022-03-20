@@ -8,13 +8,13 @@
 
 namespace dang
 {
-    CollisionSprite::CollisionSprite() : Sprite()
+    CollisionSprite::CollisionSprite() : Sprite(), CollisionObject()
     {
 
     }
 
     CollisionSprite::CollisionSprite(const CollisionSprite &cs)
-    : Sprite(cs), _coll_object_type(cs._coll_object_type), _hotrect(cs._hotrect), _coll_response(cs._coll_response)
+    : Sprite(cs), CollisionObject(cs)
     {
         // clone the BT as well, but with a new state object
         if(cs._nTreeState != nullptr && cs._nTreeState->_tree != nullptr)
@@ -34,6 +34,25 @@ namespace dang
     CollisionSprite::CollisionSprite(const tmx_spriteobject* so, const spImagesheet& is) : Sprite(so, is)
     {
         _hotrect = {0, 0, float(so->width), float(so->height)};
+        _cs_pos = _pos_g;
+    }
+
+    /**
+     *
+     * @return hotrect with global coords of the layer
+     */
+    RectF CollisionSprite::getHotrectG() const
+    {
+        return {_cs_pos.x + _hotrect.x, _cs_pos.y + _hotrect.y, _hotrect.w, _hotrect.h};
+    }
+
+    /**
+     *
+     * @return hotrect in local coords of the sprite
+     */
+    RectF CollisionSprite::getHotrectL() const
+    {
+        return RectF(_pos.x + _hotrect.x, _pos.y + _hotrect.y, _hotrect.w, _hotrect.h);
     }
 
     /**
@@ -45,29 +64,11 @@ namespace dang
         return _hotrect;
     }
 
-    /**
-     *
-     * @return hotrect in local coords of the sprite
-     */
-    RectF CollisionSprite::getHotrectL() const
+    void CollisionSprite::collide(const manifold &mf)
     {
-        return RectF(_hotrect.x + _pos.x, _hotrect.y + _pos.y, _hotrect.w, _hotrect.h);
-    }
-
-    /**
-     *
-     * @return hotrect with global coords of the layer
-     */
-    RectF CollisionSprite::getHotrectG() const
-    {
-        return RectF(_hotrect.x + _pos_g.x, _hotrect.y + _pos_g.y, _hotrect.w, _hotrect.h);
-    }
-
-    void CollisionSprite::collide(const CollisionSpriteLayer::manifold &mf)
-    {
-        switch (_coll_response)
+        switch (_cr)
         {
-            case CollisionSpriteLayer::CR_BOUNCE:
+            case CR_BOUNCE:
                 if (mf.me.get() == this)
                 {
                     if (mf.normalMe.x * _vel.x > 0)
@@ -93,7 +94,7 @@ namespace dang
 
                 }
                 break;
-            case CollisionSpriteLayer::CR_SLIDE:
+            case CR_SLIDE:
                 if (mf.normalMe.x != 0)
                 {
                     _vel.y = 0;
@@ -103,13 +104,13 @@ namespace dang
                     _vel.x = 0;
                 }
                 break;
-            case CollisionSpriteLayer::CR_TOUCH:
+            case CR_TOUCH:
                 _vel = {0,0};
                 break;
         }
     }
 
-    void CollisionSprite::slide(const CollisionSpriteLayer::manifold &mf)
+/*    void CollisionSprite::slide(const CollisionSpriteLayer::manifold &mf)
     {
         if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
         {
@@ -205,10 +206,27 @@ namespace dang
         }
 
     }
-
-    CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(const spCollisionSprite& other)
+*/
+/*    CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(const spCollisionSprite& other)
     {
         return _coll_response;
+    }
+*/
+    void CollisionSprite::preSolve()
+    {
+        _goal = _pos_g;
+    }
+
+    void CollisionSprite::postSolve()
+    {
+        if (spSprite spr = _parent.lock())
+        {
+            _pos = _goal - spr->getPosG();
+        }
+        else
+        {
+            _pos = _goal;
+        }
     }
 
     void CollisionSprite::update(uint32_t dt)
@@ -224,6 +242,19 @@ namespace dang
     std::shared_ptr<NTreeState>& CollisionSprite::getNTreeState()
     {
         return _nTreeState;
+    }
+
+    void CollisionSprite::markRemove()
+    {
+        _remove_from_layer = true;
+        _remove_from_cs = true;
+    }
+
+    void CollisionSprite::addSprite(spSprite s)
+    {
+        Sprite::addSprite(s);
+        spCollisionSprite cs = std::static_pointer_cast<CollisionSprite>(s);
+        cs->_cs_pos = _pos_g;
     }
 
 }

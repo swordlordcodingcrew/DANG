@@ -96,7 +96,7 @@ set(SOURCES
         src/SpriteIterator.cpp
         src/SpriteIterator.hpp
         src/tween/TwPosSpline.cpp
-        src/tween/TwPosSpline.h)
+        src/tween/TwPosSpline.h src/CollisionObject.cpp src/CollisionObject.hpp src/CollisionSolver.cpp src/CollisionSolver.hpp)
 
 add_library(DANG STATIC ${SOURCES} )
 #target_link_libraries(DANG xmp_lite)

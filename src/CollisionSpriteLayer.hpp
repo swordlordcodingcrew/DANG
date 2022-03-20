@@ -16,12 +16,14 @@
 
 #pragma once
 
-#include <forward_list>
-#include <unordered_set>
-
 #include "Vector2T.hpp"
 #include "RectT.hpp"
 #include "SpriteLayer.hpp"
+#include "CollisionSolver.hpp"
+
+#include <forward_list>
+#include <unordered_set>
+
 
 namespace dang
 {
@@ -35,7 +37,7 @@ namespace dang
         /**
          * collision object
          */
-        struct manifold
+/*        struct manifold
         {
             bool overlaps;      // true if sprites overlap even before moving. N.B. ti is in that case not valid
             float ti;           // between 0 and 1. How far along the delta to the goal did the collision occur
@@ -51,11 +53,11 @@ namespace dang
             Vector2F touchOther;    // touch position for sprite other
 
         };
-
+*/
         /**
          * how a collision shall be resolved
          */
-        enum eCollisionResponse
+/*        enum eCollisionResponse
         {
             CR_NONE,
             CR_TOUCH,
@@ -63,14 +65,14 @@ namespace dang
             CR_SLIDE,
             CR_BOUNCE
         };
-
+*/
         /**
          * loosely based on box2d
          * COT_RIGID: should not move, Rigid object will not collide with other rigid object. Example: Wall
          * COT_DYNAMIC: moving object. Hero, enemies
          */
-        enum eCollObjectType{COT_RIGID, COT_DYNAMIC};
-
+/*        enum eCollObjectType{COT_RIGID, COT_DYNAMIC};
+*/
 
     public:
         CollisionSpriteLayer();
@@ -81,27 +83,30 @@ namespace dang
         void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
-        float   aaLoSH(const spCollisionSprite me, const spCollisionSprite target);
-        float   loS(const spCollisionSprite me, const spCollisionSprite target);
+        float   aaLoSH(const spCollisionSprite me, const spCollisionSprite target) { return _cs.aaLoSH(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target)); }
+        float   loS(const spCollisionSprite me, const spCollisionSprite target) { return _cs.loS(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target)); }
 
     protected:
+        CollisionSolver _cs;
 
-        void handleCollisionDetection(const Gear& gear);
+        void coreUpdate(uint32_t dt, const Gear &gear) override;
 
-        void    projectCollisions(const spCollisionSprite& me, std::forward_list<manifold>& mf_list);
-        bool    getRayIntersectionFraction(const Vector2F& origin, const Vector2F& direction, const RectF& aabb, float& ti, Vector2F& normal);
-        float   getRayIntersectionFractionOfFirstRay(const Vector2F &originA, const Vector2F &endA, const Vector2F &originB, const Vector2F &endB);
+//        void handleCollisionDetection(const Gear& gear);
+
+//        void    projectCollisions(const spCollisionSprite& me, std::forward_list<manifold>& mf_list);
+//        bool    getRayIntersectionFraction(const Vector2F& origin, const Vector2F& direction, const RectF& aabb, float& ti, Vector2F& normal);
+//        float   getRayIntersectionFractionOfFirstRay(const Vector2F &originA, const Vector2F &endA, const Vector2F &originB, const Vector2F &endB);
 //        static void    slide(manifold& mf, bool for_me);
 //        static void    touch(manifold& mf, bool for_me);
 //        static void    bounce(manifold& mf, bool for_me);
 
 
-        std::unordered_set<spSprite> _handled;
-        uint16_t                    _iteration{3};       // number of collision solving cycles
-        bool                        _iterate{false};    // internal use
+//        std::unordered_set<spSprite> _handled;
+//        uint16_t                    _iteration{3};       // number of collision solving cycles
+//        bool                        _iterate{false};    // internal use
 
     private:
-        // may not be used in this layer type
+        // may not be used in this layer type, user addCollisionSprite instead
         void    addSprite(spSprite spr) override {};
 #ifdef DANG_DEBUG_DRAW
         int _dbg_mem{0};

@@ -52,6 +52,9 @@ namespace dang
     class TwPosSpline;
     using spTwPosSpline = std::shared_ptr<TwPosSpline>;
 
+    /** collision classes */
+    class CollisionObject;
+    using spCollisionObject = std::shared_ptr<CollisionObject>;
 
     /** remaining classes */
     class Layer;

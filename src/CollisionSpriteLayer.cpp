@@ -33,14 +33,57 @@ namespace dang
     void CollisionSpriteLayer::addCollisionSprite(spCollisionSprite cspr)
     {
         SpriteLayer::addSprite(cspr);
+        cspr->setCSPosition(cspr->_pos_g);
+//        _cs.addCObject(cspr);
+    }
+
+    void CollisionSpriteLayer::coreUpdate(uint32_t dt, const Gear &gear)
+    {
+        // update active sprites (tree) or set to inactive if outside active world
+        auto sti = begin();
+        while (sti != end())
+        {
+            if ((*sti)->_remove_from_layer)
+            {
+                sti = erase(sti);
+            }
+            else
+            {
+                if ((*sti)->_parent.expired())
+                {
+                    // root element. Always in
+                    // but not in collision solver
+                    (*sti)->coreUpdate(dt);
+                }
+                else
+                {
+                    bool in_active_world = gear.getActiveWorld().intersects((*sti)->getSizeRectG());
+                    if (in_active_world)
+                    {
+                        (*sti)->coreUpdate(dt);
+                        if (!(*sti)->_active)
+                        {
+                            (*sti)->_active = true;
+                            spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
+                            _cs.addCObject(co);
+                        }
+                    }
+                    else if ((*sti)->_active)
+                    {
+                        (*sti)->coreUpdate(dt);
+                        (*sti)->_active = false;
+                        spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
+                        co->remove();
+                    }
+                }
+                sti++;
+            }
+        }
     }
 
     void CollisionSpriteLayer::update(uint32_t dt, const Gear &gear)
     {
         coreUpdate(dt, gear);
-
-        // collision resolution
-        handleCollisionDetection(gear);
 
         // then call update
         for (SpriteIterator it = begin(); it != end(); it++)
@@ -61,6 +104,9 @@ namespace dang
                 cspr->update(dt);
             }
         }
+
+        // collision resolution
+        _cs.solve();
 
     }
 
@@ -128,7 +174,7 @@ namespace dang
     }
 
     // called on every move of every sprite
-    void CollisionSpriteLayer::handleCollisionDetection(const Gear& gear)
+/*    void CollisionSpriteLayer::handleCollisionDetection(const Gear& gear)
     {
         _handled.clear();
         _iteration = 3;
@@ -239,7 +285,7 @@ namespace dang
             }
         } // while loop
     }
-
+*/
 /*    void CollisionSpriteLayer::slide(manifold &mf, bool for_me)
     {
         if (for_me)
@@ -319,7 +365,7 @@ namespace dang
     }
 */
 
-    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, std::forward_list<manifold>& mf_list)
+/*    void CollisionSpriteLayer::projectCollisions(const spCollisionSprite& me, std::forward_list<manifold>& mf_list)
     {
         for (SpriteIterator it = begin(); it != end(); it++)
         {
@@ -452,8 +498,8 @@ namespace dang
         );
 
     }
-
-    bool CollisionSpriteLayer::getRayIntersectionFraction(const Vector2F& pos, const Vector2F& goal, const RectF& aabb, float& ti, Vector2F& normal)
+*/
+/*    bool CollisionSpriteLayer::getRayIntersectionFraction(const Vector2F& pos, const Vector2F& goal, const RectF& aabb, float& ti, Vector2F& normal)
     {
         // end = goal, origin = pos, direction = goal - pos
 
@@ -501,7 +547,7 @@ namespace dang
         // ok, now we should have found the fractional component along the ray where we collided
         return ti != std::numeric_limits<float>::infinity();
     }
-
+*/
     /**
      * according to https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect/565282#565282
      * post of Gareth
@@ -524,7 +570,7 @@ namespace dang
      * 4. Otherwise, the two line segments are not parallel but do not intersect.
      */
 
-    float CollisionSpriteLayer::getRayIntersectionFractionOfFirstRay(const Vector2F& originA, const Vector2F& endA, const Vector2F& originB, const Vector2F& endB)
+/*    float CollisionSpriteLayer::getRayIntersectionFractionOfFirstRay(const Vector2F& originA, const Vector2F& endA, const Vector2F& originB, const Vector2F& endB)
     {
         // p is originA
         // q is originB
@@ -582,7 +628,7 @@ namespace dang
         return std::numeric_limits<float>::infinity();
 
     }
-
+*/
     /**
      * Axis Aligned Line-of-Sight (aaLoS). The calculation is done on the horizontal axis (the H).
      * as eyes the center of the viewer's hotrect is used
@@ -590,7 +636,7 @@ namespace dang
      * @param target the point to be seen or not
      * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
      */
-    float CollisionSpriteLayer::aaLoSH(const spCollisionSprite me, const spCollisionSprite target)
+/*    float CollisionSpriteLayer::aaLoSH(const spCollisionSprite me, const spCollisionSprite target)
     {
         Vector2F me_p = me->getHotrectG().center();
         RectF target_hr = target->getHotrectG();
@@ -649,7 +695,7 @@ namespace dang
         }
             return dx_target;
     }
-
+*/
     /**
      * General Line-of-Sight (LoS).
      * As eyes the center of the viewer's hotrect is used. To keep the algo simple, the destination is also
@@ -688,7 +734,7 @@ namespace dang
      * @param target the point to be seen or not (hotrect)
      * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
      */
-    float CollisionSpriteLayer::loS(const spCollisionSprite me, const spCollisionSprite target)
+/*    float CollisionSpriteLayer::loS(const spCollisionSprite me, const spCollisionSprite target)
     {
         Vector2F p1 = me->getHotrectG().center();
         Vector2F p2 = target->getHotrectG().center();
@@ -734,6 +780,6 @@ namespace dang
         return p2.x >= p1.x ? -dist : dist;
 
     }
-
+*/
 
 }

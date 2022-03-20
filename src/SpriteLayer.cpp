@@ -87,7 +87,7 @@ namespace dang
     void SpriteLayer::removeSprite(spSprite s)
     {
         assert(s != nullptr);
-        s->_remove_me = true;
+        s->_remove_from_layer = true;
     }
 
     void SpriteLayer::update(uint32_t dt, const Gear &gear)
@@ -111,7 +111,7 @@ namespace dang
         auto sti = begin();
         while (sti != end())
         {
-            if ((*sti)->_remove_me)
+            if ((*sti)->_remove_from_layer)
             {
                 sti = erase(sti);
             }

@@ -5,16 +5,17 @@
 
 #include "DangFwdDecl.h"
 #include "Sprite.hpp"
+#include "CollisionObject.hpp"
 #include "Vector2T.hpp"
 #include "RectT.hpp"
-#include "CollisionSpriteLayer.hpp"
+//#include "CollisionSpriteLayer.hpp"
 #include "dang.hpp"
 
 #include <list>
 
 namespace dang
 {
-    class CollisionSprite : public Sprite
+    class CollisionSprite : public Sprite, public CollisionObject
     {
     public: // functions
         CollisionSprite();
@@ -22,11 +23,22 @@ namespace dang
         CollisionSprite(const tmx_spriteobject* so, const spImagesheet& is);
         ~CollisionSprite() override;
 
-        void        update(uint32_t dt) override;
+        // overrides from sprite
+        void    markRemove() override;
+        void    update(uint32_t dt) override;
+        void    addSprite(spSprite s) override;
+
+
+        // override from CollisionObject
+        void preSolve() override;
+        void postSolve() override;
+        void collide(const manifold &mf) override;
 
         RectF       getHotrect() const;
         RectF       getHotrectL() const;
         RectF       getHotrectG() const;
+
+        /*
         virtual CollisionSpriteLayer::eCollObjectType       getCOType() const { return _coll_object_type; }
         virtual void                                        setCOType(CollisionSpriteLayer::eCollObjectType type) { _coll_object_type = type; }
 
@@ -37,7 +49,7 @@ namespace dang
 
         virtual CollisionSpriteLayer::eCollisionResponse    getCollisionResponse(const spCollisionSprite& other);
         void                                        setCollisionResponse(CollisionSpriteLayer::eCollisionResponse response) { _coll_response = response; };
-
+*/
 
         // ts pointer will get moved
         void setNTreeState(spNTreeState ts);
@@ -45,9 +57,9 @@ namespace dang
 
 
     protected:  // variables
-        CollisionSpriteLayer::eCollObjectType       _coll_object_type{CollisionSpriteLayer::COT_DYNAMIC};
-        RectF                                       _hotrect{0,0,0,0};
-        CollisionSpriteLayer::eCollisionResponse    _coll_response{CollisionSpriteLayer::CR_SLIDE};
+//        CollisionSpriteLayer::eCollObjectType       _coll_object_type{CollisionSpriteLayer::COT_DYNAMIC};
+//        RectF                                       _hotrect{0,0,0,0};
+//        CollisionSpriteLayer::eCollisionResponse    _coll_response{CollisionSpriteLayer::CR_SLIDE};
 
         // behaviour tree is implemented in the collision layer
         spNTreeState      _nTreeState{nullptr};
