@@ -27,7 +27,9 @@ namespace dang
         void    markRemove() override;
         void    update(uint32_t dt) override;
         void    addSprite(spSprite s) override;
-
+        void    setPos(const Vector2F& pos) override;
+        void    setPosX(float x) override;
+        void    setPosY(float y) override;
 
         // override from CollisionObject
         void preSolve() override;

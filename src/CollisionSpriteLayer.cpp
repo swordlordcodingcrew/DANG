@@ -34,7 +34,10 @@ namespace dang
     {
         SpriteLayer::addSprite(cspr);
         cspr->setCSPosition(cspr->_pos_g);
-//        _cs.addCObject(cspr);
+        if (cspr->_active)
+        {
+            _cs.addCObject(cspr);
+        }
     }
 
     void CollisionSpriteLayer::coreUpdate(uint32_t dt, const Gear &gear)
@@ -65,6 +68,7 @@ namespace dang
                         {
                             (*sti)->_active = true;
                             spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
+                            co->setCSPosition((*sti)->_pos_g);
                             _cs.addCObject(co);
                         }
                     }
@@ -154,7 +158,7 @@ namespace dang
 
             if (dr.area() != 0)
             {
-                RectF hr = cspr->getHotrectGlob();
+                RectF hr = cspr->getHotrectG();
                 hr.x -= vp.tl().x;
                 hr.y -= vp.tl().y;
 

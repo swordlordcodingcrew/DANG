@@ -219,14 +219,8 @@ namespace dang
 
     void CollisionSprite::postSolve()
     {
-        if (spSprite spr = _parent.lock())
-        {
-            _pos = _goal - spr->getPosG();
-        }
-        else
-        {
-            _pos = _goal;
-        }
+        _pos = _goal - getParentPos();
+        _pos_g = _goal;
     }
 
     void CollisionSprite::update(uint32_t dt)
@@ -255,6 +249,24 @@ namespace dang
         Sprite::addSprite(s);
         spCollisionSprite cs = std::static_pointer_cast<CollisionSprite>(s);
         cs->_cs_pos = _pos_g;
+    }
+
+    void CollisionSprite::setPos(const Vector2F &pos)
+    {
+        Sprite::setPos(pos);
+        _cs_pos = _pos + getParentPos();
+    }
+
+    void CollisionSprite::setPosX(float x)
+    {
+        Sprite::setPosX(x);
+        _cs_pos.x = x + getParentPos().x;
+    }
+
+    void CollisionSprite::setPosY(float y)
+    {
+        Sprite::setPosY(y);
+        _cs_pos.y = y + getParentPos().y;
     }
 
 }

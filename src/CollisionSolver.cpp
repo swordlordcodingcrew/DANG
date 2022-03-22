@@ -5,6 +5,7 @@
 #include "CollisionObject.hpp"
 
 #include <cassert>
+#include <iostream>
 
 namespace dang
 {
@@ -260,8 +261,8 @@ namespace dang
                     mf.normalOther = -mf.normalMe;
                 }
 
-                mf.touchMe = me->_cs_pos + me->_hotrect.tl() + mf.deltaMe;
-                mf.touchOther = other->_cs_pos + other->_hotrect.tl() + mf.deltaOther;
+                mf.touchMe = me->_cs_pos + mf.deltaMe;
+                mf.touchOther = other->_cs_pos + mf.deltaOther;
 
                 // ti is not valid in this context since the rects overlap already
                 mf.ti = 0;
@@ -277,11 +278,11 @@ namespace dang
 
                     mf.overlaps = false;
                     mf.deltaMe = deltaMe * mf.ti;
-                    mf.touchMe = me->_cs_pos + me->_hotrect.tl() + mf.deltaMe;
+                    mf.touchMe = me->_cs_pos + mf.deltaMe;
                     mf.normalMe = -mf.normalOther;
 
                     mf.deltaOther = deltaOther * mf.ti;
-                    mf.touchOther = other->_cs_pos + other->_hotrect.tl() + mf.deltaOther;
+                    mf.touchOther = other->_cs_pos + mf.deltaOther;
 
                     _projected_mfs.push_front(mf);
                 }

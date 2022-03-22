@@ -68,39 +68,42 @@ namespace dang
         blit::Rect getBlitRect(const uint16_t img_index); // override where we can ask for a specific image
 
         // pos, vel, acc, gravity
-        Vector2F    getPos() { return _pos; }
-        Vector2F    getLastPos() { return _last_pos; }
-        Vector2F    getPosDelta() { return _pos - _last_pos; }
-        Vector2F    getVel() { return _vel; }
-        Vector2F    getAcc() { return _acc; }
-        Vector2F    getGravity() { return _gravity; }
+        virtual Vector2F    getPos() { return _pos; }
         virtual void        setPos(const Vector2F& pos) { _pos = pos; }
-        void        setVel(const Vector2F& vel) { _vel = vel; }
-        void        setAcc(const Vector2F& acc) { _acc = acc; }
-        void        setGravity(const Vector2F& g) {_gravity = g; };
-
         virtual void        setPosX(float x) {_pos.x = x; }
         virtual void        setPosY(float y) {_pos.y = y; }
+        Vector2F            getParentPos();
+//        Vector2F    getLastPos() { return _last_pos; }
+//        Vector2F    getPosDelta() { return _pos - _last_pos; }
+        Vector2F            getPosG();
+        Vector2F            getLastPosG();
+        float               getPosX() const { return _pos.x; }
+        float               getPosY() const { return _pos.y; }
+        float               getLastPosX() const { return _last_pos.x; }
+        float               getLastPosY() const { return _last_pos.y; }
+        float               getPosGX() const { return _pos_g.x; }
+        float               getPosGY() const { return _pos_g.y; }
+        float               getLastPosGX() const { return _last_pos_g.x; }
+        float               getLastPosGY() const { return _last_pos_g.y; }
+
+        Vector2F    getVel() { return _vel; }
+        void        setVel(const Vector2F& vel) { _vel = vel; }
         void        setVelX(float x) {_vel.x = x; }
         void        setVelY(float y) {_vel.y = y; }
         void        setVelTowardsPoint(const Vector2F& target);
         void        setVelTowardsPoint(const Vector2F& target, const float speedx, const float speedy);
         void        setVelRelToRadAngle(const double angle);
         void        setVelRelToRadAngle(const double angle, const float speedx, const float speedy);
+
+        Vector2F    getAcc() { return _acc; }
+        void        setAcc(const Vector2F& acc) { _acc = acc; }
         void        setAccX(float x) {_acc.x = x; }
         void        setAccY(float y) {_acc.y = y; }
 
-        Vector2F    getPosG();
-        Vector2F    getLastPosG();
-        float       getPosX() const { return _pos.x; }
-        float       getPosY() const { return _pos.y; }
-        float       getLastPosX() const { return _last_pos.x; }
-        float       getLastPosY() const { return _last_pos.y; }
+        Vector2F    getGravity() { return _gravity; }
+        void        setGravity(const Vector2F& g) {_gravity = g; };
 
-        float        getPosGX() const { return _pos_g.x; }
-        float        getPosGY() const { return _pos_g.y; }
-        float        getLastPosGX() const { return _last_pos_g.x; }
-        float        getLastPosGY() const { return _last_pos_g.y; }
+
 
         Vector2F    getSize() { return _size; }
 
