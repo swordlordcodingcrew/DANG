@@ -34,6 +34,7 @@ namespace dang
         {
             if ((*coit)->_remove_from_cs)
             {
+                (*coit)->_remove_from_cs = false;
                 coit = _co_list.erase(coit);
             }
             else
@@ -63,6 +64,11 @@ namespace dang
                 manifold mf = _projected_mfs.front();
                 _projected_mfs.pop_front();
 
+//                if (mf.overlaps)
+//                {
+//                    std::cout << "spr with pos (" << co->_cs_pos.x << "," << co->_cs_pos.y << ") overlaps" << std::endl;
+//                }
+
                 uint8_t cr_me = co->getCollisionResponse(mf.other);
                 uint8_t cr_other = mf.other->getCollisionResponse(co);
                 // false = 0
@@ -77,7 +83,7 @@ namespace dang
                         }
                         case CR_SLIDE:
                         {
-                            if ((co->_cs_pos.x + co->_hotrect.x) - co->_goal.x != 0 || ((co->_cs_pos.y + co->_hotrect.y) - co->_goal.y != 0))
+                            if (co->_cs_pos.x - co->_goal.x != 0 || (co->_cs_pos.y - co->_goal.y != 0))
                             {
                                 if (mf.normalMe.x != 0)
                                 {
@@ -93,7 +99,7 @@ namespace dang
                         }
                         case CR_BOUNCE:
                         {
-                            if ((co->_cs_pos.x + co->_hotrect.x) - co->_goal.x != 0 || ((co->_cs_pos.y + co->_hotrect.y) - co->_goal.y != 0))
+                            if (co->_cs_pos.x - co->_goal.x != 0 || co->_cs_pos.y - co->_goal.y != 0)
                             {
                                 if (mf.normalMe.x != 0)
                                 {
@@ -125,7 +131,7 @@ namespace dang
                             }
                             case CR_SLIDE:
                             {
-                                if ((mf.other->_cs_pos.x + mf.other->_hotrect.x) - mf.other->_goal.x != 0 || (mf.other->_cs_pos.x + mf.other->_hotrect.y) - mf.other->_goal.y != 0)
+                                if (mf.other->_cs_pos.x - mf.other->_goal.x != 0 || mf.other->_cs_pos.x - mf.other->_goal.y != 0)
                                 {
                                     if (mf.normalOther.x != 0)
                                     {
@@ -140,7 +146,7 @@ namespace dang
                             }
                             case CR_BOUNCE:
                             {
-                                if ((mf.other->_cs_pos.x + mf.other->_hotrect.x) - mf.other->_goal.x != 0 || (mf.other->_cs_pos.x + mf.other->_hotrect.y) - mf.other->_goal.y != 0)
+                                if (mf.other->_cs_pos.x - mf.other->_goal.x != 0 || mf.other->_cs_pos.x - mf.other->_goal.y != 0)
                                 {
                                     if (mf.normalOther.x != 0)
                                     {
@@ -198,13 +204,16 @@ namespace dang
                 continue;
             }
 
-            Vector2F deltaMe = me->_cs_pos + me->_hotrect.tl() - me->_goal;
-            Vector2F deltaOther = other->_cs_pos + other->_hotrect.tl() - other->_goal;
+            Vector2F deltaMe = me->_goal - me->_cs_pos;
+            Vector2F deltaOther = other->_goal - other->_cs_pos;
+//            Vector2F deltaMe = me->_cs_pos - me->_goal;
+//            Vector2F deltaOther = other->_cs_pos - other->_goal;
             Vector2F delta = deltaMe - deltaOther;
 
 
 //            RectF rMink = other->_hotrect.minkowskiDiff(me->_hotrect);
 //            RectT<T> ret = {x - r.x - r.w, y - r.y - r.h, w + r.w, h + r.h};
+
             RectF rMink = {(other->_cs_pos.x + other->_hotrect.x) - (me->_cs_pos.x + me->_hotrect.x) - me->_hotrect.w,
                     (other->_cs_pos.y + other->_hotrect.y) - (me->_cs_pos.y + me->_hotrect.y) - me->_hotrect.h,
                     other->_hotrect.w + me->_hotrect.w,
