@@ -83,6 +83,9 @@ namespace dang
         void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
 
+        void    cleanSpritelist() override;
+        void    _removeSprite(spSprite s) override;
+
         float   aaLoSH(const spCollisionSprite me, const spCollisionSprite target) { return _cs.aaLoSH(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target)); }
         float   loS(const spCollisionSprite me, const spCollisionSprite target) { return _cs.loS(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target)); }
 

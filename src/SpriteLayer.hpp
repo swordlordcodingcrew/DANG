@@ -23,21 +23,16 @@ namespace dang
         void    render(const Gear& gear);
 
         virtual spSprite    getSpriteByType(const std::string& name);
-
-        virtual void    addSprite(spSprite s);
-        virtual void    removeSprite(spSprite s);
-        virtual void    removeSpriteById(uint16_t id);
         virtual spSprite    getSpriteById(uint16_t id);
-        virtual void    removeSpritesByTypeNum(uint8_t type_num);
-//        void            sortSprites();
-
+        virtual void        addSprite(spSprite s);
+        virtual void        _removeSprite(spSprite s);
+        virtual void        markRemoveSpritesByTypeNum(uint8_t type_num);
+        virtual void        cleanSpritelist();
 
     protected:
         explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};
 
         virtual void coreUpdate(uint32_t dt, const Gear& gear);
-        // sprites inside active area
-//        std::list<spSprite> _active_sprites;
         spSprite    _root{nullptr};
 
     public:         // tree

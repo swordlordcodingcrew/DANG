@@ -18,7 +18,8 @@ namespace dang
 
     void CollisionSolver::removeCObject(spCollisionObject &co)
     {
-        co->_remove_from_cs;
+        co->_remove_from_cs = false;
+        _co_list.remove(co);
     }
 
     // solve the collisions
@@ -181,6 +182,7 @@ namespace dang
                 }
             }   // while mf not empty loop
 
+            _projected_mfs.clear();
             co->_cs_pos = co->_goal;
 
         }   // for loop

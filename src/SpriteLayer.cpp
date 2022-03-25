@@ -51,23 +51,15 @@ namespace dang
         return ret;
     }
 
-    void SpriteLayer::removeSpriteById(uint16_t id)
-    {
-        spSprite s = getSpriteById(id);
-        if (s != nullptr)
-        {
-            s->removeMeFromTree();
-        }
-    }
-
-    void SpriteLayer::removeSpritesByTypeNum(uint8_t type_num)
+    void SpriteLayer::markRemoveSpritesByTypeNum(uint8_t type_num)
     {
         auto sti = begin();
         while (sti != end())
         {
             if ((*sti)->_type_num == type_num)
             {
-                sti = erase(sti);
+                (*sti)->markRemove();
+//                sti = erase(sti);
             }
             else
             {
@@ -83,11 +75,10 @@ namespace dang
         _root->addSprite(s);
     }
 
-    [[deprecated("instead set _remove_me = true in sprite. The sprite will be removed in the coreupdate cycle")]]
-    void SpriteLayer::removeSprite(spSprite s)
+    void SpriteLayer::_removeSprite(spSprite s)
     {
         assert(s != nullptr);
-        s->_remove_from_layer = true;
+        s->removeMeFromTree();
     }
 
     void SpriteLayer::update(uint32_t dt, const Gear &gear)
@@ -174,5 +165,21 @@ namespace dang
         s->removeMeFromTree();
 
         return pos;
+    }
+
+    void SpriteLayer::cleanSpritelist()
+    {
+        auto sti = begin();
+        while (sti != end())
+        {
+            if ((*sti)->_remove_from_layer)
+            {
+                sti = erase(sti);
+            }
+            else
+            {
+                sti++;
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <malloc.h>
+#include <cassert>
 #include "CollisionSpriteLayer.hpp"
 #include "Sprite.hpp"
 #include "SpriteIterator.hpp"
@@ -176,6 +177,32 @@ namespace dang
         }
         #endif
 #endif
+    }
+
+    void CollisionSpriteLayer::cleanSpritelist()
+    {
+        auto sti = begin();
+        while (sti != end())
+        {
+            if ((*sti)->_remove_from_layer)
+            {
+                spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>(*sti);
+                _cs.removeCObject(co);
+                sti = erase(sti);
+            }
+            else
+            {
+                sti++;
+            }
+        }
+    }
+
+    void CollisionSpriteLayer::_removeSprite(spSprite s)
+    {
+        assert(s != nullptr);
+        s->removeMeFromTree();
+        spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>(s);
+        _cs.removeCObject(co);
     }
 
     // called on every move of every sprite
