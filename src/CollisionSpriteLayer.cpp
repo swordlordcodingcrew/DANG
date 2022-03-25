@@ -89,6 +89,9 @@ namespace dang
     {
         coreUpdate(dt, gear);
 
+        // collision resolution
+        _cs.solve();
+
         // then call update
         for (SpriteIterator it = begin(); it != end(); it++)
         {
@@ -109,8 +112,6 @@ namespace dang
             }
         }
 
-        // collision resolution
-        _cs.solve();
 
     }
 

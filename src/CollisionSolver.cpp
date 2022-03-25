@@ -213,7 +213,6 @@ namespace dang
 
 //            RectF rMink = other->_hotrect.minkowskiDiff(me->_hotrect);
 //            RectT<T> ret = {x - r.x - r.w, y - r.y - r.h, w + r.w, h + r.h};
-
             RectF rMink = {(other->_cs_pos.x + other->_hotrect.x) - (me->_cs_pos.x + me->_hotrect.x) - me->_hotrect.w,
                     (other->_cs_pos.y + other->_hotrect.y) - (me->_cs_pos.y + me->_hotrect.y) - me->_hotrect.h,
                     other->_hotrect.w + me->_hotrect.w,
