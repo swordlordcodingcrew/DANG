@@ -269,4 +269,23 @@ namespace dang
         _cs_pos.y = y + getParentPos().y;
     }
 
+    spCollisionSprite CollisionSprite::getOther(const manifold& mf, const CollisionSprite* me)
+    {
+        const CollisionSprite* mf_other = dynamic_cast<CollisionSprite*>(mf.other.get());
+        const CollisionSprite* mf_me = dynamic_cast<CollisionSprite*>(mf.me.get());
+
+        if (me == mf_me)
+        {
+            return std::dynamic_pointer_cast<CollisionSprite>(mf.other);
+        }
+        else if (me == mf_other)
+        {
+            return std::dynamic_pointer_cast<CollisionSprite>(mf.me);
+        }
+
+        std::cout << "error in manifold me/other" << std::endl;
+        return nullptr;
+
+    }
+
 }

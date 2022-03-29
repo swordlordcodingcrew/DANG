@@ -36,6 +36,8 @@ namespace dang
         void postSolve() override;
         void collide(const manifold &mf) override;
 
+        spCollisionSprite getOther(const manifold& mf, const CollisionSprite* me);
+
         RectF       getHotrect() const;
         RectF       getHotrectL() const;
         RectF       getHotrectG() const;
