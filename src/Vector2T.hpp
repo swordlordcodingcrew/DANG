@@ -67,12 +67,12 @@ namespace dang
             return std::sqrt(x * x + y * y);
         }
 
-        T cross(const Vector2T<T> &a)
+        T cross(const Vector2T<T> &a) const
         {
             return x * a.y - y * a.x;
         }
 
-        T dot(const Vector2T<T> &a)
+        T dot(const Vector2T<T> &a) const
         {
             return (x * a.x) + (y * a.y);
         }

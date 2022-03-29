@@ -50,14 +50,15 @@ namespace dang
         {
             assert(co != nullptr);
 
-            // if collision object type is RIGID no active collision detection is processed or sprite is already handled
-            if (co->_rigid /*|| co->_handled*/)
+            // if collision object type is RIGID no active collision detection is processed
+            if (co->_rigid)
             {
                 continue;
             }
 
             bool b_reproject = false;
             uint8_t num_reprojections = 3;  // after 3 times a reprojection break the loop
+            _handled.clear();
             projectCollisions(co);
 
             while (!_projected_mfs.empty() && num_reprojections > 0)
@@ -213,21 +214,21 @@ namespace dang
         {
             if (me == other ||
                 me->getCollisionResponse(other) == CR_NONE ||
-                other->getCollisionResponse(me) == CR_NONE /* ||
-                other->_handled*/)
+                other->getCollisionResponse(me) == CR_NONE)
             {
                 continue;
             }
 
+            if (std::find(_handled.begin(), _handled.end(), other.get()) != _handled.end())
+            {
+                continue;
+            }
+
+
             Vector2F deltaMe = me->_goal - me->_cs_pos;
             Vector2F deltaOther = other->_goal - other->_cs_pos;
-//            Vector2F deltaMe = me->_cs_pos - me->_goal;
-//            Vector2F deltaOther = other->_cs_pos - other->_goal;
             Vector2F delta = deltaMe - deltaOther;
 
-
-//            RectF rMink = other->_hotrect.minkowskiDiff(me->_hotrect);
-//            RectT<T> ret = {x - r.x - r.w, y - r.y - r.h, w + r.w, h + r.h};
             RectF rMink = {(other->_cs_pos.x + other->_hotrect.x) - (me->_cs_pos.x + me->_hotrect.x) - me->_hotrect.w,
                     (other->_cs_pos.y + other->_hotrect.y) - (me->_cs_pos.y + me->_hotrect.y) - me->_hotrect.h,
                     other->_hotrect.w + me->_hotrect.w,
@@ -294,7 +295,7 @@ namespace dang
             }
             else
             {
-                if (getRayIntersectionFraction(Vector2F(0,0), delta, rMink, mf.ti, mf.normalOther))
+                if (getRayIntersectionFractionP0(delta, rMink, mf.ti, mf.normalOther))
                 {
                     mf.me = me;
                     mf.other = other;
@@ -371,6 +372,55 @@ namespace dang
         return ti != std::numeric_limits<float>::infinity();
     }
 
+    bool CollisionSolver::getRayIntersectionFractionP0(const Vector2F& goal, const RectF& aabb, float& ti, Vector2F& normal)
+    {
+        // end = goal, origin = pos = 0,0, direction = goal - pos
+
+        // left side
+        ti = getRayIntersectionFractionOfFirstRayP0(goal, aabb.tl(), aabb.bl());
+        normal = {-1,0};
+        if (ti == 0 && goal.x < 0)
+        {
+            ti = std::numeric_limits<float>::infinity();
+        }
+        //bottom side
+        float x = getRayIntersectionFractionOfFirstRayP0(goal, aabb.bl(), aabb.br());
+        if (x == 0 && goal.y > 0)
+        {
+            x = std::numeric_limits<float>::infinity();
+        }
+        if (x < ti)
+        {
+            ti = x;
+            normal = {0, 1};
+        }
+        // right side
+        x = getRayIntersectionFractionOfFirstRayP0(goal, aabb.br(), aabb.tr());
+        if (x == 0 && goal.x > 0)
+        {
+            x = std::numeric_limits<float>::infinity();
+        }
+        if (x < ti)
+        {
+            ti = x;
+            normal = {1, 0};
+        }
+        // top side
+        x = getRayIntersectionFractionOfFirstRayP0(goal, aabb.tr(), aabb.tl());
+        if (x == 0 && goal.y < 0)
+        {
+            x = std::numeric_limits<float>::infinity();
+        }
+        if (x < ti)
+        {
+            ti = x;
+            normal = {0, -1};
+        }
+
+        // ok, now we should have found the fractional component along the ray where we collided
+        return ti != std::numeric_limits<float>::infinity();
+    }
+
     /**
      * according to https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect/565282#565282
      * post of Gareth
@@ -418,6 +468,68 @@ namespace dang
                 {
                     float t0 = (originB - originA).dot(r) / r_d_r;
                     float t1 = t0 + s.dot(r) / r_d_r;
+                    if (t0 > 0 && t0 < 1)  // co-linear and intersecting
+                    {
+//                        std::cout << "co-linear, ti=" << t0 << std::endl;
+                        // correct?
+                        return t0;
+
+                    }
+                    else if (t1 > 0 && t1 < 1)   // co-linear and intersecting
+                    {
+//                        std::cout << "co-linear, ti=" << t1 << std::endl;
+                        // correct?
+                        return t1;
+                    }
+                }
+            }
+        }
+        else
+        {
+            float t = q_m_p_c_s / r_c_s;
+            float u = q_m_p_c_r / r_c_s;
+
+            if (t >= 0 && t <= 1 && u >= 0 && u <= 1)
+            {
+                return t;
+            }
+        }
+
+        // parallel - not intersecting
+        // or co-linear and not intersecting
+        // or not intersecting
+        return std::numeric_limits<float>::infinity();
+
+    }
+
+    float CollisionSolver::getRayIntersectionFractionOfFirstRayP0(const Vector2F& endA, const Vector2F& originB, const Vector2F& endB)
+    {
+        // p is originA is zero
+        // q is originB
+        // r is endA - originA which is zero -> r = endA
+//        Vector2F r = endA;
+        Vector2F s = endB - originB;
+
+        // q minus p
+//        Vector2F q_m_p = originB - originA;
+//      originA is zero -> q_m_p is originB
+//        Vector2F q_m_p = originB;
+        // (q minus p) cross s
+        float q_m_p_c_s = originB.cross(s);
+        // (q minus p) cross r
+        float q_m_p_c_r = originB.cross(endA);
+        // r cross s
+        float r_c_s = endA.cross(s);
+
+        if (r_c_s == 0)
+        {
+            if (q_m_p_c_r == 0)     // co-linear
+            {
+                float r_d_r = endA.dot(endA);
+                if (r_d_r != 0)
+                {
+                    float t0 = originB.dot(endA) / r_d_r;
+                    float t1 = t0 + s.dot(endA) / r_d_r;
                     if (t0 > 0 && t0 < 1)  // co-linear and intersecting
                     {
 //                        std::cout << "co-linear, ti=" << t0 << std::endl;

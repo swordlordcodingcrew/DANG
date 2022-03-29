@@ -89,6 +89,17 @@ namespace dang
         bool    getRayIntersectionFraction(const Vector2F& origin, const Vector2F& direction, const RectF& aabb, float& ti, Vector2F& normal);
         float   getRayIntersectionFractionOfFirstRay(const Vector2F &originA, const Vector2F &endA, const Vector2F &originB, const Vector2F &endB);
 
+        /**
+         *  Same functions as above, but origin is (0,0)
+         * @param direction
+         * @param aabb
+         * @param ti
+         * @param normal
+         * @return
+         */
+        bool    getRayIntersectionFractionP0(const Vector2F& direction, const RectF& aabb, float& ti, Vector2F& normal);
+        float   getRayIntersectionFractionOfFirstRayP0(const Vector2F &endA, const Vector2F &originB, const Vector2F &endB);
+
         std::forward_list<manifold>             _projected_mfs;
         std::list<const CollisionObject*>       _handled;       // used in solve() function
 
