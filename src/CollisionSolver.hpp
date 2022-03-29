@@ -90,10 +90,12 @@ namespace dang
         float   getRayIntersectionFractionOfFirstRay(const Vector2F &originA, const Vector2F &endA, const Vector2F &originB, const Vector2F &endB);
 
         std::forward_list<manifold>             _projected_mfs;
+        std::list<const CollisionObject*>       _handled;       // used in solve() function
+
 //        std::unordered_set<CollisionObject*>    _handled;
         std::list<spCollisionObject>              _co_list;
-        uint16_t                                _iteration{3};       // number of collision solving cycles
-        bool                                    _iterate{false};    // internal use
+//        uint16_t                                _iteration{3};       // number of collision solving cycles
+//        bool                                    _iterate{false};    // internal use
 
 
     };

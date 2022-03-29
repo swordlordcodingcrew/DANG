@@ -57,7 +57,7 @@ namespace dang
             }
 
             bool b_reproject = false;
-            uint8_t num_reprojections = 5;  // after 5 times a reproction break the loop
+            uint8_t num_reprojections = 3;  // after 3 times a reprojection break the loop
             projectCollisions(co);
 
             while (!_projected_mfs.empty() && num_reprojections > 0)
@@ -65,6 +65,10 @@ namespace dang
                 manifold mf = _projected_mfs.front();
                 _projected_mfs.pop_front();
 
+                if (std::find(_handled.begin(), _handled.end(), mf.other.get()) != _handled.end())
+                {
+                    continue;
+                }
 //                if (mf.overlaps)
 //                {
 //                    std::cout << "spr with pos (" << co->_cs_pos.x << "," << co->_cs_pos.y << ") overlaps" << std::endl;
@@ -104,12 +108,12 @@ namespace dang
                             {
                                 if (mf.normalMe.x != 0)
                                 {
-                                    float d_bounce = co->_goal.x - co->_hotrect.x - mf.deltaMe.x;
+                                    float d_bounce = co->_goal.x - co->_cs_pos.x - mf.deltaMe.x;
                                     co->_goal.x = mf.touchMe.x - d_bounce;
                                 }
                                 else
                                 {
-                                    float d_bounce = co->_goal.y - co->_hotrect.y - mf.deltaMe.y;
+                                    float d_bounce = co->_goal.y - co->_cs_pos.y - mf.deltaMe.y;
                                     co->_goal.y = mf.touchMe.y - d_bounce;
                                 }
                             }
@@ -119,7 +123,9 @@ namespace dang
                         case CR_CROSS:
                         default:
                             break;
+
                     }
+
 
                     if (!mf.other->_rigid)
                     {
@@ -159,7 +165,6 @@ namespace dang
                                         float d_bounce = mf.other->_goal.y - mf.other->_hotrect.y - mf.deltaOther.y;
                                         mf.other->_goal.y = mf.touchOther.y - d_bounce;
                                     }
-
                                 }
                                 break;
                             }
@@ -168,21 +173,29 @@ namespace dang
                                 break;
                         }
                     }
+
+                    co->collide(mf);
+                    mf.other->collide(mf);
                 }
 
-                co->collide(mf);
-                mf.other->collide(mf);
 
                 if (b_reproject)
                 {
                     b_reproject = false;
+                    _handled.push_back(mf.other.get());
                     num_reprojections--;
                     _projected_mfs.clear();
                     projectCollisions(co);
                 }
-            }   // while mf not empty loop
+            }   // while mf not empty loop (and less than 5 iterations)
+
+            if (num_reprojections == 0)
+            {
+                std::cout << "max reprojections" << std::endl;
+            }
 
             _projected_mfs.clear();
+            _handled.clear();
             co->_cs_pos = co->_goal;
 
         }   // for loop
