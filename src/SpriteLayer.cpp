@@ -61,10 +61,7 @@ namespace dang
                 (*sti)->markRemove();
 //                sti = erase(sti);
             }
-            else
-            {
-                ++sti;
-            }
+            ++sti;
 
         }
     }
