@@ -11,6 +11,7 @@
 #include <algorithm>
 
 #include <iostream>
+#include <cassert>
 
 namespace dang
 {
@@ -60,8 +61,8 @@ namespace dang
         _imagesheet = is;
         _z_order = so->z_order;
         _last_pos = _pos;
-        _pos_g = _pos;
-        _last_pos_g = _pos;
+//        _pos_g = _pos;
+//        _last_pos_g = _pos;
 
         if(so->transform.test(0))
         {
@@ -141,19 +142,20 @@ namespace dang
     void Sprite::coreUpdate(uint32_t dt)
     {
         _last_pos = _pos;
-        _last_pos_g = _pos_g;
+//        _last_pos_g = _pos_g;
         updateTweens(dt);
 
         // dt in 10 ms
         float dt10ms = dt / 100.0f;
         _vel += (_gravity + _acc) * dt10ms;
         _pos += _vel * dt10ms;
-        spSprite par = _parent.lock();
+
+/*        spSprite par = _parent.lock();
         if (par != nullptr)
         {
             _pos_g = _pos + par->_pos_g;
         }
-    }
+*/    }
 
     void Sprite::update(uint32_t dt)
     {
@@ -166,14 +168,16 @@ namespace dang
 
     RectF Sprite::getSizeRectG()
     {
-        return RectF(_pos_g.x, _pos_g.y, _size.x, _size.y);
+        Vector2F p = local2Global(_pos);
+        return RectF(p.x, p.y, _size.x, _size.y);
     }
 
     void Sprite::render(int32_t vpx, int32_t vpy)
     {
+        Vector2F p = local2Global(_pos);
         blit::Point dp;
-        dp.x  = int32_t(std::floor(_pos_g.x) - vpx);
-        dp.y  = int32_t(std::floor(_pos_g.y) - vpy);
+        dp.x  = int32_t(std::floor(p.x) - vpx);
+        dp.y  = int32_t(std::floor(p.y) - vpy);
         blit::screen.blit(_imagesheet->getSurface(), getBlitRect(), dp, _transform);
     }
 
@@ -249,14 +253,15 @@ namespace dang
      */
     void Sprite::addSprite(spSprite s)
     {
-        s->_parent = shared_from_this();
+        s->_parent = this;//shared_from_this();
 
         if (_child == nullptr)  // first child
         {
             D_DEBUG_PRINT("add sprite as first child\n");
             _child = s;
             _child->_next_sibling = nullptr;
-            _child->_prev_sibling.reset();
+//            _child->_prev_sibling.reset();
+            _child->_prev_sibling = nullptr;
         }
         else
         {
@@ -268,9 +273,11 @@ namespace dang
                 D_DEBUG_PRINT("add sprite at first position\n");
                 _child = s;
                 _child->_next_sibling = sp;
-                _child->_prev_sibling.reset();
+//                _child->_prev_sibling.reset();
+                _child->_prev_sibling = nullptr;
 
-                sp->_prev_sibling = _child;
+//                sp->_prev_sibling = _child;
+                sp->_prev_sibling = _child.get();
             }
             else
             {
@@ -288,33 +295,38 @@ namespace dang
                     // last sibling
                     D_DEBUG_PRINT("add sprite at last position\n");
                     sp->_next_sibling = s;
-                    s->_prev_sibling = sp;
+                    s->_prev_sibling = sp.get();
                     s->_next_sibling = nullptr;
                 }
                 else
                 {
                     // somewhere in between
                     D_DEBUG_PRINT("add sprite in between\n");
-                    spSprite prev = sp->_prev_sibling.lock();
-                    if (prev != nullptr)
-                    {
-                        prev->_next_sibling = s;
+//                    spSprite prev = sp->_prev_sibling.lock();
+//                    if (prev != nullptr)
+                    assert(sp->_prev_sibling != nullptr);
+//                    if (sp->_prev_sibling != nullptr)
+//                    {
+
+                        sp->_prev_sibling->_next_sibling = s;
+//                        prev->_next_sibling = s;
 
                         s->_next_sibling = sp;
-                        s->_prev_sibling = prev;
+//                        s->_prev_sibling = prev;
+                        s->_prev_sibling = sp->_prev_sibling;
 
-                        sp->_prev_sibling = s;
-                    }
+                        sp->_prev_sibling = s.get();
+/*                    }
                     else
                     {
                         D_DEBUG_PRINT("could not add sprite error\n");
                     }
-                }
+*/                }
             }
         }
-        s->_pos_g = s->_pos + _pos;
+//        s->_pos_g = s->_pos + _pos;
         s->_last_pos = s->_pos;
-        s->_last_pos_g = s->_pos_g;
+//        s->_last_pos_g = s->_pos_g;
     }
 
     /**
@@ -323,24 +335,29 @@ namespace dang
     void Sprite::removeMeFromTree()
     {
         D_DEBUG_PRINT("removeMeFromTree\n");
-        spSprite par = _parent.lock();
-        if (par != nullptr)
+//        spSprite par = _parent.lock();
+//        if (par != nullptr)
+        if (_parent != nullptr)
         {
             D_DEBUG_PRINT("removeMeFromTree: spr locked\n");
-            spSprite prev = _prev_sibling.lock();
-            if (prev == nullptr)
+//            spSprite prev = _prev_sibling.lock();
+//            if (prev == nullptr)
+            if (_prev_sibling == nullptr)
             {
                 // first child
                 if (_next_sibling == nullptr)
                 {
                     // only child
-                    par->_child = nullptr;
+//                    par->_child = nullptr;
+                    _parent->_child = nullptr;
                     D_DEBUG_PRINT("removeMeFromTree: remove only child\n");
                 }
                 else
                 {
-                    par->_child = _next_sibling;
-                    par->_child->_prev_sibling.reset();
+//                    par->_child = _next_sibling;
+                    _parent->_child = _next_sibling;
+//                    par->_child->_prev_sibling.reset();
+                    _parent->_child->_prev_sibling = nullptr;
                     D_DEBUG_PRINT("removeMeFromTree: remove first child\n");
                 }
             }
@@ -348,20 +365,25 @@ namespace dang
             {
                 if (_next_sibling != nullptr)
                 {
-                    prev->_next_sibling = _next_sibling;
-                    _next_sibling->_prev_sibling = prev;
+//                    prev->_next_sibling = _next_sibling;
+                    _prev_sibling->_next_sibling = _next_sibling;
+//                    _next_sibling->_prev_sibling = prev;
+                    _next_sibling->_prev_sibling = _prev_sibling;
                     D_DEBUG_PRINT("removeMeFromTree: remove a middle sibling\n");
                 }
                 else
                 {
-                    prev->_next_sibling.reset();
+//                    prev->_next_sibling.reset();
+                    _prev_sibling->_next_sibling.reset();
                     D_DEBUG_PRINT("removeMeFromTree: remove last sibling\n");
                 }
             }
 
-            _parent.reset();
+//            _parent.reset();
+            _parent = nullptr;
             _next_sibling.reset();
-            _prev_sibling.reset();
+//            _prev_sibling.reset();
+            _prev_sibling = nullptr;
         }
         else
         {
@@ -370,7 +392,7 @@ namespace dang
         }
     }
 
-    Vector2F Sprite::getPosG()
+/*    Vector2F Sprite::getPosG()
     {
         spSprite s = _parent.lock();
         _pos_g = _pos;
@@ -391,15 +413,28 @@ namespace dang
         }
         return _last_pos_g;
     }
-
-    Vector2F Sprite::getParentPos()
+*/
+    Vector2F Sprite::local2Global(const Vector2F &in)
     {
-        spSprite s = _parent.lock();
-        if (s != nullptr)
+        Vector2F ret = in;
+        Sprite* par = _parent;
+        while (par != nullptr)
         {
-            return s->getPosG();
+            ret += par->_pos;
+            par = par->_parent;
         }
-        return {0,0};
+        return ret;
+    }
 
+    Vector2F Sprite::global2Local(const Vector2F &in)
+    {
+        Vector2F ret = in;
+        Sprite* par = _parent;
+        while (par != nullptr)
+        {
+            ret -= par->_pos;
+            par = par->_parent;
+        }
+        return ret;
     }
 }

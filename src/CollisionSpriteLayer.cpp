@@ -34,7 +34,8 @@ namespace dang
     void CollisionSpriteLayer::addCollisionSprite(spCollisionSprite cspr)
     {
         SpriteLayer::addSprite(cspr);
-        cspr->setCSPosition(cspr->_pos_g);
+        cspr->setCSPosition(cspr->local2Global(cspr->getPos()));
+//        cspr->setCSPosition(cspr->_pos_g);
         if (cspr->_active)
         {
             _cs.addCObject(cspr);
@@ -53,7 +54,8 @@ namespace dang
             }
             else
             {
-                if ((*sti)->_parent.expired())
+                if ((*sti)->_parent == nullptr)
+//                if ((*sti)->_parent.expired())
                 {
                     // root element. Always in
                     // but not in collision solver
@@ -69,7 +71,8 @@ namespace dang
                         {
                             (*sti)->_active = true;
                             spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
-                            co->setCSPosition((*sti)->_pos_g);
+                            co->setCSPosition((*sti)->local2Global((*sti)->getPos()));
+//                            co->setCSPosition((*sti)->_pos_g);
                             _cs.addCObject(co);
                         }
                     }

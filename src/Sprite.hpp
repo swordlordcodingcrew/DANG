@@ -72,19 +72,19 @@ namespace dang
         virtual void        setPos(const Vector2F& pos) { _pos = pos; }
         virtual void        setPosX(float x) {_pos.x = x; }
         virtual void        setPosY(float y) {_pos.y = y; }
-        Vector2F            getParentPos();
+//        Vector2F            getParentPos();
 //        Vector2F    getLastPos() { return _last_pos; }
 //        Vector2F    getPosDelta() { return _pos - _last_pos; }
-        Vector2F            getPosG();
-        Vector2F            getLastPosG();
+//        Vector2F            getPosG();
+//        Vector2F            getLastPosG();
         float               getPosX() const { return _pos.x; }
         float               getPosY() const { return _pos.y; }
         float               getLastPosX() const { return _last_pos.x; }
         float               getLastPosY() const { return _last_pos.y; }
-        float               getPosGX() const { return _pos_g.x; }
-        float               getPosGY() const { return _pos_g.y; }
-        float               getLastPosGX() const { return _last_pos_g.x; }
-        float               getLastPosGY() const { return _last_pos_g.y; }
+//        float               getPosGX() const { return _pos_g.x; }
+//        float               getPosGY() const { return _pos_g.y; }
+//        float               getLastPosGX() const { return _last_pos_g.x; }
+//        float               getLastPosGY() const { return _last_pos_g.y; }
 
         Vector2F    getVel() { return _vel; }
         void        setVel(const Vector2F& vel) { _vel = vel; }
@@ -103,6 +103,8 @@ namespace dang
         Vector2F    getGravity() { return _gravity; }
         void        setGravity(const Vector2F& g) {_gravity = g; };
 
+        Vector2F    local2Global(const Vector2F& in);
+        Vector2F    global2Local(const Vector2F& in);
 
 
         Vector2F    getSize() { return _size; }
@@ -135,11 +137,11 @@ namespace dang
         Vector2F     _acc{0,0};
         Vector2F     _gravity{0,0};
 
-        Vector2F    _pos_g{0,0};  // global position
-        Vector2F    _last_pos_g{0,0};  // global position
+//        Vector2F    _pos_g{0,0};  // global position
+//        Vector2F    _last_pos_g{0,0};  // global position
 
 
-        Vector2F    _last_pos{0,0};     // used e.g. for collision detection
+        Vector2F    _last_pos{0,0};
 //        uint32_t    _last_update_time{0};
 
         // tween depot
@@ -150,10 +152,12 @@ namespace dang
         friend class SpriteIterator;
         friend class SpriteLayer;
         friend class CollisionSpriteLayer;
-        std::weak_ptr<Sprite>   _parent;
+        Sprite*         _parent{nullptr};
+//        std::weak_ptr<Sprite>   _parent;
         spSprite                _child{nullptr};    // left
         spSprite                _next_sibling{nullptr};  // right
-        std::weak_ptr<Sprite>   _prev_sibling;
+        Sprite*                 _prev_sibling{nullptr};
+//        std::weak_ptr<Sprite>   _prev_sibling;
 
     };
 

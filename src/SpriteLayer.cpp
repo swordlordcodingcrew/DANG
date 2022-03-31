@@ -105,7 +105,8 @@ namespace dang
             }
             else
             {
-                if ((*sti)->_parent.expired())
+//                if ((*sti)->_parent.expired())
+                if ((*sti)->_parent == nullptr)
                 {
                     // root element. Always in
                     (*sti)->coreUpdate(dt);

@@ -50,12 +50,15 @@ namespace dang
         }
         else
         {
-            spSprite par = _current->_parent.lock();
+//            spSprite par = _current->_parent.lock();
+//            while (par != nullptr)
+            Sprite* par = _current->_parent;
             while (par != nullptr)
             {
                 if (par->_next_sibling == nullptr)
                 {
-                    par = par->_parent.lock();
+//                    par = par->_parent.lock();
+                    par = par->_parent;
                 }
                 else
                 {
