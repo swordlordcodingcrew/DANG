@@ -139,7 +139,7 @@ namespace dang
                             }
                             case CR_SLIDE:
                             {
-                                if (mf.other->_cs_pos.x - mf.other->_goal.x != 0 || mf.other->_cs_pos.x - mf.other->_goal.y != 0)
+                                if (mf.other->_cs_pos.x - mf.other->_goal.x != 0 || mf.other->_cs_pos.y - mf.other->_goal.y != 0)
                                 {
                                     if (mf.normalOther.x != 0)
                                     {
@@ -154,16 +154,16 @@ namespace dang
                             }
                             case CR_BOUNCE:
                             {
-                                if (mf.other->_cs_pos.x - mf.other->_goal.x != 0 || mf.other->_cs_pos.x - mf.other->_goal.y != 0)
+                                if (mf.other->_cs_pos.x - mf.other->_goal.x != 0 || mf.other->_cs_pos.y - mf.other->_goal.y != 0)
                                 {
                                     if (mf.normalOther.x != 0)
                                     {
-                                        float d_bounce = mf.other->_goal.x - mf.other->_hotrect.x - mf.deltaOther.x;
+                                        float d_bounce = mf.other->_goal.x - mf.other->_cs_pos.x - mf.deltaOther.x;
                                         mf.other->_goal.x = mf.touchOther.x - d_bounce;
                                     }
                                     else
                                     {
-                                        float d_bounce = mf.other->_goal.y - mf.other->_hotrect.y - mf.deltaOther.y;
+                                        float d_bounce = mf.other->_goal.y - mf.other->_cs_pos.y - mf.deltaOther.y;
                                         mf.other->_goal.y = mf.touchOther.y - d_bounce;
                                     }
                                 }
