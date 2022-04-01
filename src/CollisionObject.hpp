@@ -44,8 +44,8 @@ namespace dang
 
         /**
          * loosely based on box2d
-         * rigid: should not move, Rigid object will not collide with other rigid object. Example: Wall
-         * not rigis, i.e. dynamic: moving object. Hero, enemies
+         * rigid: should not move, Rigid object will not collide with other rigid objects. Example: Wall
+         * not rigid, i.e. dynamic: moving object. Hero, enemies
          */
         bool                _rigid{false};
 
