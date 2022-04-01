@@ -89,7 +89,7 @@ namespace dang
                         }
                         case CR_SLIDE:
                         {
-                            if (co->_cs_pos.x - co->_goal.x != 0 || (co->_cs_pos.y - co->_goal.y != 0))
+                            if (co->_co_pos.x - co->_goal.x != 0 || (co->_co_pos.y - co->_goal.y != 0))
                             {
                                 if (mf.normalMe.x != 0)
                                 {
@@ -105,16 +105,16 @@ namespace dang
                         }
                         case CR_BOUNCE:
                         {
-                            if (co->_cs_pos.x - co->_goal.x != 0 || co->_cs_pos.y - co->_goal.y != 0)
+                            if (co->_co_pos.x - co->_goal.x != 0 || co->_co_pos.y - co->_goal.y != 0)
                             {
                                 if (mf.normalMe.x != 0)
                                 {
-                                    float d_bounce = co->_goal.x - co->_cs_pos.x - mf.deltaMe.x;
+                                    float d_bounce = co->_goal.x - co->_co_pos.x - mf.deltaMe.x;
                                     co->_goal.x = mf.touchMe.x - d_bounce;
                                 }
                                 else
                                 {
-                                    float d_bounce = co->_goal.y - co->_cs_pos.y - mf.deltaMe.y;
+                                    float d_bounce = co->_goal.y - co->_co_pos.y - mf.deltaMe.y;
                                     co->_goal.y = mf.touchMe.y - d_bounce;
                                 }
                             }
@@ -139,7 +139,7 @@ namespace dang
                             }
                             case CR_SLIDE:
                             {
-                                if (mf.other->_cs_pos.x - mf.other->_goal.x != 0 || mf.other->_cs_pos.y - mf.other->_goal.y != 0)
+                                if (mf.other->_co_pos.x - mf.other->_goal.x != 0 || mf.other->_co_pos.y - mf.other->_goal.y != 0)
                                 {
                                     if (mf.normalOther.x != 0)
                                     {
@@ -154,16 +154,16 @@ namespace dang
                             }
                             case CR_BOUNCE:
                             {
-                                if (mf.other->_cs_pos.x - mf.other->_goal.x != 0 || mf.other->_cs_pos.y - mf.other->_goal.y != 0)
+                                if (mf.other->_co_pos.x - mf.other->_goal.x != 0 || mf.other->_co_pos.y - mf.other->_goal.y != 0)
                                 {
                                     if (mf.normalOther.x != 0)
                                     {
-                                        float d_bounce = mf.other->_goal.x - mf.other->_cs_pos.x - mf.deltaOther.x;
+                                        float d_bounce = mf.other->_goal.x - mf.other->_co_pos.x - mf.deltaOther.x;
                                         mf.other->_goal.x = mf.touchOther.x - d_bounce;
                                     }
                                     else
                                     {
-                                        float d_bounce = mf.other->_goal.y - mf.other->_cs_pos.y - mf.deltaOther.y;
+                                        float d_bounce = mf.other->_goal.y - mf.other->_co_pos.y - mf.deltaOther.y;
                                         mf.other->_goal.y = mf.touchOther.y - d_bounce;
                                     }
                                 }
@@ -197,7 +197,7 @@ namespace dang
 
             _projected_mfs.clear();
             _handled.clear();
-            co->_cs_pos = co->_goal;
+            co->_co_pos = co->_goal;
 
         }   // for loop
 
@@ -225,12 +225,12 @@ namespace dang
             }
 
 
-            Vector2F deltaMe = me->_goal - me->_cs_pos;
-            Vector2F deltaOther = other->_goal - other->_cs_pos;
+            Vector2F deltaMe = me->_goal - me->_co_pos;
+            Vector2F deltaOther = other->_goal - other->_co_pos;
             Vector2F delta = deltaMe - deltaOther;
 
-            RectF rMink = {(other->_cs_pos.x + other->_hotrect.x) - (me->_cs_pos.x + me->_hotrect.x) - me->_hotrect.w,
-                    (other->_cs_pos.y + other->_hotrect.y) - (me->_cs_pos.y + me->_hotrect.y) - me->_hotrect.h,
+            RectF rMink = {(other->_co_pos.x + other->_hotrect.x) - (me->_co_pos.x + me->_hotrect.x) - me->_hotrect.w,
+                           (other->_co_pos.y + other->_hotrect.y) - (me->_co_pos.y + me->_hotrect.y) - me->_hotrect.h,
                     other->_hotrect.w + me->_hotrect.w,
                     other->_hotrect.h + me->_hotrect.h};
 
@@ -285,8 +285,8 @@ namespace dang
                     mf.normalOther = -mf.normalMe;
                 }
 
-                mf.touchMe = me->_cs_pos + mf.deltaMe;
-                mf.touchOther = other->_cs_pos + mf.deltaOther;
+                mf.touchMe = me->_co_pos + mf.deltaMe;
+                mf.touchOther = other->_co_pos + mf.deltaOther;
 
                 // ti is not valid in this context since the rects overlap already
                 mf.ti = 0;
@@ -302,11 +302,11 @@ namespace dang
 
                     mf.overlaps = false;
                     mf.deltaMe = deltaMe * mf.ti;
-                    mf.touchMe = me->_cs_pos + mf.deltaMe;
+                    mf.touchMe = me->_co_pos + mf.deltaMe;
                     mf.normalMe = -mf.normalOther;
 
                     mf.deltaOther = deltaOther * mf.ti;
-                    mf.touchOther = other->_cs_pos + mf.deltaOther;
+                    mf.touchOther = other->_co_pos + mf.deltaOther;
 
                     _projected_mfs.push_front(mf);
                 }
@@ -573,10 +573,10 @@ namespace dang
      */
     float CollisionSolver::aaLoSH(const spCollisionObject& me, const spCollisionObject& target)
     {
-        Vector2F me_p = me->_cs_pos + me->_hotrect.center();
+        Vector2F me_p = me->_co_pos + me->_hotrect.center();
         RectF target_hr = target->_hotrect;
-        target_hr.x += target->_cs_pos.x;
-        target_hr.y += target->_cs_pos.y;
+        target_hr.x += target->_co_pos.x;
+        target_hr.y += target->_co_pos.y;
 
         // target too high / too low, ergo not visible
         if (me_p.y > target_hr.bottom() || me_p.y < target_hr.top())
@@ -602,8 +602,8 @@ namespace dang
             }
 
             RectF obst_hr = obst->_hotrect;
-            obst_hr.x += obst->_cs_pos.x;
-            obst_hr.y += obst->_cs_pos.y;
+            obst_hr.x += obst->_co_pos.x;
+            obst_hr.y += obst->_co_pos.y;
 
             // obstacle too high / too low, ergo not an obstacle
             if (me_p.y > obst_hr.bottom() || me_p.y < obst_hr.top())
@@ -676,8 +676,8 @@ namespace dang
      */
     float CollisionSolver::loS(const spCollisionObject& me, const spCollisionObject& target)
     {
-        Vector2F p1 = me->_cs_pos + me->_hotrect.center();
-        Vector2F p2 = target->_cs_pos + target->_hotrect.center();
+        Vector2F p1 = me->_co_pos + me->_hotrect.center();
+        Vector2F p2 = target->_co_pos + target->_hotrect.center();
 
         for (const spCollisionObject& other : _co_list)
 //        for (SpriteIterator it = begin(); it != end(); it++)
@@ -695,8 +695,8 @@ namespace dang
             }
 
             RectF r = other->_hotrect;
-            r.x += other->_cs_pos.x;
-            r.y += other->_cs_pos.y;
+            r.x += other->_co_pos.x;
+            r.y += other->_co_pos.y;
             float f_tl = (p2.y - p1.y) * r.tl().x + (p1.x - p2.x) * r.tl().y + (p2.x *p1.y - p1.x * p2.y);
             float f_tr = (p2.y - p1.y) * r.tr().x + (p1.x - p2.x) * r.tr().y + (p2.x *p1.y - p1.x * p2.y);
             float f_bl = (p2.y - p1.y) * r.bl().x + (p1.x - p2.x) * r.bl().y + (p2.x *p1.y - p1.x * p2.y);

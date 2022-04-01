@@ -34,7 +34,7 @@ namespace dang
     CollisionSprite::CollisionSprite(const tmx_spriteobject* so, const spImagesheet& is) : Sprite(so, is)
     {
         _hotrect = {0, 0, float(so->width), float(so->height)};
-        _cs_pos = local2Global(_pos);
+        _co_pos = local2Global(_pos);
 //        _cs_pos = _pos_g;
     }
 
@@ -44,7 +44,7 @@ namespace dang
      */
     RectF CollisionSprite::getHotrectG() const
     {
-        return {_cs_pos.x + _hotrect.x, _cs_pos.y + _hotrect.y, _hotrect.w, _hotrect.h};
+        return {_co_pos.x + _hotrect.x, _co_pos.y + _hotrect.y, _hotrect.w, _hotrect.h};
     }
 
     /**
@@ -251,27 +251,27 @@ namespace dang
         Sprite::addSprite(s);
         spCollisionSprite cs = std::static_pointer_cast<CollisionSprite>(s);
 //        cs->_cs_pos = _pos_g;
-        cs->_cs_pos = local2Global(_pos);
+        cs->_co_pos = local2Global(_pos);
     }
 
     void CollisionSprite::setPos(const Vector2F &pos)
     {
         Sprite::setPos(pos);
-        _cs_pos = local2Global(pos);
+        _co_pos = local2Global(pos);
     }
 
     void CollisionSprite::setPosX(float x)
     {
         Sprite::setPosX(x);
 //        _cs_pos.x = x + getParentPos().x;
-        _cs_pos.x = local2Global({x,0}).x;
+        _co_pos.x = local2Global({x, 0}).x;
     }
 
     void CollisionSprite::setPosY(float y)
     {
         Sprite::setPosY(y);
 //        _cs_pos.y = y + getParentPos().y;
-        _cs_pos.y = local2Global({0,y}).y;
+        _co_pos.y = local2Global({0, y}).y;
     }
 
     spCollisionSprite CollisionSprite::getOther(const manifold& mf, const CollisionSprite* me)

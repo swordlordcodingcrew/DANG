@@ -19,8 +19,8 @@ namespace dang
         void        setRigid(bool rigid) { _rigid = rigid; }
         bool        isRigid() const { return _rigid; }
         void        setGoal(const Vector2F& g) { _goal = g; };
-        Vector2F    getCSPosition() const { return _cs_pos; };
-        void        setCSPosition(const Vector2F& pos) { _cs_pos = pos; };
+        Vector2F    getCSPosition() const { return _co_pos; };
+        void        setCSPosition(const Vector2F& pos) { _co_pos = pos; };
 
         virtual uint8_t  getCollisionResponse(const spCollisionObject& other) { return _cr; };
         void             setCollisionResponse(uint8_t cr) { _cr = cr; };
@@ -58,10 +58,10 @@ namespace dang
         /**
          * x, y: global position
          */
-        Vector2F            _cs_pos{0,0};
+        Vector2F            _co_pos{0, 0};
 
         /**
-         * x, y: position of hotrect relative to _cs_pos
+         * x, y: position of hotrect relative to _co_pos
          * w, h: width and height
          */
         RectF               _hotrect{0,0,0,0};
