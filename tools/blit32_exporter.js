@@ -162,6 +162,12 @@ function export32Blit(map, fileName) {
     for (var i = 0; i < map.layerCount; ++i)
     {
         var layer = map.layerAt(i);
+
+        if (layer.name[0] == "_")
+        {
+            continue;
+        }
+
         if (layer.isTileLayer)
         {
             file.writeLine("// layer tilelayer: " + layer.name);
@@ -459,6 +465,12 @@ function export32Blit(map, fileName) {
     for (var i = 0; i < map.layerCount; ++i)
     {
         var layer = map.layerAt(i);
+
+        if (layer.name[0] == "_")
+        {
+            continue;
+        }
+
         if (layer.isObjectLayer)
         {
             if (layer.objects.length > 0 && layer.objects[0].shape != MapObject.Point)
