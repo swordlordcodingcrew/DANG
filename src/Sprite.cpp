@@ -28,12 +28,12 @@ namespace dang
     Sprite::Sprite(const Sprite &sp)
     : std::enable_shared_from_this<Sprite>(), _visible(sp._visible), _img_index(sp._img_index), _imagesheet(sp._imagesheet), _transform(sp._transform),
       _z_order(sp._z_order), _type_name(sp._type_name), _type_num(sp._type_num), _size(sp._size), _pos(sp._pos), _vel(sp._vel),
-      _acc(sp._acc), _gravity(sp._gravity), _last_pos(sp._last_pos)
+      _acc(sp._acc), _gravity(sp._gravity)
     {
         // this is somewhat an issue since the id is not anymore global like that
         _id = sp._id; // global
 
-        for (auto t : sp._tweens)
+        for (const auto& t : sp._tweens)
         {
             addTween(std::make_shared<Tweenable>(*t));
         }
@@ -60,9 +60,6 @@ namespace dang
         _img_index = so->tile;
         _imagesheet = is;
         _z_order = so->z_order;
-        _last_pos = _pos;
-//        _pos_g = _pos;
-//        _last_pos_g = _pos;
 
         if(so->transform.test(0))
         {
@@ -141,8 +138,6 @@ namespace dang
 
     void Sprite::coreUpdate(uint32_t dt)
     {
-        _last_pos = _pos;
-//        _last_pos_g = _pos_g;
         updateTweens(dt);
 
         // dt in 10 ms
@@ -150,12 +145,7 @@ namespace dang
         _vel += (_gravity + _acc) * dt10ms;
         _pos += _vel * dt10ms;
 
-/*        spSprite par = _parent.lock();
-        if (par != nullptr)
-        {
-            _pos_g = _pos + par->_pos_g;
-        }
-*/    }
+    }
 
     void Sprite::update(uint32_t dt)
     {
@@ -260,7 +250,6 @@ namespace dang
             D_DEBUG_PRINT("add sprite as first child\n");
             _child = s;
             _child->_next_sibling = nullptr;
-//            _child->_prev_sibling.reset();
             _child->_prev_sibling = nullptr;
         }
         else
@@ -273,10 +262,8 @@ namespace dang
                 D_DEBUG_PRINT("add sprite at first position\n");
                 _child = s;
                 _child->_next_sibling = sp;
-//                _child->_prev_sibling.reset();
                 _child->_prev_sibling = nullptr;
 
-//                sp->_prev_sibling = _child;
                 sp->_prev_sibling = _child.get();
             }
             else
@@ -302,31 +289,16 @@ namespace dang
                 {
                     // somewhere in between
                     D_DEBUG_PRINT("add sprite in between\n");
-//                    spSprite prev = sp->_prev_sibling.lock();
-//                    if (prev != nullptr)
                     assert(sp->_prev_sibling != nullptr);
-//                    if (sp->_prev_sibling != nullptr)
-//                    {
+                    sp->_prev_sibling->_next_sibling = s;
 
-                        sp->_prev_sibling->_next_sibling = s;
-//                        prev->_next_sibling = s;
+                    s->_next_sibling = sp;
+                    s->_prev_sibling = sp->_prev_sibling;
 
-                        s->_next_sibling = sp;
-//                        s->_prev_sibling = prev;
-                        s->_prev_sibling = sp->_prev_sibling;
-
-                        sp->_prev_sibling = s.get();
-/*                    }
-                    else
-                    {
-                        D_DEBUG_PRINT("could not add sprite error\n");
-                    }
-*/                }
+                    sp->_prev_sibling = s.get();
+                }
             }
         }
-//        s->_pos_g = s->_pos + _pos;
-        s->_last_pos = s->_pos;
-//        s->_last_pos_g = s->_pos_g;
     }
 
     /**
@@ -335,28 +307,21 @@ namespace dang
     void Sprite::removeMeFromTree()
     {
         D_DEBUG_PRINT("removeMeFromTree\n");
-//        spSprite par = _parent.lock();
-//        if (par != nullptr)
         if (_parent != nullptr)
         {
             D_DEBUG_PRINT("removeMeFromTree: spr locked\n");
-//            spSprite prev = _prev_sibling.lock();
-//            if (prev == nullptr)
             if (_prev_sibling == nullptr)
             {
                 // first child
                 if (_next_sibling == nullptr)
                 {
                     // only child
-//                    par->_child = nullptr;
                     _parent->_child = nullptr;
                     D_DEBUG_PRINT("removeMeFromTree: remove only child\n");
                 }
                 else
                 {
-//                    par->_child = _next_sibling;
                     _parent->_child = _next_sibling;
-//                    par->_child->_prev_sibling.reset();
                     _parent->_child->_prev_sibling = nullptr;
                     D_DEBUG_PRINT("removeMeFromTree: remove first child\n");
                 }
@@ -365,24 +330,19 @@ namespace dang
             {
                 if (_next_sibling != nullptr)
                 {
-//                    prev->_next_sibling = _next_sibling;
                     _prev_sibling->_next_sibling = _next_sibling;
-//                    _next_sibling->_prev_sibling = prev;
                     _next_sibling->_prev_sibling = _prev_sibling;
                     D_DEBUG_PRINT("removeMeFromTree: remove a middle sibling\n");
                 }
                 else
                 {
-//                    prev->_next_sibling.reset();
                     _prev_sibling->_next_sibling.reset();
                     D_DEBUG_PRINT("removeMeFromTree: remove last sibling\n");
                 }
             }
 
-//            _parent.reset();
             _parent = nullptr;
             _next_sibling.reset();
-//            _prev_sibling.reset();
             _prev_sibling = nullptr;
         }
         else
@@ -392,28 +352,6 @@ namespace dang
         }
     }
 
-/*    Vector2F Sprite::getPosG()
-    {
-        spSprite s = _parent.lock();
-        _pos_g = _pos;
-        if (s != nullptr)
-        {
-            _pos_g += s->getPosG();
-        }
-        return _pos_g;
-    }
-
-    Vector2F Sprite::getLastPosG()
-    {
-        spSprite s = _parent.lock();
-        _last_pos_g = _last_pos;
-        if (s != nullptr)
-        {
-            _last_pos_g += s->getLastPosG();
-        }
-        return _last_pos_g;
-    }
-*/
     Vector2F Sprite::local2Global(const Vector2F &in)
     {
         Vector2F ret = in;
