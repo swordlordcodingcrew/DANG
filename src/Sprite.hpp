@@ -129,7 +129,7 @@ namespace dang
         std::list<spTweenable> _tweens;
         spTweenable _animation;
 
-    protected:      // tree
+    private:      // tree
         friend class SpriteIterator;
         friend class SpriteLayer;
         friend class CollisionSpriteLayer;
