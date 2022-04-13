@@ -25,6 +25,7 @@ namespace dang
 //        virtual void        clearObject() {_the_object.reset(); }
 
         virtual void        duration(uint32_t d) {_duration = d; }
+        virtual uint32_t    duration() const { return _duration; }
         virtual void        loops(int32_t l) { _loops = l; }
         virtual void        alternating(bool a) { _alternating = a; }
         virtual void        delay(uint32_t d) {_delay = d; }
