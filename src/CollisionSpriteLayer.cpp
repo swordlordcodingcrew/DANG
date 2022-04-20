@@ -208,6 +208,16 @@ namespace dang
         _cs.removeCObject(co);
     }
 
+    float CollisionSpriteLayer::aaLoSH(const spCollisionSprite& me, const spCollisionSprite& target)
+    {
+        return _cs.aaLoSH(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target));
+    }
+
+    float CollisionSpriteLayer::loS(const spCollisionSprite& me, const spCollisionSprite& target)
+    {
+        return _cs.loS(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target));
+    }
+
     // called on every move of every sprite
 /*    void CollisionSpriteLayer::handleCollisionDetection(const Gear& gear)
     {
