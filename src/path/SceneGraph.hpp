@@ -69,6 +69,7 @@ namespace dang
         bool getRandomNeighbourPath(const Waypoint* start, std::vector<const Waypoint*>& path);
         bool getRandomPath(const Waypoint* start, std::vector<const Waypoint*>& path);
         bool getNearestNeighbourHPath(const Waypoint* start, float dist, std::vector<const Waypoint*>& path);
+        bool getNearestNeighbourPath(const Waypoint* start, float dist, std::vector<const Waypoint*>& path);
 
         const Waypoint* getWaypointWithType(uint32_t type);
 

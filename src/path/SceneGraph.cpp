@@ -356,6 +356,64 @@ namespace dang
         return true;
     }
 
+    bool SceneGraph::getNearestNeighbourPath(const Waypoint *start, float dist, std::vector<const Waypoint *> &path)
+    {
+        if (start->getNeighbours().empty())
+        {
+            return false;
+        }
+
+        float delta{0};
+        const Waypoint* goal{nullptr};
+        if (dist < 0)
+        {
+            delta = FLT_MIN;
+            for (const auto& wpc : start->getNeighbours())
+            {
+                if (wpc.type != wpc_block)
+                {
+                    float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
+                    if (pos_delta < 0)
+                    {
+                        float newdelta = std::abs(dist - pos_delta);
+                        if (newdelta > delta)
+                        {
+                            goal = wpc.neighbour;
+                            delta = newdelta;
+                        }
+                    }
+                }
+            }
+        }
+        else if (dist > 0)
+        {
+            delta = FLT_MAX;
+            for (const auto& wpc : start->getNeighbours())
+            {
+                if (wpc.type != wpc_block)
+                {
+                    float pos_delta = start->_pos.x - wpc.neighbour->_pos.x;
+                    if (pos_delta > 0)
+                    {
+                        float newdelta = std::abs(dist - pos_delta);
+                        if (newdelta < delta)
+                        {
+                            goal = wpc.neighbour;
+                            delta = newdelta;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (goal == nullptr)
+        {
+            return false;
+        }
+        path.push_back(goal);
+        return true;
+    }
+
     uint32_t SceneGraph::getConnectionType(const Waypoint* start, const Waypoint* goal)
     {
         if (start == nullptr || goal == nullptr)
