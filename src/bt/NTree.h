@@ -11,10 +11,7 @@ namespace dang
     class NTree
     {
     public:
-        static BTNode::Status process(const spSprite& spr, spNTreeState& state);
-
-//        static BTNode* addInverter(BTNode* node);
-//        static BTNode* addForwarder(BTNode* node);
+        static BTNode::Status process(Sprite& spr, spNTreeState& state, uint32_t dt);
 
     public:
         NTree();

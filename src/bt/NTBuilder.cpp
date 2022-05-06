@@ -78,7 +78,7 @@ namespace dang
     NTBuilder& NTBuilder::leaf(LeafFunction func)
     {
         BTNode* node = new BTNode(BTNode::Type::LEAF);
-        node->_process = [func](const spSprite& spr, const BTNode* node, spNTreeState& state)
+        node->_process = [func](Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt)
         {
             BTNode::Status ret{BTNode::Status::FAILURE};
 
@@ -99,7 +99,7 @@ namespace dang
                 }
             }
 
-            ret = func(spr);
+            ret = func(spr, dt);
 
             // only leafs set the state
             if (ret == BTNode::Status::RUNNING)
@@ -117,24 +117,11 @@ namespace dang
         return *this;
     }
 
-/*    NTBuilder& NTBuilder::leaf(NodeFunction func)
-    {
-        BTNode* node = new BTNode(BTNode::Type::LEAF);
-        node->_process = func;
-
-        attach(node);
-
-        return *this;
-    }
-*/
 
     NTBuilder &NTBuilder::tree(const spNTree& tree)
     {
-//        BTNode* _pos = _builder_pos;
         BTNode* clone = preOrderClone(tree->_root);
         attach(clone);
-//        preOrderCopy(tree->_root);
-//        _builder_pos = _pos;
         D_DEBUG_PRINT("NTBuilder, tree: copy done (%d)\r\n", mallinfo().uordblks);
 
         return *this;

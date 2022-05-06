@@ -102,15 +102,13 @@ namespace dang
             spCollisionSprite cspr = std::dynamic_pointer_cast<CollisionSprite>((*it));
             if (cspr->_active)
             {
-                if (cspr->getNTreeState() != nullptr)
+/*                if (cspr->getNTreeState() != nullptr)
                 {
+                    // is called in the update function
                     gear.runNTree(cspr);
 
-#ifdef DANG_DEBUG
-                    std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::NTreeState::internal_state>>(cspr->getNTreeState()->_internal_state) << " and node position: " << cspr->getNTreeState()->_node << std::endl;
-#endif
                 }
-
+*/
                 // call update of sprite
                 cspr->update(dt);
             }
@@ -208,14 +206,16 @@ namespace dang
         _cs.removeCObject(co);
     }
 
-    float CollisionSpriteLayer::aaLoSH(const spCollisionSprite& me, const spCollisionSprite& target)
+    float CollisionSpriteLayer::aaLoSH(const CollisionSprite& me, const CollisionSprite& target)
     {
-        return _cs.aaLoSH(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target));
+        return _cs.aaLoSH(static_cast<const CollisionObject*>(&me), static_cast<const CollisionObject*>(&target));
+//        return _cs.aaLoSH(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target));
     }
 
-    float CollisionSpriteLayer::loS(const spCollisionSprite& me, const spCollisionSprite& target)
+    float CollisionSpriteLayer::loS(const CollisionSprite& me, const CollisionSprite& target)
     {
-        return _cs.loS(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target));
+        return _cs.loS(static_cast<const CollisionObject*>(&me), static_cast<const CollisionObject*>(&target));
+//        return _cs.loS(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target));
     }
 
     // called on every move of every sprite

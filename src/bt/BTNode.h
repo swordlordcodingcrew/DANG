@@ -29,7 +29,7 @@ namespace dang
     protected:
         friend class NTree;
         friend class NTBuilder;
-        using NodeFunction = std::function<BTNode::Status (const spSprite&, const BTNode*, spNTreeState&)>;
+        using NodeFunction = std::function<BTNode::Status (Sprite&, const BTNode*, spNTreeState&, uint32_t dt)>;
 
 
         /** https://www.geeksforgeeks.org/left-child-right-sibling-representation-tree/ */
@@ -53,14 +53,14 @@ namespace dang
         bool            isDecorator() const;
 
         /** static behoviour tree elements */
-        static BTNode::Status   forwarder(const spSprite& spr, const BTNode* node, spNTreeState& state);
-        static BTNode::Status   inverter(const spSprite& spr, const BTNode* node, spNTreeState& state);
-        static BTNode::Status   selector(const spSprite& spr, const BTNode* node, spNTreeState& state);
-        static BTNode::Status   sequence(const spSprite& spr, const BTNode* node, spNTreeState& state);
+        static BTNode::Status   forwarder(Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
+        static BTNode::Status   inverter(Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
+        static BTNode::Status   selector(Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
+        static BTNode::Status   sequence(Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
 
     };
 
-    using NodeFunction = std::function<BTNode::Status (const spSprite&, const BTNode*, spNTreeState&)>;
-    using LeafFunction = std::function<BTNode::Status (const spSprite&)>;
+    using NodeFunction = std::function<BTNode::Status (Sprite&, const BTNode*, spNTreeState&, uint32_t dt)>;
+    using LeafFunction = std::function<BTNode::Status (Sprite&, uint32_t dt)>;
 
 }

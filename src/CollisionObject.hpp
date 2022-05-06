@@ -22,7 +22,8 @@ namespace dang
         Vector2F    getCSPosition() const { return _co_pos; };
         void        setCSPosition(const Vector2F& pos) { _co_pos = pos; };
 
-        virtual uint8_t  getCollisionResponse(const spCollisionObject& other) { return _cr; };
+//        uint8_t  getCollisionResponse(const spCollisionObject& other) const { return _cr; };
+        virtual uint8_t  getCollisionResponse(const CollisionObject* other) const { return _cr; };
         void             setCollisionResponse(uint8_t cr) { _cr = cr; };
 
         /**

@@ -75,8 +75,8 @@ namespace dang
 //                    std::cout << "spr with pos (" << co->_cs_pos.x << "," << co->_cs_pos.y << ") overlaps" << std::endl;
 //                }
 
-                uint8_t cr_me = co->getCollisionResponse(mf.other);
-                uint8_t cr_other = mf.other->getCollisionResponse(co);
+                uint8_t cr_me = co->getCollisionResponse(mf.other.get());
+                uint8_t cr_other = mf.other->getCollisionResponse(co.get());
                 // false = 0
                 if (!((cr_me & CR_NONE) || (cr_other & CR_NONE)))
                 {
@@ -213,8 +213,8 @@ namespace dang
         for (spCollisionObject& other : _co_list)
         {
             if (me == other ||
-                me->getCollisionResponse(other) == CR_NONE ||
-                other->getCollisionResponse(me) == CR_NONE)
+                me->getCollisionResponse(other.get()) == CR_NONE ||
+                other->getCollisionResponse(me.get()) == CR_NONE)
             {
                 continue;
             }
@@ -571,7 +571,7 @@ namespace dang
      * @param target the point to be seen or not
      * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
      */
-    float CollisionSolver::aaLoSH(const spCollisionObject& me, const spCollisionObject& target)
+    float CollisionSolver::aaLoSH(const CollisionObject* me, const CollisionObject* target)
     {
         Vector2F me_p = me->_co_pos + me->_hotrect.center();
         RectF target_hr = target->_hotrect;
@@ -590,7 +590,14 @@ namespace dang
 //        for (SpriteIterator it = begin(); it != end(); it++)
         {
             // me and target are not obstacles per se
-            if (obst == me || obst == target)
+            if ((me == obst.get())
+                || (target == obst.get())
+                || (me->getCollisionResponse(obst.get()) == CR_NONE || obst->getCollisionResponse(me) == CR_NONE))
+            {
+                continue;
+            }
+
+/*            if (obst.get() == me || obst.get() == target)
             {
                 continue;
             }
@@ -600,7 +607,7 @@ namespace dang
             {
                 continue;
             }
-
+*/
             RectF obst_hr = obst->_hotrect;
             obst_hr.x += obst->_co_pos.x;
             obst_hr.y += obst->_co_pos.y;
@@ -674,22 +681,21 @@ namespace dang
      * @param target the point to be seen or not (hotrect)
      * @return 0 for not visible. Else the distance (>0 visible on the right; <0 visible on the left)
      */
-    float CollisionSolver::loS(const spCollisionObject& me, const spCollisionObject& target)
+    float CollisionSolver::loS(const CollisionObject* me, const CollisionObject* target)
     {
         Vector2F p1 = me->_co_pos + me->_hotrect.center();
         Vector2F p2 = target->_co_pos + target->_hotrect.center();
 
         for (const spCollisionObject& other : _co_list)
-//        for (SpriteIterator it = begin(); it != end(); it++)
         {
             if (other == nullptr)
             {
                 continue;
             }
 
-            if ((me == other)
-                || (target == other)
-                || (me->getCollisionResponse(other) == CR_NONE || other->getCollisionResponse(me) == CR_NONE))
+            if ((me == other.get())
+                || (target == other.get())
+                || (me->getCollisionResponse(other.get()) == CR_NONE || other->getCollisionResponse(me) == CR_NONE))
             {
                 continue;
             }

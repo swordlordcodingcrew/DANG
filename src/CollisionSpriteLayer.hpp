@@ -86,8 +86,8 @@ namespace dang
         void    cleanSpritelist() override;
         void    _removeSprite(spSprite s) override;
 
-        float   aaLoSH(const spCollisionSprite& me, const spCollisionSprite& target);
-        float   loS(const spCollisionSprite& me, const spCollisionSprite& target);
+        float   aaLoSH(const CollisionSprite& me, const CollisionSprite& target);
+        float   loS(const CollisionSprite& me, const CollisionSprite& target);
 
     protected:
         CollisionSolver _cs;

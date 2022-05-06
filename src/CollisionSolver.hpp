@@ -79,8 +79,8 @@ namespace dang
         void removeCObject(spCollisionObject& co);
 
         void    solve();
-        float   aaLoSH(const spCollisionObject& me, const spCollisionObject& target);
-        float   loS(const spCollisionObject& me, const spCollisionObject& target);
+        float   aaLoSH(const CollisionObject* me, const CollisionObject* target);
+        float   loS(const CollisionObject* me, const CollisionObject* target);
 
 
 

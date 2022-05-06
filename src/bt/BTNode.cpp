@@ -39,26 +39,26 @@ namespace dang
         return (Type::DECORATOR == _type);
     }
 
-    BTNode::Status   BTNode::forwarder(const spSprite& spr, const BTNode* node, spNTreeState& state)
+    BTNode::Status   BTNode::forwarder(Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt)
     {
         assert(node->_child != nullptr);
 
         BTNode::Status ret{Status::FAILURE};
         BTNode* next_node = node->_child;
 
-        ret = next_node->_process(spr, node->_child, state);
+        ret = next_node->_process(spr, node->_child, state, dt);
 
         return ret;
     }
 
-    BTNode::Status   BTNode::inverter(const spSprite& spr, const BTNode* node, spNTreeState& state)
+    BTNode::Status   BTNode::inverter(Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt)
     {
         assert(node->_child != nullptr);
 
         BTNode::Status ret{Status::FAILURE};
         BTNode* next_node = node->_child;
 
-        ret = next_node->_process(spr, node->_child, state);
+        ret = next_node->_process(spr, node->_child, state, dt);
 
         // apply inverter only when not seeking, not state set and not running
         if (state->_internal_state == NTreeState::internal_state::FOUND && ret != Status::RUNNING)
@@ -69,7 +69,7 @@ namespace dang
         return ret;
     }
 
-    BTNode::Status BTNode::selector(const spSprite &spr, const BTNode* node, spNTreeState& state)
+    BTNode::Status BTNode::selector(Sprite &spr, const BTNode* node, spNTreeState& state, uint32_t dt)
     {
         assert(node->_child != nullptr);
 
@@ -78,7 +78,7 @@ namespace dang
         BTNode* next_node = node->_child;
         while (next_node != nullptr)
         {
-            ret = next_node->_process(spr, next_node, state);
+            ret = next_node->_process(spr, next_node, state, dt);
 
             if (state->_internal_state == NTreeState::internal_state::FOUND)
             {
@@ -98,7 +98,7 @@ namespace dang
         return ret;
     }
 
-    BTNode::Status BTNode::sequence(const spSprite &spr, const BTNode* node, spNTreeState &state)
+    BTNode::Status BTNode::sequence(Sprite &spr, const BTNode* node, spNTreeState &state, uint32_t dt)
     {
         assert(node->_child != nullptr);
 
@@ -107,7 +107,7 @@ namespace dang
         BTNode* next_node = node->_child;
         while (next_node != nullptr)
         {
-            ret = next_node->_process(spr, next_node, state);
+            ret = next_node->_process(spr, next_node, state, dt);
 
             if (state->_internal_state == NTreeState::internal_state::FOUND)
             {

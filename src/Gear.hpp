@@ -28,7 +28,7 @@ namespace dang
 
         void                update(uint32_t dt);
         void                render(uint32_t time);
-        BTNode::Status      runNTree(const spCollisionSprite& s) const;
+//        BTNode::Status      runNTree(const spCollisionSprite& s) const;
 
         void                addImagesheet(spImagesheet is);
         spImagesheet        getImagesheet(const std::string& name) const;

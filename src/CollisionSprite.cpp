@@ -1,10 +1,13 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include <iostream>
 #include "CollisionSprite.hpp"
 #include "CollisionSpriteLayer.hpp"
 #include "TmxExtruder.hpp"
+#include "bt/NTree.h"
+
+#include <iostream>
+#include <cassert>
 
 namespace dang
 {
@@ -111,123 +114,27 @@ namespace dang
         }
     }
 
-/*    void CollisionSprite::slide(const CollisionSpriteLayer::manifold &mf)
-    {
-        if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
-        {
-            if (mf.me.get() == this)
-            {
-                if (mf.normalMe.x * mf.me->getPosDelta().x > 0)
-                {
-                    _pos.x = mf.touchMe.x;
-                }
-                else if (mf.normalMe.y * mf.me->getPosDelta().y > 0)
-                {
-                    _pos.y = mf.touchMe.y;
-                }
-            }
-            else
-            {
-                if (mf.normalOther.x * mf.other->getPosDelta().x > 0)
-                {
-                    _pos.x = mf.touchOther.x;
-                }
-                else if (mf.normalOther.y * mf.other->getPosDelta().y > 0)
-                {
-                    _pos.y = mf.touchOther.y;
-                }
-            }
-
-            spSprite par = _parent.lock();
-            if (par != nullptr)
-            {
-                _pos_g = _pos + par->getPosG();
-            }
-        }
-    }
-
-    void CollisionSprite::touch(const CollisionSpriteLayer::manifold &mf)
-    {
-        if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
-        {
-            if (mf.me.get() == this)
-            {
-                _pos = mf.touchMe;
-            }
-            else
-            {
-                _pos = mf.touchOther;
-            }
-        }
-
-        spSprite par = _parent.lock();
-        if (par != nullptr)
-        {
-            _pos_g = _pos + par->getPosG();
-        }
-
-    }
-
-    void CollisionSprite::bounce(const CollisionSpriteLayer::manifold &mf)
-    {
-        if (_coll_object_type == CollisionSpriteLayer::COT_DYNAMIC)
-        {
-            if (mf.me.get() == this)
-            {
-                if (mf.normalMe.x != 0)
-                {
-                    float d_bounce = _pos.x - _last_pos.x - mf.deltaMe.x;
-                    _pos.x = mf.touchMe.x - d_bounce;
-                }
-                else
-                {
-                    float d_bounce = _pos.y - _last_pos.y - mf.deltaMe.y;
-                    _pos.y = mf.touchMe.y - d_bounce;
-                }
-            }
-            else    // for the other
-            {
-                if (mf.normalOther.x != 0)
-                {
-                    float d_bounce = _pos.x - _last_pos.x - mf.deltaOther.x;
-                    _pos.x = mf.touchOther.x - d_bounce;
-                }
-                else
-                {
-                    float d_bounce = _pos.y - _last_pos.y - mf.deltaOther.y;
-                    _pos.y = mf.touchOther.y - d_bounce;
-                }
-            }
-        }
-
-        spSprite par = _parent.lock();
-        if (par != nullptr)
-        {
-            _pos_g = _pos + par->getPosG();
-        }
-
-    }
-*/
-/*    CollisionSpriteLayer::eCollisionResponse CollisionSprite::getCollisionResponse(const spCollisionSprite& other)
-    {
-        return _coll_response;
-    }
-*/
     void CollisionSprite::preSolve()
     {
         _goal = local2Global(_pos);
-//        _goal = _pos_g;
     }
 
     void CollisionSprite::postSolve()
     {
-        _pos = global2Local(_goal);// - getParentPos();
-//        _pos_g = _goal;
+        _pos = global2Local(_goal);
     }
 
     void CollisionSprite::update(uint32_t dt)
     {
+        if (_nTreeState != nullptr)
+        {
+            assert(_nTreeState->_tree != nullptr);
+            _nTreeState->_tree->process(*this, _nTreeState, dt);
 
+#ifdef DANG_DEBUG_PRINT
+            std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::NTreeState::internal_state>>(_nTreeState->_internal_state) << " and node position: " << _nTreeState->_node << std::endl;
+#endif
+        }
     }
 
     void CollisionSprite::setNTreeState(std::shared_ptr<NTreeState> ts)

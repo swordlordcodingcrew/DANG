@@ -9,7 +9,7 @@
 namespace dang
 {
 
-    BTNode::Status NTree::process(const spSprite& spr, std::shared_ptr<NTreeState>& state)
+    BTNode::Status NTree::process(Sprite& spr, std::shared_ptr<NTreeState>& state, uint32_t dt)
     {
         BTNode::Status ret{BTNode::Status::FAILURE};
 
@@ -26,9 +26,7 @@ namespace dang
 //            std::cout << "state set" << std::endl;
         }
 
-        ret = state->_tree->_root->_process(spr, state->_tree->_root, state);
-
-//        assert(state->_internal_state != NTreeState::internal_state::SEEKING)
+        ret = state->_tree->_root->_process(spr, state->_tree->_root, state, dt);
 
         return ret;
     }

@@ -79,7 +79,7 @@ namespace dang
         }
     }
 
-    BTNode::Status Gear::runNTree(const spCollisionSprite& s) const
+/*    BTNode::Status Gear::runNTree(const spCollisionSprite& s) const
     {
         assert(s != nullptr);
 
@@ -89,7 +89,7 @@ namespace dang
 
         return ts->_tree->process(s, ts);
     }
-
+*/
     void Gear::addImagesheet(std::shared_ptr<Imagesheet> is)
     {
         assert(!is->getName().empty());
