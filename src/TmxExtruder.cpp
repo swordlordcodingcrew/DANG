@@ -18,6 +18,7 @@
 #include "path/Wavepoint.hpp"
 
 #include <iostream>
+#include <cassert>
 
 namespace dang
 {
@@ -28,10 +29,7 @@ namespace dang
 
     void TmxExtruder::getImagesheets()
     {
-        if (_level == nullptr)
-        {
-            return;
-        }
+        assert(_level != nullptr);
 
         for (size_t i = 0; i < _level->tilesets_len; i++)
         {
@@ -49,10 +47,7 @@ namespace dang
      */
     std::shared_ptr<Imagesheet> TmxExtruder::getImagesheet(const std::string& name)
     {
-        if (_level == nullptr)
-        {
-            return nullptr;
-        }
+        assert(_level != nullptr);
 
         const tmx_tileset* ts = getTileset(name);
 
@@ -258,10 +253,7 @@ namespace dang
 
     const tmx_layer* TmxExtruder::getTmxLayer(const std::string &name)
     {
-        if (_level == nullptr)
-        {
-            return nullptr;
-        }
+        assert(_level != nullptr);
 
         for (size_t i = 0; i < _level->layers_len; i++)
         {
@@ -279,10 +271,7 @@ namespace dang
     spTwAnim TmxExtruder::getAnimation(const std::string &is_name, const std::string &anim_name, EaseFn ease_cb,
                                        int32_t loops, bool alternating, uint32_t delay)
     {
-        if (_level == nullptr)
-        {
-            return nullptr;
-        }
+        assert(_level != nullptr);
 
         const tmx_tileanimation* ta = getTileAnimation(is_name, anim_name);
 
@@ -306,10 +295,7 @@ namespace dang
     spTwAnim TmxExtruder::getAnimation(const spImagesheet &is, const std::string &anim_name, EaseFn ease_cb,
                                        int32_t loops, bool alternating, uint32_t delay)
     {
-        if (_level == nullptr)
-        {
-            return nullptr;
-        }
+        assert(_level != nullptr);
 
         const tmx_tileanimation* ta = getTileAnimation(is->getName(), anim_name);
 
@@ -359,15 +345,17 @@ namespace dang
 
     }
 
-    void TmxExtruder::createSceneGraphs(RectF &room_extent, std::vector<dang::spSceneGraph>& scene_graphs)
+    void TmxExtruder::createSceneGraphs(RectF &zone, std::vector<dang::spSceneGraph>& scene_graphs)
     {
+        assert(_level != nullptr);
+
         spSceneGraph sg = std::make_shared<SceneGraph>();
 
         //!< first add all the waypoints
         for (size_t i = 0; i < _level->waypoints_len; ++i)
         {
             const tmx_waypoint* twap = _level->waypoints + i;
-            if (room_extent.contains({twap->x, twap->y}))
+            if (zone.contains({twap->x, twap->y}))
             {
                 sg->addWaypoint(twap->id, twap->x, twap->y, twap->type);
             }
@@ -441,13 +429,15 @@ namespace dang
 
     }
 
-    void TmxExtruder::createWaves(RectF &room_extent, std::unordered_map<uint32_t, dang::Wavepoint> &waves)
+    void TmxExtruder::createWaves(RectF &zone, std::unordered_map<uint32_t, dang::Wavepoint> &waves)
     {
+        assert(_level != nullptr);
+
         // first add all the wavepoints
         for (size_t i = 0; i < _level->wavepoints_len; ++i)
         {
             const tmx_wavepoint* w = _level->wavepoints + i;
-            if (room_extent.contains({w->x, w->y}))
+            if (zone.contains({w->x, w->y}))
             {
                 Wavepoint wp(w->id, w->name, w->type, Vector2F(w->x, w->y), w->next_wavepoint_id, uint32_t(w->duration*1000), w->orientation, uint32_t(w->delay*1000));
                 waves[w->id] = wp;
@@ -465,5 +455,57 @@ namespace dang
         }
     }
 
+    RectF TmxExtruder::getZone(uint16_t zone_nr)
+    {
+        assert(_level != nullptr);
+
+        // find zone
+        for (size_t i = 0; i < _level->zones_len; ++i)
+        {
+            if (_level->zones[i].zone_nr == zone_nr)
+            {
+                return RectF(_level->zones[i].x, _level->zones[i].y, _level->zones[i].w, _level->zones[i].h);
+            }
+        }
+
+        std::cout << "Zone error: could not find zone with nr " << zone_nr << std::endl;
+        return RectF(0,0,0,0);
+
+    }
+
+    Vector2F TmxExtruder::getPassage(uint16_t zone_nr, int16_t from_zone)
+    {
+        assert(_level != nullptr);
+
+        // find passage
+        for (size_t i = 0; i < _level->zone_passages_len; ++i)
+        {
+            if (_level->zone_passages[i].zone_nr == zone_nr && _level->zone_passages[i].from_zone == from_zone)
+            {
+                return Vector2F(_level->zone_passages[i].x, _level->zone_passages[i].y);
+            }
+        }
+
+        std::cout << "Zone passage error: could not find passage from zone " << from_zone << " to zone " << zone_nr << std::endl;
+        return Vector2F(0,0);
+    }
+
+    uint16_t TmxExtruder::getZoneNr(const Vector2F& pos)
+    {
+        assert(_level != nullptr);
+        // find zone
+
+        for (size_t i = 0; i < _level->zones_len; ++i)
+        {
+            if (pos.x >= _level->zones[i].x && pos.x <= _level->zones[i].x + _level->zones[i].w
+             && pos.y >= _level->zones[i].y && pos.y <= _level->zones[i].y + _level->zones[i].h)
+            {
+                return _level->zones[i].zone_nr;
+            }
+        }
+
+        std::cout << "Zone error: pos(" << pos.x << "," << pos.y << ") not in a zone" << std::endl;
+        return 0;
+    }
 
 }

@@ -167,6 +167,25 @@ namespace dang
         const uint32_t next_wavepoint_id;
     };
 
+    struct tmx_zone
+    {
+        const uint16_t zone_nr;
+        // global coords in pixel, aligend to tile-width/-height
+        const float x;
+        const float y;
+        const float w;
+        const float h;
+    };
+
+    struct tmx_zone_passage
+    {
+        const uint16_t zone_nr;
+        const int16_t from_zone;
+        // global coordd in pixel, aligend to tile-width/-height
+        const float x;
+        const float y;
+    };
+
     struct tmx_level
     {
         const tmx_world* w;
@@ -187,6 +206,12 @@ namespace dang
 
         const tmx_wavepoint* wavepoints;
         const size_t wavepoints_len;
+
+        const tmx_zone* zones;
+        const size_t zones_len;
+
+        const tmx_zone_passage* zone_passages;
+        const size_t zone_passages_len;
 
     };
 
@@ -211,8 +236,11 @@ namespace dang
         spTileLayer             getTileLayer(const std::string& name, bool addToGear);
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
         spTwAnim                getAnimation(const spImagesheet &is, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);
-        void                    createSceneGraphs(RectF& room_extent, std::vector<dang::spSceneGraph>& scene_graphs);
-        void                    createWaves(RectF& room_extent, std::unordered_map<uint32_t, dang::Wavepoint>& waves);
+        void                    createSceneGraphs(RectF& zone, std::vector<dang::spSceneGraph>& scene_graphs);
+        void                    createWaves(RectF& zone, std::unordered_map<uint32_t, dang::Wavepoint>& waves);
+        RectF                   getZone(uint16_t zone_nr);
+        uint16_t                getZoneNr(const Vector2F& pos);
+        Vector2F                getPassage(uint16_t zone_nr, int16_t from_zone);
 
         const tmx_layer* getTmxLayer(const std::string &name);
         const tmx_tileset*  getTileset(const std::string &name);

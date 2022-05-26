@@ -39,8 +39,22 @@ tiled.extendMenu("File", [
 // the export function
 function export32Blit(map, fileName) {
 
+    // the type of layer for the game is defined by part of the name
+    // the layer must end with the specific token
+    var strBGLayerToken = "bg";
+    var strMoodLayerToken = "mood";
+    var strObjLayerToken = "obj";
+    var strFGLayerToken = "fg";
+    var strHUDLayerToken = "hud";
+    var strPathsLayerToken = "paths";
+    var strWavesLayerToken = "waves";
+    var strZonesLayerToken = "zones";
+
+
+    // optional exports
     var bHasWaypoints = false;
     var bHasWavepoints = false;
+    var bHasZones = false;
 
     var file = new TextFile(fileName, TextFile.WriteOnly);
 
@@ -108,7 +122,6 @@ function export32Blit(map, fileName) {
     file.writeLine("// Animations ------------------------------------------------");
     file.writeLine("");
 
-
     file.writeLine("static const dang::tmx_tileanimation " + functionName + "_tileanimations[] = {");
 
     var animationId = 0;
@@ -156,6 +169,7 @@ function export32Blit(map, fileName) {
 //       R180 = 0b011,          3
 //       R270 = 0b110           6
 
+
     file.writeLine("// Layers ------------------------------------------------");
     file.writeLine("");
 
@@ -163,90 +177,180 @@ function export32Blit(map, fileName) {
     {
         var layer = map.layerAt(i);
 
-        if (layer.name[0] == "_")
+// --------------   background layer ---------------
+        if (layer.name.endsWith(strBGLayerToken))
         {
-            continue;
-        }
-
-        if (layer.isTileLayer)
-        {
-            file.writeLine("// layer tilelayer: " + layer.name);
-
-            var buf = "\n";
-            //file.writeLine("tile t_" + layer.name + "[" + layer.height + "][" + layer.width + "] = {");
-
-            for (y = 0; y < layer.height; ++y)
+            if (layer.isTileLayer)
             {
-                for (x = 0; x < layer.width; ++x)
+                file.writeLine("// layer tilelayer: " + layer.name);
+
+                var buf = "\n";
+                //file.writeLine("tile t_" + layer.name + "[" + layer.height + "][" + layer.width + "] = {");
+
+                for (y = 0; y < layer.height; ++y)
                 {
-                    tile = layer.tileAt(x, y);
-                    cell = layer.cellAt(x, y);
-
-                    var transform = 0;
-                    if (cell.flippedHorizontally)
+                    for (x = 0; x < layer.width; ++x)
                     {
-                        transform = 1;
-                    }
-                    else if (cell.flippedVertically)
-                    {
-                        transform = 2;
-                    }
-                    else if (cell.flippedAntiDiagonally)
-                    {
-                        transform = 4;
+                        tile = layer.tileAt(x, y);
+                        cell = layer.cellAt(x, y);
+
+                        var transform = 0;
+                        if (cell.flippedHorizontally)
+                        {
+                            transform = 1;
+                        }
+                        else if (cell.flippedVertically)
+                        {
+                            transform = 2;
+                        }
+                        else if (cell.flippedAntiDiagonally)
+                        {
+                            transform = 4;
+                        }
+
+                        if (x == 0)
+                        {
+                            buf += "   ";
+                        }
+
+                        buf += " {" + tile.id + ", " + transform + "}";
+
+                        if (x < layer.width - 1)
+                        {
+                            buf += ",";
+                        }
                     }
 
-                    if (x == 0)
-                    {
-                        buf += "   ";
-                    }
-
-                    buf += " {" + tile.id + ", " + transform + "}";
-
-                    if (x < layer.width - 1)
+                    if (y < layer.height - 1)
                     {
                         buf += ",";
                     }
+
+                    buf += ("\n");
                 }
 
-                if (y < layer.height - 1)
-                {
-                    buf += ",";
-                }
+                file.writeLine("static const dang::tmx_tile " + functionName + "_" + layer.name + "_tiles[] = {");
+                file.writeLine(buf);
+                file.writeLine("};");
+                file.writeLine("");
+                file.writeLine("static const size_t " + functionName + "_" + layer.name + "_tiles_len = " + layer.width * layer.height + ";");
+                file.writeLine("");
+                file.writeLine("static const dang::tmx_layer " + functionName + "_" + layer.name + " = {");
+                file.writeLine("    .name = \"" + layer.name + "\",");
+                file.writeLine("    .type = dang::tmx_layerType::ltTile,");
+                file.writeLine("    .opacity = " + layer.opacity + ",");
+                file.writeLine("    .visible = " + layer.visible + ",");
+                file.writeLine("    .z_order = " + i + ",");
+                file.writeLine("    .position = {" + layer.offset.x + "," + layer.offset.y + "},");
+                file.writeLine("    .tl_width = " + layer.width + ",");
+                file.writeLine("    .tl_height = " + layer.height + ",");
+                file.writeLine("    .tl_tileset = \"" + layer.tileAt(0,0).tileset.name + "\",");
+                file.writeLine("    .tl_tiles = " + functionName + "_" + layer.name + "_tiles,");
+                file.writeLine("    .tl_tiles_len = " + functionName + "_" + layer.name + "_tiles_len,");
+                file.writeLine("    .spriteobjects = nullptr,");
+                file.writeLine("    .spriteobejcts_len = 0");
+                file.writeLine("};");
+                file.writeLine("");
 
-                buf += ("\n");
+            }
+            else
+            {
+                file.writeLine("ERROR: bg layer is not a tiled layer");
             }
 
-            file.writeLine("static const dang::tmx_tile " + functionName + "_" + layer.name + "_tiles[] = {");
-            file.writeLine(buf);
-            file.writeLine("};");
-            file.writeLine("");
-            file.writeLine("static const size_t " + functionName + "_" + layer.name + "_tiles_len = " + layer.width * layer.height + ";");
-            file.writeLine("");
-            file.writeLine("static const dang::tmx_layer " + functionName + "_" + layer.name + " = {");
-            file.writeLine("    .name = \"" + layer.name + "\",");
-            file.writeLine("    .type = dang::tmx_layerType::ltTile,");
-            file.writeLine("    .opacity = " + layer.opacity + ",");
-            file.writeLine("    .visible = " + layer.visible + ",");
-            file.writeLine("    .z_order = " + i + ",");
-            file.writeLine("    .position = {" + layer.offset.x + "," + layer.offset.y + "},");
-            file.writeLine("    .tl_width = " + layer.width + ",");
-            file.writeLine("    .tl_height = " + layer.height + ",");
-            file.writeLine("    .tl_tileset = \"" + layer.tileAt(0,0).tileset.name + "\",");
-            file.writeLine("    .tl_tiles = " + functionName + "_" + layer.name + "_tiles,");
-            file.writeLine("    .tl_tiles_len = " + functionName + "_" + layer.name + "_tiles_len,");
-            file.writeLine("    .spriteobjects = nullptr,");
-            file.writeLine("    .spriteobejcts_len = 0");
-            file.writeLine("};");
-            file.writeLine("");
+        }
+// --------------   mood, obj, fg and hud layer (generic obj layers)  ---------------
+        else if (layer.name.endsWith(strMoodLayerToken)
+            || layer.name.endsWith(strObjLayerToken)
+            || layer.name.endsWith(strFGLayerToken)
+            || layer.name.endsWith(strHUDLayerToken))
+        {
+            if (layer.isObjectLayer)
+            {
+                file.writeLine("// Objects for layer: " + layer.name);
+
+                var buf = "\n";
+
+                objects = layer.objects
+
+                for (var j = 0; j < objects.length; ++j)
+                {
+                    o = objects[j]
+                    sName = o.name;
+                    if (sName == "")
+                    {
+                        sName = o.id;
+                    }
+
+                    var tileset_ref = "";
+                    var tile_id = "0";
+                    if (o.tile != null)
+                    {
+                        tileset_ref = o.tile.tileset.name;
+                        tile_id = o.tile.id;
+                    }
+
+                    sBT = "";
+                    if (o.property("bt") != undefined)
+                    {
+                        sBT = o.property("bt");
+                    }
+
+                    zOrder = 0;
+                    if (o.property("z_order") != undefined)
+                    {
+                        zOrder = o.property("z_order");
+                    }
+
+                    var sTransform = "0b0"; // this is prefix and bit 3
+                    sTransform += o.FlippedAntiDiagonally ? "1" : "0"; // not sure that one works...
+                    sTransform += o.tileFlippedVertically ? "1" : "0";
+                    sTransform += o.tileFlippedHorizontally ? "1" : "0";
+
+                    buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + ",\"" + sBT + "\"," + zOrder + "," + sTransform + "}";
+
+                    // add separator except at the end
+                    if (j < objects.length - 1)
+                    {
+                        buf += ",";
+                    }
+                    buf += "\n";
+
+                }
+
+                file.writeLine("static const dang::tmx_spriteobject " + functionName + "_" + layer.name + "_objects[] = {");
+                file.writeLine(buf);
+                file.writeLine("};");
+                file.writeLine("");
+                file.writeLine("static const size_t " + functionName + "_" + layer.name + "_objects_len = " + objects.length + ";");
+                file.writeLine("");
+                file.writeLine("static const dang::tmx_layer " + functionName + "_" + layer.name + " = {");
+                file.writeLine("    .name = \"" + layer.name + "\",");
+                file.writeLine("    .type = dang::tmx_layerType::ltObjects,");
+                file.writeLine("    .opacity = " + layer.opacity + ",");
+                file.writeLine("    .visible = " + layer.visible + ",");
+                file.writeLine("    .z_order = " + i + ",");
+                file.writeLine("    .position = {" + layer.offset.x + "," + layer.offset.y + "},");
+                file.writeLine("    .tl_width = 0,");
+                file.writeLine("    .tl_height = 0,");
+                file.writeLine("    .tl_tileset = \"\",");
+                file.writeLine("    .tl_tiles = nullptr,");
+                file.writeLine("    .tl_tiles_len = 0,");
+                file.writeLine("    .spriteobjects = " + functionName + "_" + layer.name + "_objects,");
+                file.writeLine("    .spriteobejcts_len = " + functionName + "_" + layer.name + "_objects_len");
+                file.writeLine("};");
+                file.writeLine("");
+            }   // end of sprite object layer
+            else
+            {
+                file.writeLine("ERROR: layer is not an object layer");
+            }
 
         }
-        else if (layer.isObjectLayer)
+// --------------   paths   ---------------
+        else if (layer.name.endsWith(strPathsLayerToken))
         {
-            // check if the layer is a paths- or waves definition layer
-            // this is checked by means of the magic words "_paths" and "_waves" in the name of the layer..
-            if (layer.name.includes("_paths"))
-//            if (layer.objects.length > 0 && layer.objects[0].shape == MapObject.Point)
+            if (layer.isObjectLayer)
             {
                 bHasWaypoints = true; // so that we only link waypoints at the end if there really are...
                 file.writeLine("// path layer");
@@ -325,7 +429,16 @@ function export32Blit(map, fileName) {
                 file.writeLine("static const size_t " + functionName + "_connections_len = " + conn_len + ";")
                 file.writeLine("");
             }
-            else if (layer.name.includes("_waves"))
+            else
+            {
+                file.writeLine("ERROR: path layer is not an object layer");
+            }
+
+        }
+// --------------   waves   ---------------
+        else if (layer.name.endsWith(strWavesLayerToken))
+        {
+            if (layer.isObjectLayer)
             {
                 bHasWavepoints = true; // so that we only link wavapoints at the end if there really are...
                 file.writeLine("// wave layer");
@@ -377,108 +490,122 @@ function export32Blit(map, fileName) {
                 file.writeLine("");
                 file.writeLine("static const size_t " + functionName + "_wavepoints_len = " + wap_len + ";")
                 file.writeLine("");
+            }
+            else
+            {
+                file.writeLine("ERROR: wave layer is not an object layer");
+            }
+
+        }
+// --------------   zones   ---------------
+        else if (layer.name.endsWith(strZonesLayerToken))
+        {
+            if (layer.isObjectLayer)
+            {
+                bHasZones = true;
+
+                // first write the zones
+                file.writeLine("// zones");
+
+                objects = layer.objects;
+
+                var zones_len = 0;
+                var buf_zones = "static const dang::tmx_zone " + functionName + "_zones[] = {\n";
+
+                for (var j = 0; j < objects.length; ++j)
+                {
+                    o = objects[j];
+
+                    if (o.shape != MapObject.Point)
+                    {
+                        buf_zones += "    {" + o.name + "," + o.x + "," + o.y + "," + o.width + "," + o.height + "}";
+
+                        // add separator except at the end
+                        if (j < objects.length - 1)
+                        {
+                            buf_zones += ",";
+                        }
+                        buf_zones += "\n";
+                        ++zones_len;
+                    }
+                }
+
+                buf_zones += "};";
+                file.writeLine(buf_zones);
+                file.writeLine("");
+                file.writeLine("static const size_t " + functionName + "_zones_len = " + zones_len + ";")
+                file.writeLine("");
+
+                // then write the passages between zones
+                file.writeLine("// zone passages");
+
+                var zone_pas_len = 0;
+                var buf_pas = "static const dang::tmx_zone_passage " + functionName + "_zone_passages[] = {\n";
+
+                for (var j = 0; j < objects.length; ++j)
+                {
+                    o = objects[j];
+
+                    if (o.shape == MapObject.Point)
+                    {
+                        // find the zone where the point is in
+                        var p_zone = "-1";
+                        for (var k = 0; k < objects.length; ++k)
+                        {
+                            var zo = objects[k];
+                            if (zo.shape != MapObject.Point)
+                            {
+                                if (o.x >= zo.x && o.x <= zo.x + zo.width && o.y >= zo.y && o.y <= zo.y + zo.height)
+                                {
+                                    p_zone = zo.name;
+                                    break;
+                                }
+                            }
+                        }
+
+                        var ax = Math.floor(o.x / map.tileWidth) * map.tileWidth;
+                        var ay = Math.floor(o.y / map.tileHeight) * map.tileHeight;
+
+                        buf_pas += "    {" + p_zone + "," + o.name + "," + ax + "," + ay + "}";
+
+                        // add separator except at the end
+                        if (j < objects.length - 1)
+                        {
+                            buf_pas += ",";
+                        }
+                        buf_pas += "\n";
+                        ++zone_pas_len;
+                    }
+                }
+
+                buf_pas += "};";
+                file.writeLine(buf_pas);
+                file.writeLine("");
+                file.writeLine("static const size_t " + functionName + "_zone_passages_len = " + zone_pas_len + ";")
+                file.writeLine("");
 
             }
             else
             {
-                file.writeLine("// Objects for layer: " + layer.name);
+                file.writeLine("ERROR: zone layer is not an object layer");
+            }
 
-                var buf = "\n";
+        }
 
-                objects = layer.objects
+    } // end of layer loop
 
-                for (var j = 0; j < objects.length; ++j)
-                {
-                    o = objects[j]
-                    sName = o.name;
-                    if (sName == "")
-                    {
-                        sName = o.id;
-                    }
-
-                    var tileset_ref = "";
-                    var tile_id = "0";
-                    if (o.tile != null)
-                    {
-                        tileset_ref = o.tile.tileset.name;
-                        tile_id = o.tile.id;
-                    }
-
-                    sBT = "";
-                    if (o.property("bt") != undefined)
-                    {
-                        sBT = o.property("bt");
-                    }
-
-                    zOrder = 0;
-                    if (o.property("z_order") != undefined)
-                    {
-                        zOrder = o.property("z_order");
-                    }
-
-                    var sTransform = "0b0"; // this is prefix and bit 3
-                    sTransform += o.FlippedAntiDiagonally ? "1" : "0"; // not sure that one works...
-                    sTransform += o.tileFlippedVertically ? "1" : "0";
-                    sTransform += o.tileFlippedHorizontally ? "1" : "0";
-
-                    buf += "    {" + o.id + ",\"" + sName + "\",\"" + o.type + "\"," + o.x + "," + o.y + "," + o.width + "," + o.height + "," + o.visible + ",\"" + tileset_ref + "\"," + tile_id + ",\"" + sBT + "\"," + zOrder + "," + sTransform + "}";
-
-                    // add separator except at the end
-                    if (j < objects.length - 1)
-                    {
-                        buf += ",";
-                    }
-                    buf += "\n";
-
-                }
-
-                file.writeLine("static const dang::tmx_spriteobject " + functionName + "_" + layer.name + "_objects[] = {");
-                file.writeLine(buf);
-                file.writeLine("};");
-                file.writeLine("");
-                file.writeLine("static const size_t " + functionName + "_" + layer.name + "_objects_len = " + objects.length + ";");
-                file.writeLine("");
-                file.writeLine("static const dang::tmx_layer " + functionName + "_" + layer.name + " = {");
-                file.writeLine("    .name = \"" + layer.name + "\",");
-                file.writeLine("    .type = dang::tmx_layerType::ltObjects,");
-                file.writeLine("    .opacity = " + layer.opacity + ",");
-                file.writeLine("    .visible = " + layer.visible + ",");
-                file.writeLine("    .z_order = " + i + ",");
-                file.writeLine("    .position = {" + layer.offset.x + "," + layer.offset.y + "},");
-                file.writeLine("    .tl_width = 0,");
-                file.writeLine("    .tl_height = 0,");
-                file.writeLine("    .tl_tileset = \"\",");
-                file.writeLine("    .tl_tiles = nullptr,");
-                file.writeLine("    .tl_tiles_len = 0,");
-                file.writeLine("    .spriteobjects = " + functionName + "_" + layer.name + "_objects,");
-                file.writeLine("    .spriteobejcts_len = " + functionName + "_" + layer.name + "_objects_len");
-                file.writeLine("};");
-                file.writeLine("");
-            }   // end of sprite object layer
-
-        }   // end of object layer
-
-    } // end of layer
-
+// -------- write down layer array ---------
     file.writeLine("const static dang::tmx_layer " + functionName + "_layers[] = {");
 
     for (var i = 0; i < map.layerCount; ++i)
     {
         var layer = map.layerAt(i);
 
-        if (layer.name[0] == "_")
-        {
-            continue;
-        }
-
-        if (layer.isObjectLayer)
-        {
-            if (layer.objects.length > 0 && layer.objects[0].shape != MapObject.Point)
-            {
-                file.writeLine("    " + functionName + "_" + layer.name + ",");
-            }
-        }
-        else
+        if (layer.name.endsWith(strBGLayerToken)
+        || layer.name.endsWith(strMoodLayerToken)
+        || layer.name.endsWith(strObjLayerToken)
+        || layer.name.endsWith(strFGLayerToken)
+        || layer.name.endsWith(strHUDLayerToken))
         {
             file.writeLine("    " + functionName + "_" + layer.name + ",");
         }
@@ -528,7 +655,22 @@ function export32Blit(map, fileName) {
     else
     {
         file.writeLine("    .wavepoints = nullptr,");
-        file.writeLine("    .wavepoints_len = 0");
+        file.writeLine("    .wavepoints_len = 0,");
+    }
+
+    // only have the following lines if
+    if (bHasZones) {
+        file.writeLine("    .zones = " + functionName + "_zones,");
+        file.writeLine("    .zones_len = " + functionName + "_zones_len,");
+        file.writeLine("    .zone_passages = " + functionName + "_zone_passages,");
+        file.writeLine("    .zone_passages_len = " + functionName + "_zone_passages_len");
+    }
+    else
+    {
+        file.writeLine("    .zones = nullptr,");
+        file.writeLine("    .zones_len = 0,");
+        file.writeLine("    .zone_passages = nullptr,");
+        file.writeLine("    .zone_passages_len = 0");
     }
 
     file.writeLine("};");
