@@ -47,7 +47,7 @@ namespace dang
 
     public:     // public variables
         PointF              _position{0,0};
-        int32_t             _z_order{0};
+        uint8_t             _z_order{0};
         std::string         _name{""};
         bool                _visible{true};
         bool                _active{true};

@@ -136,7 +136,6 @@ namespace dang
         spSprite    _child{nullptr};    // left
         spSprite    _next_sibling{nullptr};  // right
         Sprite*     _prev_sibling{nullptr};
-
     };
 
 }
