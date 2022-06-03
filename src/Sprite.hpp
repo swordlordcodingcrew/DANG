@@ -102,16 +102,15 @@ namespace dang
         RectF       getSizeRectG();      // return size of sprite in global coords
 
     public: // variables
-        bool           _visible{true};
-        bool           _active{true};
-        uint16_t       _img_index{0};  // index to the image of the imagesheet. (equals tmx_tile of tmx_spriteobject?)
-        spImagesheet   _imagesheet{nullptr};
-        uint8_t        _transform{0};      // transform for blitting
-        int32_t        _z_order{0};
-        uint16_t       _id{0};    // global
-        std::string    _type_name{""};
-        uint8_t        _type_num{0}; // 0 == undefined
-
+        bool            _visible{true};
+        bool            _active{true};
+        uint16_t        _img_index{0};  // index to the image of the imagesheet. (equals tmx_tile of tmx_spriteobject?)
+        spImagesheet    _imagesheet{nullptr};
+        uint8_t         _transform{0};      // transform for blitting
+        uint8_t         _z_order{0}; // 0 == back, 255 == front
+        uint16_t        _id{0};    // global
+        std::string     _type_name{""};
+        uint8_t         _type_num{0}; // 0 == undefined
 
     protected:  // variables
 
