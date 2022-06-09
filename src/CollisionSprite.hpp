@@ -42,29 +42,12 @@ namespace dang
         RectF       getHotrectL() const;
         RectF       getHotrectG() const;
 
-        /*
-        virtual CollisionSpriteLayer::eCollObjectType       getCOType() const { return _coll_object_type; }
-        virtual void                                        setCOType(CollisionSpriteLayer::eCollObjectType type) { _coll_object_type = type; }
-
-        virtual void collide(const CollisionSpriteLayer::manifold &mf);
-        virtual void slide(const CollisionSpriteLayer::manifold &mf);
-        virtual void touch(const CollisionSpriteLayer::manifold &mf);
-        virtual void bounce(const CollisionSpriteLayer::manifold &mf);
-
-        virtual CollisionSpriteLayer::eCollisionResponse    getCollisionResponse(const spCollisionSprite& other);
-        void                                        setCollisionResponse(CollisionSpriteLayer::eCollisionResponse response) { _coll_response = response; };
-*/
-
         // ts pointer will get moved
         void setNTreeState(spNTreeState ts);
         spNTreeState& getNTreeState();
 
 
     protected:  // variables
-//        CollisionSpriteLayer::eCollObjectType       _coll_object_type{CollisionSpriteLayer::COT_DYNAMIC};
-//        RectF                                       _hotrect{0,0,0,0};
-//        CollisionSpriteLayer::eCollisionResponse    _coll_response{CollisionSpriteLayer::CR_SLIDE};
-
         // behaviour tree is implemented in the collision layer
         spNTreeState      _nTreeState{nullptr};
     };
