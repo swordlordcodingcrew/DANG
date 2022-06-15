@@ -96,7 +96,29 @@ set(SOURCES
         src/SpriteIterator.cpp
         src/SpriteIterator.hpp
         src/tween/TwPosSpline.cpp
-        src/tween/TwPosSpline.h src/CollisionObject.cpp src/CollisionObject.hpp src/CollisionSolver.cpp src/CollisionSolver.hpp)
+        src/tween/TwPosSpline.h
+        src/CollisionObject.cpp
+        src/CollisionObject.hpp
+        src/CollisionSolver.cpp
+        src/CollisionSolver.hpp
+        src/sprite/SpriteObject.cpp
+        src/sprite/SpriteObject.hpp
+        src/sprite/ImageObject.cpp
+        src/sprite/ImageObject.hpp
+        src/sprite/MotionObject.cpp
+        src/sprite/MotionObject.hpp
+        src/sprite/ColSpr.cpp
+        src/sprite/ColSpr.hpp
+        src/sprite/AllSpr.cpp
+        src/sprite/AllSpr.hpp
+        src/ColSprLayer.cpp
+        src/ColSprLayer.hpp
+        src/SprLayer.cpp
+        src/SprLayer.hpp
+        src/SprIterator.cpp
+        src/SprIterator.hpp
+        src/sprite/ImgSpr.cpp
+        src/sprite/ImgSpr.hpp)
 
 add_library(DANG STATIC ${SOURCES} )
 #target_link_libraries(DANG xmp_lite)
@@ -110,6 +132,7 @@ endif()
 
 #target_include_directories(DANG PUBLIC src)
 target_include_directories (DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories (DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 SET(32BLIT_LOC "../32blit-sdk/32blit")
 include_directories(32blit-sdk/32blit)
