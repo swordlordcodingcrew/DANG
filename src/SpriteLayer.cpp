@@ -20,6 +20,14 @@ namespace dang
         _root->setPos({0,0});
     }
 
+    SpriteLayer::SpriteLayer(const tmx_layer *l) : Layer(Layer::LT_SPRITELAYER, l)
+    {
+        _root = std::make_shared<Sprite>();
+        _root->_visible = false;
+        _root->setPos({0,0});
+
+    }
+
     spSprite SpriteLayer::getSpriteByType(const std::string& name)
     {
         spSprite ret{nullptr};
@@ -180,4 +188,5 @@ namespace dang
             }
         }
     }
+
 }

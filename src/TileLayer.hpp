@@ -17,7 +17,7 @@ namespace dang
     {
     public:
         TileLayer();
-        TileLayer(const SizeU& tilesize_px, const SizeF& layersize, const std::vector<tmx_tile>& tiles, const SizeU& worldsize_tu, std::shared_ptr<Imagesheet> is, const RectF& vp);
+//        TileLayer(const SizeU& tilesize_px, const SizeF& layersize, const std::vector<tmx_tile>& tiles, const SizeU& worldsize_tu, std::shared_ptr<Imagesheet> is, const RectF& vp);
         TileLayer(const tmx_tileset* tileset, const tmx_layer* ttl, std::shared_ptr<Imagesheet> is, const RectF& vp);
         ~TileLayer() override;
 
@@ -34,7 +34,7 @@ namespace dang
         // size of vp in tile units
         SizeU                       _vpsize_tu{1,1};
 
-        std::vector<tmx_tile>       _tiles;
+//        std::vector<tmx_tile>       _tiles;
         std::shared_ptr<Imagesheet> _imagesheet{nullptr};
 
     };

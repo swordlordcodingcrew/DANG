@@ -41,12 +41,14 @@ namespace dang
         blit::Rect getBlitRect();
         blit::Rect getBlitRect(const uint16_t img_index); // override where we can ask for a specific image
         blit::Surface* getSurface() const;
+        const spImagesheet& getImagesheet() const { return _imagesheet; }
         uint8_t     getTransform() const { return _transform; }
         void        setTransform(uint8_t transform) { _transform = transform; }
 
         bool        isVisible() const { return _visible; }
         void        setVisible(bool visible);
 
+        void        setImgIndex(uint16_t img_index) { _img_index = img_index; }
 
         // animation stuff (special tween)
         void setAnimation(spTweenable twa);

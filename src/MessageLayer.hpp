@@ -18,7 +18,8 @@ namespace dang
     {
     public:
         explicit MessageLayer(const uint8_t * font);
-        ~MessageLayer() override;
+        MessageLayer(const uint8_t * font, const PointF& position, uint8_t z_order, const std::string& name, bool visible, bool active);
+        ~MessageLayer() override = default;
 
         void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;

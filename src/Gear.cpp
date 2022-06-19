@@ -177,7 +177,7 @@ namespace dang
         _layers.push_front(layer);
         _layers.sort([] (const std::shared_ptr<Layer> &first, const std::shared_ptr<Layer> &second)
         {
-            return first->_z_order < second->_z_order;
+            return first->zOrder() < second->zOrder();
         });
 
     }
@@ -196,19 +196,19 @@ namespace dang
     {
         auto layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
         {
-            return (val->_name == name);
+            return (val->name() == name);
         });
 
         assert(layer_it != _layers.end());
 
-        (*layer_it)->_visible = visible;
+        (*layer_it)->setVisible(visible);
     }
 
     void Gear::setLayersVisibility(bool visible)
     {
         for (auto& lit : _layers)
         {
-            (*lit)._visible = visible;
+            (*lit).setVisible(visible);
         }
     }
 
@@ -216,12 +216,12 @@ namespace dang
     {
         auto layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
         {
-            return (val->_name == name);
+            return (val->name() == name);
         });
 
         assert(layer_it != _layers.end());
 
-        (*layer_it)->_active = active;
+        (*layer_it)->setActive(active);
 
     }
 
@@ -229,7 +229,7 @@ namespace dang
     {
         for (auto& lit : _layers)
         {
-            (*lit)._active = active;
+            (*lit).setActive(active);
         }
 
     }
@@ -238,14 +238,14 @@ namespace dang
     {
         auto layer_it = std::find_if(_layers.begin(), _layers.end(), [=](const std::shared_ptr<Layer>& val)
         {
-            return (val->_name == name);
+            return (val->name() == name);
         });
 
-        if (layer_it == _layers.end())
+/*        if (layer_it == _layers.end())
         {
             return nullptr;
         }
-
+*/
         return (*layer_it);
     }
 

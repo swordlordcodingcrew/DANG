@@ -37,7 +37,7 @@ namespace dang
         // postdecrement
         SprIterator  operator-- (int);
     protected:
-        friend class SprLayer;
+        friend class ImgSprLayer;
 
         spSprObj _current;
         spSprObj _root;

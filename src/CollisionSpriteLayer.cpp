@@ -1,16 +1,17 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include <iostream>
-#include <sstream>
-#include <malloc.h>
-#include <cassert>
 #include "CollisionSpriteLayer.hpp"
+//#include "Layer.hpp"
 #include "Sprite.hpp"
 #include "SpriteIterator.hpp"
 #include "CollisionSprite.hpp"
 #include "Gear.hpp"
 
+#include <iostream>
+#include <sstream>
+#include <malloc.h>
+#include <cassert>
 
 #ifdef DANG_DEBUG_DRAW
 #ifdef TARGET_32BLIT_HW
@@ -23,9 +24,15 @@ extern char _sbss, _end, __ltdc_start;
 
 namespace dang
 {
-    CollisionSpriteLayer::CollisionSpriteLayer()
+    CollisionSpriteLayer::CollisionSpriteLayer() : SpriteLayer(LT_COLLISIONSPRITELAYER)
     {
-        _type = LT_COLLISIONSPRITELAYER;
+        _root = std::make_shared<CollisionSprite>();
+        _root->_visible = false;
+        _root->setPos({0,0});
+    }
+
+    CollisionSpriteLayer::CollisionSpriteLayer(const tmx_layer *l) : SpriteLayer(LT_COLLISIONSPRITELAYER, l)
+    {
         _root = std::make_shared<CollisionSprite>();
         _root->_visible = false;
         _root->setPos({0,0});
@@ -41,6 +48,7 @@ namespace dang
             _cs.addCObject(cspr);
         }
     }
+
 
     void CollisionSpriteLayer::coreUpdate(uint32_t dt, const Gear &gear)
     {
@@ -217,6 +225,7 @@ namespace dang
         return _cs.loS(static_cast<const CollisionObject*>(&me), static_cast<const CollisionObject*>(&target));
 //        return _cs.loS(std::static_pointer_cast<CollisionObject>(me), std::static_pointer_cast<CollisionObject>(target));
     }
+
 
     // called on every move of every sprite
 /*    void CollisionSpriteLayer::handleCollisionDetection(const Gear& gear)

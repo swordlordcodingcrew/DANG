@@ -2,9 +2,13 @@
 // This file is part of the DANG game framework
 
 
+#include "TmxExtruder.hpp"
+#include "ImgSprLayer.hpp"
+#include "sprite/ImgSpr.hpp"
+
+
 #include "tween/Ease.hpp"
 #include "tween/TwAnim.hpp"
-#include "TmxExtruder.hpp"
 #include "ImageImport.h"
 #include "Imagesheet.hpp"
 #include "CollisionSpriteLayer.hpp"
@@ -61,6 +65,54 @@ namespace dang
         return is;
     }
 
+    spImgSprLayer TmxExtruder::getSprLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations)
+    {
+        const tmx_layer* l = getTmxLayer(name);
+
+        if (l == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (l->type != tmx_layerType::ltObjects)
+        {
+            return nullptr;
+        }
+
+        spImgSprLayer sl = std::make_shared<ImgSprLayer>(l);
+
+        if (addSprites)
+        {
+            for (size_t j = 0; j < l->spriteobejcts_len; j++)
+            {
+                const tmx_spriteobject* so = l->spriteobjects + j;
+
+                spImagesheet is = _gear->getImagesheet(so->tileset);
+
+                spImgSpr spr = std::make_shared<ImgSpr>(so, is);
+
+                if (autoFillAnimations && is != nullptr && !so->type.empty())
+                {
+                    spTwAnim animation = getAnimation(is->getName(), so->type);
+                    if (animation != nullptr)
+                    {
+                        spr->setAnimation(animation);
+                    }
+                }
+
+                sl->addSprite(spr);
+            }
+        }
+
+        if (addToGear)
+        {
+            _gear->addLayer(sl);
+        }
+
+        return sl;
+
+    }
+
     spSpriteLayer TmxExtruder::getSpriteLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations)
     {
         const tmx_layer* l = getTmxLayer(name);
@@ -75,17 +127,7 @@ namespace dang
             return nullptr;
         }
 
-        spSpriteLayer sl = std::make_shared<SpriteLayer>();
-
-        sl->_name = l->name;
-        sl->_z_order = l->z_order;
-        sl->_visible = l->visible;
-        sl->_tmx_layer = l;
-        sl->_position = l->position;
-
-        // to be considered whether useful
-        // sl->spriteobjects = l->spriteobjects
-
+        spSpriteLayer sl = std::make_shared<SpriteLayer>(l);
 
         if (addSprites)
         {
@@ -95,18 +137,18 @@ namespace dang
 
                 spImagesheet is = _gear->getImagesheet(so->tileset);
 
-                auto sprite = std::make_shared<Sprite>(so, is);
+                spSprite spr = std::make_shared<Sprite>(so, is);
 
-                if(autoFillAnimations && is != nullptr && !so->type.empty())
+                if (autoFillAnimations && is != nullptr && !so->type.empty())
                 {
-                    auto animation = getAnimation(is->getName(), so->type);
-                    if(animation != nullptr)
+                    spTwAnim animation = getAnimation(is->getName(), so->type);
+                    if (animation != nullptr)
                     {
-                        sprite->setAnimation(animation);
+                        spr->setAnimation(animation);
                     }
                 }
 
-                sl->addSprite(sprite);
+                sl->addSprite(spr);
             }
         }
 
@@ -133,11 +175,7 @@ namespace dang
             return;
         }
 
-        layer->_name = l->name;
-        layer->_z_order = l->z_order;
-        layer->_visible = l->visible;
-        layer->_tmx_layer = l;
-        layer->_position = l->position;
+        layer->init(l);
 
         if (addSprites)
         {
@@ -176,14 +214,14 @@ namespace dang
             return nullptr;
         }
 
-        spCollisionSpriteLayer sl = std::make_shared<CollisionSpriteLayer>();
+        spCollisionSpriteLayer sl = std::make_shared<CollisionSpriteLayer>(l);
 
-        sl->_name = l->name;
+/*        sl->_name = l->name;
         sl->_z_order = l->z_order;
         sl->_visible = l->visible;
         sl->_tmx_layer = l;
         sl->_position = l->position;
-
+*/
         if (addSprites)
         {
             for (size_t j = 0; j < l->spriteobejcts_len; j++)
@@ -236,12 +274,12 @@ namespace dang
 
         spImagesheet is = _gear->getImagesheet(ts->name);
         std::shared_ptr<TileLayer> tl = std::make_shared<TileLayer>(ts, l, is, _gear->getViewport());
-        tl->_name = l->name;
+/*        tl->_name = l->name;
         tl->_z_order = l->z_order;
         tl->_visible = l->visible;
         tl->_tmx_layer = l;
         tl->_position = l->position;
-
+*/
         if (addToGear)
         {
             _gear->addLayer(tl);

@@ -16,6 +16,12 @@ namespace dang
 
     }
 
+    BaseHUDLayer::BaseHUDLayer(const tmx_layer *l) : Layer(LT_HUDLAYER, l)
+    {
+
+    }
+
+
     void BaseHUDLayer::update(uint32_t dt, const Gear &gear)
     {
         // call update, updating all sprites, no filter
@@ -119,5 +125,6 @@ namespace dang
                                       return spr->_id == id;
                                   });
     }
+
 
 }

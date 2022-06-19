@@ -18,6 +18,7 @@ namespace dang
     {
     public:
         BaseHUDLayer();
+        BaseHUDLayer(const tmx_layer* l);
         ~BaseHUDLayer() override = default;
 
         void    update(uint32_t dt, const Gear& gear) override;

@@ -58,12 +58,12 @@ namespace dang
         //std::string   _name{""};
 
     private:
-        friend class SprLayer;
+        friend class ImgSprLayer;
         void    setInZone(bool in_zone) {_operable[1] = in_zone; }
 
     private:      // tree params
         friend class SprIterator;
-        friend class SprLayer;
+        friend class ImgSprLayer;
         friend class ColSprLayer;
 
         /**

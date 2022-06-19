@@ -56,9 +56,26 @@ namespace dang
     class CollisionObject;
     using spCollisionObject = std::shared_ptr<CollisionObject>;
 
+    /** sprite classes */
+    class SpriteObject;
+    using spSpriteObject = std::shared_ptr<SpriteObject>;
+    class MotionObject;
+    using spMotionObject = std::shared_ptr<MotionObject>;
+    class ImageObject;
+    using spImageObject = std::shared_ptr<ImageObject>;
+    class ImgSpr;
+    using spImgSpr = std::shared_ptr<ImgSpr>;
+    class ColSpr;
+    using spColSpr = std::shared_ptr<ColSpr>;
+    class AllSpr;
+    using spAllSpr = std::shared_ptr<AllSpr>;
+
+
     /** remaining classes */
     class Layer;
     using spLayer = std::shared_ptr<Layer>;
+    class ImgSprLayer;
+    using spImgSprLayer = std::shared_ptr<ImgSprLayer>;
     class SpriteLayer;
     using spSpriteLayer = std::shared_ptr<SpriteLayer>;
     class TileLayer;

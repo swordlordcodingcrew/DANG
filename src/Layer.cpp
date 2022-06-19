@@ -5,7 +5,7 @@
 //
 
 #include "Layer.hpp"
-#include "Sprite.hpp"
+#include "TmxExtruder.hpp"
 
 namespace dang
 {
@@ -19,5 +19,34 @@ namespace dang
     {
         return _type;
     }
+
+    Layer::Layer(E_TYPE type, const tmx_layer *l)
+    {
+        _tmx_layer = l;
+        _name = l->name;
+        _z_order = l->z_order;
+        _visible = l->visible;
+        _position = l->position;
+        _active = true;
+    }
+
+    Layer::Layer(Layer::E_TYPE type, const PointF &position, uint8_t z_order, const std::string &name, bool visible,
+                 bool active)
+                 : _type(type), _position(position), _z_order(z_order), _name(name), _visible(visible), _active(active)
+    {
+
+    }
+
+    void Layer::init(const tmx_layer* l)
+    {
+        _tmx_layer = l;
+        _name = l->name;
+        _z_order = l->z_order;
+        _visible = l->visible;
+        _position = l->position;
+        _active = true;
+
+    }
+
 }
 

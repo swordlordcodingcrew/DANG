@@ -13,11 +13,12 @@ namespace dang
     using spImgSpr = std::shared_ptr<ImgSpr>;
     class SprIterator;
 
-    class SprLayer : public Layer
+    class ImgSprLayer : public Layer
     {
     public:
-        SprLayer();
-        ~SprLayer() override = default;
+        ImgSprLayer();
+        explicit ImgSprLayer(const tmx_layer* l);
+        ~ImgSprLayer() override = default;
 
         void    update(uint32_t dt, const Gear& gear) override;
         void    render(const Gear& gear) override;
@@ -29,7 +30,7 @@ namespace dang
         virtual void        cleanSpritelist();
 
     private:
-        explicit SprLayer(Layer::E_TYPE type) : Layer(type) {};
+        explicit ImgSprLayer(Layer::E_TYPE type) : Layer(type) {};
 
         virtual void coreUpdate(uint32_t dt, const Gear& gear);
 

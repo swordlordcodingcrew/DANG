@@ -89,13 +89,14 @@ namespace dang
 
     void ImgSpr::coreUpdate(uint32_t dt)
     {
+        updateAnimation(dt);
         updateTweens(dt);
     }
 
     void ImgSpr::render(int32_t vpx, int32_t vpy)
     {
-//        (*it)->_imagesheet != nullptr && vp.intersects((*it)->getSizeRectG())
-        if (isVisible() && isActive() && inZone())
+//         && vp.intersects((*it)->getSizeRectG())
+        if (isVisible() && isActive() && inZone() /*&& getImagesheet() != nullptr*/)
         {
             Vector2F p = local2Global(getPos());
             blit::Point dp;

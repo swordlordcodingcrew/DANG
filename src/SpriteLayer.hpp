@@ -17,6 +17,7 @@ namespace dang
     {
     public:
         SpriteLayer();
+        explicit SpriteLayer(const tmx_layer* l);
         ~SpriteLayer() override = default;
 
         void    update(uint32_t dt, const Gear& gear);
@@ -31,6 +32,7 @@ namespace dang
 
     protected:
         explicit SpriteLayer(Layer::E_TYPE type) : Layer(type) {};
+        SpriteLayer(Layer::E_TYPE type, const tmx_layer* l) : Layer(type, l) {};
 
         virtual void coreUpdate(uint32_t dt, const Gear& gear);
         spSprite    _root{nullptr};

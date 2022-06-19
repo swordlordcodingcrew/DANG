@@ -33,14 +33,14 @@ namespace dang
      * @param worldsize_tu in tile units
      * @param is imagesheet containing all tile images. Multiple imagesheets is not supported
      */
-    TileLayer::TileLayer(const SizeU& tilesize_px, const SizeF& worldsize, const std::vector<tmx_tile>& tiles, const SizeU& worldsize_tu, std::shared_ptr<Imagesheet> is, const RectF& vp)
+/*    TileLayer::TileLayer(const SizeU& tilesize_px, const SizeF& worldsize, const std::vector<tmx_tile>& tiles, const SizeU& worldsize_tu, std::shared_ptr<Imagesheet> is, const RectF& vp)
             : Layer(Layer::LT_TILELAYER), _tilesize(tilesize_px), _tiles(tiles), _worldsize_tu(worldsize_tu),
               _imagesheet(is), _worldsize(worldsize)
     {
         _vpsize_tu.w = vp.w / _tilesize.w;
         _vpsize_tu.h = vp.h / _tilesize.h;
     }
-
+*/
     /**
      *
      * @param layerpos in world coordinates
@@ -49,16 +49,16 @@ namespace dang
      * @param is imagesheet containing all tile images. Multiple imagesheets is not supported
      */
     TileLayer::TileLayer(const tmx_tileset* tileset, const tmx_layer* ttl, std::shared_ptr<Imagesheet> is, const RectF &vp)
-            : Layer(Layer::LT_TILELAYER)
+            : Layer(Layer::LT_TILELAYER, ttl)
     {
         // the tiles are copied to the vector
-        for (size_t i = 0; i < ttl->tl_tiles_len; i++)
+/*        for (size_t i = 0; i < ttl->tl_tiles_len; i++)
         {
             const tmx_tile* tile = ttl->tl_tiles + i;
             _tiles.emplace_back(*tile);
 //            _tiles = ttl->tiles;
         }
-
+*/
         _imagesheet = is;
 
         _tilesize.w = tileset->tileWidth;
@@ -98,7 +98,8 @@ namespace dang
             for (uint32_t y = vp_tu.y; y <= vp_end_tu.y; y++)
             {
                 size_t index = x + (y * _worldsize_tu.w);
-                dang::tmx_tile t = _tiles.at(index);
+                const dang::tmx_tile& t = tmxLayer()->tl_tiles[index];
+//                dang::tmx_tile t = _tiles.at(index);
 
                 blit::Point  dp(x * _tilesize.w - int32_t(std::floor(vp.x)), y * _tilesize.h - int32_t(std::floor(vp.y)));
                 blit::screen.blit(_imagesheet->getSurface(), _imagesheet->getBlitRect(t.id), dp, t.transform);

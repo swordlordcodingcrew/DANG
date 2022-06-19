@@ -18,8 +18,11 @@ namespace dang
     {
     }
 
-    MessageLayer::~MessageLayer()
+    MessageLayer::MessageLayer(const uint8_t *font, const PointF &position, uint8_t z_order, const std::string &name,
+                               bool visible, bool active) : Layer(Layer::LT_UNDEFINED, position, z_order, name, visible, active), _font(font)
+
     {
+
     }
 
     void MessageLayer::update(uint32_t dt, const Gear &gear)
@@ -94,6 +97,7 @@ namespace dang
         _ok = ok;
         _cancel = cancel;
     }
+
 
 
 }

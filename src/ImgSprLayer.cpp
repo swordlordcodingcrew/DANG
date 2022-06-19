@@ -1,7 +1,7 @@
 // (c) 2019-22 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include "SprLayer.hpp"
+#include "ImgSprLayer.hpp"
 #include "Gear.hpp"
 #include "Layer.hpp"
 #include "SprIterator.hpp"
@@ -12,12 +12,19 @@
 
 namespace dang
 {
-    SprLayer::SprLayer() : Layer(Layer::LT_SPRITELAYER)
+    ImgSprLayer::ImgSprLayer() : Layer(Layer::LT_SPRITELAYER)
     {
         _root = std::make_shared<ImgSpr>();
+        _root->setVisible(false);
     }
 
-    spImgSpr SprLayer::getSpriteByTypeNum(uint8_t type_num)
+    ImgSprLayer::ImgSprLayer(const tmx_layer *l) : Layer(Layer::LT_SPRITELAYER, l)
+    {
+        _root = std::make_shared<ImgSpr>();
+        _root->setVisible(false);
+    }
+
+    spImgSpr ImgSprLayer::getSpriteByTypeNum(uint8_t type_num)
     {
         for (SprIterator it = begin(); it != end(); ++it)
         {
@@ -31,7 +38,7 @@ namespace dang
     }
 
 
-    spImgSpr SprLayer::getSpriteById(uint16_t id)
+    spImgSpr ImgSprLayer::getSpriteById(uint16_t id)
     {
         for (SprIterator it = begin(); it != end(); ++it)
         {
@@ -44,7 +51,7 @@ namespace dang
         return nullptr;
     }
 
-    void SprLayer::markRemoveSpritesByTypeNum(uint8_t type_num)
+    void ImgSprLayer::markRemoveSpritesByTypeNum(uint8_t type_num)
     {
         auto sti = begin();
         while (sti != end())
@@ -57,19 +64,20 @@ namespace dang
         }
     }
 
-    void SprLayer::addSprite(spImgSpr s)
+    void ImgSprLayer::addSprite(spImgSpr s)
     {
         assert(s != nullptr);
+        assert(s->getImagesheet() != nullptr);
         _root->addSpriteObject(s);
     }
 
-    void SprLayer::_removeSprite(spImgSpr s)
+    void ImgSprLayer::_removeSprite(spImgSpr s)
     {
         assert(s != nullptr);
         s->removeMeFromTree();
     }
 
-    void SprLayer::update(uint32_t dt, const Gear &gear)
+    void ImgSprLayer::update(uint32_t dt, const Gear &gear)
     {
         // core update and update active sprites
         coreUpdate(dt, gear);
@@ -92,7 +100,7 @@ namespace dang
      * @param dt
      * @param gear
      */
-    void SprLayer::coreUpdate(uint32_t dt, const Gear &gear)
+    void ImgSprLayer::coreUpdate(uint32_t dt, const Gear &gear)
     {
         auto sti = begin();
         while (sti != end())
@@ -128,7 +136,7 @@ namespace dang
         }
     }
 
-    void SprLayer::render(const Gear &gear)
+    void ImgSprLayer::render(const Gear &gear)
     {
         RectF vp = gear.getViewport();
         int32_t vpx = std::floor(vp.tl().x);
@@ -141,17 +149,17 @@ namespace dang
         }
     }
 
-    SprIterator SprLayer::begin()
+    SprIterator ImgSprLayer::begin()
     {
         return SprIterator(_root, _root);
     }
 
-    SprIterator SprLayer::end()
+    SprIterator ImgSprLayer::end()
     {
         return SprIterator(nullptr, _root);
     }
 
-    SprIterator SprLayer::erase(SprIterator pos)
+    SprIterator ImgSprLayer::erase(SprIterator pos)
     {
         spSprObj s = (*pos);
         pos++;
@@ -161,7 +169,7 @@ namespace dang
         return pos;
     }
 
-    void SprLayer::cleanSpritelist()
+    void ImgSprLayer::cleanSpritelist()
     {
         auto sti = begin();
         while (sti != end())
@@ -176,4 +184,5 @@ namespace dang
             }
         }
     }
+
 }

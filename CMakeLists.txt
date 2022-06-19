@@ -113,8 +113,8 @@ set(SOURCES
         src/sprite/AllSpr.hpp
         src/ColSprLayer.cpp
         src/ColSprLayer.hpp
-        src/SprLayer.cpp
-        src/SprLayer.hpp
+        src/ImgSprLayer.cpp
+        src/ImgSprLayer.hpp
         src/SprIterator.cpp
         src/SprIterator.hpp
         src/sprite/ImgSpr.cpp

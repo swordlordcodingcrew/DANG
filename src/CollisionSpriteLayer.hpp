@@ -76,6 +76,7 @@ namespace dang
 
     public:
         CollisionSpriteLayer();
+        explicit CollisionSpriteLayer(const tmx_layer* l);
         ~CollisionSpriteLayer() override = default;
 
         void    addCollisionSprite(spCollisionSprite cspr);
