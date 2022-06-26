@@ -31,7 +31,7 @@ namespace dang
     protected:
         friend class BMLTree;
         friend class BMLBuilder;
-        using SequenceFunction = std::function<BMLNode::Status (const spSprite&, const BMLNode*, spBMLState&)>;
+        using SequenceFunction = std::function<BMLNode::Status (const spFullSpr&, const BMLNode*, spBMLState&)>;
 
 
         /** https://www.geeksforgeeks.org/left-child-right-sibling-representation-tree/ */
@@ -57,9 +57,9 @@ namespace dang
         bool            isDecorator() const;
 
         /** static behoviour tree elements */
-        static BMLNode::Status   sequence(const spSprite& spr, const BMLNode* node, spBMLState& state);
-        static BMLNode::Status   repeat(const spSprite& spr, const BMLNode* node, spBMLState& state);
-        static BMLNode::Status   wait(const spSprite& spr, const BMLNode* node, spBMLState& state);
+        static BMLNode::Status   sequence(const spFullSpr& spr, const BMLNode* node, spBMLState& state);
+        static BMLNode::Status   repeat(const spFullSpr& spr, const BMLNode* node, spBMLState& state);
+        static BMLNode::Status   wait(const spFullSpr& spr, const BMLNode* node, spBMLState& state);
 
         // sequence -> action
         // Contents - (repeat | fire | fireRef | changeSpeed | changeDirection | accel | wait | vanish | action | actionRef)*
@@ -70,7 +70,7 @@ namespace dang
         // leaf -> wait
     };
 
-    using SequenceFunction = std::function<BMLNode::Status (const spSprite&, const BMLNode*, spBMLState&)>;
-    using ActionFunction = std::function<BMLNode::Status (const spSprite&)>;
+    using SequenceFunction = std::function<BMLNode::Status (const spFullSpr&, const BMLNode*, spBMLState&)>;
+    using ActionFunction = std::function<BMLNode::Status (const spFullSpr&)>;
 
 }

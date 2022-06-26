@@ -9,7 +9,7 @@
 namespace dang
 {
 
-    BTNode::Status NTree::process(Sprite& spr, std::shared_ptr<NTreeState>& state, uint32_t dt)
+    BTNode::Status NTree::process(FullSpr& spr, std::shared_ptr<NTreeState>& state, uint32_t dt)
     {
         BTNode::Status ret{BTNode::Status::FAILURE};
 

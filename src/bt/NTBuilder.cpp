@@ -78,7 +78,7 @@ namespace dang
     NTBuilder& NTBuilder::leaf(LeafFunction func)
     {
         BTNode* node = new BTNode(BTNode::Type::LEAF);
-        node->_process = [func](Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt)
+        node->_process = [func](FullSpr& spr, const BTNode* node, spNTreeState& state, uint32_t dt)
         {
             BTNode::Status ret{BTNode::Status::FAILURE};
 

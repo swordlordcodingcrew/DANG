@@ -67,8 +67,8 @@ namespace dang
     using spImgSpr = std::shared_ptr<ImgSpr>;
     class ColSpr;
     using spColSpr = std::shared_ptr<ColSpr>;
-    class AllSpr;
-    using spAllSpr = std::shared_ptr<AllSpr>;
+    class FullSpr;
+    using spFullSpr = std::shared_ptr<FullSpr>;
 
 
     /** remaining classes */
@@ -76,26 +76,27 @@ namespace dang
     using spLayer = std::shared_ptr<Layer>;
     class ImgSprLayer;
     using spImgSprLayer = std::shared_ptr<ImgSprLayer>;
-    class SpriteLayer;
-    using spSpriteLayer = std::shared_ptr<SpriteLayer>;
+    class ColSprLayer;
+    using spColSprLayer = std::shared_ptr<ColSprLayer>;
+//    class SpriteLayer;
+//    using spSpriteLayer = std::shared_ptr<SpriteLayer>;
     class TileLayer;
     using spTileLayer = std::shared_ptr<TileLayer>;
     class BaseHUDLayer;
     using spBaseHUDLayer = std::shared_ptr<BaseHUDLayer>;
-    class CollisionSprite;
-    using spCollisionSprite = std::shared_ptr<CollisionSprite>;
-    class CollisionSpriteLayer;
-    using spCollisionSpriteLayer = std::shared_ptr<CollisionSpriteLayer>;
+    class MessageLayer;
+    using spMessageLayer = std::shared_ptr<MessageLayer>;
+
+    //    class CollisionSprite;
+//    using spCollisionSprite = std::shared_ptr<CollisionSprite>;
+//    class CollisionSpriteLayer;
+//    using spCollisionSpriteLayer = std::shared_ptr<CollisionSpriteLayer>;
     class Gear;
     class Imagesheet;
     using spImagesheet = std::shared_ptr<Imagesheet>;
     struct image_import;
-    class Sprite;
-    using spSprite = std::shared_ptr<Sprite>;
-    class Layer;
-    using spLayer = std::shared_ptr<Layer>;
-    class MessageLayer;
-    using spMessageLayer = std::shared_ptr<MessageLayer>;
+//    class Sprite;
+//    using spSprite = std::shared_ptr<Sprite>;
     class Event;
     class Dispatcher;
 

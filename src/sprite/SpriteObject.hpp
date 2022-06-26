@@ -3,7 +3,8 @@
 
 #pragma once
 
-#include "src/Vector2T.hpp"
+#include "Vector2T.hpp"
+#include "RectT.hpp"
 
 #include <memory>
 #include <bitset>
@@ -41,30 +42,33 @@ namespace dang
         virtual void update(uint32_t dt) = 0;
         virtual void render(int32_t vpx, int32_t vpy) = 0;
 
-        bool    isActive() { return _operable[0]; }
+        bool    isActive() const { return _operable[0]; }
         void    setActive(bool active) {_operable[0] = active;}
 
-        bool    inZone() { return _operable[1]; }
+        bool        inZone() const { return _operable[1]; }
+        void        setInZone(bool in_zone) {_operable[1] = in_zone; }
 
-    private:                                  // params
-        uint16_t        _id{0};                 // global id copied from Tiled
-        uint8_t         _type_num{0};           // 0 == undefined. type of sprite (to be set acc. to type of tiled)
-        uint8_t         _z_order{0};            // 0 == back, 255 == front
-        Vector2F     	_pos{0,0};     // position
+        uint8_t     typeNum() const { return _type_num; }
+        uint16_t    id() const { return _id; }
+
+        void            setSize(SizeF& s) {_size = s; }
+        void            setSize(float w, float h) {_size.w = w; _size.h = h; }
+        const Vector2F& getSize() const { return _size; }
+        RectF           getSizeRect();      // return size of sprite
+        RectF           getSizeRectG();      // return size of sprite in global coords
+
+
+    private:                                     // params
+        uint16_t        _id{0};                  // global id copied from Tiled
+        uint8_t         _type_num{0};            // 0 == undefined. type of sprite (to be set acc. to type of tiled)
+        uint8_t         _z_order{0};             // 0 == back, 255 == front
+        Vector2F     	_pos{0,0};      // position
+        Vector2F        _size{0,0};     // size
 
 
         // to save memory these params are not implemented
         //std::string   _type_name{""};
         //std::string   _name{""};
-
-    private:
-        friend class ImgSprLayer;
-        void    setInZone(bool in_zone) {_operable[1] = in_zone; }
-
-    private:      // tree params
-        friend class SprIterator;
-        friend class ImgSprLayer;
-        friend class ColSprLayer;
 
         /**
          * [0] active true/false. Default true
@@ -72,7 +76,13 @@ namespace dang
          * [2] remove_from_tree true/false. Default false
          */
         std::bitset<3>  _operable{0b011};
-        virtual void    removeMeFromTree();
+
+    private:
+        friend class SprLayer;
+        void    removeMeFromTree();
+
+    private:      // tree params
+        friend class SprIterator;
 
         SpriteObject*     _parent{nullptr};
         spSpriteObject    _child{nullptr};    // left

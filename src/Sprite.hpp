@@ -33,6 +33,7 @@ namespace dang
     class Sprite : public std::enable_shared_from_this<Sprite>
     {
     public: // functions
+        using spSprite = std::shared_ptr<Sprite>;
         Sprite();
         Sprite(const Sprite& sp);
         Sprite(const tmx_spriteobject* so, const spImagesheet& is);

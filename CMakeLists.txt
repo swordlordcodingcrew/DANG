@@ -58,10 +58,10 @@ set(SOURCES
         src/Sprite.hpp
         src/Gear.cpp
         src/Gear.hpp
-        src/Layer.cpp
-        src/Layer.hpp
-        src/TileLayer.cpp
-        src/TileLayer.hpp
+        src/layer/Layer.cpp
+        src/layer/Layer.hpp
+        src/layer/TileLayer.cpp
+        src/layer/TileLayer.hpp
         src/SpriteLayer.cpp
         src/SpriteLayer.hpp
         src/SimpleImageLayer.cpp
@@ -109,19 +109,20 @@ set(SOURCES
         src/sprite/MotionObject.hpp
         src/sprite/ColSpr.cpp
         src/sprite/ColSpr.hpp
-        src/sprite/AllSpr.cpp
-        src/sprite/AllSpr.hpp
-        src/ColSprLayer.cpp
-        src/ColSprLayer.hpp
-        src/ImgSprLayer.cpp
-        src/ImgSprLayer.hpp
+        src/sprite/FullSpr.cpp
+        src/sprite/FullSpr.hpp
+        src/layer/ColSprLayer.cpp
+        src/layer/ColSprLayer.hpp
+        src/layer/ImgSprLayer.cpp
+        src/layer/ImgSprLayer.hpp
         src/SprIterator.cpp
         src/SprIterator.hpp
         src/sprite/ImgSpr.cpp
-        src/sprite/ImgSpr.hpp)
+        src/sprite/ImgSpr.hpp
+        src/layer/SprLayer.cpp
+        src/layer/SprLayer.hpp)
 
 add_library(DANG STATIC ${SOURCES} )
-#target_link_libraries(DANG xmp_lite)
 
 # make sure to link the 32blit supplied stdlibs when compiling for the 32blit HW
 # variable pic_stdlibs is set by the 32blit cmake configuration
@@ -130,7 +131,6 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Generic)
     set_target_properties(DANG PROPERTIES COMPILE_FLAGS "-fPIC -mno-pic-data-is-text-relative -mno-single-pic-base")
 endif()
 
-#target_include_directories(DANG PUBLIC src)
 target_include_directories (DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories (DANG PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 

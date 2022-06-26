@@ -129,7 +129,7 @@ namespace dang
         if (_nTreeState != nullptr)
         {
             assert(_nTreeState->_tree != nullptr);
-            _nTreeState->_tree->process(*this, _nTreeState, dt);
+//            _nTreeState->_tree->process(*this, _nTreeState, dt);
 
 #ifdef DANG_DEBUG_PRINT
             std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::NTreeState::internal_state>>(_nTreeState->_internal_state) << " and node position: " << _nTreeState->_node << std::endl;

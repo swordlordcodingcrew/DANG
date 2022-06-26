@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include "../DangFwdDecl.h"
 #include "BTNode.h"
 
 namespace dang
@@ -11,7 +10,7 @@ namespace dang
     class NTree
     {
     public:
-        static BTNode::Status process(Sprite& spr, spNTreeState& state, uint32_t dt);
+        static BTNode::Status process(FullSpr& spr, spNTreeState& state, uint32_t dt);
 
     public:
         NTree();

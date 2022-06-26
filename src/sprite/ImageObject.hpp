@@ -35,9 +35,9 @@ namespace dang
 
         // image
         void setImagesheet(spImagesheet is) { _imagesheet = is; }
-        void setSize(SizeF& s) {_size = s; }
-        void setSize(float w, float h) {_size.w = w; _size.h = h; }
-        const Vector2F& getSize() const { return _size; }
+//        void setSize(SizeF& s) {_size = s; }
+//        void setSize(float w, float h) {_size.w = w; _size.h = h; }
+//        const Vector2F& getSize() const { return _size; }
         blit::Rect getBlitRect();
         blit::Rect getBlitRect(const uint16_t img_index); // override where we can ask for a specific image
         blit::Surface* getSurface() const;
@@ -62,7 +62,7 @@ namespace dang
         spImagesheet    _imagesheet{nullptr};
         bool            _visible{true};
         spTweenable     _animation;
-        Vector2F        _size{0,0};
+//        Vector2F        _size{0,0};
 
     };
 

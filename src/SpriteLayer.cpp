@@ -7,7 +7,7 @@
 #include "Gear.hpp"
 #include "SpriteLayer.hpp"
 #include "Sprite.hpp"
-#include "Layer.hpp"
+#include "src/layer/Layer.hpp"
 #include "Imagesheet.hpp"
 #include "SpriteIterator.hpp"
 

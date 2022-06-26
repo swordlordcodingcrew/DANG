@@ -28,9 +28,6 @@ namespace dang
         void update(uint32_t dt) override {};
         void render(int32_t vpx, int32_t vpy) override;
 
-        RectF       getSizeRect();      // return size of sprite
-        RectF       getSizeRectG();      // return size of sprite in global coords
-
         // tween stuff
         void addTween(spTweenable tw);
         void removeTween(const spTweenable& tw, bool suppressCB);

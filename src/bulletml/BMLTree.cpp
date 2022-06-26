@@ -8,7 +8,7 @@
 
 namespace dang
 {
-    BMLNode::Status BMLTree::process(const spSprite& spr, std::shared_ptr<BMLState>& state)
+    BMLNode::Status BMLTree::process(const spFullSpr& spr, std::shared_ptr<BMLState>& state)
     {
         BMLNode::Status ret{BMLNode::Status::FAILURE};
 

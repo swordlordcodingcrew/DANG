@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Gear.hpp"
 #include "SimpleImageLayer.hpp"
-#include "Layer.hpp"
+#include "src/layer/Layer.hpp"
 
 namespace dang
 {

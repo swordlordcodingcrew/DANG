@@ -79,7 +79,7 @@ namespace dang
     BMLBuilder& BMLBuilder::action(ActionFunction func)
     {
         BMLNode* node = new BMLNode(BMLNode::Type::LEAF);
-        node->_process = [func](const spSprite& spr, const BMLNode* node, spBMLState& state)
+        node->_process = [func](const spFullSpr& spr, const BMLNode* node, spBMLState& state)
         {
             BMLNode::Status ret{BMLNode::Status::FAILURE};
 

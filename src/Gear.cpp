@@ -2,12 +2,12 @@
 // This file is part of the DANG game framework
 
 #include "Gear.hpp"
-#include "Layer.hpp"
+#include "src/layer/Layer.hpp"
 #include "Sprite.hpp"
 #include "Imagesheet.hpp"
 #include "TmxExtruder.hpp"
 #include "SpriteLayer.hpp"
-#include "TileLayer.hpp"
+#include "src/layer/TileLayer.hpp"
 #include "CollisionSpriteLayer.hpp"
 #include "CollisionSprite.hpp"
 #include "bt/NTree.h"

@@ -18,6 +18,7 @@ namespace dang
     class CollisionSprite : public Sprite, public CollisionObject
     {
     public: // functions
+        using spCollisionSprite = std::shared_ptr<CollisionSprite>;
         CollisionSprite();
         CollisionSprite(const CollisionSprite& cs);
         CollisionSprite(const tmx_spriteobject* so, const spImagesheet& is);

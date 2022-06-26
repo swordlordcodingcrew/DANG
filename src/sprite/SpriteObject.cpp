@@ -15,6 +15,8 @@ namespace dang
         _pos.x = so->x;
         _pos.y = so->y;
         _z_order = so->z_order;
+        _size.w = so->width;
+        _size.h = so->height;
     }
 
 
@@ -155,6 +157,17 @@ namespace dang
             par = par->_parent;
         }
         return ret;
+    }
+
+    RectF SpriteObject::getSizeRect()
+    {
+        return RectF(getPos().x, getPos().y, getSize().x, getSize().y);
+    }
+
+    RectF SpriteObject::getSizeRectG()
+    {
+        Vector2F p = local2Global(getPos());
+        return RectF(p.x, p.y, getSize().x, getSize().y);
     }
 
 }

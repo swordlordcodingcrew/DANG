@@ -230,9 +230,10 @@ namespace dang
         spImagesheet            getImagesheet(const std::string& name);
         void                    getImagesheets();
 
-        spSpriteLayer              getSpriteLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations);
+//        spSpriteLayer              getSpriteLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations);
         spImgSprLayer              getSprLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations);
-        spCollisionSpriteLayer  getCollisionSpriteLayer(const std::string& name, bool addSprites, bool addToGear);
+//        spCollisionSpriteLayer  getCollisionSpriteLayer(const std::string& name, bool addSprites, bool addToGear);
+        spColSprLayer           getColSprLayer(const std::string& name, bool addToGear);
         void                    fillHUDLayer(spBaseHUDLayer  layer, const std::string& name, bool addSprites, bool addToGear);
         spTileLayer             getTileLayer(const std::string& name, bool addToGear);
         spTwAnim                getAnimation(const std::string& is_name, const std::string& anim_name, EaseFn ease_cb = Ease::Linear, int32_t loops = -1, bool alternating = false, uint32_t delay = 0);

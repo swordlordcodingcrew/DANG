@@ -38,7 +38,7 @@ namespace dang
         return (Type::DECORATOR == _type);
     }
 
-    BMLNode::Status BMLNode::sequence(const spSprite &spr, const BMLNode* node, spBMLState &state)
+    BMLNode::Status BMLNode::sequence(const spFullSpr &spr, const BMLNode* node, spBMLState &state)
     {
         std::cout << "BMLNode sequence " << std::to_string(node->_id) << std::endl;
 
@@ -93,7 +93,7 @@ namespace dang
         // return ret;
     }
 
-    BMLNode::Status BMLNode::wait(const spSprite& spr, const BMLNode* node, spBMLState& state)
+    BMLNode::Status BMLNode::wait(const spFullSpr& spr, const BMLNode* node, spBMLState& state)
     {
         std::cout << "BMLNode wait " << std::to_string(node->_id) << std::endl;
 
@@ -132,7 +132,7 @@ namespace dang
     }
 
 
-    BMLNode::Status BMLNode::repeat(const spSprite &spr, const BMLNode* node, spBMLState &state)
+    BMLNode::Status BMLNode::repeat(const spFullSpr &spr, const BMLNode* node, spBMLState &state)
     {
         std::cout << "BMLNode repeat " << std::to_string(node->_id) << std::endl;
 

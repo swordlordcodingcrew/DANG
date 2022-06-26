@@ -28,7 +28,7 @@ namespace dang
 
         void coreUpdate(uint32_t dt) override {};
         void update(uint32_t dt) override {};
-        void render(int32_t vpx, int32_t vpy) override {};
+        void render(int32_t vpx, int32_t vpy) override;
 
         // override from CollisionObject
         void preSolve() override;

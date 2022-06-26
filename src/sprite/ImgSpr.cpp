@@ -106,15 +106,4 @@ namespace dang
         }
     }
 
-    RectF ImgSpr::getSizeRect()
-    {
-        return RectF(getPos().x, getPos().y, getSize().x, getSize().y);
-    }
-
-    RectF ImgSpr::getSizeRectG()
-    {
-        Vector2F p = local2Global(getPos());
-        return RectF(p.x, p.y, getSize().x, getSize().y);
-    }
-
 }

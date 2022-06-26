@@ -18,7 +18,7 @@
 
 #include "Vector2T.hpp"
 #include "RectT.hpp"
-#include "SpriteLayer.hpp"
+#include "layer/SprLayer.hpp"
 #include "CollisionSolver.hpp"
 
 #include <forward_list>
@@ -30,33 +30,33 @@ namespace dang
     class ColSpr;
     using spColSpr = std::shared_ptr<ColSpr>;
     class SpriteObject;
-    using spSpriteObject = std::shared_ptr<SpriteObject>;
+    using spSprObj = std::shared_ptr<SpriteObject>;
 
-    class ColSprLayer : public Layer
+    class ColSprLayer : public SprLayer
     {
     public:
- /*       ColSprLayer();
+        ColSprLayer();
+        explicit ColSprLayer(const tmx_layer* l);
         ~ColSprLayer() override = default;
 
-        void    addColSpr(spColSpr s);
+        virtual void        addSprite(spColSpr s);
 
+        // override from SprLayer
         void    update(uint32_t dt, const Gear& gear) override;
-        void    render(const Gear& gear) override;
 
         void    cleanSpritelist() override;
-        void    _removeSprite(spSpriteObject s) override;
 
         float   aaLoSH(const ColSpr& me, const ColSpr& target);
         float   loS(const ColSpr& me, const ColSpr& target);
-*/
+
     protected:
         CollisionSolver _cs;
 
-//        void coreUpdate(uint32_t dt, const Gear &gear) override;
+        void coreUpdate(uint32_t dt, const Gear &gear) override;
 
     private:
-        // may not be used in this layer type, user addCollisionSprite instead
-//        void    addSprite(spSprite spr) override {};
+        // may not be used in this layer type, use with param ImgSpr instead
+        void        addSprite(spSprObj s) override {};
 #ifdef DANG_DEBUG_DRAW
         int _dbg_mem{0};
 #endif

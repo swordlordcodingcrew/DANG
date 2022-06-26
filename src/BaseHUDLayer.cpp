@@ -1,22 +1,22 @@
-// (c) 2019-21 by SwordLord - the coding crew
+// (c) 2019-22 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include <iostream>
-#include <32blit.hpp>
 #include "BaseHUDLayer.hpp"
-#include "CollisionSprite.hpp"
-#include "Sprite.hpp"
 #include "Gear.hpp"
 #include "Imagesheet.hpp"
+#include "SprIterator.hpp"
+#include "sprite/ImgSpr.hpp"
+
+#include <iostream>
 
 namespace dang
 {
-    BaseHUDLayer::BaseHUDLayer() : Layer(LT_HUDLAYER)
+    BaseHUDLayer::BaseHUDLayer() : ImgSprLayer(LT_HUDLAYER)
     {
 
     }
 
-    BaseHUDLayer::BaseHUDLayer(const tmx_layer *l) : Layer(LT_HUDLAYER, l)
+    BaseHUDLayer::BaseHUDLayer(const tmx_layer *l) : ImgSprLayer(LT_HUDLAYER, l)
     {
 
     }
@@ -24,19 +24,36 @@ namespace dang
 
     void BaseHUDLayer::update(uint32_t dt, const Gear &gear)
     {
-        // call update, updating all sprites, no filter
-        for (spSprite& spr : _sprites)
+        // updating all sprites, no filter, no zones
+        auto sti = begin();
+        while (sti != end())
         {
-            spr->update(dt);
+            if ((*sti)->isMarkedRemove())
+            {
+                sti = erase(sti);
+            }
+            else
+            {
+                (*sti)->update(dt);
+                sti++;
+            }
         }
-
+        
         updateInternal(dt, gear);
     }
 
     void BaseHUDLayer::render(const Gear &gear)
     {
+
+        for (SprIterator it = begin(); it != end(); it++)
+        {
+            spImgSpr s = std::dynamic_pointer_cast<ImgSpr>(*it);
+            s->render(0, 0);
+        }
+
+/*
         RectF vp = {0, 0, float(blit::screen.bounds.w), float(blit::screen.bounds.h)};
-//        RectF vp = {0, 0, gear.getViewport().w, gear.getViewport().h};
+        RectF vp = {0, 0, gear.getViewport().w, gear.getViewport().h};
 
         for (std::shared_ptr<Sprite>& spr : _sprites)
         {
@@ -52,40 +69,11 @@ namespace dang
                 }
             }
         }
-
-#ifdef DANG_DEBUG_DRAW
-
-        /*        RectF vp = gear.getViewport();
-
-        for (std::shared_ptr<Sprite>& spr : _active_sprites)
-        {
-            RectF dr = vp.intersection(spr->getSizeRect());
-
-            if (dr.area() != 0)
-            {
-                spCollisionSprite cspr = std::static_pointer_cast<CollisionSprite>(spr);
-                RectF hr = cspr->getHotrectL();
-                hr.x -= vp.tl().x;
-                hr.y -= vp.tl().y;
-
-                Vector2I tl(int32_t(hr.tl().x), int32_t(hr.tl().y));
-                Vector2I bl(int32_t(hr.bl().x), int32_t(hr.bl().y));
-                Vector2I br(int32_t(hr.br().x), int32_t(hr.br().y));
-                Vector2I tr(int32_t(hr.tr().x), int32_t(hr.tr().y));
-
-                gear.line_cb(tl, bl, 0, 0, 255, 255); // left -> bottom
-                gear.line_cb(bl, br, 0, 0, 255, 255); // bottom -> right
-                gear.line_cb(br, tr, 0, 0, 255, 255); // right -> top
-                gear.line_cb(tr, tl, 0, 0, 255, 255); // top -> left
-            }
-        }
-        */
-#endif
-
+*/
         renderInternal(gear);
     }
 
-
+/*
     void BaseHUDLayer::addSprite(std::shared_ptr<Sprite> spr)
     {
         if (spr != nullptr)
@@ -126,5 +114,5 @@ namespace dang
                                   });
     }
 
-
+*/
 }

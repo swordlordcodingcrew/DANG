@@ -3,12 +3,11 @@
 
 #pragma once
 
+#include "DangFwdDecl.h"
+
 #include <functional>
-#include <cstdint>
-#include <memory>
-
-#include "../DangFwdDecl.h"
-
+//#include <cstdint>
+//#include <memory>
 
 namespace dang
 {
@@ -29,7 +28,7 @@ namespace dang
     protected:
         friend class NTree;
         friend class NTBuilder;
-        using NodeFunction = std::function<BTNode::Status (Sprite&, const BTNode*, spNTreeState&, uint32_t dt)>;
+        using NodeFunction = std::function<BTNode::Status (FullSpr&, const BTNode*, spNTreeState&, uint32_t dt)>;
 
 
         /** https://www.geeksforgeeks.org/left-child-right-sibling-representation-tree/ */
@@ -53,14 +52,14 @@ namespace dang
         bool            isDecorator() const;
 
         /** static behoviour tree elements */
-        static BTNode::Status   forwarder(Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
-        static BTNode::Status   inverter(Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
-        static BTNode::Status   selector(Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
-        static BTNode::Status   sequence(Sprite& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
+        static BTNode::Status   forwarder(FullSpr& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
+        static BTNode::Status   inverter(FullSpr& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
+        static BTNode::Status   selector(FullSpr& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
+        static BTNode::Status   sequence(FullSpr& spr, const BTNode* node, spNTreeState& state, uint32_t dt);
 
     };
 
-    using NodeFunction = std::function<BTNode::Status (Sprite&, const BTNode*, spNTreeState&, uint32_t dt)>;
-    using LeafFunction = std::function<BTNode::Status (Sprite&, uint32_t dt)>;
+    using NodeFunction = std::function<BTNode::Status (FullSpr&, const BTNode*, spNTreeState&, uint32_t dt)>;
+    using LeafFunction = std::function<BTNode::Status (FullSpr&, uint32_t dt)>;
 
 }

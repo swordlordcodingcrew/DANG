@@ -5,6 +5,10 @@
 #include "TmxExtruder.hpp"
 #include "dang.hpp"
 
+#ifdef DANG_DEBUG_DRAW
+#include <engine/engine.hpp>
+#endif
+
 namespace dang
 {
 
@@ -159,6 +163,34 @@ namespace dang
 
         D_DEBUG_PRINT("error in manifold me/other");
         return nullptr;
+
+    }
+
+    void ColSpr::render(int32_t vpx, int32_t vpy)
+    {
+#ifdef DANG_DEBUG_DRAW
+        // show hotrects
+        if (isActive() && inZone())
+        {
+            blit::screen.pen = blit::Pen(0, 0, 255, 255);
+            RectF hr;
+            hr.x = _co_pos.x + _hotrect.x - vpx;
+            hr.y = _co_pos.y + _hotrect.y - vpy;
+            hr.w = _hotrect.w;
+            hr.h = _hotrect.h;
+
+            blit::Point tl(int32_t(hr.tl().x), int32_t(hr.tl().y));
+            blit::Point bl(int32_t(hr.bl().x), int32_t(hr.bl().y));
+            blit::Point br(int32_t(hr.br().x), int32_t(hr.br().y));
+            blit::Point tr(int32_t(hr.tr().x), int32_t(hr.tr().y));
+
+            blit::screen.line(tl, bl); // left -> bottom
+            blit::screen.line(bl, br); // bottom -> right
+            blit::screen.line(br, tr); // right -> top
+            blit::screen.line(tr, tl); // top -> left
+
+        }
+#endif
 
     }
 

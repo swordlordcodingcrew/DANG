@@ -3,7 +3,6 @@
 
 #include "ImgSprLayer.hpp"
 #include "Gear.hpp"
-#include "Layer.hpp"
 #include "SprIterator.hpp"
 #include "sprite/ImgSpr.hpp"
 
@@ -12,69 +11,25 @@
 
 namespace dang
 {
-    ImgSprLayer::ImgSprLayer() : Layer(Layer::LT_SPRITELAYER)
+    ImgSprLayer::ImgSprLayer() : SprLayer(Layer::LT_SPRITELAYER)
     {
-        _root = std::make_shared<ImgSpr>();
-        _root->setVisible(false);
+        spImgSpr r = std::make_shared<ImgSpr>();
+        r->setVisible(false);
+        setRoot(r);
     }
 
-    ImgSprLayer::ImgSprLayer(const tmx_layer *l) : Layer(Layer::LT_SPRITELAYER, l)
+    ImgSprLayer::ImgSprLayer(const tmx_layer *l) : SprLayer(Layer::LT_SPRITELAYER, l)
     {
-        _root = std::make_shared<ImgSpr>();
-        _root->setVisible(false);
-    }
-
-    spImgSpr ImgSprLayer::getSpriteByTypeNum(uint8_t type_num)
-    {
-        for (SprIterator it = begin(); it != end(); ++it)
-        {
-            if ((*it)->_type_num == type_num)
-            {
-                return std::dynamic_pointer_cast<ImgSpr>(*it);
-            }
-        }
-
-        return nullptr;
-    }
-
-
-    spImgSpr ImgSprLayer::getSpriteById(uint16_t id)
-    {
-        for (SprIterator it = begin(); it != end(); ++it)
-        {
-            if ((*it)->_id == id)
-            {
-                return std::dynamic_pointer_cast<ImgSpr>(*it);
-            }
-        }
-
-        return nullptr;
-    }
-
-    void ImgSprLayer::markRemoveSpritesByTypeNum(uint8_t type_num)
-    {
-        auto sti = begin();
-        while (sti != end())
-        {
-            if ((*sti)->_type_num == type_num)
-            {
-                (*sti)->markRemove();
-            }
-            ++sti;
-        }
+        spImgSpr r = std::make_shared<ImgSpr>();
+        r->setVisible(false);
+        setRoot(r);
     }
 
     void ImgSprLayer::addSprite(spImgSpr s)
     {
         assert(s != nullptr);
         assert(s->getImagesheet() != nullptr);
-        _root->addSpriteObject(s);
-    }
-
-    void ImgSprLayer::_removeSprite(spImgSpr s)
-    {
-        assert(s != nullptr);
-        s->removeMeFromTree();
+        getRoot()->addSpriteObject(s);
     }
 
     void ImgSprLayer::update(uint32_t dt, const Gear &gear)
@@ -111,7 +66,7 @@ namespace dang
             }
             else
             {
-                if ((*sti)->_parent == nullptr)
+                if (isRoot(*sti))
                 {
                     // root element. Always in
                     (*sti)->coreUpdate(dt);
@@ -145,43 +100,8 @@ namespace dang
         for (SprIterator it = begin(); it != end(); it++)
         {
             spImgSpr s = std::dynamic_pointer_cast<ImgSpr>(*it);
+            // check if visible, active, inzone is done in the sprite
             s->render(vpx, vpy);
-        }
-    }
-
-    SprIterator ImgSprLayer::begin()
-    {
-        return SprIterator(_root, _root);
-    }
-
-    SprIterator ImgSprLayer::end()
-    {
-        return SprIterator(nullptr, _root);
-    }
-
-    SprIterator ImgSprLayer::erase(SprIterator pos)
-    {
-        spSprObj s = (*pos);
-        pos++;
-
-        s->removeMeFromTree();
-
-        return pos;
-    }
-
-    void ImgSprLayer::cleanSpritelist()
-    {
-        auto sti = begin();
-        while (sti != end())
-        {
-            if ((*sti)->isMarkedRemove())
-            {
-                sti = erase(sti);
-            }
-            else
-            {
-                sti++;
-            }
         }
     }
 

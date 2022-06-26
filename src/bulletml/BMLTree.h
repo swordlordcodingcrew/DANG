@@ -11,7 +11,7 @@ namespace dang
     class BMLTree
     {
     public:
-        static BMLNode::Status process(const spSprite& spr, spBMLState& state);
+        static BMLNode::Status process(const spFullSpr& spr, spBMLState& state);
 
 //        static BTNode* addInverter(BTNode* node);
 //        static BTNode* addForwarder(BTNode* node);

@@ -3,7 +3,9 @@
 
 
 #include "TmxExtruder.hpp"
-#include "ImgSprLayer.hpp"
+#include "src/layer/ImgSprLayer.hpp"
+#include "src/layer/ColSprLayer.hpp"
+
 #include "sprite/ImgSpr.hpp"
 
 
@@ -11,12 +13,12 @@
 #include "tween/TwAnim.hpp"
 #include "ImageImport.h"
 #include "Imagesheet.hpp"
-#include "CollisionSpriteLayer.hpp"
-#include "SpriteLayer.hpp"
-#include "TileLayer.hpp"
+//#include "CollisionSpriteLayer.hpp"
+//#include "SpriteLayer.hpp"
+#include "src/layer/TileLayer.hpp"
 #include "Gear.hpp"
-#include "Sprite.hpp"
-#include "CollisionSprite.hpp"
+//#include "Sprite.hpp"
+//#include "CollisionSprite.hpp"
 #include "BaseHUDLayer.hpp"
 #include "path/SceneGraph.hpp"
 #include "path/Wavepoint.hpp"
@@ -113,7 +115,7 @@ namespace dang
 
     }
 
-    spSpriteLayer TmxExtruder::getSpriteLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations)
+/*    spSpriteLayer TmxExtruder::getSpriteLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations)
     {
         const tmx_layer* l = getTmxLayer(name);
 
@@ -160,7 +162,7 @@ namespace dang
         return sl;
 
     }
-
+*/
     void TmxExtruder::fillHUDLayer(spBaseHUDLayer layer, const std::string& name, bool addSprites, bool addToGear)
     {
         const tmx_layer* l = getTmxLayer(name);
@@ -184,10 +186,10 @@ namespace dang
                 const tmx_spriteobject* so = l->spriteobjects + j;
 
                 spImagesheet is = _gear->getImagesheet(so->tileset);
-                auto spr = std::make_shared<Sprite>(so, is);
-                if(spr->_type_name == "hud_boss" || spr->_type_name == "hud_boss_health")
+                auto spr = std::make_shared<ImgSpr>(so, is);
+                if (so->type == "hud_boss" || so->type == "hud_boss_health")
                 {
-                    spr->_visible = false; // as long as no boss battle is running
+                    spr->setVisible(false); // as long as no boss battle is running
                 }
                 layer->addSprite(spr);
             }
@@ -200,7 +202,7 @@ namespace dang
         }
     }
 
-    spCollisionSpriteLayer TmxExtruder::getCollisionSpriteLayer(const std::string &name, bool addSprites, bool addToGear)
+/*    spCollisionSpriteLayer TmxExtruder::getCollisionSpriteLayer(const std::string &name, bool addSprites, bool addToGear)
     {
         const tmx_layer* l = getTmxLayer(name);
 
@@ -216,12 +218,12 @@ namespace dang
 
         spCollisionSpriteLayer sl = std::make_shared<CollisionSpriteLayer>(l);
 
-/*        sl->_name = l->name;
-        sl->_z_order = l->z_order;
-        sl->_visible = l->visible;
-        sl->_tmx_layer = l;
-        sl->_position = l->position;
-*/
+//        sl->_name = l->name;
+//        sl->_z_order = l->z_order;
+//        sl->_visible = l->visible;
+//        sl->_tmx_layer = l;
+//        sl->_position = l->position;
+
         if (addSprites)
         {
             for (size_t j = 0; j < l->spriteobejcts_len; j++)
@@ -240,6 +242,37 @@ namespace dang
         }
 
         return sl;
+
+    }
+*/
+    spColSprLayer TmxExtruder::getColSprLayer(const std::string &name, bool addToGear)
+    {
+        const tmx_layer* l = getTmxLayer(name);
+
+        if (l == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (l->type != tmx_layerType::ltObjects)
+        {
+            return nullptr;
+        }
+
+        spColSprLayer cl = std::make_shared<ColSprLayer>(l);
+
+/*        sl->_name = l->name;
+        sl->_z_order = l->z_order;
+        sl->_visible = l->visible;
+        sl->_tmx_layer = l;
+        sl->_position = l->position;
+*/
+        if (addToGear)
+        {
+            _gear->addLayer(cl);
+        }
+
+        return cl;
 
     }
 

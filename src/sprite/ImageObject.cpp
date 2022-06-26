@@ -13,7 +13,7 @@ namespace dang
 {
 
     ImageObject::ImageObject(const ImageObject &io) :
-    _visible(io._visible), _img_index(io._img_index), _imagesheet(io._imagesheet), _transform(io._transform), _size(io._size)
+    _visible(io._visible), _img_index(io._img_index), _imagesheet(io._imagesheet), _transform(io._transform)
     {
         assert(_imagesheet != nullptr);
         if (io._animation != nullptr)
@@ -29,8 +29,6 @@ namespace dang
 
     ImageObject::ImageObject(const tmx_spriteobject *so, const spImagesheet &is)
     {
-        _size.w = so->width;
-        _size.h = so->height;
         _visible = so->visible;
         _img_index = so->tile;
         _imagesheet = is;

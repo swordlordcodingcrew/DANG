@@ -5,7 +5,7 @@
 #include <list>
 
 #include "Imagesheet.hpp"
-#include "Layer.hpp"
+#include "src/layer/Layer.hpp"
 #include "32blit.hpp"
 
 namespace dang

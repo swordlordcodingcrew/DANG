@@ -1,19 +1,14 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-22 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-//
-// Created by LordFilu on 20.2.20.
-//
 
 #pragma once
 
 #include "RectT.hpp"
 #include <memory>
-#include <string>
 
 namespace dang
 {
     struct tmx_layer;
-    class Sprite;
     class Gear;
 
     class Layer
@@ -38,7 +33,6 @@ namespace dang
         virtual void    render(const Gear& gear) = 0;
 
         E_TYPE getType();
-
 
         void setVisible(bool visible) { _visible = visible; }
         void setActive(bool active) { _active = active; }
