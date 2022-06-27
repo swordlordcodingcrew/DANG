@@ -3,6 +3,8 @@
 
 #pragma once
 
+#ifdef DANG_SPR
+
 #include <iterator>
 #include <memory>
 
@@ -48,3 +50,5 @@ namespace dang
     };
 
 }
+
+#endif

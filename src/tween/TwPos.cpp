@@ -1,23 +1,13 @@
-// (c) 2019-21 by SwordLord - the coding crew
+// (c) 2019-22 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
 #include "TwPos.hpp"
-#include "../Sprite.hpp"
-#include "../dang.hpp"
+#include "sprite/SpriteObject.hpp"
 
-#include <iostream>
 #include <cassert>
 
 namespace dang
 {
-    /**
-     * default constructor
-     */
-    TwPos::TwPos() : Tweenable()
-    {
-
-    }
-
     /**
      *
      * @param the_object to be manipulated. Shall be a sprite
@@ -32,31 +22,27 @@ namespace dang
                  int32_t loops, bool alternating, uint32_t delay)
             : _move_to(move_to), Tweenable(duration, ease_cb, loops, alternating, delay)
     {
-        // removed the initialisation of start_from vector since
-        // the_object cannot be set in this situation (creation of
-        // tween comes first, it is then (later) added to the sprite).
-        // See setObject
     }
 
     void TwPos::init(void* obj)
     {
         assert(obj != nullptr);
-        Sprite* spr = static_cast<Sprite*>(obj);
+        SpriteObject* spr = static_cast<SpriteObject*>(obj);
         _start_from.x = spr->getPos().x;
         _start_from.y = spr->getPos().y;
     }
 
     /**
-     * This function updates pos of the sprite which is stored in _the_object
+     * This function updates pos of the sprite
      *
      * @param time needed for updating the tween
      */
     void TwPos::update(void* obj, uint32_t dt)
     {
         assert(obj != nullptr);
-        Sprite* spr = static_cast<Sprite*>(obj);
+        SpriteObject* spr = static_cast<SpriteObject*>(obj);
 
         float fx = calc(dt);
-        spr->setPos(Vector2F(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx));
+        spr->setPos(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx);
     }
 }

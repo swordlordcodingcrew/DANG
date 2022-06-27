@@ -30,6 +30,7 @@ namespace dang
 
         // position
         virtual void        setPos(const Vector2F& pos) { _pos = pos; }
+        virtual void        setPos(float x, float y) { _pos.x = x; _pos.y = y; }
         virtual void        setPosX(float x) {_pos.x = x; }
         virtual void        setPosY(float y) {_pos.y = y; }
         virtual const Vector2F&    getPos() const { return _pos; }

@@ -4,17 +4,14 @@
 #pragma once
 
 #include "Tweenable.hpp"
-#include "../Vector2T.hpp"
+#include "Vector2T.hpp"
 
 namespace dang
 {
-    class Sprite;
-    using spSprite = std::shared_ptr<Sprite>;
-
     class TwAcc : public Tweenable
     {
     public:
-        TwAcc();
+        TwAcc() = default;
         TwAcc(const TwAcc& tw) = default;
         ~TwAcc() override;
         TwAcc(const Vector2F& start_acc, const Vector2F& end_acc, uint32_t duration, EaseFn ease_cb, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);

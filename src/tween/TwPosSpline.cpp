@@ -2,17 +2,14 @@
 // This file is part of the DANG game framework
 
 #include "TwPosSpline.h"
-#include "../Sprite.hpp"
-#include "../path/Wavepoint.hpp"
+#include "sprite/SpriteObject.hpp"
+#include "path/Wavepoint.hpp"
 
 #include <cassert>
-#include <iostream>
 
 namespace dang
 {
-
     /**
-     *
      * @param spline_points first point is position of the sprite, last point is the point the sprite moves to
      * @param duration duration of loop.
      * @param ease_cb ease function
@@ -47,12 +44,12 @@ namespace dang
     void TwPosSpline::init(void* obj)
     {
         assert(obj != nullptr);
-        Sprite* spr = static_cast<Sprite*>(obj);
+        SpriteObject* spr = static_cast<SpriteObject*>(obj);
         spr->setPos(_spline_points[0]);
     }
 
     /**
-     * This function updates pos of the sprite which is stored in _the_object
+     * This function updates pos of the sprite
      * Spline-algo: https://andrewhungblog.wordpress.com/2017/03/03/catmull-rom-splines-in-plain-english/
      *
      * @param time needed for updating the tween
@@ -60,7 +57,7 @@ namespace dang
     void TwPosSpline::update(void* obj, uint32_t dt)
     {
         assert(obj != nullptr);
-        Sprite* spr = static_cast<Sprite*>(obj);
+        SpriteObject* spr = static_cast<SpriteObject*>(obj);
 
         float fx = calc(dt);
 
@@ -79,7 +76,7 @@ namespace dang
 //        assert(t >= 0 && t <= 1);
         if (t < 0 || t > 1)
         {
-            std::cout << "t=" << t << std::endl;
+            D_DEBUG_PRINT("t=%i\n");
         }
         Vector2F prev = (i - 1 == 0 ? _spline_points[i] : _spline_points[i - 2]);
         Vector2F start = _spline_points[i - 1];

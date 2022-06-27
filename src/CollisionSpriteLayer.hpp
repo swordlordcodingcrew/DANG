@@ -16,6 +16,8 @@
 
 #pragma once
 
+#ifdef DANG_SPR
+
 #include "Vector2T.hpp"
 #include "RectT.hpp"
 #include "SpriteLayer.hpp"
@@ -120,3 +122,4 @@ namespace dang
 }
 
 
+#endif

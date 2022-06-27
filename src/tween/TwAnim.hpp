@@ -1,20 +1,17 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-22 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-//
-// Created by LordFilu on 28.12.19.
-//
 
 #pragma once
 
-#include "../DangFwdDecl.h"
 #include "Tweenable.hpp"
+#include "DangFwdDecl.h"
 
 namespace dang
 {
     class TwAnim : public Tweenable
     {
     public:
-        TwAnim();
+        TwAnim() = default;
         TwAnim(const TwAnim& tw) = default;
         TwAnim(const std::vector<uint16_t>& indices, uint32_t duration, EaseFn ease_cb, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
         TwAnim(const spImagesheet is, const std::vector<uint16_t>& indices, uint32_t duration, EaseFn ease_cb, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);

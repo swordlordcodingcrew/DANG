@@ -3,6 +3,8 @@
 
 #pragma once
 
+#ifdef DANG_SPR
+
 #include "dang.hpp"
 #include "Vector2T.hpp"
 #include "RectT.hpp"
@@ -141,3 +143,4 @@ namespace dang
 
 }
 
+#endif

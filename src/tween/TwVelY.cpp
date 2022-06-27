@@ -1,22 +1,14 @@
-// (c) 2019-21 by SwordLord - the coding crew
+// (c) 2019-22 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include <iostream>
+#include "TwVelY.hpp"
+#include "sprite/MotionObject.hpp"
+
 #include <cassert>
 
-#include "../Sprite.hpp"
-#include "TwVelY.hpp"
 
 namespace dang
 {
-    /**
-     * default constructor
-     */
-    TwVelY::TwVelY() : Tweenable()
-    {
-
-    }
-
     /**
      *
      * @param start_vel start velocity
@@ -42,7 +34,8 @@ namespace dang
     void TwVelY::update(void* obj, uint32_t dt)
     {
         assert(obj != nullptr);
-        Sprite* spr = static_cast<Sprite*>(obj);
+        MotionObject* spr = static_cast<MotionObject*>(obj);
+//        Sprite* spr = static_cast<Sprite*>(obj);
 
         float fx = calc(dt);
         spr->setVelY(_start_vel_y + (_end_vel_y - _start_vel_y) * fx);
@@ -51,9 +44,7 @@ namespace dang
 
     TwVelY::~TwVelY()
     {
-#ifdef DANG_DEBUG
-        std::cout << "TwVelY destroyed" << std::endl;
-#endif
+        D_DEBUG_PRINT("TwVelY destroyed\n");
     }
 
 }

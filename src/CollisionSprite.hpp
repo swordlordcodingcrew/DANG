@@ -3,6 +3,8 @@
 
 #pragma once
 
+#ifdef DANG_SPR
+
 #include "DangFwdDecl.h"
 #include "Sprite.hpp"
 #include "CollisionObject.hpp"
@@ -55,3 +57,4 @@ namespace dang
 
 }
 
+#endif

@@ -1,6 +1,8 @@
 // (c) 2019-20 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
+#ifdef DANG_SPR
+
 #include "CollisionSpriteLayer.hpp"
 //#include "Layer.hpp"
 #include "Sprite.hpp"
@@ -837,3 +839,5 @@ namespace dang
 */
 
 }
+
+#endif

@@ -21,7 +21,4 @@
 #define D_DEBUG_PRINT(...)
 #endif
 
-//#define DANG_DEBUG
-//#define DANG_DEBUG_DRAW
-
 

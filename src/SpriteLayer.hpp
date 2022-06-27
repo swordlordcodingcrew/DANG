@@ -3,6 +3,8 @@
 
 #pragma once
 
+#ifdef DANG_SPR
+
 #include <list>
 
 #include "src/layer/Layer.hpp"
@@ -46,3 +48,4 @@ namespace dang
 
 }
 
+#endif

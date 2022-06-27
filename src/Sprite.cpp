@@ -1,6 +1,8 @@
 // (c) 2019-21 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
+#ifdef DANG_SPR
+
 #include "Sprite.hpp"
 #include "TmxExtruder.hpp"
 #include "tween/Tweenable.hpp"
@@ -376,3 +378,4 @@ namespace dang
         return ret;
     }
 }
+#endif

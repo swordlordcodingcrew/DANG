@@ -1,24 +1,13 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-22 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-//
-// Created by LordFilu on 28.12.19.
-//
 
-#include <iostream>
-#include <cassert>
-#include "../Sprite.hpp"
 #include "TwAnim.hpp"
-#include "../dang.hpp"
+#include "sprite/ImageObject.hpp"
+
+#include <cassert>
 
 namespace dang
 {
-    /**
-     * default constructor
-     */
-    TwAnim::TwAnim() : Tweenable()
-    {
-
-    }
 
     /**
      *
@@ -61,7 +50,7 @@ namespace dang
     void TwAnim::update(void* obj, uint32_t dt)
     {
         assert(obj != nullptr);
-        Sprite* spr = static_cast<Sprite*>(obj);
+        ImageObject* spr = static_cast<ImageObject*>(obj);
 
         float fx = calc(dt);
         uint16_t ind = uint16_t(fx * (_indices.size()));
@@ -72,7 +61,7 @@ namespace dang
             ind = uint16_t(_indices.size() - 1);
         }
 
-        spr->_img_index = _indices[ind];
+        spr->setImgIndex(_indices[ind]);
     }
 
     void TwAnim::init(void *obj)
@@ -80,9 +69,9 @@ namespace dang
         if (_imagesheet != nullptr)
         {
             assert(obj != nullptr);
-            Sprite* spr = static_cast<Sprite*>(obj);
-            spr->_imagesheet = _imagesheet;
-            spr->_img_index = _indices[0];
+            ImageObject* spr = static_cast<ImageObject*>(obj);
+            spr->setImagesheet(_imagesheet);
+            spr->setImgIndex(_indices[0]);
         }
     }
 

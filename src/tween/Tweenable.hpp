@@ -3,12 +3,13 @@
 
 #pragma once
 
-#include "../dang.hpp"
+#include "Ease.hpp"
+
+#include "dang.hpp"
+
 #include <cstdint>
 #include <memory>
 #include <functional>
-#include "Ease.hpp"
-//#include <cstdint>
 
 
 namespace dang

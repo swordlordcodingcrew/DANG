@@ -1,22 +1,13 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-22 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include <iostream>
-#include <cassert>
-
-#include "../Sprite.hpp"
 #include "TwAcc.hpp"
+#include "sprite/MotionObject.hpp"
+
+#include <cassert>
 
 namespace dang
 {
-    /**
-     * default constructor
-     */
-    TwAcc::TwAcc() : Tweenable()
-    {
-
-    }
-
     /**
      *
      * @param start_acc start acceleration
@@ -42,7 +33,7 @@ namespace dang
     void TwAcc::update(void* obj, uint32_t dt)
     {
         assert(obj != nullptr);
-        Sprite* spr = static_cast<Sprite*>(obj);
+        MotionObject* spr = static_cast<MotionObject*>(obj);
 
         float fx = calc(dt);
         spr->setAcc(_start_acc + (_end_acc - _start_acc) * fx);
@@ -50,7 +41,7 @@ namespace dang
 
     TwAcc::~TwAcc()
     {
-        std::cout << "TwAcc destroyed" << std::endl;
+        D_DEBUG_PRINT("TwAcc destroyed\n");
     }
 
 }
