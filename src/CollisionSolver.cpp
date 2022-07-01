@@ -2,7 +2,7 @@
 // This file is part of the DANG game framework
 
 #include "CollisionSolver.hpp"
-#include "CollisionObject.hpp"
+#include "src/sprite/CollisionObject.hpp"
 
 #include <cassert>
 #include <iostream>

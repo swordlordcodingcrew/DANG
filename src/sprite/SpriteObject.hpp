@@ -50,6 +50,8 @@ namespace dang
         void        setInZone(bool in_zone) {_operable[1] = in_zone; }
 
         uint8_t     typeNum() const { return _type_num; }
+        void        setTypeNum(uint8_t typenum) { _type_num = typenum; }
+
         uint16_t    id() const { return _id; }
 
         void            setSize(SizeF& s) {_size = s; }
@@ -58,6 +60,7 @@ namespace dang
         RectF           getSizeRect();      // return size of sprite
         RectF           getSizeRectG();      // return size of sprite in global coords
 
+        void            setZOrder(uint8_t z_order) { _z_order = z_order; }
 
     private:                                     // params
         uint16_t        _id{0};                  // global id copied from Tiled

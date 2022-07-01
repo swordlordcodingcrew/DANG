@@ -60,52 +60,6 @@ namespace dang
         return _hotrect;
     }
 
-    void ColSpr::collide(const manifold &mf)
-    {
-/*        switch (_cr)
-        {
-            case CR_BOUNCE:
-                if (mf.me.get() == this)
-                {
-                    if (mf.normalMe.x * _vel.x > 0)
-                    {
-                        _vel.x = -_vel.x;
-                    }
-                    else if (mf.normalMe.y * _vel.y > 0)
-                    {
-                        _vel.y = -_vel.y;
-                    }
-
-                }
-                else
-                {
-                    if (mf.normalOther.x * _vel.x > 0)
-                    {
-                        _vel.x = -_vel.x;
-                    }
-                    else if (mf.normalOther.y * _vel.y > 0)
-                    {
-                        _vel.y = -_vel.y;
-                    }
-
-                }
-                break;
-            case CR_SLIDE:
-                if (mf.normalMe.x != 0)
-                {
-                    _vel.y = 0;
-                }
-                else
-                {
-                    _vel.x = 0;
-                }
-                break;
-            case CR_TOUCH:
-                _vel = {0,0};
-                break;
-        }
-*/    }
-
     void ColSpr::preSolve()
     {
         _goal = local2Global(getPos());

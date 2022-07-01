@@ -2,20 +2,14 @@
 // This file is part of the DANG game framework
 
 #include "Gear.hpp"
-#include "src/layer/Layer.hpp"
-#include "Sprite.hpp"
+#include "layer/Layer.hpp"
 #include "Imagesheet.hpp"
 #include "TmxExtruder.hpp"
-#include "SpriteLayer.hpp"
-#include "src/layer/TileLayer.hpp"
-#include "CollisionSpriteLayer.hpp"
-#include "CollisionSprite.hpp"
 #include "bt/NTree.h"
+#include "snd/SndGear.hpp"
 
 #include <cassert>
 #include <algorithm>
-#include <src/snd/SndGear.hpp>
-//#include <iostream>
 
 namespace dang
 {
@@ -127,7 +121,7 @@ namespace dang
         }
     }
 
-    void Gear::addNTree(const std::string& name, spNTree bt)
+/*    void Gear::addNTree(const std::string& name, spNTree bt)
     {
         assert(!name.empty());
         _nTree[name] = move(bt);
@@ -162,7 +156,7 @@ namespace dang
             return it->second;
         }
     }
-
+*/
     void Gear::addLayer(spLayer layer)
     {
         assert(layer != nullptr);

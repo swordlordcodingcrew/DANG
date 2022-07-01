@@ -19,7 +19,7 @@
 #include "Gear.hpp"
 //#include "Sprite.hpp"
 //#include "CollisionSprite.hpp"
-#include "BaseHUDLayer.hpp"
+#include "src/layer/BaseHUDLayer.hpp"
 #include "path/SceneGraph.hpp"
 #include "path/Wavepoint.hpp"
 
@@ -67,7 +67,7 @@ namespace dang
         return is;
     }
 
-    spImgSprLayer TmxExtruder::getSprLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations)
+    spImgSprLayer TmxExtruder::getImgSprLayer(const std::string& name, bool addSprites, bool addToGear, bool autoFillAnimations)
     {
         const tmx_layer* l = getTmxLayer(name);
 
@@ -163,7 +163,8 @@ namespace dang
 
     }
 */
-    void TmxExtruder::fillHUDLayer(spBaseHUDLayer layer, const std::string& name, bool addSprites, bool addToGear)
+    void TmxExtruder::fillHUDLayer(spImgSprLayer layer, const std::string& name, bool addSprites, bool addToGear)
+//    void TmxExtruder::fillHUDLayer(spBaseHUDLayer layer, const std::string& name, bool addSprites, bool addToGear)
     {
         const tmx_layer* l = getTmxLayer(name);
 
@@ -187,13 +188,8 @@ namespace dang
 
                 spImagesheet is = _gear->getImagesheet(so->tileset);
                 auto spr = std::make_shared<ImgSpr>(so, is);
-                if (so->type == "hud_boss" || so->type == "hud_boss_health")
-                {
-                    spr->setVisible(false); // as long as no boss battle is running
-                }
                 layer->addSprite(spr);
             }
-
         }
 
         if (addToGear)

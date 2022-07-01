@@ -54,28 +54,20 @@ set(SOURCES
         src/tween/TwSequence.hpp
         src/Imagesheet.cpp
         src/Imagesheet.hpp
-        src/Sprite.cpp
-        src/Sprite.hpp
         src/Gear.cpp
         src/Gear.hpp
         src/layer/Layer.cpp
         src/layer/Layer.hpp
         src/layer/TileLayer.cpp
         src/layer/TileLayer.hpp
-        src/SpriteLayer.cpp
-        src/SpriteLayer.hpp
-        src/SimpleImageLayer.cpp
-        src/SimpleImageLayer.hpp
-        src/MessageLayer.cpp
-        src/MessageLayer.hpp
-        src/CollisionSpriteLayer.cpp
-        src/CollisionSpriteLayer.hpp
-        src/BaseHUDLayer.cpp
-        src/BaseHUDLayer.hpp
+        src/layer/SimpleImageLayer.cpp
+        src/layer/SimpleImageLayer.hpp
+        src/layer/MessageLayer.cpp
+        src/layer/MessageLayer.hpp
+        src/layer/BaseHUDLayer.cpp
+        src/layer/BaseHUDLayer.hpp
         src/Vector2T.hpp
         src/RectT.hpp
-        src/CollisionSprite.cpp
-        src/CollisionSprite.hpp
         src/TmxExtruder.cpp
         src/TmxExtruder.hpp
         src/Event.cpp
@@ -93,12 +85,10 @@ set(SOURCES
         src/Rand.hpp
         src/path/Wavepoint.cpp
         src/path/Wavepoint.hpp
-        src/SpriteIterator.cpp
-        src/SpriteIterator.hpp
         src/tween/TwPosSpline.cpp
         src/tween/TwPosSpline.h
-        src/CollisionObject.cpp
-        src/CollisionObject.hpp
+        src/sprite/CollisionObject.cpp
+        src/sprite/CollisionObject.hpp
         src/CollisionSolver.cpp
         src/CollisionSolver.hpp
         src/sprite/SpriteObject.cpp

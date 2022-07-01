@@ -36,10 +36,10 @@ namespace dang
         void                removeImagesheets();
         const std::unordered_map<std::string, spImagesheet>& getImagesheets() { return _imagesheets; }
 
-        void                addNTree(const std::string& name, spNTree tree);
-        spNTree             getNTree(const std::string& name) const;
-        void                removeNTree(const std::string& name);
-        void                removeNTrees();
+//        void                addNTree(const std::string& name, spNTree tree);
+//        spNTree             getNTree(const std::string& name) const;
+//        void                removeNTree(const std::string& name);
+//        void                removeNTrees();
 
         void                addLayer(spLayer layer);
         spLayer             getLayerByName(const std::string& name);
@@ -71,7 +71,7 @@ namespace dang
     protected:
 
         std::unordered_map<std::string, spImagesheet> _imagesheets;
-        std::unordered_map<std::string, spNTree> _nTree;
+//        std::unordered_map<std::string, spNTree> _nTree;
         std::forward_list<spLayer> _layers;
 
         // viewport handling

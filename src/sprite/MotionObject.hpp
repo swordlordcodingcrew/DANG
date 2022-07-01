@@ -23,8 +23,9 @@ namespace dang
         virtual ~MotionObject() = default;
 
         // vel, acc, gravitiy manipulation
-        Vector2F    getVel() { return _vel; }
+        Vector2F    getVel() const { return _vel; }
         void        setVel(const Vector2F& vel) { _vel = vel; }
+        void        setVel(float x, float y) { _vel.x = x; _vel.y = y; }
         void        setVelX(float x) {_vel.x = x; }
         void        setVelY(float y) {_vel.y = y; }
         void        setVelTowardsPoint(const Vector2F& direction);

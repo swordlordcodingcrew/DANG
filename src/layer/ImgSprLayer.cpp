@@ -105,4 +105,28 @@ namespace dang
         }
     }
 
+    spImgSpr ImgSprLayer::getImgSprByTypeNum(uint8_t type_num)
+    {
+        spSprObj s = getSpriteByTypeNum(type_num);
+
+        if (s == nullptr)
+        {
+            return nullptr;
+        }
+
+        return std::static_pointer_cast<ImgSpr>(s);
+    }
+
+    spImgSpr ImgSprLayer::getImgSprById(uint16_t id)
+    {
+        spSprObj s = getSpriteById(id);
+
+        if (s == nullptr)
+        {
+            return nullptr;
+        }
+
+        return std::static_pointer_cast<ImgSpr>(s);
+    }
+
 }

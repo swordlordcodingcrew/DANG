@@ -20,9 +20,11 @@ namespace dang
         virtual ~FullSpr();
 
         // inherited key funtions
-        void coreUpdate(uint32_t dt) override {};
-        void update(uint32_t dt) override;
+        void coreUpdate(uint32_t dt) override;
+        void update(uint32_t dt) override {};
         void render(int32_t vpx, int32_t vpy) override;
+
+        void collide(const manifold &mf) override;
 
 
         // tween stuff
@@ -37,12 +39,12 @@ namespace dang
         void setNTreeState(spNTreeState ts);
         spNTreeState& getNTreeState();
 
+    protected:
+        // behaviour tree is intended for fully featured sprites
+        spNTreeState      _nTreeState{nullptr};
 
     private:
         std::list<spTweenable> _tweens;
-
-        // behaviour tree is intended for fully featured sprites
-        spNTreeState      _nTreeState{nullptr};
 
     };
 

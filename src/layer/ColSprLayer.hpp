@@ -55,7 +55,7 @@ namespace dang
         void coreUpdate(uint32_t dt, const Gear &gear) override;
 
     private:
-        // may not be used in this layer type, use with param ImgSpr instead
+        // may not be used in this layer type, use with param ColSpr instead
         void        addSprite(spSprObj s) override {};
 #ifdef DANG_DEBUG_DRAW
         int _dbg_mem{0};

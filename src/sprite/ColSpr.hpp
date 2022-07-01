@@ -25,7 +25,6 @@ namespace dang
         void    setPos(const Vector2F& pos) override;
         void    setPosX(float x) override;
         void    setPosY(float y) override;
-
         void coreUpdate(uint32_t dt) override {};
         void update(uint32_t dt) override {};
         void render(int32_t vpx, int32_t vpy) override;
@@ -33,7 +32,7 @@ namespace dang
         // override from CollisionObject
         void preSolve() override;
         void postSolve() override;
-        void collide(const manifold &mf) override;
+        void collide(const manifold &mf) override {};
 
         spColSpr getOther(const manifold& mf, const ColSpr* me);
 

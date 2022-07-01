@@ -42,7 +42,7 @@ namespace dang
     {
     }
 
-    void FullSpr::update(uint32_t dt)
+    void FullSpr::coreUpdate(uint32_t dt)
     {
         // update motion
         updateMotion(dt);
@@ -50,15 +50,64 @@ namespace dang
         // update tweens
         updateTweens(dt);
 
+        // update imageobject
+        updateAnimation(dt);
+
         // update behaviour tree
         if (_nTreeState != nullptr)
         {
             assert(_nTreeState->_tree != nullptr);
             _nTreeState->_tree->process(*this, _nTreeState, dt);
 
-        #ifdef DANG_DEBUG_PRINT
+#ifdef DANG_DEBUG_PRINT
             std::cout << "tree processed with status: " << +static_cast<std::underlying_type_t<dang::NTreeState::internal_state>>(_nTreeState->_internal_state) << " and node position: " << _nTreeState->_node << std::endl;
-        #endif
+#endif
+        }
+    }
+
+    void FullSpr::collide(const manifold &mf)
+    {
+        switch (_cr)
+        {
+            case CR_BOUNCE:
+                if (mf.me.get() == this)
+                {
+                    if (mf.normalMe.x * getVel().x > 0)
+                    {
+                        setVelX(-getVel().x);
+                    }
+                    else if (mf.normalMe.y * getVel().y > 0)
+                    {
+                        setVelY(-getVel().y);
+                    }
+
+                }
+                else
+                {
+                    if (mf.normalOther.x * getVel().x > 0)
+                    {
+                        setVelX(-getVel().x);
+                    }
+                    else if (mf.normalOther.y * getVel().y > 0)
+                    {
+                        setVelY(-getVel().y);
+                    }
+
+                }
+                break;
+            case CR_SLIDE:
+                if (mf.normalMe.x != 0)
+                {
+                    setVelY(0);
+                }
+                else
+                {
+                    setVelX(0);
+                }
+                break;
+            case CR_TOUCH:
+                setVel(0,0);
+                break;
         }
     }
 
@@ -142,5 +191,6 @@ namespace dang
     {
         return _nTreeState;
     }
+
 
 }
