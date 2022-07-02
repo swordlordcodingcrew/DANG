@@ -44,11 +44,11 @@ namespace dang
 
     void FullSpr::coreUpdate(uint32_t dt)
     {
-        // update motion
-        updateMotion(dt);
-
         // update tweens
         updateTweens(dt);
+
+        // update motion
+        SpriteObject::setPos(getPos() + updateMotion(dt));
 
         // update imageobject
         updateAnimation(dt);

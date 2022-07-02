@@ -39,7 +39,7 @@ namespace dang
         Vector2F    getGravity() { return _gravity; }
         void        setGravity(const Vector2F& g) {_gravity = g; };
 
-        virtual void        updateMotion(uint32_t dt);
+        virtual Vector2F    updateMotion(uint32_t dt);
 
     private:
         Vector2F     _vel{0,0};

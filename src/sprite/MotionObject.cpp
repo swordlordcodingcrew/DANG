@@ -40,9 +40,12 @@ namespace dang
         setVelY(speedy * (float)cos(angle) * 1);
     }
 
-    void MotionObject::updateMotion(uint32_t dt)
+    Vector2F MotionObject::updateMotion(uint32_t dt)
     {
-
+        // dt in 10 ms
+        float dt10ms = dt / 100.0f;
+        _vel += (_gravity + _acc) * dt10ms;
+        return _vel * dt10ms;
     }
 
 }
