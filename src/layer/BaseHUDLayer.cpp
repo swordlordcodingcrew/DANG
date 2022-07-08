@@ -13,12 +13,16 @@ namespace dang
 {
     BaseHUDLayer::BaseHUDLayer() : ImgSprLayer(LT_HUDLAYER)
     {
-
+        spImgSpr r = std::make_shared<ImgSpr>();
+        r->setVisible(false);
+        setRoot(r);
     }
 
     BaseHUDLayer::BaseHUDLayer(const tmx_layer *l) : ImgSprLayer(LT_HUDLAYER, l)
     {
-
+        spImgSpr r = std::make_shared<ImgSpr>();
+        r->setVisible(false);
+        setRoot(r);
     }
 
 
@@ -39,7 +43,7 @@ namespace dang
             }
         }
         
-        updateInternal(dt, gear);
+//        updateInternal(dt, gear);
     }
 
     void BaseHUDLayer::render(const Gear &gear)
@@ -47,7 +51,7 @@ namespace dang
 
         for (SprIterator it = begin(); it != end(); it++)
         {
-            spImgSpr s = std::dynamic_pointer_cast<ImgSpr>(*it);
+            spImgSpr s = std::static_pointer_cast<ImgSpr>(*it);
             s->render(0, 0);
         }
 
@@ -70,7 +74,7 @@ namespace dang
             }
         }
 */
-        renderInternal(gear);
+//        renderInternal(gear);
     }
 
 /*

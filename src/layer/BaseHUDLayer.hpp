@@ -22,8 +22,8 @@ namespace dang
 
 
     protected:
-        virtual void updateInternal(uint32_t dt, const Gear& gear) = 0;
-        virtual void renderInternal(const Gear& gear) = 0;
+//        virtual void updateInternal(uint32_t dt, const Gear& gear) = 0;
+//        virtual void renderInternal(const Gear& gear) = 0;
 
     };
 }
