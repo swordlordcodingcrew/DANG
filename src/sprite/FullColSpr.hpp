@@ -6,18 +6,19 @@
 #include "ColSpr.hpp"
 #include "ImageObject.hpp"
 #include "MotionObject.hpp"
+#include "TweenObject.hpp"
 #include "DangFwdDecl.h"
 
 namespace dang
 {
 
-    class FullSpr : public ColSpr, public ImageObject, public MotionObject
+    class FullColSpr : public ColSpr, public ImageObject, public MotionObject, public TweenObject
     {
     public:
-        FullSpr();
-        FullSpr(const FullSpr& s);
-        FullSpr(const tmx_spriteobject* so, const spImagesheet& is);
-        virtual ~FullSpr();
+        FullColSpr();
+        FullColSpr(const FullColSpr& s);
+        FullColSpr(const tmx_spriteobject* so, const spImagesheet& is);
+        virtual ~FullColSpr();
 
         // inherited key funtions
         void coreUpdate(uint32_t dt) override;
@@ -25,15 +26,6 @@ namespace dang
         void render(int32_t vpx, int32_t vpy) override;
 
         void collide(const manifold &mf) override;
-
-
-        // tween stuff
-        void addTween(spTweenable tw);
-        void removeTween(const spTweenable& tw, bool suppressCB);
-        void removeTweens(bool suppressCB);
-        bool tweenActive(const spTweenable& tw);
-
-        void updateTweens(uint32_t dt);
 
         // tree stuff. ts pointer will get moved
         void setNTreeState(spNTreeState ts);
@@ -43,8 +35,12 @@ namespace dang
         // behaviour tree is intended for fully featured sprites
         spNTreeState      _nTreeState{nullptr};
 
-    private:
-        std::list<spTweenable> _tweens;
+    /**
+    * visitor pattern of Tweenable due to the split architecture of sprites
+    */
+    protected:
+        void visitInit(Tweenable& tw) override;
+        void visitUpdate(Tweenable& tw, uint32_t dt) override;
 
     };
 

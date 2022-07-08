@@ -27,9 +27,15 @@ namespace dang
     {
     }
 
-    void TwNull::init(void* obj)
+    /**
+     * This function does nothing since it is a Null Tween (except adding progress via calc)
+     *
+     * @param time needed for updating the tween
+     */
+    void TwNull::update(FullColSpr& obj, uint32_t dt)
     {
-        // nothing to be done
+        // have the base class calculate diff. No calc, no progress
+        calc(dt);
     }
 
     /**
@@ -37,9 +43,10 @@ namespace dang
      *
      * @param time needed for updating the tween
      */
-    void TwNull::update(void* obj, uint32_t dt)
+    void TwNull::update(FullImgSpr& obj, uint32_t dt)
     {
         // have the base class calculate diff. No calc, no progress
         calc(dt);
     }
+
 }

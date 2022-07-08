@@ -2,9 +2,8 @@
 // This file is part of the DANG game framework
 
 #include "TwAcc.hpp"
-#include "sprite/MotionObject.hpp"
-
-#include <cassert>
+#include "sprite/FullImgSpr.hpp"
+#include "sprite/FullColSpr.hpp"
 
 namespace dang
 {
@@ -25,18 +24,16 @@ namespace dang
 
     }
 
-    /**
-     * This function updates vel of the sprite which is stored in _the_object
-     *
-     * @param dt needed for updating the tween
-     */
-    void TwAcc::update(void* obj, uint32_t dt)
+    void TwAcc::update(FullImgSpr& obj, uint32_t dt)
     {
-        assert(obj != nullptr);
-        MotionObject* spr = static_cast<MotionObject*>(obj);
-
         float fx = calc(dt);
-        spr->setAcc(_start_acc + (_end_acc - _start_acc) * fx);
+        obj.setAcc(_start_acc + (_end_acc - _start_acc) * fx);
+    }
+
+    void TwAcc::update(FullColSpr& obj, uint32_t dt)
+    {
+        float fx = calc(dt);
+        obj.setAcc(_start_acc + (_end_acc - _start_acc) * fx);
     }
 
     TwAcc::~TwAcc()

@@ -89,6 +89,12 @@ namespace dang
         _co_pos = local2Global(pos);
     }
 
+    void ColSpr::setPos(float x, float y)
+    {
+        SpriteObject::setPos(x, y);
+        _co_pos = local2Global({x,y});
+    }
+
     void ColSpr::setPosX(float x)
     {
         SpriteObject::setPosX(x);

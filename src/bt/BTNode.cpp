@@ -39,7 +39,7 @@ namespace dang
         return (Type::DECORATOR == _type);
     }
 
-    BTNode::Status   BTNode::forwarder(FullSpr& spr, const BTNode* node, spNTreeState& state, uint32_t dt)
+    BTNode::Status   BTNode::forwarder(FullColSpr& spr, const BTNode* node, spNTreeState& state, uint32_t dt)
     {
         assert(node->_child != nullptr);
 
@@ -51,7 +51,7 @@ namespace dang
         return ret;
     }
 
-    BTNode::Status   BTNode::inverter(FullSpr& spr, const BTNode* node, spNTreeState& state, uint32_t dt)
+    BTNode::Status   BTNode::inverter(FullColSpr& spr, const BTNode* node, spNTreeState& state, uint32_t dt)
     {
         assert(node->_child != nullptr);
 
@@ -69,7 +69,7 @@ namespace dang
         return ret;
     }
 
-    BTNode::Status BTNode::selector(FullSpr &spr, const BTNode* node, spNTreeState& state, uint32_t dt)
+    BTNode::Status BTNode::selector(FullColSpr &spr, const BTNode* node, spNTreeState& state, uint32_t dt)
     {
         assert(node->_child != nullptr);
 
@@ -98,7 +98,7 @@ namespace dang
         return ret;
     }
 
-    BTNode::Status BTNode::sequence(FullSpr &spr, const BTNode* node, spNTreeState &state, uint32_t dt)
+    BTNode::Status BTNode::sequence(FullColSpr &spr, const BTNode* node, spNTreeState &state, uint32_t dt)
     {
         assert(node->_child != nullptr);
 

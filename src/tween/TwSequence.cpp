@@ -18,7 +18,28 @@ namespace dang
         }
     }
 
-    void TwSequence::update(void* obj, uint32_t dt)
+    void TwSequence::init(FullColSpr &obj)
+    {
+        if (_tw_seq.empty() || _finished)
+        {
+            return;
+        }
+
+        _tw_seq.at(_index)->init(obj);
+    }
+
+    void TwSequence::init(FullImgSpr &obj)
+    {
+        if (_tw_seq.empty() || _finished)
+        {
+            return;
+        }
+
+        _tw_seq.at(_index)->init(obj);
+    }
+
+
+    void TwSequence::update(FullColSpr &obj, uint32_t dt)
     {
         if (_tw_seq.empty() || _finished)
         {
@@ -26,6 +47,31 @@ namespace dang
         }
 
         _tw_seq.at(_index)->update(obj, dt);
+
+        if (progress())
+        {
+            _tw_seq.at(_index)->init(obj);
+        }
+    }
+
+    void TwSequence::update(FullImgSpr &obj, uint32_t dt)
+    {
+        if (_tw_seq.empty() || _finished)
+        {
+            return;
+        }
+
+        _tw_seq.at(_index)->update(obj, dt);
+
+        if (progress())
+        {
+            _tw_seq.at(_index)->init(obj);
+        }
+    }
+
+    bool TwSequence::progress()
+    {
+        bool ret{false};
 
         if (_tw_seq.at(_index)->isFinished())
         {
@@ -35,9 +81,10 @@ namespace dang
             if (_index == _tw_seq.size())       // the last tw has finished
             {
                 _loop++;
-                if (_loops < 0 || _loop < (uint32_t)_loops)   // endless loop of twseq or not yet finished looping
+                if (_loops < 0 || _loop < (uint32_t) _loops)   // endless loop of twseq or not yet finished looping
                 {
                     _index = 0;
+                    ret = true;
                 }
                 else    // twseq finished
                 {
@@ -48,11 +95,13 @@ namespace dang
                     }
                 }
             }
-/*            else    // next tw in twseq
+            else
             {
-                _tw_seq.at(_index)->startTw(time);
+                ret = true;
             }
-*/        }
+        }
+
+        return ret;
     }
 
     void TwSequence::addTween(std::shared_ptr<Tweenable> tw)
@@ -79,5 +128,7 @@ namespace dang
     {
         return Tweenable::isFinished();
     }
+
+
 
 }

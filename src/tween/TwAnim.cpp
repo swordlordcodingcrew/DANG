@@ -2,7 +2,8 @@
 // This file is part of the DANG game framework
 
 #include "TwAnim.hpp"
-#include "sprite/ImageObject.hpp"
+#include "sprite/FullColSpr.hpp"
+#include "sprite/FullImgSpr.hpp"
 
 #include <cassert>
 
@@ -42,16 +43,37 @@ namespace dang
         _imagesheet = is;
     }
 
-    /**
-     * This function updates the _img_index of the sprite which is stored in _the_object
-     *
-     * @param time needed for updating the tween
-     */
-    void TwAnim::update(void* obj, uint32_t dt)
+    void TwAnim::init(FullColSpr& obj)
     {
-        assert(obj != nullptr);
-        ImageObject* spr = static_cast<ImageObject*>(obj);
+        if (_imagesheet != nullptr)
+        {
+            obj.setImagesheet(_imagesheet);
+            obj.setImgIndex(_indices[0]);
+        }
+    }
 
+    void TwAnim::init(FullImgSpr& obj)
+    {
+        if (_imagesheet != nullptr)
+        {
+            obj.setImagesheet(_imagesheet);
+            obj.setImgIndex(_indices[0]);
+        }
+    }
+
+
+    void TwAnim::update(FullImgSpr& obj, uint32_t dt)
+    {
+        obj.setImgIndex(updateInternal(dt));
+    }
+
+    void TwAnim::update(FullColSpr& obj, uint32_t dt)
+    {
+        obj.setImgIndex(updateInternal(dt));
+    }
+
+    uint16_t TwAnim::updateInternal(uint32_t dt)
+    {
         float fx = calc(dt);
         uint16_t ind = uint16_t(fx * (_indices.size()));
 
@@ -61,18 +83,7 @@ namespace dang
             ind = uint16_t(_indices.size() - 1);
         }
 
-        spr->setImgIndex(_indices[ind]);
-    }
-
-    void TwAnim::init(void *obj)
-    {
-        if (_imagesheet != nullptr)
-        {
-            assert(obj != nullptr);
-            ImageObject* spr = static_cast<ImageObject*>(obj);
-            spr->setImagesheet(_imagesheet);
-            spr->setImgIndex(_indices[0]);
-        }
+        return _indices[ind];
     }
 
 }

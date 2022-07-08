@@ -3,7 +3,8 @@
 
 #pragma once
 
-#include "src/Vector2T.hpp"
+#include "Vector2T.hpp"
+#include "tween/Tweenable.hpp"
 
 #include <memory>
 #include <list>
@@ -11,9 +12,6 @@
 namespace dang
 {
     struct tmx_spriteobject;
-
-    class Tweenable;
-    using spTweenable = std::shared_ptr<Tweenable>;
 
     class MotionObject
     {

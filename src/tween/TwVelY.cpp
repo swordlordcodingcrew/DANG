@@ -2,10 +2,8 @@
 // This file is part of the DANG game framework
 
 #include "TwVelY.hpp"
-#include "sprite/MotionObject.hpp"
-
-#include <cassert>
-
+#include "sprite/FullImgSpr.hpp"
+#include "sprite/FullColSpr.hpp"
 
 namespace dang
 {
@@ -26,20 +24,16 @@ namespace dang
 
     }
 
-    /**
-     * This function updates vel of the sprite which is stored in _the_object
-     *
-     * @param time needed for updating the tween
-     */
-    void TwVelY::update(void* obj, uint32_t dt)
+    void TwVelY::update(FullColSpr& obj, uint32_t dt)
     {
-        assert(obj != nullptr);
-        MotionObject* spr = static_cast<MotionObject*>(obj);
-//        Sprite* spr = static_cast<Sprite*>(obj);
-
         float fx = calc(dt);
-        spr->setVelY(_start_vel_y + (_end_vel_y - _start_vel_y) * fx);
+        obj.setVelY(_start_vel_y + (_end_vel_y - _start_vel_y) * fx);
+    }
 
+    void TwVelY::update(FullImgSpr& obj, uint32_t dt)
+    {
+        float fx = calc(dt);
+        obj.setVelY(_start_vel_y + (_end_vel_y - _start_vel_y) * fx);
     }
 
     TwVelY::~TwVelY()

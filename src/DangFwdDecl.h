@@ -65,10 +65,12 @@ namespace dang
     using spImageObject = std::shared_ptr<ImageObject>;
     class ImgSpr;
     using spImgSpr = std::shared_ptr<ImgSpr>;
+    class FullImgSpr;
+    using spFullImgSpr = std::shared_ptr<FullImgSpr>;
     class ColSpr;
     using spColSpr = std::shared_ptr<ColSpr>;
-    class FullSpr;
-    using spFullSpr = std::shared_ptr<FullSpr>;
+    class FullColSpr;
+    using spFullSpr = std::shared_ptr<FullColSpr>;
 
 
     /** remaining classes */

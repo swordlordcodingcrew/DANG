@@ -15,9 +15,12 @@ namespace dang
         TwSequence(const TwSequence& tw);
         void    addTween(std::shared_ptr<Tweenable> tw);
 
-        void        update(void* obj, uint32_t dt) override;
+        void        init(FullColSpr& obj) override;
+        void        init(FullImgSpr& obj) override;
+        void        update(FullColSpr& obj, uint32_t dt) override;
+        void        update(FullImgSpr& obj, uint32_t dt) override;
 
-        void        finish(bool suppressCB = false) override;
+        void        finish(bool suppressCB) override;
         void        reset() override;
         bool        isFinished() override;
 
@@ -25,6 +28,8 @@ namespace dang
     protected:
         std::vector<std::shared_ptr<Tweenable>> _tw_seq;
         size_t _index{0};
+
+        virtual bool progress();
     };
 }
 

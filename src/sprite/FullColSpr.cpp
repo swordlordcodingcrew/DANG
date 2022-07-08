@@ -1,33 +1,38 @@
 // (c) 2019-22 by SwordLord - the coding crew
 // This file is part of the DANG game framework
 
-#include <cassert>
-#include "FullSpr.hpp"
+#include "FullColSpr.hpp"
+#include "ImageObject.hpp"
 #include "tween/Tweenable.hpp"
 #include "bt/NTreeState.h"
 #include "bt/NTree.h"
+#include "RectT.hpp"
 
 #include <32blit.hpp>
-#include <src/RectT.hpp>
+
+#include <cassert>
 
 namespace dang
 {
-    FullSpr::FullSpr() : ColSpr(), ImageObject(), MotionObject()
+    FullColSpr::FullColSpr() : ColSpr(), ImageObject(), MotionObject(), TweenObject()
     {
     }
 
-    FullSpr::~FullSpr()
+    FullColSpr::~FullColSpr()
     {
         removeAnimation(true);
         removeTweens(true);
     }
 
-    FullSpr::FullSpr(const FullSpr &s) : ColSpr(s), ImageObject(s), MotionObject(s)
+    FullColSpr::FullColSpr(const FullColSpr &s) : ColSpr(s), ImageObject(s), MotionObject(s), TweenObject(s)
     {
-        // clone tweens
-        for (const auto& t : s._tweens)
+        // init animation
+        FullColSpr::visitInit(*getAnimation().get());
+
+        // init tweens
+        for (const auto& t : getTweenList())
         {
-            addTween(std::make_shared<Tweenable>(*t));
+            FullColSpr::visitInit(*t.get());
         }
 
         // clone the BT as well, but with a new state object
@@ -38,19 +43,14 @@ namespace dang
 
     }
 
-    FullSpr::FullSpr(const tmx_spriteobject* so, const spImagesheet& is) : ColSpr(so), ImageObject(so, is), MotionObject()
+    FullColSpr::FullColSpr(const tmx_spriteobject* so, const spImagesheet& is) : ColSpr(so), ImageObject(so, is), MotionObject()
     {
     }
 
-    void FullSpr::coreUpdate(uint32_t dt)
+    void FullColSpr::coreUpdate(uint32_t dt)
     {
-        // update tweens
         updateTweens(dt);
-
-        // update motion
         SpriteObject::setPos(getPos() + updateMotion(dt));
-
-        // update imageobject
         updateAnimation(dt);
 
         // update behaviour tree
@@ -65,7 +65,7 @@ namespace dang
         }
     }
 
-    void FullSpr::collide(const manifold &mf)
+    void FullColSpr::collide(const manifold &mf)
     {
         switch (_cr)
         {
@@ -111,7 +111,7 @@ namespace dang
         }
     }
 
-    void FullSpr::render(int32_t vpx, int32_t vpy)
+    void FullColSpr::render(int32_t vpx, int32_t vpy)
     {
         if (isVisible() && isActive() && inZone() /*&& getImagesheet() != nullptr*/)
         {
@@ -126,71 +126,25 @@ namespace dang
 
 
 
-    void FullSpr::addTween(spTweenable tw)
-    {
-        tw->init(this);
-        _tweens.push_front(tw);
-    }
 
-    void FullSpr::updateTweens(uint32_t dt)
-    {
-        auto tw = _tweens.begin();
-        while (tw != _tweens.end())
-        {
-            if (!(*tw))
-            {
-                // somehow a stale tween
-                tw = _tweens.erase(tw);
-            }
-            else
-            {
-                (*tw)->update(this, dt);
-                if ((*tw)->isFinished())
-                {
-                    tw = _tweens.erase(tw);
-                }
-                else
-                {
-                    ++tw;
-                }
-            }
-        }
-    }
-
-    void FullSpr::removeTween(const spTweenable& tw, bool suppressCB)
-    {
-        if (tw != nullptr)
-        {
-            tw->finish(suppressCB);
-            _tweens.remove(tw);
-        }
-    }
-
-    void FullSpr::removeTweens(bool suppressCB)
-    {
-        while (!_tweens.empty())
-        {
-            spTweenable& tw = _tweens.back();
-            removeTween(tw, suppressCB);
-        }
-    }
-
-    bool FullSpr::tweenActive(const spTweenable &tw)
-    {
-        auto tw_it = std::find(_tweens.begin(), _tweens.end(), tw);
-        return tw_it != std::end(_tweens);
-    }
-
-
-    void FullSpr::setNTreeState(spNTreeState ts)
+    void FullColSpr::setNTreeState(spNTreeState ts)
     {
         _nTreeState = move(ts);
     }
 
-    spNTreeState& FullSpr::getNTreeState()
+    spNTreeState& FullColSpr::getNTreeState()
     {
         return _nTreeState;
     }
 
+    void FullColSpr::visitInit(Tweenable &tw)
+    {
+        tw.init(*this);
+    }
+
+    void FullColSpr::visitUpdate(Tweenable &tw, uint32_t dt)
+    {
+        tw.update(*this, dt);
+    }
 
 }

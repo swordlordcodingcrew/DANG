@@ -2,9 +2,8 @@
 // This file is part of the DANG game framework
 
 #include "TwPos.hpp"
-#include "sprite/SpriteObject.hpp"
-
-#include <cassert>
+#include "sprite/FullColSpr.hpp"
+#include "sprite/FullImgSpr.hpp"
 
 namespace dang
 {
@@ -24,25 +23,26 @@ namespace dang
     {
     }
 
-    void TwPos::init(void* obj)
+    void TwPos::init(FullColSpr& obj)
     {
-        assert(obj != nullptr);
-        SpriteObject* spr = static_cast<SpriteObject*>(obj);
-        _start_from.x = spr->getPos().x;
-        _start_from.y = spr->getPos().y;
+        _start_from = obj.getPos();
     }
 
-    /**
-     * This function updates pos of the sprite
-     *
-     * @param time needed for updating the tween
-     */
-    void TwPos::update(void* obj, uint32_t dt)
+    void TwPos::init(FullImgSpr& obj)
     {
-        assert(obj != nullptr);
-        SpriteObject* spr = static_cast<SpriteObject*>(obj);
+        _start_from = obj.getPos();
+    }
 
+    void TwPos::update(FullImgSpr& obj, uint32_t dt)
+    {
         float fx = calc(dt);
-        spr->setPos(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx);
+        obj.setPos(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx);
     }
+
+    void TwPos::update(FullColSpr& obj, uint32_t dt)
+    {
+        float fx = calc(dt);
+        obj.setPos(_start_from.x + (_move_to.x - _start_from.x) * fx, _start_from.y + (_move_to.y - _start_from.y) * fx);
+    }
+
 }

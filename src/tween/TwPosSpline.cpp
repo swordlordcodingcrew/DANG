@@ -2,7 +2,8 @@
 // This file is part of the DANG game framework
 
 #include "TwPosSpline.h"
-#include "sprite/SpriteObject.hpp"
+#include "sprite/FullImgSpr.hpp"
+#include "sprite/FullColSpr.hpp"
 #include "path/Wavepoint.hpp"
 
 #include <cassert>
@@ -41,11 +42,24 @@ namespace dang
         }
     }
 
-    void TwPosSpline::init(void* obj)
+    void TwPosSpline::init(FullImgSpr& obj)
     {
-        assert(obj != nullptr);
-        SpriteObject* spr = static_cast<SpriteObject*>(obj);
-        spr->setPos(_spline_points[0]);
+        obj.setPos(_spline_points[0]);
+    }
+
+    void TwPosSpline::init(FullColSpr& obj)
+    {
+        obj.setPos(_spline_points[0]);
+    }
+
+    void TwPosSpline::update(FullColSpr &obj, uint32_t dt)
+    {
+        obj.setPos(process(dt));
+    }
+
+    void TwPosSpline::update(FullImgSpr &obj, uint32_t dt)
+    {
+        obj.setPos(process(dt));
     }
 
     /**
@@ -53,12 +67,11 @@ namespace dang
      * Spline-algo: https://andrewhungblog.wordpress.com/2017/03/03/catmull-rom-splines-in-plain-english/
      *
      * @param time needed for updating the tween
+     * @param obj the sprite to be updated
      */
-    void TwPosSpline::update(void* obj, uint32_t dt)
+    Vector2F   TwPosSpline::process(uint32_t dt)
+//    void TwPosSpline::update(FullColSpr& ob, uint32_t dt)
     {
-        assert(obj != nullptr);
-        SpriteObject* spr = static_cast<SpriteObject*>(obj);
-
         float fx = calc(dt);
 
         float dist = fx * _length;
@@ -84,7 +97,7 @@ namespace dang
         Vector2F next = (i == _spline_points.size() - 1 ? _spline_points[i] : _spline_points[i + 1]);
 
         Vector2F p = interpolate(t, start, end, prev, next);
-        spr->setPos(p);
+        return p;
     }
 
     Vector2F TwPosSpline::interpolate(const float t, const Vector2F &start, const Vector2F &end, const Vector2F &prev,

@@ -14,6 +14,10 @@
 
 namespace dang
 {
+    class FullColSpr;
+    class FullImgSpr;
+    class Tweenable;
+
     class Tweenable
     {
     public:
@@ -34,9 +38,14 @@ namespace dang
         virtual bool        isFinished();
         virtual void        setFinishedCallback(std::function<void(void)> finishedCB);
 
-        // ugly hack with void*. Should be narrowed with a base class or template class
-        virtual void            init(void* obj) {};
-        virtual void            update(void* obj, uint32_t dt) {};
+        /**
+         * visitor functions (see visitor pattern)
+         *
+         */
+        virtual void        init(FullColSpr& obj) {};
+        virtual void        update(FullColSpr& obj, uint32_t dt) {};
+        virtual void        init(FullImgSpr& obj) {};
+        virtual void        update(FullImgSpr& obj, uint32_t dt) {};
 
     protected:
         EaseFn                      _ease_cb = Ease::Linear;

@@ -13,8 +13,9 @@ namespace dang
         TwNull();
         TwNull(const TwNull& tw) = default;
         TwNull(const uint32_t duration, EaseFn ease_cb = Ease::Linear, int32_t loops = 1, uint32_t delay = 0);
-        void    init(void* obj) override;
-        void    update(void* obj, uint32_t dt) override;
+
+        void        update(FullColSpr& obj, uint32_t dt) override;
+        void        update(FullImgSpr& obj, uint32_t dt) override;
 
     protected:
         // none for now

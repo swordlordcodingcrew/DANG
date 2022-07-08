@@ -14,7 +14,8 @@ namespace dang
         TwVel();
         ~TwVel() override;
         TwVel(const Vector2F& start_vel, const Vector2F& end_vel, uint32_t duration, EaseFn ease_cb, int32_t loops = 1, bool alternating = false, uint32_t delay = 0);
-        void        update(void* obj, uint32_t dt) override;
+        void        update(FullImgSpr& obj, uint32_t dt) override;
+        void        update(FullColSpr& obj, uint32_t dt) override;
 
     protected:
         Vector2F  _start_vel{0, 0};

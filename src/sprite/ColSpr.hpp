@@ -23,6 +23,7 @@ namespace dang
         void    markRemove() override;
         void    addSpriteObject(spSpriteObject s) override;
         void    setPos(const Vector2F& pos) override;
+        void    setPos(float x, float y) override;
         void    setPosX(float x) override;
         void    setPosY(float y) override;
         void coreUpdate(uint32_t dt) override {};

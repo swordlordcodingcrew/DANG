@@ -3,23 +3,19 @@
 
 
 #include "TmxExtruder.hpp"
-#include "src/layer/ImgSprLayer.hpp"
-#include "src/layer/ColSprLayer.hpp"
+#include "layer/ImgSprLayer.hpp"
+#include "layer/ColSprLayer.hpp"
+#include "layer/TileLayer.hpp"
+#include "layer/BaseHUDLayer.hpp"
 
+#include "sprite/FullImgSpr.hpp"
 #include "sprite/ImgSpr.hpp"
-
 
 #include "tween/Ease.hpp"
 #include "tween/TwAnim.hpp"
 #include "ImageImport.h"
 #include "Imagesheet.hpp"
-//#include "CollisionSpriteLayer.hpp"
-//#include "SpriteLayer.hpp"
-#include "src/layer/TileLayer.hpp"
 #include "Gear.hpp"
-//#include "Sprite.hpp"
-//#include "CollisionSprite.hpp"
-#include "src/layer/BaseHUDLayer.hpp"
 #include "path/SceneGraph.hpp"
 #include "path/Wavepoint.hpp"
 
@@ -91,18 +87,23 @@ namespace dang
 
                 spImagesheet is = _gear->getImagesheet(so->tileset);
 
-                spImgSpr spr = std::make_shared<ImgSpr>(so, is);
 
                 if (autoFillAnimations && is != nullptr && !so->type.empty())
                 {
+                    spFullImgSpr spr = std::make_shared<FullImgSpr>(so, is);
                     spTwAnim animation = getAnimation(is->getName(), so->type);
                     if (animation != nullptr)
                     {
                         spr->setAnimation(animation);
                     }
+                    sl->addSprite((spImgSpr)spr);
+                }
+                else
+                {
+                    spImgSpr spr = std::make_shared<ImgSpr>(so, is);
+                    sl->addSprite(spr);
                 }
 
-                sl->addSprite(spr);
             }
         }
 

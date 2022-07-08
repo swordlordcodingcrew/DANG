@@ -2,9 +2,8 @@
 // This file is part of the DANG game framework
 
 #include "TwVel.hpp"
-#include "sprite/MotionObject.hpp"
-
-#include <cassert>
+#include "sprite/FullColSpr.hpp"
+#include "sprite/FullImgSpr.hpp"
 
 namespace dang
 {
@@ -25,18 +24,16 @@ namespace dang
 
     }
 
-    /**
-     * This function updates vel of the sprite which is stored in _the_object
-     *
-     * @param time needed for updating the tween
-     */
-    void TwVel::update(void* obj, uint32_t dt)
+    void TwVel::update(FullImgSpr& obj, uint32_t dt)
     {
-        assert(obj != nullptr);
-        MotionObject* spr = static_cast<MotionObject*>(obj);
-
         float fx = calc(dt);
-        spr->setVel(_start_vel + (_end_vel - _start_vel) * fx);
+        obj.setVel(_start_vel + (_end_vel - _start_vel) * fx);
+    }
+
+    void TwVel::update(FullColSpr& obj, uint32_t dt)
+    {
+        float fx = calc(dt);
+        obj.setVel(_start_vel + (_end_vel - _start_vel) * fx);
     }
 
     TwVel::~TwVel()

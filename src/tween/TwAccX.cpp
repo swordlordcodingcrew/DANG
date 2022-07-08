@@ -2,7 +2,8 @@
 // This file is part of the DANG game framework
 
 #include "TwAccX.hpp"
-#include "sprite/MotionObject.hpp"
+#include "sprite/FullImgSpr.hpp"
+#include "sprite/FullColSpr.hpp"
 
 #include <cassert>
 
@@ -25,18 +26,16 @@ namespace dang
 
     }
 
-    /**
-     * This function updates vel of the sprite
-     *
-     * @param dt needed for updating the tween
-     */
-    void TwAccX::update(void* obj, uint32_t dt)
+    void TwAccX::update(FullColSpr& obj, uint32_t dt)
     {
-        assert(obj != nullptr);
-        MotionObject* spr = static_cast<MotionObject*>(obj);
-
         float fx = calc(dt);
-        spr->setAccX(_start_acc_x + (_end_acc_x - _start_acc_x) * fx);
+        obj.setAccX(_start_acc_x + (_end_acc_x - _start_acc_x) * fx);
+    }
+
+    void TwAccX::update(FullImgSpr& obj, uint32_t dt)
+    {
+        float fx = calc(dt);
+        obj.setAccX(_start_acc_x + (_end_acc_x - _start_acc_x) * fx);
     }
 
     TwAccX::~TwAccX()

@@ -99,8 +99,8 @@ set(SOURCES
         src/sprite/MotionObject.hpp
         src/sprite/ColSpr.cpp
         src/sprite/ColSpr.hpp
-        src/sprite/FullSpr.cpp
-        src/sprite/FullSpr.hpp
+        src/sprite/FullColSpr.cpp
+        src/sprite/FullColSpr.hpp
         src/layer/ColSprLayer.cpp
         src/layer/ColSprLayer.hpp
         src/layer/ImgSprLayer.cpp
@@ -110,7 +110,11 @@ set(SOURCES
         src/sprite/ImgSpr.cpp
         src/sprite/ImgSpr.hpp
         src/layer/SprLayer.cpp
-        src/layer/SprLayer.hpp)
+        src/layer/SprLayer.hpp
+        src/sprite/FullImgSpr.cpp
+        src/sprite/FullImgSpr.hpp
+        src/sprite/TweenObject.cpp
+        src/sprite/TweenObject.hpp)
 
 add_library(DANG STATIC ${SOURCES} )
 
