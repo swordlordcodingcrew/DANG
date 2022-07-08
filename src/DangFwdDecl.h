@@ -51,6 +51,8 @@ namespace dang
     using spTwVelY = std::shared_ptr<TwVelY>;
     class TwPosSpline;
     using spTwPosSpline = std::shared_ptr<TwPosSpline>;
+    class TwPos;
+    using spTwPos = std::shared_ptr<TwPos>;
 
     /** collision classes */
     class CollisionObject;
