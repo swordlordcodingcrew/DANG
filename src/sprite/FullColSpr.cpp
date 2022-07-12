@@ -53,6 +53,10 @@ namespace dang
         SpriteObject::setPos(getPos() + updateMotion(dt));
         updateAnimation(dt);
 
+    }
+
+    void FullColSpr::update(uint32_t dt)
+    {
         // update behaviour tree
         if (_nTreeState != nullptr)
         {
@@ -64,6 +68,7 @@ namespace dang
 #endif
         }
     }
+
 
     void FullColSpr::collide(const manifold &mf)
     {
@@ -146,5 +151,6 @@ namespace dang
     {
         tw.update(*this, dt);
     }
+
 
 }

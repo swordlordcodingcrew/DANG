@@ -22,7 +22,7 @@ namespace dang
 
         // inherited key funtions
         void coreUpdate(uint32_t dt) override;
-        void update(uint32_t dt) override {};
+        void update(uint32_t dt) override;
         void render(int32_t vpx, int32_t vpy) override;
 
         void collide(const manifold &mf) override;
