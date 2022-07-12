@@ -26,6 +26,8 @@ namespace dang
         virtual void        addSprite(spSprObj s);
         virtual void        markRemoveSpritesByTypeNum(uint8_t type_num);
         virtual void        cleanSpritelist();
+        void                resetZoneBit(const RectF& vp);
+
 
     protected:
         explicit SprLayer(Layer::E_TYPE type) : Layer(type) {};

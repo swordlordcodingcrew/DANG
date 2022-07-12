@@ -217,6 +217,17 @@ namespace dang
         }
     }
 
+    void SprLayer::resetZoneBit(const RectF& vp)
+    {
+        auto sti = begin();
+        while (sti != end())
+        {
+            (*sti)->setInZone(vp.intersects((*sti)->getSizeRectG()));
+            sti++;
+        }
+
+    }
+
     spSprObj &SprLayer::getRoot()
     {
         assert(_root != nullptr);
