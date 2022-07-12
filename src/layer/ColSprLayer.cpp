@@ -23,13 +23,13 @@ extern char _sbss, _end, __ltdc_start;
 namespace dang
 {
 
-    ColSprLayer::ColSprLayer() : SprLayer(Layer::LT_SPRITELAYER)
+    ColSprLayer::ColSprLayer() : SprLayer(Layer::LT_COLLISIONSPRITELAYER)
     {
         spColSpr r = std::make_shared<ColSpr>();
         setRoot(r);
     }
 
-    ColSprLayer::ColSprLayer(const tmx_layer *l) : SprLayer(Layer::LT_SPRITELAYER, l)
+    ColSprLayer::ColSprLayer(const tmx_layer *l) : SprLayer(Layer::LT_COLLISIONSPRITELAYER, l)
     {
         spColSpr r = std::make_shared<ColSpr>();
         setRoot(r);
@@ -63,29 +63,31 @@ namespace dang
                     // but not in collision solver
                     (*sti)->coreUpdate(dt);
                 }
-                else
+                else if ((*sti)->isActive())
                 {
-                    spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
+//                    spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
                     bool in_active_world = gear.getActiveWorld().intersects((*sti)->getSizeRectG());
                     if (in_active_world)
                     {
                         (*sti)->coreUpdate(dt);
-                        if (!(*sti)->isActive())
+                        if (!(*sti)->inZone())
                         {
-                            (*sti)->setActive(true);
+                            (*sti)->setInZone(true);
                             spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
                             co->setCSPosition((*sti)->local2Global((*sti)->getPos()));
                             _cs.addCObject(co);
                         }
+
                     }
-                    else if ((*sti)->isActive())
+                    else if ((*sti)->inZone())
                     {
                         (*sti)->coreUpdate(dt);
-                        (*sti)->setActive(false);
+                        (*sti)->setInZone(false);
                         spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
                         co->remove();
                     }
                 }
+
                 sti++;
             }
         }
@@ -101,8 +103,8 @@ namespace dang
         // then call update
         for (SprIterator it = begin(); it != end(); it++)
         {
-            spColSpr cspr = std::dynamic_pointer_cast<ColSpr>((*it));
-            if (cspr->isActive())
+            spColSpr cspr = std::static_pointer_cast<ColSpr>((*it));
+            if (cspr->isActive() && cspr->inZone())
             {
                 cspr->update(dt);
             }
@@ -125,7 +127,6 @@ namespace dang
                 sti++;
             }
         }
-
     }
 
     float ColSprLayer::aaLoSH(const ColSpr& me, const ColSpr& target)
