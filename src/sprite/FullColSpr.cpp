@@ -27,7 +27,10 @@ namespace dang
     FullColSpr::FullColSpr(const FullColSpr &s) : ColSpr(s), ImageObject(s), MotionObject(s), TweenObject(s)
     {
         // init animation
-        FullColSpr::visitInit(*getAnimation().get());
+        if (getAnimation() != nullptr)
+        {
+            FullColSpr::visitInit(*getAnimation().get());
+        }
 
         // init tweens
         for (const auto& t : getTweenList())

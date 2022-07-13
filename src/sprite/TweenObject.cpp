@@ -14,7 +14,7 @@ namespace dang
         // clone animation
         if (s._animation != nullptr)
         {
-            setAnimation(std::make_shared<Tweenable>(*(s._animation)));
+            _animation = std::make_shared<Tweenable>(*(s._animation));
         }
         else
         {
@@ -88,6 +88,7 @@ namespace dang
     void TweenObject::setAnimation(spTweenable twa)
     {
         _animation = twa;
+        visitInit(*twa.get());
 //        _animation->init(this);
     }
 
@@ -105,6 +106,7 @@ namespace dang
     {
         spTweenable ret = removeAnimation(suppressCB);
         _animation = new_anim;
+        visitInit(*new_anim.get());
         return ret;
     }
 

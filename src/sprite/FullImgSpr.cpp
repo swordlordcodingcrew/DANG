@@ -16,7 +16,10 @@ namespace dang
     FullImgSpr::FullImgSpr(const FullImgSpr &s) : ImgSpr(s), MotionObject(s), TweenObject(s)
     {
         // init animation
-        FullImgSpr::visitInit(*getAnimation().get());
+        if (getAnimation() != nullptr)
+        {
+            FullImgSpr::visitInit(*getAnimation().get());
+        }
 
         // init tweens
         for (const auto& t : getTweenList())
