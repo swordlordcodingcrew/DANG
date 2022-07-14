@@ -109,16 +109,18 @@ namespace dang
 
     spColSpr ColSpr::getOther(const manifold& mf, const ColSpr* me)
     {
-        const ColSpr* mf_other = dynamic_cast<ColSpr*>(mf.other.get());
-        const ColSpr* mf_me = dynamic_cast<ColSpr*>(mf.me.get());
+        const ColSpr* mf_other = static_cast<ColSpr*>(mf.other.get());
+        const ColSpr* mf_me = static_cast<ColSpr*>(mf.me.get());
+//        const ColSpr* mf_other = dynamic_cast<ColSpr*>(mf.other.get());
+//        const ColSpr* mf_me = dynamic_cast<ColSpr*>(mf.me.get());
 
         if (me == mf_me)
         {
-            return std::dynamic_pointer_cast<ColSpr>(mf.other);
+            return std::static_pointer_cast<ColSpr>(mf.other);
         }
         else if (me == mf_other)
         {
-            return std::dynamic_pointer_cast<ColSpr>(mf.me);
+            return std::static_pointer_cast<ColSpr>(mf.me);
         }
 
         D_DEBUG_PRINT("error in manifold me/other");

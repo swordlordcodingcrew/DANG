@@ -73,7 +73,8 @@ namespace dang
                 }
                 else if ((*sti)->isActive())
                 {
-                    spImgSpr imgspr = std::dynamic_pointer_cast<ImgSpr>(*sti);
+                    spImgSpr imgspr = std::static_pointer_cast<ImgSpr>(*sti);
+//                    spImgSpr imgspr = std::dynamic_pointer_cast<ImgSpr>(*sti);
                     bool in_active_world = gear.getActiveWorld().intersects(imgspr->getSizeRectG());
                     if (in_active_world)
                     {
@@ -99,7 +100,8 @@ namespace dang
 
         for (SprIterator it = begin(); it != end(); it++)
         {
-            spImgSpr s = std::dynamic_pointer_cast<ImgSpr>(*it);
+            spImgSpr s = std::static_pointer_cast<ImgSpr>(*it);
+//            spImgSpr s = std::dynamic_pointer_cast<ImgSpr>(*it);
             // check if visible, active, inzone is done in the sprite
             s->render(vpx, vpy);
         }

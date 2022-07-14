@@ -65,7 +65,6 @@ namespace dang
                 }
                 else if ((*sti)->isActive())
                 {
-//                    spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
                     bool in_active_world = gear.getActiveWorld().intersects((*sti)->getSizeRectG());
                     if (in_active_world)
                     {
@@ -73,7 +72,8 @@ namespace dang
                         if (!(*sti)->inZone())
                         {
                             (*sti)->setInZone(true);
-                            spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
+                            spColSpr co = std::static_pointer_cast<ColSpr>(*sti);
+//                            spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
                             co->setCSPosition((*sti)->local2Global((*sti)->getPos()));
                             _cs.addCObject(co);
                         }
@@ -83,7 +83,8 @@ namespace dang
                     {
                         (*sti)->coreUpdate(dt);
                         (*sti)->setInZone(false);
-                        spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
+                        spColSpr co = std::static_pointer_cast<ColSpr>(*sti);
+//                        spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
                         co->remove();
                     }
                 }
@@ -118,7 +119,8 @@ namespace dang
         {
             if ((*sti)->isMarkedRemove())
             {
-                spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>(*sti);
+                spColSpr cospr = std::static_pointer_cast<ColSpr>(*sti);
+                spCollisionObject co = std::static_pointer_cast<CollisionObject>(cospr);
                 _cs.removeCObject(co);
                 sti = erase(sti);
             }
