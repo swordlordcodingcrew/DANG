@@ -18,8 +18,11 @@ namespace dang
 
     void CollisionSolver::removeCObject(spCollisionObject &co)
     {
+//        printf("CSolver: size of list before removal = %u - ", _co_list.size());
+//        assert(std::find(_co_list.begin(), _co_list.end(), co) != _co_list.end());
         co->_remove_from_cs = false;
         _co_list.remove(co);
+//        printf("after = %u\n", _co_list.size());
     }
 
     // solve the collisions
