@@ -5,6 +5,7 @@
 #include "Gear.hpp"
 #include "sprite/ColSpr.hpp"
 #include "SprIterator.hpp"
+#include "../../../fonts/hud_font_small.h"
 
 #include <iostream>
 #include <sstream>
@@ -39,7 +40,7 @@ namespace dang
     {
         SprLayer::addSprite(cspr);
         cspr->setCSPosition(cspr->local2Global(cspr->getPos()));
-        if (cspr->isActive())
+        if (cspr->inZone())
         {
             _cs.addCObject(cspr);
         }
@@ -139,6 +140,34 @@ namespace dang
     float ColSprLayer::loS(const ColSpr& me, const ColSpr& target)
     {
         return _cs.loS(static_cast<const CollisionObject*>(&me), static_cast<const CollisionObject*>(&target));
+    }
+
+    void ColSprLayer::render(const Gear &gear)
+    {
+        this->SprLayer::render(gear);
+#ifdef DANG_DEBUG_COLSOLV
+        blit::screen.pen = {0,0,0};
+        // show number of objects in CollisionSolver
+        blit::screen.text("#co: " + std::to_string(_cs.getListSize()), hud_font_small, { 50, 5 }, true, blit::TextAlign::top_left);
+#endif
+    }
+
+    void ColSprLayer::resetZoneBit(const RectF &vp)
+    {
+        auto sti = begin();
+        while (sti != end())
+        {
+            spColSpr spr = std::static_pointer_cast<ColSpr>(*sti);
+            spCollisionObject co = std::static_pointer_cast<CollisionObject>(spr);
+            _cs.removeCObject(co);
+            bool inZone = vp.intersects((*sti)->getSizeRectG());
+            (*sti)->setInZone(inZone);
+            if (inZone)
+            {
+                _cs.addCObject(co);
+            }
+            sti++;
+        }
     }
 
 }

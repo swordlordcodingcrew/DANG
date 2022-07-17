@@ -43,7 +43,9 @@ namespace dang
 
         // override from SprLayer
         void    update(uint32_t dt, const Gear& gear) override;
+        void    render(const Gear& gear) override;
 
+        void    resetZoneBit(const RectF& vp) override;
         void    cleanSpritelist() override;
 
         float   aaLoSH(const ColSpr& me, const ColSpr& target);

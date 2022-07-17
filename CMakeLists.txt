@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 # if you want to see dang debug info drawn, enable this
 #add_definitions(-DDANG_DEBUG_PRINT)
 #add_definitions(-DDANG_DEBUG_DRAW)
+#add_definitions(-DDANG_DEBUG_COLSOLV)
 
 add_compile_options("-Wextra" "-Wdouble-promotion" "-fexceptions" "-Wattributes")
 
