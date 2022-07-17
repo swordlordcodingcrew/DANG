@@ -82,7 +82,7 @@ namespace dang
         float   aaLoSH(const CollisionObject* me, const CollisionObject* target);
         float   loS(const CollisionObject* me, const CollisionObject* target);
 
-
+        size_t  getListSize() { return _co_list.size(); }
 
     protected:
         void    projectCollisions(spCollisionObject& me);
