@@ -73,17 +73,6 @@ namespace dang
         }
     }
 
-/*    BTNode::Status Gear::runNTree(const spCollisionSprite& s) const
-    {
-        assert(s != nullptr);
-
-        spNTreeState ts = s->getNTreeState();
-        assert(ts != nullptr);
-        assert(ts->_tree != nullptr);
-
-        return ts->_tree->process(s, ts);
-    }
-*/
     void Gear::addImagesheet(std::shared_ptr<Imagesheet> is)
     {
         assert(!is->getName().empty());
@@ -121,42 +110,6 @@ namespace dang
         }
     }
 
-/*    void Gear::addNTree(const std::string& name, spNTree bt)
-    {
-        assert(!name.empty());
-        _nTree[name] = move(bt);
-    }
-
-    void Gear::removeNTree(const std::string& key)
-    {
-        _nTree.erase(key);
-    }
-
-    void Gear::removeNTrees()
-    {
-        _nTree.clear();
-    }
-
-    spNTree Gear::getNTree(const std::string &name) const
-    {
-        // there are no empty named behaviour trees
-        if(name.length() == 0)
-        {
-            return nullptr;
-        }
-
-        std::unordered_map<std::string, spNTree>::const_iterator it = _nTree.find (name);
-
-        if ( it == _nTree.end() )
-        {
-            return nullptr;
-        }
-        else
-        {
-            return it->second;
-        }
-    }
-*/
     void Gear::addLayer(spLayer layer)
     {
         assert(layer != nullptr);
