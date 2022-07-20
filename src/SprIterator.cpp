@@ -32,7 +32,10 @@ namespace dang
         return _current;
     }
 
-    // preincrement. move forward to next node
+    /**
+     * preincrement. move forward to next node
+     * start at top and go down left (Pre Order)
+     */
     SprIterator&    SprIterator::operator++ ()
     {
         if (_current == nullptr)
