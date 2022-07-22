@@ -61,6 +61,7 @@ namespace dang
         RectF           getSizeRectG();      // return size of sprite in global coords
 
         void            setZOrder(uint8_t z_order) { _z_order = z_order; }
+        uint8_t         zOrder() const { return _z_order; }
 
     private:                                     // params
         uint16_t        _id{0};                  // global id copied from Tiled
