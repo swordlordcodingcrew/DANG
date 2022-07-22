@@ -26,11 +26,11 @@ namespace dang
      */
     void SpriteObject::addSpriteObject(spSpriteObject s)
     {
-        s->_parent = this;//shared_from_this();
+        s->_parent = this;
 
         if (_child == nullptr)  // first child
         {
-            D_DEBUG_PRINT("add sprite as first child\n");
+            D_DEBUG_PRINT("add sprite with id=%u as first child\n", s->id());
             _child = s;
             _child->_next_sibling = nullptr;
             _child->_prev_sibling = nullptr;
@@ -42,7 +42,7 @@ namespace dang
             if (sp->_z_order >= s->_z_order)
             {
                 // first position
-                D_DEBUG_PRINT("add sprite at first position\n");
+                D_DEBUG_PRINT("add sprite with id=%u at first position\n", s->id());
                 _child = s;
                 _child->_next_sibling = sp;
                 _child->_prev_sibling = nullptr;
@@ -53,17 +53,17 @@ namespace dang
             {
                 while (sp->_next_sibling != nullptr)
                 {
+                    sp = sp->_next_sibling;
                     if (sp->_z_order >= s->_z_order)
                     {
                         break;
                     }
-                    sp = sp->_next_sibling;
                 }
 
-                if (sp->_next_sibling == nullptr)
+                if (sp->_next_sibling == nullptr && sp->_z_order < s->_z_order)
                 {
                     // last sibling
-                    D_DEBUG_PRINT("add sprite at last position\n");
+                    D_DEBUG_PRINT("add sprite with id=%u at last position\n", s->id());
                     sp->_next_sibling = s;
                     s->_prev_sibling = sp.get();
                     s->_next_sibling = nullptr;
@@ -71,7 +71,7 @@ namespace dang
                 else
                 {
                     // somewhere in between
-                    D_DEBUG_PRINT("add sprite in between\n");
+                    D_DEBUG_PRINT("add sprite with id=%u in between\n", s->id());
                     assert(sp->_prev_sibling != nullptr);
                     sp->_prev_sibling->_next_sibling = s;
 
