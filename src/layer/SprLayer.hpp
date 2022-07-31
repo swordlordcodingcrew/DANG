@@ -48,6 +48,11 @@ namespace dang
         SprIterator  end();
         SprIterator  erase(SprIterator pos);
 
+#ifdef DANG_DEBUG_DRAW
+    private:
+        int _dbg_mem{0};
+#endif
+
     };
 
 }

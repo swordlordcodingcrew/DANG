@@ -3,13 +3,21 @@
 
 #include "SprLayer.hpp"
 #include "Gear.hpp"
-#include "src/layer/Layer.hpp"
 #include "SprIterator.hpp"
 #include "sprite/SpriteObject.hpp"
 
 #include <cassert>
 #include <memory>
-#include <iostream>
+
+#ifdef DANG_DEBUG_DRAW
+#ifdef TARGET_32BLIT_HW
+#include "32blit.hpp"
+#include "graphics/font.hpp"
+#include <malloc.h>
+extern char _sbss, _end, __ltdc_start;
+#endif
+#endif
+
 
 namespace dang
 {
@@ -74,7 +82,7 @@ namespace dang
 
     void SprLayer::_removeSpriteFromTree(spSprObj s)
     {
-        std::cout << "CAUTION: _removeSpriteFromTree in SprLayer called" << std::endl;
+        printf("CAUTION: _removeSpriteFromTree in SprLayer called\n");
         assert(s != nullptr);
         s->removeMeFromTree();
     }
@@ -150,7 +158,6 @@ namespace dang
         }
 
 #ifdef DANG_DEBUG_DRAW
-
 #ifdef TARGET_32BLIT_HW
         // show memory stats
         auto static_used = &_end - &_sbss;
@@ -162,22 +169,9 @@ namespace dang
         blit::screen.pen = blit::Pen(255, 0, 255, 255);
         char buf[100];
         snprintf(buf, sizeof(buf), "Mem: %i + %i / %i", static_used, heap_used, total_ram);
-        blit::screen.text(buf, hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
-#else
-
-        // show amount of sprites and memory used
-/*        std::stringstream stats;
-
-        stats << "active: " << _active_sprites.size() << " inactive: " << _inactive_sprites.size() << " heap: " << mallinfo().uordblks;
-        blit::screen.text(stats.str(), hud_font_small, { 5, 5 }, true, blit::TextAlign::top_left);
-
-        if (_dbg_mem < mallinfo().uordblks)
-        {
-            _dbg_mem = mallinfo().uordblks;
-            std::cout << "CSL.render() " << stats.str() << std::endl;
-        }
-*/
+        blit::screen.text(buf, blit::fat_font, { 5, 5 }, true, blit::TextAlign::top_left);
 #endif
+        blit::screen.text("test", blit::fat_font, { 5, 5 }, true, blit::TextAlign::top_left);
 #endif
     }
 

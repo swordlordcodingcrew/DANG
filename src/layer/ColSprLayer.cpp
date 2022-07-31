@@ -5,21 +5,6 @@
 #include "Gear.hpp"
 #include "sprite/ColSpr.hpp"
 #include "SprIterator.hpp"
-#include "../../../fonts/hud_font_small.h"
-
-#include <iostream>
-#include <sstream>
-#include <malloc.h>
-#include <cassert>
-
-#ifdef DANG_DEBUG_DRAW
-#ifdef TARGET_32BLIT_HW
-#include "32blit.hpp"
-#include <malloc.h>
-#include "../../../fonts/hud_font_small.h"
-extern char _sbss, _end, __ltdc_start;
-#endif
-#endif
 
 namespace dang
 {
@@ -85,7 +70,6 @@ namespace dang
                         (*sti)->coreUpdate(dt);
                         (*sti)->setInZone(false);
                         spColSpr co = std::static_pointer_cast<ColSpr>(*sti);
-//                        spCollisionObject co = std::dynamic_pointer_cast<CollisionObject>((*sti));
                         co->remove();
                     }
                 }

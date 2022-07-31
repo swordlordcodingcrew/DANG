@@ -59,9 +59,6 @@ namespace dang
     private:
         // may not be used in this layer type, use with param ColSpr instead
         void        addSprite(spSprObj s) override {};
-#ifdef DANG_DEBUG_DRAW
-        int _dbg_mem{0};
-#endif
     };
 
 }
