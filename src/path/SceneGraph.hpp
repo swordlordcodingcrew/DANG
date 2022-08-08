@@ -42,7 +42,7 @@ namespace dang
 
         /**
          * find nearest waypoint from given pos. Connections are not checked.
-         * This functions is usually needed if a sprite lost the path
+         * This functions may be needed eg. if a sprite lost the path or to follow the hero
          * @param pos
          * @return waypoint pointer
          */
