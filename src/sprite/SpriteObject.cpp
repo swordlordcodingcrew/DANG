@@ -11,7 +11,7 @@ namespace dang
 {
     SpriteObject::SpriteObject(const tmx_spriteobject *so)
     {
-        _id = so->id; // global
+        _id = so->id;
         _pos.x = so->x;
         _pos.y = so->y;
         _z_order = so->z_order;
