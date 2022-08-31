@@ -27,6 +27,7 @@ namespace dang
         virtual void    addSpriteObject(spSpriteObject s);
         virtual void    markRemove() { _operable[2] = true; }
         virtual bool    isMarkedRemove() { return _operable[2]; }
+        spSpriteObject  getChild() { return _child; }
 
         // position
         virtual void        setPos(const Vector2F& pos) { _pos = pos; }
