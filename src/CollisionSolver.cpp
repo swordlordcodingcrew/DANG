@@ -731,5 +731,71 @@ namespace dang
 
     }
 
+    /**
+     * like loS, but the target is not a point but a hotrect
+     * algo: see loS
+     */
+    float CollisionSolver::loSHR(const CollisionObject* me, const CollisionObject* target)
+    {
+        Vector2F p1 = me->_co_pos + me->_hotrect.center();
+
+        Vector2F pts[4];
+        pts[0] = target->_co_pos + target->_hotrect.tl();
+        pts[1] = target->_co_pos + target->_hotrect.bl();
+        pts[2] = target->_co_pos + target->_hotrect.br();
+        pts[3] = target->_co_pos + target->_hotrect.tr();
+
+        for (const spCollisionObject& other : _co_list)
+        {
+            if (other == nullptr)
+            {
+                continue;
+            }
+
+            if ((me == other.get())
+                || (target == other.get())
+                || (me->getCollisionResponse(other.get()) == CR_NONE || other->getCollisionResponse(me) == CR_NONE))
+            {
+                continue;
+            }
+
+            bool vis{false};
+            RectF r = other->_hotrect;
+            r.x += other->_co_pos.x;
+            r.y += other->_co_pos.y;
+
+            for (auto & pt : pts)
+            {
+                float f_tl = (pt.y - p1.y) * r.tl().x + (p1.x - pt.x) * r.tl().y + (pt.x *p1.y - p1.x * pt.y);
+                float f_tr = (pt.y - p1.y) * r.tr().x + (p1.x - pt.x) * r.tr().y + (pt.x *p1.y - p1.x * pt.y);
+                float f_bl = (pt.y - p1.y) * r.bl().x + (p1.x - pt.x) * r.bl().y + (pt.x *p1.y - p1.x * pt.y);
+                float f_br = (pt.y - p1.y) * r.br().x + (p1.x - pt.x) * r.br().y + (pt.x *p1.y - p1.x * pt.y);
+
+                if ((f_tl > 0 && f_tr > 0 && f_bl > 0 && f_br > 0) || (f_tl < 0 && f_tr < 0 && f_bl < 0 && f_br < 0))
+                {
+                    // no intersection, go to next sprite
+                    vis = true;
+                    break;
+                }
+
+                if (p1.x > r.right() && pt.x > r.right()) { vis = true; break; }   // no intersection (line is to the right of rectangle).
+                if (p1.x < r.left() && pt.x < r.left()) { vis = true; break; }   // no intersection (line is to the left of rectangle).
+                if (p1.y > r.bottom() && pt.y > r.bottom()) { vis = true; break; }   // no intersection (line is below rectangle).
+                if (p1.y < r.top() && pt.y < r.top()) { vis = true; break; }     // no intersection (line is above rectangle).
+
+            }
+
+            // intersection of all 4 points -> target not visible
+            if (!vis)
+            {
+                return 0;
+            }
+        }
+
+        Vector2F p2 = target->_co_pos + target->_hotrect.center();
+        float dist = p1.distance(p2);
+        return p2.x >= p1.x ? -dist : dist;
+
+    }
 
 }

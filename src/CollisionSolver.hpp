@@ -81,6 +81,7 @@ namespace dang
         void    solve();
         float   aaLoSH(const CollisionObject* me, const CollisionObject* target);
         float   loS(const CollisionObject* me, const CollisionObject* target);
+        float   loSHR(const CollisionObject* me, const CollisionObject* target);
 
         size_t  getListSize() { return _co_list.size(); }
 

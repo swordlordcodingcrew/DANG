@@ -50,6 +50,7 @@ namespace dang
 
         float   aaLoSH(const ColSpr& me, const ColSpr& target);
         float   loS(const ColSpr& me, const ColSpr& target);
+        float   loSHR(const ColSpr& me, const ColSpr& target);
 
     protected:
         CollisionSolver _cs;

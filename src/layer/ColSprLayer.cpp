@@ -126,6 +126,11 @@ namespace dang
         return _cs.loS(static_cast<const CollisionObject*>(&me), static_cast<const CollisionObject*>(&target));
     }
 
+    float ColSprLayer::loSHR(const ColSpr& me, const ColSpr& target)
+    {
+        return _cs.loSHR(static_cast<const CollisionObject*>(&me), static_cast<const CollisionObject*>(&target));
+    }
+
     void ColSprLayer::render(const Gear &gear)
     {
         this->SprLayer::render(gear);
