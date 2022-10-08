@@ -38,12 +38,18 @@ namespace dang
             }
             else
             {
-                (*sti)->update(dt);
+                (*sti)->coreUpdate(dt);
                 sti++;
             }
         }
-        
-//        updateInternal(dt, gear);
+
+        sti = begin();
+        while (sti != end())
+        {
+            (*sti)->update(dt);
+            sti++;
+        }
+
     }
 
     void BaseHUDLayer::render(const Gear &gear)
