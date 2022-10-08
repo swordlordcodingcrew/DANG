@@ -29,9 +29,8 @@ namespace dang
         _world.w = lvl->w->width * lvl->w->tileWidth;
         _world.h = lvl->w->height * lvl->w->tileHeight;
 
-        // active world defaults to double width and height of world
-        _active_world_size.x = 2 * _world.w;
-        _active_world_size.y = 2 * _world.h;
+        // active world defaults to world
+        _active_world = _world;
 
         setViewport(viewport);
     }
@@ -211,9 +210,30 @@ namespace dang
         return (*layer_it);
     }
 
-    RectF Gear::getActiveWorld() const
+    /**
+     * if setting a border the active world follows the viewpoint
+     * @param border
+     */
+    void Gear::setActiveWorldBorder(float border)
     {
-        return RectF(_viewport.x - (_active_world_size.w - _viewport.w)/2, _viewport.y - ((_active_world_size.h - _viewport.h)/2), _active_world_size.w, _active_world_size.h);
+        _active_world_follows_vp = true;
+        _active_world_border = border;
+    }
+
+    /**
+     * if setting the active world directly it remains static
+     * @param x
+     * @param y
+     * @param w
+     * @param h
+     */
+    void Gear::setActiveWorld(float x, float y, float w, float h)
+    {
+        _active_world.x = x;
+        _active_world.y = y;
+        _active_world.w = w;
+        _active_world.h = h;
+
     }
 
     void Gear::setViewport(const RectF &vp)
@@ -221,6 +241,12 @@ namespace dang
         _viewport.w = std::min(_world.w, vp.w);
         _viewport.h = std::min(_world.h, vp.h);
         setViewportPos(vp.tl());
+
+        if (_active_world_follows_vp)
+        {
+            _active_world.w = _viewport.w + 2 * _active_world_border;
+            _active_world.h = _viewport.h + 2 * _active_world_border;
+        }
     }
 
     void Gear::setViewportPos(const Vector2F& pos)
@@ -251,6 +277,11 @@ namespace dang
             _viewport.y = pos.y;
         }
 
+        if (_active_world_follows_vp)
+        {
+            _active_world.x = _viewport.x - _active_world_border;
+            _active_world.y = _viewport.y - _active_world_border;
+        }
     }
 
     void Gear::follow(const Vector2F& dest)
@@ -326,5 +357,12 @@ namespace dang
             }
         }
     }
+
+    void Gear::setWorld(const RectF &world)
+    {
+        _world = world;
+        _active_world = world;
+    }
+
 
 }

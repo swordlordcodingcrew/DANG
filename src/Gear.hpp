@@ -52,10 +52,12 @@ namespace dang
         void                setLayersActive(bool active);
 
 
-        RectF               getActiveWorld() const;
-        Vector2F            getActiveWorldSize() const { return _active_world_size; };
-        void                setActiveWorldSize(Vector2F& aws) {_active_world_size = aws; };
-        void                setActiveWorldSize(float w, float h) {_active_world_size.w = w; _active_world_size.h = h; };
+        const RectF&        getActiveWorld() const { return _active_world; };
+        void                setActiveWorldBorder(float range);
+        void                setActiveWorld(float x, float y, float w, float h);
+//        Vector2F            getActiveWorldSize() const { return _active_world_size; };
+//        void                setActiveWorldSize(Vector2F& aws) {_active_world_size = aws; };
+//        void                setActiveWorldSize(float w, float h) {_active_world_size.w = w; _active_world_size.h = h; };
 
         RectF               getViewport() const { return _viewport; }
         void                setViewport(const RectF& vp);
@@ -63,7 +65,7 @@ namespace dang
         void                follow(const Vector2F& dest);
 
         RectF  getWorld() const { return _world;}
-        void   setWorld(const RectF& world) {_world = world; };
+        void   setWorld(const RectF& world);;
 
         void fade(const blit::Pen &col, uint8_t fade_step, const std::function<void(void)>& cb);
         bool fading() const { return _fade_overlay; }
@@ -71,13 +73,16 @@ namespace dang
     protected:
 
         std::unordered_map<std::string, spImagesheet> _imagesheets;
-//        std::unordered_map<std::string, spNTree> _nTree;
         std::forward_list<spLayer> _layers;
 
         // viewport handling
-        RectF       _world{0,0,0,0};    // size of the world
+        RectF       _world{0,0,0,0};        // size of the world
         RectF       _viewport{0,0,0,0};     // part of world to be drawn
-        Vector2F    _active_world_size{0,0}; // center equals to center of viewport. sprite within active world will be updated and - if in viewport - drawnd
+
+        RectF       _active_world{0,0,0,0}; // size of the world which is updated
+        bool        _active_world_follows_vp{false};            // if ture, the active world moves with the viewport
+        float       _active_world_border{0};
+//        Vector2F    _active_world_size{0,0}; // center equals to center of viewport. sprite within active world will be updated and - if in viewport - drawnd
 
         // fading params & funcs
         bool        _fade_overlay{false};
