@@ -91,7 +91,7 @@ namespace dang
                 if (autoFillAnimations && is != nullptr && !so->type.empty())
                 {
                     spFullImgSpr spr = std::make_shared<FullImgSpr>(so, is);
-                    spTwAnim animation = getAnimation(is, is->getName());
+                    spTwAnim animation = getAnimation(is, so->type);
                     if (animation != nullptr)
                     {
                         spr->setAnimation(animation);

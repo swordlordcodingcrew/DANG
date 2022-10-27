@@ -53,6 +53,10 @@ set(SOURCES
         src/tween/TwVelY.hpp
         src/tween/TwSequence.cpp
         src/tween/TwSequence.hpp
+        src/tween/TwPosX.cpp
+        src/tween/TwPosX.hpp
+        src/tween/TwPosY.cpp
+        src/tween/TwPosY.hpp
         src/Imagesheet.cpp
         src/Imagesheet.hpp
         src/Gear.cpp
@@ -115,7 +119,8 @@ set(SOURCES
         src/sprite/FullImgSpr.cpp
         src/sprite/FullImgSpr.hpp
         src/sprite/TweenObject.cpp
-        src/sprite/TweenObject.hpp)
+        src/sprite/TweenObject.hpp
+        )
 
 add_library(DANG STATIC ${SOURCES} )
 
