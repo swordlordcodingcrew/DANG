@@ -19,7 +19,7 @@ namespace dang
      */
     TwAcc::TwAcc(const Vector2F& start_acc, const Vector2F& end_acc, uint32_t duration,  EaseFn ease_cb,
                  int32_t loops, bool alternating, uint32_t delay)
-            : _start_acc(start_acc), _end_acc(end_acc), Tweenable(duration, ease_cb, loops, alternating, delay)
+            : Tweenable(duration, ease_cb, loops, alternating, delay), _start_acc(start_acc), _end_acc(end_acc)
     {
 
     }

@@ -19,7 +19,7 @@ namespace dang
      */
     TwVelY::TwVelY(float start_vel_y, float end_vel_y, uint32_t duration, EaseFn ease_cb,
                  int32_t loops, bool alternating, uint32_t delay)
-            : _start_vel_y(start_vel_y), _end_vel_y(end_vel_y), Tweenable(duration, ease_cb, loops, alternating, delay)
+            : Tweenable(duration, ease_cb, loops, alternating, delay), _start_vel_y(start_vel_y), _end_vel_y(end_vel_y)
     {
 
     }

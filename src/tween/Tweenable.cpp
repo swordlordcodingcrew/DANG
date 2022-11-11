@@ -15,10 +15,10 @@ namespace dang
     }
 
     Tweenable::Tweenable(const Tweenable &tw)
-                : _duration(tw._duration), _loops(tw._loops), _alternating(tw._alternating),
-                _delay(tw._delay), _loop(tw._loop), _finished(tw._finished), _ease_cb(tw._ease_cb)
+                : _ease_cb(tw._ease_cb), _duration(tw._duration), _loops(tw._loops), _alternating(tw._alternating),
+                _delay(tw._delay), _loop(tw._loop), _progress(tw._progress), _finished(tw._finished)
     {
-        // the callback is not copied since it may point to a function in an potentially deleted object.
+        // the callback is not copied since it may point to a function in a potentially deleted object.
         _finishedCB = nullptr;
     }
 
@@ -28,7 +28,7 @@ namespace dang
     }
 
     Tweenable::Tweenable(uint32_t duration, EaseFn& ease_cb, int32_t loops, bool alternating, uint32_t delay)
-                : _duration(duration), _loops(loops), _alternating(alternating), _delay(delay), _ease_cb(ease_cb)
+                : _ease_cb(ease_cb), _duration(duration), _loops(loops), _alternating(alternating), _delay(delay)
     {
     }
 

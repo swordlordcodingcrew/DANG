@@ -8,7 +8,7 @@
 namespace dang
 {
     Wavepoint::Wavepoint(uint32_t id, const std::string& name, const std::string& type, dang::Vector2F pos, uint32_t next_id, uint32_t duration, uint8_t orientation, uint32_t delay)
-    : _id(id), _name(name), _type(type), _pos(pos), _next_id(next_id), _duration(duration), _orientation(orientation), _delay(delay)
+    : _name(name), _type(type), _next_id(next_id), _id(id), _duration(duration), _orientation(orientation), _delay(delay), _pos(pos)
     {
         _next = nullptr;
     }

@@ -97,7 +97,7 @@ namespace dang
     {
         std::cout << "BMLNode wait " << std::to_string(node->_id) << std::endl;
 
-        Status ret{Status::FAILURE};
+//        Status ret{Status::FAILURE};
 
         uint16_t runCount = 1;
 

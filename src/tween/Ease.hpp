@@ -3,22 +3,20 @@
 
 #pragma once
 
-#include <vector>
-
-typedef float (*EaseFn)(float);
+typedef float (*EaseFn)(const float);
 
 namespace dang
 {
     class Ease
     {
     public:
-        static float Linear(float x)        { return x; }
-        static float InQuad(float x)        { return x * x; }
-        static float OutQuad(float x)       { return x * (2 - x); }
-        static float InOutQuad(float x)     { return x < 0.5f ? (2 * x * x) : (-1 + (4 - 2 * x) * x); }
-        static float InCubic(float x)       { return x * x * x; }
-        static float OutCubic(float x)      { return 1 + (--x) * x * x; }
-        static float InOutCubic(float x)    { return x < 0.5f ? 4 * x * x * x : 1 + (--x) * (2 * (--x)) * (2 * x); }
+        static float Linear(const float x)        { return x; }
+        static float InQuad(const float x)        { return x * x; }
+        static float OutQuad(const float x)       { return x * (2 - x); }
+        static float InOutQuad(const float x)     { return x < 0.5f ? (2 * x * x) : (-1 + (4 - 2 * x) * x); }
+        static float InCubic(const float x)       { return x * x * x; }
+        static float OutCubic(const float x);
+        static float InOutCubic(const float x);
     };
 }
 

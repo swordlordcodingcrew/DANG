@@ -8,13 +8,13 @@
 
 namespace dang
 {
-    Waypoint::Waypoint() :
-            _f(0.0), _g(0.0), _h(0.0), _closed(false), _open(false), _pos(0, 0), _id(0), _type(0)
+    Waypoint::Waypoint()
+        : _id(0), _pos(0, 0), _f(0.0), _g(0.0), _h(0.0), _open(false), _closed(false), _type(0)
     {
     }
 
-    Waypoint::Waypoint(uint32_t id, float x, float y, uint32_t type) :
-        _f(0.0), _g(0.0), _h(0.0), _closed(false), _open(false),  _id(id), _pos(x, y), _type(type)
+    Waypoint::Waypoint(uint32_t id, float x, float y, uint32_t type)
+        : _id(id), _pos(x, y), _f(0.0), _g(0.0), _h(0.0), _open(false), _closed(false), _type(type)
     {
     }
 

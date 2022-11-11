@@ -12,8 +12,8 @@
 namespace dang
 {
 
-    ImageObject::ImageObject(const ImageObject &io) :
-    _visible(io._visible), _img_index(io._img_index), _imagesheet(io._imagesheet), _transform(io._transform)
+    ImageObject::ImageObject(const ImageObject &io)
+    : _img_index(io._img_index), _transform(io._transform), _imagesheet(io._imagesheet), _visible(io._visible)
     {
     }
 
