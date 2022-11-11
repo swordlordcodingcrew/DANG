@@ -122,6 +122,7 @@ namespace dang
             int16_t output1, output2;
 
             /* Render a chunk of samples */
+            pocketmod_render(&mod_ctx, buffer, sizeof(buffer));
 //            int rendered_bytes = pocketmod_render(&mod_ctx, buffer, sizeof(buffer));
 
             /* Convert the sample data to 16-bit and write it to the buffer */
