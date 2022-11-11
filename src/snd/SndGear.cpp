@@ -94,7 +94,7 @@ namespace dang
         {
             // If current sample position is greater than the sample length, fill the rest of the buffer with zeros.
             int16_t val = ((int16_t*)sfxs.sfx)[sfxs.pos];
-            int16_t sample = sfxs.pos < sfxs.len ? (sfxs.sfx[sfxs.pos] << 8) - 0x7f00 : 0;
+//            int16_t sample = sfxs.pos < sfxs.len ? (sfxs.sfx[sfxs.pos] << 8) - 0x7f00 : 0;
             channel.wave_buffer[x] = sfxs.pos < sfxs.len ? val : 0;
 
             sfxs.pos++;
@@ -122,7 +122,7 @@ namespace dang
             int16_t output1, output2;
 
             /* Render a chunk of samples */
-            int rendered_bytes = pocketmod_render(&mod_ctx, buffer, sizeof(buffer));
+//            int rendered_bytes = pocketmod_render(&mod_ctx, buffer, sizeof(buffer));
 
             /* Convert the sample data to 16-bit and write it to the buffer */
             for (int i = 0; i < 32; i++)

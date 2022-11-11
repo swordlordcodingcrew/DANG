@@ -355,6 +355,10 @@ namespace dang
                 }
                 break;
             }
+            case END_OF_FADE:
+            {
+                // do nothing
+            }
         }
     }
 

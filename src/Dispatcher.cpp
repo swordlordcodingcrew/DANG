@@ -2,6 +2,7 @@
 // This file is part of the DANG game framework
 
 #include <algorithm>
+#include <cassert>
 #include "Dispatcher.hpp"
 #include "Event.hpp"
 
@@ -25,21 +26,18 @@ namespace dang
 
     uint32_t Dispatcher::getIndex(const std::function<void(Event &)>& fn)
     {
-//        try
-//        {
-            auto it = std::find_if(_subscribers.begin(), _subscribers.end(), [=](const std::pair<uint32_t, _subscriber_wrapper>& val)
-            {
-                auto ptr1 = val.second.fn.target<void(Event&)>();
-                auto ptr2 = fn.target<void(Event&)>();
-                return ( ptr1 == ptr2);
-            });
-/*        }
-        catch (std::out_of_range &oor)
-        {
-            // do nothing
-        }
-        */
-        return 0;
+        auto it = std::find_if(_subscribers.begin(), _subscribers.end(), [=](const std::pair<uint32_t, _subscriber_wrapper>& val)
+                    {
+                        auto ptr1 = val.second.fn.target<void(Event&)>();
+                        auto ptr2 = fn.target<void(Event&)>();
+                        return ( ptr1 == ptr2);
+                    });
+
+        // crappy way to check if the subscriber was found
+        assert(it != _subscribers.end());
+
+        return (*it).first;
+
     }
 
     void Dispatcher::removeSubscriber(const std::function<void(Event &)> &fn)
