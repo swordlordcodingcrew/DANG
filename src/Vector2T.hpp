@@ -1,6 +1,5 @@
-// (c) 2019-20 by SwordLord - the coding crew
+// (c) 2019-22 by SwordLord - the coding crew
 // This file is part of the DANG game framework
-// (c) 2019-20 by SwordLord - the coding crew
 //
 // inspired by sfml, oxygine and 32blit
 
@@ -43,8 +42,6 @@ namespace dang
             return *this;
         }
 */
-
-
         void normalize()
         {
             T d = this->length();
@@ -105,6 +102,55 @@ namespace dang
             //return acos(this->dot(o));
         }
 
+        void add(const Vector2T<T> a)
+        {
+            x += a.x;
+            y += a.y;
+        }
+
+        void multiply(float n)
+        {
+            x *= n;
+            y *= n;
+        }
+
+        void divide(float n)
+        {
+            x /= n;
+            y /= n;
+        }
+
+        float magnitude()
+        {
+            float c2 = pow(x, 2) + pow(y, 2);
+
+            return sqrt(c2);
+        }
+
+        void limit(float limit)
+        {
+            float mag = magnitude();
+            if (mag > limit)
+            {
+                float ratio = limit / mag;
+                x *= ratio;
+                y *= ratio;
+            }
+        }
+
+        void rotate(float degrees)
+        {
+            //calculate radians
+            float angle = degrees * M_PI / 180;
+            float sine = sin(angle);
+            float cosine = cos(angle);
+
+            //rotation matix
+            float matrix[2][2] = {{cosine, -sine}, {sine, cosine}};
+
+            x = matrix[0][0] * x + matrix[0][1] * y;
+            y = matrix[1][0] * x + matrix[1][1] * y;
+        }
     };
 
 
