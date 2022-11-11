@@ -21,7 +21,7 @@ namespace dang
      */
     TwAccX::TwAccX(const float start_acc_x, const float end_acc_x, uint32_t duration,  EaseFn ease_cb,
                  int32_t loops, bool alternating, uint32_t delay)
-            : _start_acc_x(start_acc_x), _end_acc_x(end_acc_x), Tweenable(duration, ease_cb, loops, alternating, delay)
+            : Tweenable(duration, ease_cb, loops, alternating, delay), _start_acc_x(start_acc_x), _end_acc_x(end_acc_x)
     {
 
     }

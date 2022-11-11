@@ -19,7 +19,7 @@ namespace dang
      */
     TwAccY::TwAccY(const float start_acc_y, const float end_acc_y, uint32_t duration,  EaseFn ease_cb,
                  int32_t loops, bool alternating, uint32_t delay)
-            : _start_acc_y(start_acc_y), _end_acc_y(end_acc_y), Tweenable(duration, ease_cb, loops, alternating, delay)
+            : Tweenable(duration, ease_cb, loops, alternating, delay), _start_acc_y(start_acc_y), _end_acc_y(end_acc_y)
     {
 
     }

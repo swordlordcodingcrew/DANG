@@ -25,7 +25,7 @@
 namespace dang
 {
 
-    TmxExtruder::TmxExtruder(const tmx_level* lvl, dang::Gear* gear) : _level(lvl), _gear(gear)
+    TmxExtruder::TmxExtruder(const tmx_level* lvl, dang::Gear* gear) : _gear(gear), _level(lvl)
     {
     }
 
