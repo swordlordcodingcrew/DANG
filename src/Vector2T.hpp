@@ -138,12 +138,14 @@ namespace dang
             }
         }
 
+        // reactivate if needed, does pollute compile output because of double to float conversion
+        /*
         void rotate(float degrees)
         {
             //calculate radians
-            float angle = degrees * M_PI / 180;
-            float sine = sin(angle);
-            float cosine = cos(angle);
+            float angle = degrees * M_PI / 180.0;
+            float sine = sinf(angle);
+            float cosine = cosf(angle);
 
             //rotation matix
             float matrix[2][2] = {{cosine, -sine}, {sine, cosine}};
@@ -151,6 +153,7 @@ namespace dang
             x = matrix[0][0] * x + matrix[0][1] * y;
             y = matrix[1][0] * x + matrix[1][1] * y;
         }
+         */
     };
 
 
