@@ -6,6 +6,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <src/sprite/SpriteObject.hpp>
 
 namespace dang
 {
@@ -745,6 +746,7 @@ namespace dang
         pts[2] = target->_co_pos + target->_hotrect.br();
         pts[3] = target->_co_pos + target->_hotrect.tr();
 
+        std::bitset<4> pts_visible{0b1111};
         for (const spCollisionObject& other : _co_list)
         {
             if (other == nullptr)
@@ -759,34 +761,40 @@ namespace dang
                 continue;
             }
 
-            bool vis{false};
             RectF r = other->_hotrect;
             r.x += other->_co_pos.x;
             r.y += other->_co_pos.y;
 
-            for (auto & pt : pts)
+            for (uint8_t i = 0; i < 4; ++i)
             {
-                float f_tl = (pt.y - p1.y) * r.tl().x + (p1.x - pt.x) * r.tl().y + (pt.x *p1.y - p1.x * pt.y);
-                float f_tr = (pt.y - p1.y) * r.tr().x + (p1.x - pt.x) * r.tr().y + (pt.x *p1.y - p1.x * pt.y);
-                float f_bl = (pt.y - p1.y) * r.bl().x + (p1.x - pt.x) * r.bl().y + (pt.x *p1.y - p1.x * pt.y);
-                float f_br = (pt.y - p1.y) * r.br().x + (p1.x - pt.x) * r.br().y + (pt.x *p1.y - p1.x * pt.y);
-
-                if ((f_tl > 0 && f_tr > 0 && f_bl > 0 && f_br > 0) || (f_tl < 0 && f_tr < 0 && f_bl < 0 && f_br < 0))
+                // if the point is still marked as visible, check the visibility
+                if (pts_visible[i])
                 {
-                    // no intersection, go to next sprite
-                    vis = true;
-                    break;
+                    Vector2F& pt = pts[i];
+                    float f_tl = (pt.y - p1.y) * r.tl().x + (p1.x - pt.x) * r.tl().y + (pt.x *p1.y - p1.x * pt.y);
+                    float f_tr = (pt.y - p1.y) * r.tr().x + (p1.x - pt.x) * r.tr().y + (pt.x *p1.y - p1.x * pt.y);
+                    float f_bl = (pt.y - p1.y) * r.bl().x + (p1.x - pt.x) * r.bl().y + (pt.x *p1.y - p1.x * pt.y);
+                    float f_br = (pt.y - p1.y) * r.br().x + (p1.x - pt.x) * r.br().y + (pt.x *p1.y - p1.x * pt.y);
+
+                    if ((f_tl > 0 && f_tr > 0 && f_bl > 0 && f_br > 0) || (f_tl < 0 && f_tr < 0 && f_bl < 0 && f_br < 0))
+                    {
+                        // no intersection, go to next point
+                        continue;
+                    }
+
+                    if (p1.x > r.right() && pt.x > r.right()) { continue; }   // no intersection (line is to the right of rectangle).
+                    if (p1.x < r.left() && pt.x < r.left()) { continue; }   // no intersection (line is to the left of rectangle).
+                    if (p1.y > r.bottom() && pt.y > r.bottom()) { continue; }   // no intersection (line is below rectangle).
+                    if (p1.y < r.top() && pt.y < r.top()) { continue; }     // no intersection (line is above rectangle).
+
+                    // there is an intersection
+                    pts_visible[i] = false;
+
                 }
-
-                if (p1.x > r.right() && pt.x > r.right()) { vis = true; break; }   // no intersection (line is to the right of rectangle).
-                if (p1.x < r.left() && pt.x < r.left()) { vis = true; break; }   // no intersection (line is to the left of rectangle).
-                if (p1.y > r.bottom() && pt.y > r.bottom()) { vis = true; break; }   // no intersection (line is below rectangle).
-                if (p1.y < r.top() && pt.y < r.top()) { vis = true; break; }     // no intersection (line is above rectangle).
-
             }
 
             // intersection of all 4 points -> target not visible
-            if (!vis)
+            if (pts_visible.none())
             {
                 return 0;
             }
