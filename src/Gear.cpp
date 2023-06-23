@@ -75,7 +75,8 @@ namespace dang
     void Gear::addImagesheet(std::shared_ptr<Imagesheet> is)
     {
         assert(!is->getName().empty());
-        _imagesheets[is->getName()] = is;
+        _imagesheets.insert({is->getName(), is});
+//        _imagesheets[is->getName()] = is;
     }
 
 

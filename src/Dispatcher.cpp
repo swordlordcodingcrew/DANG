@@ -16,11 +16,13 @@ namespace dang
     uint32_t Dispatcher::registerSubscriber(std::function<void(Event &)> fn, uint16_t filter)
     {
         _index++;
-        _subscribers[_index] = _subscriber_wrapper();
+        _subscriber_wrapper sw{fn, filter, _index};
+        _subscribers.insert({_index, sw});
+/*        _subscribers[_index] = _subscriber_wrapper();
         _subscribers[_index].fn = fn;
         _subscribers[_index].filt = filter;
         _subscribers[_index].ind = _index;
-        return _index;
+*/        return _index;
 
     }
 

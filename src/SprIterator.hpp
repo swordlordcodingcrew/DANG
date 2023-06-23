@@ -11,9 +11,16 @@ namespace dang
     class SpriteObject;
     using spSprObj = std::shared_ptr<SpriteObject>;
 
-    class SprIterator : public std::iterator<std::forward_iterator_tag, spSprObj>
+    class SprIterator// : public std::iterator<std::forward_iterator_tag, spSprObj>
     {
     public:
+        // https://www.fluentcpp.com/2018/05/08/std-iterator-deprecated/
+        using iterator_category = std::forward_iterator_tag;
+        using value_type = spSprObj;
+        using difference_type = spSprObj;
+        using pointer = spSprObj*;
+        using reference = spSprObj&;
+
         SprIterator();
 
         // comparison operators. just compare node pointers
