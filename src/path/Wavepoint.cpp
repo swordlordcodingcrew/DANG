@@ -5,6 +5,7 @@
 #include "../tween/TwPos.hpp"
 #include "../tween/TwPosSpline.h"
 
+
 namespace dang
 {
     Wavepoint::Wavepoint(uint32_t id, const std::string& name, const std::string& type, dang::Vector2F pos, uint32_t next_id, uint32_t duration, uint8_t orientation, uint32_t delay)

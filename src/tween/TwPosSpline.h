@@ -6,6 +6,8 @@
 #include "Tweenable.hpp"
 #include "Vector2T.hpp"
 
+#include <vector>
+
 namespace dang
 {
     class Wavepoint;

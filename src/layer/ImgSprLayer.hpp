@@ -33,7 +33,7 @@ namespace dang
         explicit ImgSprLayer(Layer::E_TYPE type) : SprLayer(type) {};
         ImgSprLayer(Layer::E_TYPE type, const tmx_layer* l) : SprLayer(type, l) {};
 
-        virtual void coreUpdate(uint32_t dt, const Gear& gear);
+        virtual void coreUpdate(uint32_t dt, const Gear& gear) override;
 
     private:
         // may not be used in this layer type, use with param ImgSpr instead

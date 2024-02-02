@@ -6,6 +6,8 @@
 #include "Tweenable.hpp"
 #include "DangFwdDecl.h"
 
+#include <vector>
+
 namespace dang
 {
     class TwAnim : public Tweenable
